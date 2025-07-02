@@ -7,14 +7,14 @@ $plantId = $_SESSION['plant'];
 
 $vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
 $vehicles2 = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
-$customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
-$customer2 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
-$supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
-$supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
+$customer = $db->query("SELECT * FROM Customer WHERE status = '0'");
+$customer2 = $db->query("SELECT * FROM Customer WHERE status = '0'");
+$supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0'");
 $product = $db->query("SELECT * FROM Product WHERE status = '0'");
 $product2 = $db->query("SELECT * FROM Product WHERE status = '0'");
 $transporter = $db->query("SELECT * FROM Transporter WHERE status = '0'");
 $destination = $db->query("SELECT * FROM Destination WHERE status = '0'");
+$supplier = $db->query("SELECT * FROM Supplier WHERE status = '0'");
 $unit = $db->query("SELECT * FROM Unit WHERE status = '0'");
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0'");
 
@@ -51,15 +51,15 @@ else{
     <!--Swiper slider css-->
     <link href="assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
     <!--datatable css-->
-    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <!--datatable responsive css-->
-    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
-    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
     <!-- Include jQuery library -->
-    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include jQuery Validate plugin -->
-    <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 
     <?php include 'layouts/head-css.php'; ?>
     <style>
@@ -117,7 +117,7 @@ else{
 
                             <div class="col-xxl-12 col-lg-12">
                                 <div class="card">
-                                    <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" style="background-color: #099885;">
+                                    <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" style="background-color: #405189;">
                                         <i class="mdi mdi-chevron-down pull-right"></i>
                                         Search Records
                                     </div>
@@ -250,12 +250,6 @@ else{
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
-                                                    <div class="col-3">
-                                                        <div class="mb-3">
-                                                            <label for="invDelPoSearch" class="form-label">INV/DO/PO No</label>
-                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
-                                                        </div>
-                                                    </div><!--end col-->
                                                     <div class="col-lg-12">
                                                         <div class="text-end">
                                                             <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> Search</button>
@@ -382,7 +376,7 @@ else{
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="card">
-                                                    <div class="card-header" style="background-color: #099885;">
+                                                    <div class="card-header" style="background-color: #405189;">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
                                                                 <h5 class="card-title text-white mb-0">Weighing Records</h5>
@@ -403,7 +397,6 @@ else{
                                                         <table id="weightTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                                                             <thead>
                                                                 <tr>
-                                                                    <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th>Transaction <br>Id</th>
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
@@ -492,8 +485,6 @@ else{
                                             <input type="hidden" class="form-control" id="plant" name="plant">   
                                             <input type="hidden" class="form-control" id="status" name="status">                                     
                                             <input type="hidden" class="form-control" id="file" name="file">     
-                                            <input type="hidden" class="form-control" id="isMulti" name="isMulti">     
-                                            <input type="hidden" class="form-control" id="ids" name="ids">     
                                         </div>
                                     </div>
                                 </div>
@@ -529,12 +520,12 @@ else{
     <script src="assets/libs/prismjs/prism.js"></script>
     <!-- notifications init -->
     <script src="assets/js/pages/notifications.init.js"></script>
-    <script src="plugins/datatables/jquery.dataTables.js"></script>
-    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
     <!-- Additional js -->
     <script src="assets/js/additional.js"></script>
@@ -563,11 +554,6 @@ else{
             defaultDate: today
         });
 
-        $('#selectAllCheckbox').on('change', function() {
-            var checkboxes = $('#weightTable tbody input[type="checkbox"]');
-            checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
-        });
-
         var fromDateI = $('#fromDateSearch').val();
         var toDateI = $('#toDateSearch').val();
         var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
@@ -581,7 +567,6 @@ else{
         var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
         var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
         var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-        var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
 
         var table = $("#weightTable").DataTable({
             "responsive": true,
@@ -605,20 +590,10 @@ else{
                     rawMaterial: rawMatI,
                     destination: destinationI,
                     plant: plantI,
-                    status: statusI,
-                    invDelPo: invDelPoI
+                    status: statusI
                 } 
             },
             'columns': [
-                {
-                    // Add a checkbox with a unique ID for each row
-                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                    className: 'select-checkbox',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                    }
-                },
                 { data: 'transaction_id' },
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
@@ -669,7 +644,6 @@ else{
             var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
             var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
             var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
 
             //Destroy the old Datatable
             $("#weightTable").DataTable().clear().destroy();
@@ -697,20 +671,10 @@ else{
                         rawMaterial: rawMatI,
                         destination: destinationI,
                         plant: plantI,
-                        status: statusI,
-                        invDelPo: invDelPoI
+                        status: statusI
                     } 
                 },
                 'columns': [
-                    {
-                        // Add a checkbox with a unique ID for each row
-                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                        className: 'select-checkbox',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                        }
-                    },
                     { data: 'transaction_id' },
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
@@ -804,6 +768,22 @@ else{
         });
 
         $('#exportPdf').on('click', function(){
+            /*$("#exportPdfModal").find('#reportType').val('');
+            $("#exportPdfModal").modal("show");
+
+            $('#exportPdfForm').validate({
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });*/
             var fromDateI = $('#fromDateSearch').val();
             var toDateI = $('#toDateSearch').val();
             var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
@@ -833,70 +813,30 @@ else{
             $('#exportPdfForm').find('#plant').val(plantI);
             $('#exportPdfForm').find('#status').val(statusI);
             $('#exportPdfForm').find('#file').val('weight');
+            $('#exportPdfModal').modal('hide');
 
-            var selectedIds = []; // An array to store the selected 'id' values
+            $.post('php/exportPdf.php', $('#exportPdfForm').serialize(), function(response){
+                var obj = JSON.parse(response);
 
-            $("#weightTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    selectedIds.push($(this).val());
+                if(obj.status === 'success'){
+                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                    printWindow.document.write(obj.message);
+                    printWindow.document.close();
+                    setTimeout(function(){
+                        printWindow.print();
+                        printWindow.close();
+                    }, 500);
                 }
+                else if(obj.status === 'failed'){
+                    toastr["error"](obj.message, "Failed:");
+                }
+                else{
+                    toastr["error"]("Something wrong when activate", "Failed:");
+                }
+            }).fail(function(error){
+                console.error("Error exporting PDF:", error);
+                alert("An error occurred while generating the PDF.");
             });
-
-            if (selectedIds.length > 0){
-                $('#exportPdfForm').find('#isMulti').val('Y');
-                $('#exportPdfForm').find('#ids').val(selectedIds);
-                $('#exportPdfModal').modal('hide');
-
-                $.post('php/exportPdf.php', $('#exportPdfForm').serialize(), function(response){
-                    var obj = JSON.parse(response);
-
-                    if(obj.status === 'success'){
-                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        printWindow.document.write(obj.message);
-                        printWindow.document.close();
-                        setTimeout(function(){
-                            printWindow.print();
-                            printWindow.close();
-                        }, 500);
-                    }
-                    else if(obj.status === 'failed'){
-                        toastr["error"](obj.message, "Failed:");
-                    }
-                    else{
-                        toastr["error"]("Something wrong when activate", "Failed:");
-                    }
-                }).fail(function(error){
-                    console.error("Error exporting PDF:", error);
-                    alert("An error occurred while generating the PDF.");
-                });
-            }else{
-                $('#exportPdfForm').find('#isMulti').val('N');
-                $('#exportPdfModal').modal('hide');
-
-                $.post('php/exportPdf.php', $('#exportPdfForm').serialize(), function(response){
-                    var obj = JSON.parse(response);
-
-                    if(obj.status === 'success'){
-                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        printWindow.document.write(obj.message);
-                        printWindow.document.close();
-                        setTimeout(function(){
-                            printWindow.print();
-                            printWindow.close();
-                        }, 500);
-                    }
-                    else if(obj.status === 'failed'){
-                        toastr["error"](obj.message, "Failed:");
-                    }
-                    else{
-                        toastr["error"]("Something wrong when activate", "Failed:");
-                    }
-                }).fail(function(error){
-                    console.error("Error exporting PDF:", error);
-                    alert("An error occurred while generating the PDF.");
-                });
-            }
-            
         });
 
         $('#exportExcel').on('click', function(){
@@ -914,25 +854,10 @@ else{
             var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
             var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
             
-            var selectedIds = []; // An array to store the selected 'id' values
-
-            $("#weightTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    selectedIds.push($(this).val());
-                }
-            });
-
-            if (selectedIds.length > 0) {
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
-                "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
-                "&destination="+destinationI+"&plant="+plantI+"&status="+statusI+"&isMulti=Y&ids="+selectedIds);
-            } else {
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
-                "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
-                "&destination="+destinationI+"&plant="+plantI+"&status="+statusI+"&isMulti=N");
-            }
+            window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+            "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
+            "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
+            "&destination="+destinationI+"&plant="+plantI+"&status="+statusI);
         });
 
         $('#transactionStatusSearch').on('change', function(){

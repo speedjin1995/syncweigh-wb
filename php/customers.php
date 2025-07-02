@@ -115,28 +115,28 @@ if (isset($_POST['customerCode'])) {
                 );
             }
             else{
-                // if ($insert_stmt = $db->prepare("INSERT INTO Customer_Log (customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                //     $insert_stmt->bind_param('sssssssssssssss', $customerId, $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $action, $username);
+                if ($insert_stmt = $db->prepare("INSERT INTO Customer_Log (customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $insert_stmt->bind_param('sssssssssssssss', $customerId, $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $action, $username);
         
-                //     // Execute the prepared query.
-                //     if (! $insert_stmt->execute()) {
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "failed", 
-                //         //         "message"=> $insert_stmt->error
-                //         //     )
-                //         // );
-                //     }
-                //     else{
-                //         $insert_stmt->close();
+                    // Execute the prepared query.
+                    if (! $insert_stmt->execute()) {
+                        // echo json_encode(
+                        //     array(
+                        //         "status"=> "failed", 
+                        //         "message"=> $insert_stmt->error
+                        //     )
+                        // );
+                    }
+                    else{
+                        $insert_stmt->close();
                         
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "success", 
-                //         //         "message"=> "Added Successfully!!" 
-                //         //     )
-                //         // );
-                //     }
+                        // echo json_encode(
+                        //     array(
+                        //         "status"=> "success", 
+                        //         "message"=> "Added Successfully!!" 
+                        //     )
+                        // );
+                    }
 
                     $update_stmt->close();
                     $db->close();
@@ -147,7 +147,7 @@ if (isset($_POST['customerCode'])) {
                             "message"=> "Updated Successfully!!" 
                         )
                     );
-                // }
+                }
             }
         }
     }
@@ -174,32 +174,32 @@ if (isset($_POST['customerCode'])) {
                     )
                 );
 
-                // $sel = mysqli_query($db,"select count(*) as allcount from Customer");
-                // $records = mysqli_fetch_assoc($sel);
-                // $totalRecords = $records['allcount'];
+                $sel = mysqli_query($db,"select count(*) as allcount from Customer");
+                $records = mysqli_fetch_assoc($sel);
+                $totalRecords = $records['allcount'];
 
-                // if ($insert_log = $db->prepare("INSERT INTO Customer_Log (customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                //     $insert_log->bind_param('sssssssssssssss', $totalRecords, $customerCode, $companyRegNo, $newRegNo,$companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $action, $username);
+                if ($insert_log = $db->prepare("INSERT INTO Customer_Log (customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $insert_log->bind_param('sssssssssssssss', $totalRecords, $customerCode, $companyRegNo, $newRegNo,$companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $action, $username);
         
-                //     // Execute the prepared query.
-                //     if (! $insert_log->execute()) {
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "failed", 
-                //         //         "message"=> $insert_stmt->error
-                //         //     )
-                //         // );
-                //     }
-                //     else{
-                //         $insert_log->close();
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "success", 
-                //         //         "message"=> "Added Successfully!!" 
-                //         //     )
-                //         // );
-                //     }
-                // }
+                    // Execute the prepared query.
+                    if (! $insert_log->execute()) {
+                        // echo json_encode(
+                        //     array(
+                        //         "status"=> "failed", 
+                        //         "message"=> $insert_stmt->error
+                        //     )
+                        // );
+                    }
+                    else{
+                        $insert_log->close();
+                        // echo json_encode(
+                        //     array(
+                        //         "status"=> "success", 
+                        //         "message"=> "Added Successfully!!" 
+                        //     )
+                        // );
+                    }
+                }
 
                 $insert_stmt->close();
                 $db->close();

@@ -44,8 +44,6 @@ while($row=mysqli_fetch_assoc($normalWeighing)){
         $weightType = 'Primer Mover + Container';
     } elseif ($row['weight_type'] == 'Container') {
         $weightType = 'Primer Mover';
-    } else if($row['weight_type'] == 'Different Container'){
-        $weightType = 'Primer Mover + Different Bins';
     } else {
         $weightType = $row['weight_type'];
     }
@@ -80,47 +78,41 @@ while($row=mysqli_fetch_assoc($normalWeighing)){
     }
 }
 
-while($row3=mysqli_fetch_assoc($containerWeighing)){
-    $weightType = ''; 
-    if ($row3['weight_type'] == 'Empty Container') {
+while($row=mysqli_fetch_assoc($containerWeighing)){
+    $weightType = '';
+    if ($row['weight_type'] == 'Empty Container') {
         $weightType = 'Primer Mover + Container';
-    } else if($row3['weight_type'] == 'Different Container'){
-        $weightType = 'Primer Mover + Different Bins';
-    } elseif ($row3['weight_type'] == 'Container') {
+    } elseif ($row['weight_type'] == 'Container') {
         $weightType = 'Primer Mover';
     } else {
-        $weightType = $row3['weight_type'];
+        $weightType = $row['weight_type'];
     }
 
-    if($row3['transaction_status'] == 'Sales'){
+    if($row['transaction_status'] == 'Sales'){
         $salesContainerList[] = array(
-            "id" => $row3['id'],
-            "transaction_id" => $row3['transaction_id'],
-            "container_no" => $row3['container_no'],
+            "id" => $row['id'],
+            "transaction_id" => $row['transaction_id'],
             "weight_type" => $weightType
         );
     }
-    else if($row3['transaction_status'] == 'Purchase'){
+    else if($row['transaction_status'] == 'Purchase'){
         $purchaseContainerList[] = array(
-            "id" => $row3['id'],
-            "transaction_id" => $row3['transaction_id'],
-            "container_no" => $row3['container_no'],
+            "id" => $row['id'],
+            "transaction_id" => $row['transaction_id'],
             "weight_type" => $weightType
         );
     }
-    else if($row3['transaction_status'] == 'Local'){
+    else if($row['transaction_status'] == 'Local'){
         $localContainerList[] = array(
-            "id" => $row3['id'],
-            "transaction_id" => $row3['transaction_id'],
-            "container_no" => $row3['container_no'],
+            "id" => $row['id'],
+            "transaction_id" => $row['transaction_id'],
             "weight_type" => $weightType
         );
     }
     else{
         $miscContainerList[] = array(
-            "id" => $row3['id'],
-            "transaction_id" => $row3['transaction_id'],
-            "container_no" => $row3['container_no'],
+            "id" => $row['id'],
+            "transaction_id" => $row['transaction_id'],
             "weight_type" => $weightType
         );
     }
@@ -751,7 +743,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade py-2 ps-2" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab">
+                            <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($localList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -769,7 +761,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade py-2 ps-2" id="misc-tab" role="tabpanel" aria-labelledby="misc-tab">
+                            <div class="tab-pane fade p-4" id="misc-tab" role="tabpanel" aria-labelledby="misc-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($miscList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -798,17 +790,17 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                     </div>
                 </div>
 
-                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="cwNotificationDropdown">
+                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
                     <span class="fw-bold">CW</span>
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
-                        id="page-header-cw-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                        id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
                         aria-haspopup="true" aria-expanded="false">
                         <i class='bx bx-bell fs-22'></i>
                         <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"><?=$containerCount ?>
                         <span class="visually-hidden">unread messages</span></span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                        aria-labelledby="page-header-cw-dropdown" style="width: 580px;">
+                        aria-labelledby="page-header-notifications-dropdown" style="width: 580px;">
 
                         <div class="dropdown-head bg-primary bg-pattern rounded-top">
                             <div class="p-3">
@@ -824,27 +816,27 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
 
                             <div class="px-2 pt-2">
                                 <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true"
-                                    id="cwNotificationItemsTab" role="tablist">
+                                    id="notificationItemsTab" role="tablist">
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#sales-cw-tab" role="tab"
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab" role="tab"
                                             aria-selected="true">
                                             Dispatch <?php echo (count($salesContainerList) == 0 ? '' : '('.count($salesContainerList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#purchase-cw-tab" role="tab"
+                                        <a class="nav-link" data-bs-toggle="tab" href="#messages-tab" role="tab"
                                             aria-selected="false">
                                             Receiving <?php echo (count($purchaseContainerList) == 0 ? '' : '('.count($purchaseContainerList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#local-cw-tab" role="tab"
+                                        <a class="nav-link" data-bs-toggle="tab" href="#alerts-tab" role="tab"
                                             aria-selected="false">
                                             Internal Transfer <?php echo (count($localContainerList) == 0 ? '' : '('.count($localContainerList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#misc-cw-tab" role="tab"
+                                        <a class="nav-link" data-bs-toggle="tab" href="#misc-tab" role="tab"
                                             aria-selected="false">
                                             Miscellaneous <?php echo (count($miscContainerList) == 0 ? '' : '('.count($miscContainerList).')'); ?>
                                         </a>
@@ -855,15 +847,17 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                         </div>
 
                         <div class="tab-content position-relative" id="notificationItemsTabContent">
-                            <div class="tab-pane fade show active py-2 ps-2" id="sales-cw-tab" role="tabpanel">
+                            <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($salesContainerList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
                                             <div class="d-flex">
                                                 <div class="flex-1">
-                                                    <!-- <a href="index.php?weight=<?=$salesContainerList[$i]['id'] ?>" class="stretched-link"> -->
-                                                        <h6 class="mt-0 mb-2 lh-base"><span class="text-secondary">Pending</span> weighing: <b><?=$salesContainerList[$i]['container_no'] ?></b> (<?=$salesContainerList[$i]['weight_type'] ?> )</h6>
-                                                    <!-- </a> -->
+                                                    <a href="index.php?weight=<?=$salesContainerList[$i]['id'] ?>" class="stretched-link">
+                                                        <h6 class="mt-0 mb-2 lh-base">There is a <?=$salesContainerList[$i]['weight_type'] ?> weighing with <b><?=$salesContainerList[$i]['transaction_id'] ?></b>
+                                                            is <span class="text-secondary">Pending</span>
+                                                        </h6>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -871,15 +865,17 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade py-2 ps-2" id="purchase-cw-tab" role="tabpanel" aria-labelledby="messages-tab">
+                            <div class="tab-pane fade py-2 ps-2" id="messages-tab" role="tabpanel" aria-labelledby="messages-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($purchaseContainerList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
                                             <div class="d-flex">
                                                 <div class="flex-1">
-                                                    <!-- <a href="index.php?weight=<?=$purchaseContainerList[$i]['id'] ?>" class="stretched-link"> -->
-                                                        <h6 class="mt-0 mb-2 lh-base"><span class="text-secondary">Pending</span> weighing: <b><?=$purchaseContainerList[$i]['container_no'] ?></b> (<?=$purchaseContainerList[$i]['weight_type'] ?> )</h6>
-                                                    <!-- </a> -->
+                                                    <a href="index.php?weight=<?=$purchaseContainerList[$i]['id'] ?>" class="stretched-link">
+                                                        <h6 class="mt-0 mb-2 lh-base">There is a <?=$purchaseContainerList[$i]['weight_type'] ?> weighing with <b><?=$purchaseContainerList[$i]['transaction_id'] ?></b>
+                                                            is <span class="text-secondary">Pending</span>
+                                                        </h6>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -887,15 +883,17 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade py-2 ps-2" id="local-cw-tab" role="tabpanel" aria-labelledby="local-cw-tab">
+                            <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($localContainerList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
                                             <div class="d-flex">
                                                 <div class="flex-1">
-                                                    <!-- <a href="index.php?weight=<?=$localContainerList[$i]['id'] ?>" class="stretched-link"> -->
-                                                        <h6 class="mt-0 mb-2 lh-base"><span class="text-secondary">Pending</span> weighing: <b><?=$localContainerList[$i]['container_no'] ?></b> (<?=$localContainerList[$i]['weight_type'] ?> )</h6>
-                                                    <!-- </a> -->
+                                                    <a href="index.php?weight=<?=$localContainerList[$i]['id'] ?>" class="stretched-link">
+                                                        <h6 class="mt-0 mb-2 lh-base">There is a <?=$localContainerList[$i]['weight_type'] ?> weighing with <b><?=$localContainerList[$i]['transaction_id'] ?></b>
+                                                            is <span class="text-secondary">Pending</span>
+                                                        </h6>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -903,15 +901,17 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade py-2 ps-2" id="misc-cw-tab" role="tabpanel" aria-labelledby="misc-cw-tab">
+                            <div class="tab-pane fade p-4" id="misc-tab" role="tabpanel" aria-labelledby="misc-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($miscContainerList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
                                             <div class="d-flex">
                                                 <div class="flex-1">
-                                                    <!-- <a href="index.php?weight=<?=$miscContainerList[$i]['id'] ?>" class="stretched-link"> -->
-                                                        <h6 class="mt-0 mb-2 lh-base"><span class="text-secondary">Pending</span> weighing: <b><?=$miscContainerList[$i]['container_no'] ?></b> (<?=$miscContainerList[$i]['weight_type'] ?> )</h6>
-                                                    <!-- </a> -->
+                                                    <a href="index.php?weight=<?=$miscContainerList[$i]['id'] ?>" class="stretched-link">
+                                                        <h6 class="mt-0 mb-2 lh-base">There is a <?=$miscContainerList[$i]['weight_type'] ?> weighing with <b><?=$miscContainerList[$i]['transaction_id'] ?></b>
+                                                            is <span class="text-secondary">Pending</span>
+                                                        </h6>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>

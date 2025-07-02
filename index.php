@@ -103,15 +103,15 @@ else{
     <!--Swiper slider css-->
     <link href="assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
     <!--datatable css-->
-    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <!--datatable responsive css-->
-    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
-    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
     <!-- Include jQuery library -->
-    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include jQuery Validate plugin -->
-    <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 
     <?php include 'layouts/head-css.php'; ?>
     <style>
@@ -237,7 +237,6 @@ else{
                                                                 <option value="Normal">Normal Weighing</option>
                                                                 <option value="Container">Primer Mover</option>
                                                                 <option value="Empty Container">Primer Mover + Container</option>
-                                                                <option value="Different Container">Primer Mover + Different Bins</option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -299,12 +298,6 @@ else{
                                                         <div class="mb-3">
                                                             <label for="sealNoSearch" class="form-label">Seal No</label>
                                                             <input type="text" class="form-control" id="sealNoSearch" name="sealNoSearch" placeholder="Seal No">                                                                                  
-                                                        </div>
-                                                    </div><!--end col-->
-                                                    <div class="col-3">
-                                                        <div class="mb-3">
-                                                            <label for="invDelPoSearch" class="form-label">INV/DO/PO No</label>
-                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
@@ -444,7 +437,7 @@ else{
                                                             <div class="col-lg-6">
                                                                 <div class="hstack gap-2 justify-content-center">
                                                                     <div class="col-xl-12 col-md-12 col-md-12">
-                                                                        <div class="card bg-primary">
+                                                                        <div class="card bg-success">
                                                                             <div class="card-body">
                                                                                 <div class="d-flex justify-content-between">
                                                                                     <div>
@@ -467,7 +460,7 @@ else{
                                                             <div class="col-lg-6">
                                                                 <div class="hstack gap-2 justify-content-center">
                                                                     <div class="col-xl-12 col-md-12 col-md-12">
-                                                                        <div class="card bg-primary">
+                                                                        <div class="card bg-success">
                                                                             <div class="card-body">
                                                                                 <div class="d-flex justify-content-between">
                                                                                     <div>
@@ -542,7 +535,6 @@ else{
                                                                                             <option value="Normal" selected>Normal Weighing</option>
                                                                                             <option value="Container">Primer Mover</option>
                                                                                             <option value="Empty Container">Primer Mover + Container</option>
-                                                                                            <option value="Different Container">Primer Mover + Different Bins</option>
                                                                                         </select>   
                                                                                     </div>
                                                                                 </div>
@@ -555,7 +547,7 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row" id="emptyContainerDisplay" style="display:none" >
-                                                                                    <label for="emptyContainerNo" class="col-sm-4 col-form-label" id="containerNo1Label">Container No 1</label>
+                                                                                    <label for="emptyContainerNo" class="col-sm-4 col-form-label">Container No 1</label>
                                                                                     <div class="col-sm-8">
                                                                                         <select class="form-select select2" id="emptyContainerNo" name="emptyContainerNo">
                                                                                             <option selected="-">-</option>
@@ -593,17 +585,12 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoDisplay">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="sealNo" class="col-sm-4 col-form-label">Seal No 1</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="sealNo" name="sealNo" placeholder="Seal No">
                                                                                     </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoReplaceDisplay" style="display:none;">
-                                                                                <div class="row">
-                                                                                    
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
@@ -630,17 +617,12 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2Display">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="containerNo2" class="col-sm-4 col-form-label">Container No 2</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="containerNo2" name="containerNo2" placeholder="Container No 2">
                                                                                     </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2ReplaceDisplay">
-                                                                                <div class="row">
-                                                                                    
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="unitPriceDisplay">
@@ -664,17 +646,12 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2Display">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="sealNo2" class="col-sm-4 col-form-label">Seal No 2</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="sealNo2" name="sealNo2" placeholder="Seal No 2">
                                                                                     </div>
-                                                                                </div>
-                                                                            </div> 
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2ReplaceDisplay">
-                                                                                <div class="row">
-                                                                                    
                                                                                 </div>
                                                                             </div> 
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="sstDisplay">
@@ -857,44 +834,7 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="replacementContainerDisplay" style="display:none">
-                                                                                <div class="row">
-                                                                                    <label for="replacementContainer" class="col-sm-4 col-form-label">New Empty Entrance Bin</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row col-12">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <button type="button" class="btn btn-success add-product" id="addProduct">Add Product</button>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <table class="table table-primary" style="text-align: center;">
-                                                                                <thead>
-                                                                                    <tr>
-                                                                                        <th width="5%">No</th>
-                                                                                        <th>Product</th>
-                                                                                        <th>Packing</th>
-                                                                                        <th>Gross Weight (kg)</th>
-                                                                                        <th>Tare Weight (kg)</th>
-                                                                                        <th>Nett Weight (kg)</th>
-                                                                                        <th>Action</th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody id="productTable"></tbody>
-                                                                            </table>                                            
-                                                                        </div><!-- end row -->     
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -951,7 +891,7 @@ else{
                                                                         <div class="row mb-3">
                                                                             <label for="grossIncomingDate" class="col-sm-4 col-form-label">Incoming Date</label>
                                                                             <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate" name="grossIncomingDate">
+                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate" name="grossIncomingDate" readonly>
                                                                             </div>
                                                                         </div>
 
@@ -971,7 +911,7 @@ else{
                                                                         <div class="row mb-3">
                                                                             <label for="tareOutgoingDate" class="col-sm-4 col-form-label">Outgoing Date</label>
                                                                             <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" id="tareOutgoingDate" name="tareOutgoingDate">
+                                                                                <input type="text" class="form-control input-readonly" id="tareOutgoingDate" name="tareOutgoingDate" readonly>
                                                                             </div>
                                                                         </div>                                                                        
                                                                         <div class="row mb-3">
@@ -1011,15 +951,6 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="row mb-3" id="vehicleWeight2Display" style="display:none">
-                                                                            <label for="vehicleWeight2" class="col-sm-4 col-form-label">Vehicle Weight</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="vehicleWeight2" name="vehicleWeight2" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
                                                                         <div class="row mb-3">
                                                                             <label for="grossIncoming2" class="col-sm-4 col-form-label">Incoming</label>
                                                                             <div class="col-sm-8">
@@ -1033,18 +964,7 @@ else{
                                                                         <div class="row mb-3">
                                                                             <label for="grossIncomingDate2" class="col-sm-4 col-form-label">Incoming Date</label>
                                                                             <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate2" name="grossIncomingDate2">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3" id="container2WeightDisplay" style="display:none">
-                                                                            <label for="emptyContainerWeight2" class="col-sm-4 col-form-label">Empty Container Weight</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="emptyContainerWeight2" name="emptyContainerWeight2" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                    <div class="input-group-text">-</div>
-                                                                                    <div class="input-group-text" id="replaceContainerText"></div>
-                                                                                </div>
+                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate2" name="grossIncomingDate2" readonly>
                                                                             </div>
                                                                         </div>
                                                                         <div class="row mb-3">
@@ -1060,7 +980,7 @@ else{
                                                                         <div class="row mb-3">
                                                                             <label for="tareOutgoingDate2" class="col-sm-4 col-form-label">Outgoing Date</label>
                                                                             <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" placeholder="" id="tareOutgoingDate2" name="tareOutgoingDate2">
+                                                                                <input type="text" class="form-control input-readonly" placeholder="" id="tareOutgoingDate2" name="tareOutgoingDate2" readonly>
                                                                             </div>
                                                                         </div>                                                                        
                                                                         <div class="row mb-3">
@@ -1075,7 +995,7 @@ else{
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-xxl-4 col-lg-4">
+                                                            <div class="col-xxl-4 col-lg-4 mb-3">
                                                                 <div class="row">
                                                                     <label for="otherRemarks" class="col-sm-2 col-form-label">Other Remarks</label>
                                                                     <div class="col-sm-10">
@@ -1367,9 +1287,7 @@ else{
                                                                 <textarea class="form-control" id="cancelReason" name="cancelReason" rows="3"></textarea>
                                                             </div>
                                                             <input type="hidden" class="form-control" id="id" name="id">                                   
-                                                            <input type="hidden" class="form-control" id="containerId" name="containerId">                                   
                                                             <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">                                   
-                                                            <input type="hidden" class="form-control" id="isMulti" name="isMulti">                                   
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
@@ -1422,13 +1340,9 @@ else{
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     Export PDF
                                                                 </button>
-                                                                <button type="button" id="exportExcel" class="btn btn-info waves-effect waves-light" >
+                                                                <button type="button" id="exportExcel" class="btn btn-warning waves-effect waves-light" >
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     Export Excel
-                                                                </button>
-                                                                <button type="button" id="multiDeleteLorry" class="btn btn-warning waves-effect waves-light" >
-                                                                    <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Delete Weight
                                                                 </button>
                                                                 <!--a href="/template/Weight_Template.xlsx" download>
                                                                     <button type="button" class="btn btn-info waves-effect waves-light">
@@ -1451,7 +1365,6 @@ else{
                                                         <table id="weightTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                                                             <thead>
                                                                 <tr>
-                                                                    <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th>Transaction <br>Id</th>
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
@@ -1510,10 +1423,6 @@ else{
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     Add New Weight
                                                                 </button> -->
-                                                                <button type="button" id="multiDeleteContainer" class="btn btn-warning waves-effect waves-light" >
-                                                                    <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Delete Weight
-                                                                </button>
                                                             </div> 
                                                         </div> 
                                                     </div>
@@ -1521,7 +1430,6 @@ else{
                                                         <table id="emptyContainerTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                                                             <thead>
                                                                 <tr>
-                                                                    <th><input type="checkbox" id="selectAllContainerCheckbox" class="selectAllContainerCheckbox"></th>
                                                                     <th>Container <br>No</th>
                                                                     <th>Seal <br>No</th>
                                                                     <th>Weight <br> Status</th>
@@ -1640,35 +1548,6 @@ else{
         <!-- end main content-->
 
     </div>
-
-    <script type="text/html" id="productDetail">
-        <tr class="details">
-            <td>
-                <input type="text" class="form-control" id="no" name="no" readonly>
-                <input type="text" class="form-control" id="weightProductId" name="weightProductId" hidden>
-            </td>
-            <td>
-                <input type="text" class="form-control" id="product" name="product" style="background-color:white;" required>
-            </td>
-            <td>
-                <input type="text" class="form-control" id="productPacking" name="productPacking" style="background-color:white;" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="productGross" name="productGross" style="background-color:white;" value="0" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="productTare" name="productTare" style="background-color:white;" value="0" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="productNett" name="productNett" style="background-color:white;" value="0" readonly required>
-            </td>
-            <td class="d-flex" style="text-align:center">
-                <button class="btn btn-danger" id="remove" style="background-color: #f06548;">
-                    <i class="fa fa-times"></i>
-                </button>
-            </td>
-        </tr>
-    </script>
     <!-- END layout-wrapper -->
 
     <?php include 'layouts/customizer.php'; ?>
@@ -1688,12 +1567,12 @@ else{
     <script src="assets/libs/prismjs/prism.js"></script>
     <!-- notifications init -->
     <script src="assets/js/pages/notifications.init.js"></script>
-    <script src="plugins/datatables/jquery.dataTables.js"></script>
-    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
     <!-- Additional js -->
     <script src="assets/js/additional.js"></script>
@@ -1702,12 +1581,6 @@ else{
     var table = null;
     var emptyContainerTable = null;
     let clickTimer = null;
-
-    var grossIncomingDatePicker;
-    var tareOutgoingDatePicker; 
-    var grossIncomingDatePicker2;
-    var tareOutgoingDatePicker2; 
-    var rowCount = $("#productTable").find(".details").length;
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -1771,46 +1644,6 @@ else{
             defaultDate: ''
         });
 
-        grossIncomingDatePicker = $('#grossIncomingDate').flatpickr({
-            enableTime: true,
-            enableSeconds: true,
-            time_24hr: true,
-            dateFormat: "Y-m-d H:i:S",
-            altInput: true,
-            altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
-        });
-
-        tareOutgoingDatePicker = $('#tareOutgoingDate').flatpickr({
-            enableTime: true,
-            enableSeconds: true,
-            time_24hr: true,
-            dateFormat: "Y-m-d H:i:S",
-            altInput: true,
-            altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
-        });
-
-        grossIncomingDatePicker2 = $('#grossIncomingDate2').flatpickr({
-            enableTime: true,
-            enableSeconds: true,
-            time_24hr: true,
-            dateFormat: "Y-m-d H:i:S",
-            altInput: true,
-            altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
-        });
-
-        tareOutgoingDatePicker2 = $('#tareOutgoingDate2').flatpickr({
-            enableTime: true,
-            enableSeconds: true,
-            time_24hr: true,
-            dateFormat: "Y-m-d H:i:S",
-            altInput: true,
-            altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
-        });
-
         if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
             $('#plantSearchDisplay').show();
         }else{
@@ -1843,21 +1676,10 @@ else{
 
         // $('#statusSearch').val('Sales').trigger('change');
 
-        $('#selectAllCheckbox').on('change', function() {
-            var checkboxes = $('#weightTable tbody input[type="checkbox"]');
-            checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
-        });
-
-        $('#selectAllContainerCheckbox').on('change', function() {
-            var checkboxes = $('#emptyContainerTable tbody input[type="checkbox"]');
-            checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
-        });
-
         var fromDateI = $('#fromDateSearch').val();
         var toDateI = $('#toDateSearch').val();
         var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
         var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-        var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
         var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
         var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
         var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
@@ -1867,7 +1689,6 @@ else{
         var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
         var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
         var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
-        var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
 
         table = $("#weightTable").DataTable({
             "responsive": true,
@@ -1883,7 +1704,6 @@ else{
                     toDate: toDateI,
                     status: statusI,
                     customer: customerNoI,
-                    supplier: supplierI,
                     vehicle: vehicleNoI,
                     invoice: invoiceNoI,
                     batch: batchNoI,
@@ -1892,25 +1712,14 @@ else{
                     plant: plantNoI,
                     transactionId: transactionIdI,
                     containerNo: containerNoI,
-                    sealNo: sealNoI,
-                    invDelPoI: invDelPoI
+                    sealNo: sealNoI
                 } 
             },
             'columns': [
-                {
-                    // Add a checkbox with a unique ID for each row
-                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                    className: 'select-checkbox',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        if (row.weight_type == 'Primer Mover + Container'){
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
-                        }else{
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
-                        }
-                    }
-                },
-                { data: 'transaction_id' },                
+                { 
+                    data: 'transaction_id',
+                    class: 'transaction-column'
+                },                
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
@@ -2061,15 +1870,6 @@ else{
                 } 
             },
             'columns': [
-                {
-                    // Add a checkbox with a unique ID for each row
-                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                    className: 'select-checkbox',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                    }
-                },
                 { data: 'container_no' },                
                 { data: 'seal_no' },                
                 { data: 'transaction_status' },
@@ -2105,13 +1905,6 @@ else{
                             }
                         }
 
-                        buttons += `
-                        <div class="col-auto">
-                            <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                <i class="fa-solid fa-print"></i>
-                            </button>
-                        </div>`;
-
                         if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
                             buttons += `
                             <div class="col-auto">
@@ -2136,7 +1929,7 @@ else{
             if (!row.data()) return; // <-- Exit early if row data is not available
 
             // Exclude specific td elements by checking the event target
-            if ($(e.target).closest('td').hasClass('select-checkbox') || $(e.target).closest('td').hasClass('action-button') || row.data().weight_type =='Primer Mover + Container') {
+            if ($(e.target).closest('td').hasClass('transaction-column') || $(e.target).closest('td').hasClass('action-button') || row.data().weight_type =='Primer Mover + Container') {
                 return;
             }
 
@@ -2397,11 +2190,6 @@ else{
 
             pass = true;
 
-            var isEmptyContainer = 'N';
-            if ($('#weightType').val() == 'Empty Container'){
-                isEmptyContainer = 'Y';
-            }
-
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight.php', $('#weightForm').serialize(), function(data){
@@ -2412,7 +2200,7 @@ else{
                         $("#successBtn").attr('data-toast-text', obj.message);
                         $("#successBtn").click();
 
-                        $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+                        $.post('php/print.php', {userID: obj.id, file: 'weight'}, function(data){
                             var obj2 = JSON.parse(data);
 
                             if(obj2.status === 'success'){
@@ -2724,7 +2512,7 @@ else{
                         }
                     }
                     else if(ind == 'BDI'){
-                        if(data.includes("GS") || data.includes("NT") || data.includes("ST") || data.includes("US")){
+                        if(data.includes("GS")){
                             var text = data.split(" ");
                             var text2 = text[text.length - 1];
                             text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
@@ -2734,15 +2522,12 @@ else{
                         }
                     }
                     else if(ind == 'EX2001'){
-                        data = data.replace("kg", "").replace("KG", "").replace("Kg", "").replace("g", "");
-                        if(data != null && data != ''){
-                            var text = data.split(",");
-                            var text2 = text[text.length - 1];
-                            //text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(parseInt(text2.replaceAll(",", "").trim()).toString());
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
+                        var text = data.split(" ");
+                        let newArray = text.slice(1, -1);
+                        let newtext = newArray.join();
+                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
+                        $('#indicatorConnected').addClass('bg-primary');
+                        $('#checkingConnection').removeClass('bg-danger');
                     }
                     else if(ind == 'D2008'){
                         if(data.includes("GS")){
@@ -2768,7 +2553,6 @@ else{
             var toDateI = $('#toDateSearch').val();
             var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
             var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-            var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
             var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
             var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
             var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
@@ -2778,7 +2562,6 @@ else{
             var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
             var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
             var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
-            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
 
             //Destroy the old Datatable
             $("#weightTable").DataTable().clear().destroy();
@@ -2799,7 +2582,6 @@ else{
                         toDate: toDateI,
                         status: statusI,
                         customer: customerNoI,
-                        supplier: supplierI,
                         vehicle: vehicleNoI,
                         invoice: invoiceNoI,
                         batch: batchNoI,
@@ -2808,25 +2590,14 @@ else{
                         plant: plantNoI,
                         transactionId: transactionIdI,
                         containerNo: containerNoI,
-                        sealNo: sealNoI,
-                        invDelPo: invDelPoI
+                        sealNo: sealNoI
                     } 
                 },
                 'columns': [
-                    {
-                        // Add a checkbox with a unique ID for each row
-                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                        className: 'select-checkbox',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            if (row.weight_type == 'Primer Mover + Container'){
-                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
-                            }else{
-                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
-                            }
-                        }
+                    { 
+                        data: 'transaction_id',
+                        class: 'transaction-column'
                     },
-                    { data: 'transaction_id' }, 
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
@@ -2951,7 +2722,7 @@ else{
                             // dropdownMenu += '</ul></div>';
                             // return dropdownMenu;
                         }
-                    }
+                }
                 ],
                 "drawCallback": function(settings) {
                     $('#salesInfo').text(settings.json.salesTotal);
@@ -2977,15 +2748,6 @@ else{
                     } 
                 },
                 'columns': [
-                    {
-                        // Add a checkbox with a unique ID for each row
-                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                        className: 'select-checkbox',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                        }
-                    },
                     { data: 'container_no' },                
                     { data: 'seal_no' },                
                     { data: 'transaction_status' },
@@ -3020,13 +2782,6 @@ else{
                                     </div>`;
                                 }
                             }
-
-                            buttons += `
-                            <div class="col-auto">
-                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                    <i class="fa-solid fa-print"></i>
-                                </button>
-                            </div>`;
 
                             if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
                                 buttons += `
@@ -3087,22 +2842,19 @@ else{
             $('#addModal').find('#plantCode').val("");
             $('#addModal').find('#plant').val("<?=$plantName ?>").trigger('change');
             $('#addModal').find('#destination').val("-").trigger('change');
-            $('#addModal').find('#replacementContainer').val('').trigger('keyup');
             $('#addModal').find('#otherRemarks').val("");
             $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
             $('#addModal').find('#manualVehicle2').prop('checked', false).trigger('change');
             $('#addModal').find('#grossIncoming').val("");
-            grossIncomingDatePicker.clear();
+            $('#addModal').find('#grossIncomingDate').val("");
             $('#addModal').find('#tareOutgoing').val("");
-            tareOutgoingDatePicker.clear();
+            $('#addModal').find('#tareOutgoingDate').val("");
             $('#addModal').find('#nettWeight').val("");
-            $('#addModal').find('#vehicleWeight2').val("");
-            $('#addModal').find('#emptyContainerWeight2').val("");
             $('#addModal').find('#grossIncoming2').val("");
             $('#addModal').find('#status').val("");
-            grossIncomingDatePicker2.clear();
+            $('#addModal').find('#grossIncomingDate2').val("");
             $('#addModal').find('#tareOutgoing2').val("");
-            tareOutgoingDatePicker2.clear();
+            $('#addModal').find('#tareOutgoingDate2').val("");
             $('#addModal').find('#nettWeight2').val("");
             $('#addModal').find('#reduceWeight').val("");
             // $('#addModal').find('#vehicleNo').val(obj.message.final_weight);
@@ -3140,9 +2892,6 @@ else{
             $('#addModal').find('#salesOrderEdit').val("").hide();
             $('#addModal').find('#purchaseOrderEdit').val("").hide();
             $('#addModal').find('#salesOrder').next('.select2-container').show();
-
-            $('#addModal').find('#productTable').html('');
-            rowCount = 0;
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -3223,18 +2972,7 @@ else{
                 batchNoI = 'Complete';
             }
 
-            var selectedIds = []; // An array to store the selected 'id' values
-
-            $("#weightTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    var type = $(this).data('type'); // Get data-type attribute
-                    if (type == 'Lorry'){
-                        selectedIds.push($(this).val());
-                    }
-                }
-            });
-
-            if (selectedIds.length > 0) {
+            //if (batchNoI == 'Pending'){
                 $.post('php/exportPdf.php', {
                     fromDate : fromDateI,
                     toDate : fromDateI,
@@ -3247,8 +2985,6 @@ else{
                     product : productSearchI,
                     rawMat : rawMaterialI,
                     plant : plantNoI,
-                    isMulti : 'Y',
-                    ids : selectedIds,
                     file : 'weight'
                 }, function(response){
                     var obj = JSON.parse(response);
@@ -3272,44 +3008,9 @@ else{
                     console.error("Error exporting PDF:", error);
                     alert("An error occurred while generating the PDF.");
                 });
-            }else{
-                $.post('php/exportPdf.php', {
-                    fromDate : fromDateI,
-                    toDate : fromDateI,
-                    transactionStatus : statusI,
-                    customer : customerNoI,
-                    supplier : supplierNoI,
-                    vehicle : vehicleNoI,
-                    weighingType : invoiceNoI,
-                    status : batchNoI,
-                    product : productSearchI,
-                    rawMat : rawMaterialI,
-                    plant : plantNoI,
-                    isMulti : 'N',
-                    file : 'weight'
-                }, function(response){
-                    var obj = JSON.parse(response);
-
-                    if(obj.status === 'success'){
-                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        printWindow.document.write(obj.message);
-                        printWindow.document.close();
-                        setTimeout(function(){
-                            printWindow.print();
-                            printWindow.close();
-                        }, 500);
-                    }
-                    else if(obj.status === 'failed'){
-                        toastr["error"](obj.message, "Failed:");
-                    }
-                    else{
-                        toastr["error"]("Something wrong when activate", "Failed:");
-                    }
-                }).fail(function(error){
-                    console.error("Error exporting PDF:", error);
-                    alert("An error occurred while generating the PDF.");
-                });
-            }
+            /*}else{
+                alert("Please change status to Pending before generating PDF.");
+            }*/
         });
 
         $('#exportExcel').on('click', function(){
@@ -3331,103 +3032,13 @@ else{
                 batchNoI = 'Complete';
             }
 
-            var selectedIds = []; // An array to store the selected 'id' values
-
-            $("#weightTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    var type = $(this).data('type'); // Get data-type attribute
-                    if (type == 'Lorry'){
-                        selectedIds.push($(this).val());
-                    }
-                }
-            });
-
-            if (selectedIds.length > 0) {
+            //if (batchNoI == 'Pending'){
                 window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI+"&isMulti=Y&ids="+selectedIds);
-            }else{
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
-                "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI+"&isMulti=N");
-            }
-        });
-
-        $('#multiDeleteLorry').on('click', function(){
-            var selectedLorryIds = []; // An array to store the selected 'id' values
-            var selectedEmptyContainerIds = []; // An array to store the selected 'id' values
-
-            $("#weightTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    var type = $(this).data('type'); // Get data-type attribute
-                    if (type == 'Lorry'){
-                        selectedLorryIds.push($(this).val());
-                    }else{
-                        selectedEmptyContainerIds.push($(this).val());
-                    }
-                }
-            });
-
-            if (selectedLorryIds.length > 0 || selectedEmptyContainerIds.length > 0) {
-                if (confirm('Are you sure you want to cancel these items?')) {
-                    $('#cancelModal').find('#id').val(selectedLorryIds);
-                    $('#cancelModal').find('#containerId').val(selectedEmptyContainerIds);
-                    $('#cancelModal').find('#isEmptyContainer').val('N');
-                    $('#cancelModal').find('#isMulti').val('Y');
-                    $('#cancelModal').modal('show');
-
-                    $('#cancelForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }else{
-                alert("Please select at least one weighing record to delete.");
-            }
-        });
-
-        $('#multiDeleteContainer').on('click', function(){
-            var selectedIds = []; // An array to store the selected 'id' values
-
-            $("#emptyContainerTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    selectedIds.push($(this).val());
-                }
-            });
-
-            if (selectedIds.length > 0) {
-                if (confirm('Are you sure you want to cancel these items?')) {
-                    $('#cancelModal').find('#id').val(selectedIds);
-                    $('#cancelModal').find('#isEmptyContainer').val('Y');
-                    $('#cancelModal').find('#isMulti').val('Y');
-                    $('#cancelModal').modal('show');
-
-                    $('#cancelForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }else{
-                alert("Please select at least one weighing record to delete.");
-            }
+                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI);
+            /*}else{
+                alert("Please change status to Pending before generating Excel.");
+            }*/
         });
 
         $('#weightType').on('change', function(){
@@ -3468,105 +3079,23 @@ else{
                 });
 
                 handleWeightType(weightType);
-                $('#addModal').find('#containerNo1Label').text("Container No 1");
                 $('#addModal').find('#emptyContainerDisplay').show();
-                $('#addModal').find('#replacementContainerDisplay').hide();
-                $('#addModal').find('#vehicleWeight2Display').hide();
-                $('#addModal').find('#container2WeightDisplay').hide();
-                $('#addModal').find('#containerNo2Display').show();
-                $('#addModal').find('#containerNo2ReplaceDisplay').hide();
-                $('#addModal').find('#sealNoDisplay').show();
-                $('#addModal').find('#sealNoReplaceDisplay').hide();
-                $('#addModal').find('#sealNo2Display').show();
-                $('#addModal').find('#sealNo2ReplaceDisplay').hide();
                 $('#addModal').find('#containerDisplay').hide();
                 $('#addModal').find('#containerNoInput').attr('required', false);
                 $('#addModal').find('#emptyContainerNo').attr('required', true);
             }else if (weightType == 'Empty Container'){
                 handleWeightType(weightType);
-                $('#addModal').find('#containerNo1Label').text("Container No 1");
                 $('#addModal').find('#emptyContainerDisplay').hide();
-                $('#addModal').find('#replacementContainerDisplay').hide();
-                $('#addModal').find('#vehicleWeight2Display').hide();
-                $('#addModal').find('#container2WeightDisplay').hide();
-                $('#addModal').find('#containerNo2Display').show();
-                $('#addModal').find('#containerNo2ReplaceDisplay').hide();
-                $('#addModal').find('#sealNoDisplay').show();
-                $('#addModal').find('#sealNoReplaceDisplay').hide();
-                $('#addModal').find('#sealNo2Display').show();
-                $('#addModal').find('#sealNo2ReplaceDisplay').hide();
                 $('#addModal').find('#containerDisplay').show();
                 $('#addModal').find('#containerNoInput').attr('required', true);
                 $('#addModal').find('#emptyContainerNo').attr('required', false);
-            }else if (weightType == 'Different Container') {
-                $.post('php/getContainers.php', {userID: transaType}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        if (obj.message.length > 0){
-                            $('#addModal').find('#emptyContainerNo').empty();
-                            $('#addModal').find('#emptyContainerNo').append(`<option selected="-">-</option>`);
-
-                            var deliveredTransporter;
-
-                            for (var i = 0; i < obj.message.length; i++) {
-                                var id = obj.message[i].id;
-                                var container_no = obj.message[i].container_no;
-
-                                $('#addModal').find('#emptyContainerNo').append(
-                                    '<option value="'+container_no+'">'+container_no+'</option>'
-                                );  
-                            }
-                        }
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-                handleWeightType(weightType);
-                $('#addModal').find('#containerNo1Label').text("Pending Dispatch Bin");
-                $('#addModal').find('#emptyContainerDisplay').show();
-                $('#addModal').find('#replacementContainerDisplay').show();
-                $('#addModal').find('#vehicleWeight2Display').show();
-                $('#addModal').find('#container2WeightDisplay').show();
-                $('#addModal').find('#containerNo2Display').hide();
-                $('#addModal').find('#containerNo2ReplaceDisplay').show();
-                $('#addModal').find('#sealNoDisplay').hide();
-                $('#addModal').find('#sealNoReplaceDisplay').show();
-                $('#addModal').find('#sealNo2Display').hide();
-                $('#addModal').find('#sealNo2ReplaceDisplay').show();
-                $('#addModal').find('#containerDisplay').hide();
-                $('#addModal').find('#containerNoInput').attr('required', false);
-                $('#addModal').find('#emptyContainerNo').attr('required', true);
             }else{
                 handleWeightType(weightType);
-                $('#addModal').find('#containerNo1Label').text("Container No 1");
                 $('#addModal').find('#emptyContainerDisplay').hide();
-                $('#addModal').find('#replacementContainerDisplay').hide();
-                $('#addModal').find('#vehicleWeight2Display').hide();
-                $('#addModal').find('#container2WeightDisplay').hide();
-                $('#addModal').find('#containerNo2Display').show();
-                $('#addModal').find('#containerNo2ReplaceDisplay').hide();
-                $('#addModal').find('#sealNoDisplay').show();
-                $('#addModal').find('#sealNoReplaceDisplay').hide();
-                $('#addModal').find('#sealNo2Display').show();
-                $('#addModal').find('#sealNo2ReplaceDisplay').hide();
                 $('#addModal').find('#containerDisplay').show();
                 $('#addModal').find('#containerNoInput').attr('required', false);
                 $('#addModal').find('#emptyContainerNo').attr('required', false);
             }
-        });
-
-        $('#replacementContainer').on('keyup', function(){
-            var replacementContainer = $(this).val();
-            $('#replaceContainerText').text(replacementContainer);
         });
 
         /*$('#customerType').on('change', function(){
@@ -3613,25 +3142,20 @@ else{
             var x = $('#vehicleNoTxt').val();
             x = x.toUpperCase();
             $('#vehicleNoTxt').val(x);
-            var transactionStatus = $('#transactionStatus').val();
 
-            if (x){
-                $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
+            var exDel = $('input[name="exDel"]:checked').val();
+            if (exDel == 'true'){
+                // $('#addModal').find('#transporter').val('Own Transportation').trigger('change');
+                // $('#addModal').find('#transporterCode').val('T01');
+                $.post('php/getVehicle.php', {userID: x, type: 'lookup'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
+                        // var customerName = obj.message.customer_name;
+                        // var customerCode = obj.message.customer_code;
 
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#addModal').find('#customerName').val(customerName).trigger('change');
-                            $('#addModal').find('#customerCode').val(customerCode);
-                        }else{
-                            $('#addModal').find('#supplierName').val(supplierName).trigger('change');
-                            $('#addModal').find('#supplierCode').val(supplierCode);
-                        }
+                        // $('#addModal').find('#customerName').val(customerName).trigger('change');
+                        // $('#addModal').find('#customerCode').val(customerCode);
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);
@@ -3648,29 +3172,19 @@ else{
                         $("#failBtn").click();
                     }
                 });
-            }
-        });
+            }else{
+                // $('#addModal').find('#customerName').val('').trigger('change');
+                // $('#addModal').find('#customerCode').val('');
 
-        $('#vehiclePlateNo1').on('change', function(){
-            var vehiclePlateNo1 = $(this).val();
-            var transactionStatus = $('#transactionStatus').val();
-            if (vehiclePlateNo1){
-                $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
+                $.post('php/getVehicle.php', {userID: x, type: 'lookup'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
+                        // var transporterName = obj.message.transporter_name;
+                        // var transporterCode = obj.message.transporter_code;
 
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#addModal').find('#customerName').val(customerName).trigger('change');
-                            $('#addModal').find('#customerCode').val(customerCode);
-                        }else{
-                            $('#addModal').find('#supplierName').val(supplierName).trigger('change');
-                            $('#addModal').find('#supplierCode').val(supplierCode);
-                        }
+                        // $('#addModal').find('#transporter').val(transporterName).trigger('change');
+                        // $('#addModal').find('#transporterCode').val(transporterCode);
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);
@@ -3709,61 +3223,6 @@ else{
             var x = $('#vehicleNoTxt2').val();
             x = x.toUpperCase();
             $('#vehicleNoTxt2').val(x);
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container' && x) {
-                $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        var vehicleWeight = obj.message.vehicle_weight;
-                        $('#vehicleWeight2').val(vehicleWeight);
-                    }
-                    else if(obj.status === 'error'){
-                        alert(obj.message);
-                        $('#vehicleNoTxt').val('');
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }
-        });
-
-        $('#vehiclePlateNo2').on('change', function(){
-            var vehiclePlateNo2 = $(this).val();
-            var weightType = $('#weightType').val();
-            if (weightType == 'Different Container' && vehiclePlateNo2){
-                $.post('php/getVehicle.php', {userID: vehiclePlateNo2, type: 'pullCustomer'}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        var vehicleWeight = obj.message.vehicle_weight;
-                        $('#vehicleWeight2').val(vehicleWeight);
-                    }
-                    else if(obj.status === 'error'){
-                        alert(obj.message);
-                        $('#vehicleNoTxt').val('');
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }
         });
 
         $('.radio-manual-weight').on('click', function(){
@@ -3786,16 +3245,12 @@ else{
             var tare = $('#tareOutgoing').val() ? parseFloat($('#tareOutgoing').val()) : 0;
             var nett = Math.abs(gross - tare);
             $('#nettWeight').val(nett.toFixed(0));
+            $('#grossIncomingDate').val(formatDate3(new Date()));
             $('#nettWeight').trigger('change');
             $('#grossWeightBy1').val('<?php echo $username; ?>');
-
-            // Update the Flatpickr instance
-            grossIncomingDatePicker.setDate(new Date()); // sets it to current date/time
-            $('#grossIncomingDate').trigger('change');
         });
 
-        $('#grossCapture').on('click', function(event){
-            event.preventDefault();
+        $('#grossCapture').on('click', function(){
             var text = $('#indicatorWeight').text();
             $('#grossIncoming').val(parseFloat(text).toFixed(0));
             $('#grossIncoming').trigger('keyup');
@@ -3806,44 +3261,21 @@ else{
             var gross = $('#grossIncoming').val() ? parseFloat($('#grossIncoming').val()) : 0;
             var nett = Math.abs(gross - tare);
             $('#nettWeight').val(nett.toFixed(0));
+            $('#tareOutgoingDate').val(formatDate3(new Date()));
             $('#nettWeight').trigger('change');
             $('#tareWeightBy1').val('<?php echo $username; ?>');
-
-            // Update the Flatpickr instance
-            tareOutgoingDatePicker.setDate(new Date()); // sets it to current date/time
-            $('#tareOutgoingDate').trigger('change');
-
         });
 
-        $('#tareCapture').on('click', function(event){
-            event.preventDefault();
+        $('#tareCapture').on('click', function(){
             var text = $('#indicatorWeight').text();
             $('#tareOutgoing').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing').trigger('keyup');
         });
 
         $('#nettWeight').on('change', function(){
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container'){
-                var current = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-            }else{
-                var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-                var nett1 = $(this).val() ? parseFloat($(this).val()) : 0;
-                var current = Math.abs(nett1 - nett2);
-            }
-
-            // Enhancement to add additional product weight
-            if ($('#productTable tr').length > 0){
-                let totalNett = 0;
-                $('#productTable tr').each(function () {
-                    let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-                    totalNett += nettVal;
-                });
-
-                current = current + totalNett;
-            }
-
+            var nett1 = $(this).val() ? parseFloat($(this).val()) : 0;
+            var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
+            var current = Math.abs(nett1 - nett2);
             $('#currentWeight').text(current.toFixed(0));
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
@@ -3851,27 +3283,9 @@ else{
         });
         
         $('#reduceWeight').on('change', function(){
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container'){
-                var current = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-            }else{
-                var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-                var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
-                var current = Math.abs(nett1 - nett2);
-            }
-
-            // Enhancement to add additional product weight
-            if ($('#productTable tr').length > 0){
-                let totalNett = 0;
-                $('#productTable tr').each(function () {
-                    let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-                    totalNett += nettVal;
-                });
-
-                current = current + totalNett;
-            }
-
+            var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
+            var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
+            var current = Math.abs(nett1 - nett2);
             var reduce = $(this).val() ? parseFloat($(this).val()) : 0;
             //var nett1 = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
             var final = Math.abs(current - reduce);
@@ -3933,99 +3347,41 @@ else{
         });
 
         $('#grossIncoming2').on('keyup', function(){
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container'){
-                var gross2 = $(this).val() ? parseFloat($(this).val()) : 0;
-                var tare2 = $('#tareOutgoing2').val() ? parseFloat($('#tareOutgoing2').val()) : 0;
-                var vehicleWeight2 = $('#vehicleWeight2').val() ? parseFloat($('#vehicleWeight2').val()) : 0;
-                var emptyContainerWeight2 = Math.abs(gross2 - vehicleWeight2);
-
-                // Container 1 weights
-                var emptyContainer1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
-                var nett = Math.abs(tare2 - vehicleWeight2 - emptyContainer1);
-
-                $('#emptyContainerWeight2').val(emptyContainerWeight2);
-            }else{
-                var gross = $(this).val() ? parseFloat($(this).val()) : 0;
-                var tare = $('#tareOutgoing2').val() ? parseFloat($('#tareOutgoing2').val()) : 0;
-                var nett = Math.abs(gross - tare);
-            }
-
+            var gross = $(this).val() ? parseFloat($(this).val()) : 0;
+            var tare = $('#tareOutgoing2').val() ? parseFloat($('#tareOutgoing2').val()) : 0;
+            var nett = Math.abs(gross - tare);
             $('#nettWeight2').val(nett.toFixed(0));
+            $('#grossIncomingDate2').val(formatDate3(new Date()));
             $('#nettWeight2').trigger('change');
             $('#grossWeightBy2').val('<?php echo $username; ?>');
-
-            // Update the Flatpickr instance
-            grossIncomingDatePicker2.setDate(new Date()); // sets it to current date/time
-            $('#grossIncomingDate2').trigger('change');
         });
 
-        $('#grossCapture2').on('click', function(event){
-            event.preventDefault();
+        $('#grossCapture2').on('click', function(){
             var text = $('#indicatorWeight').text();
             $('#grossIncoming2').val(parseFloat(text).toFixed(0));
             $('#grossIncoming2').trigger('keyup');
         });
 
         $('#tareOutgoing2').on('keyup', function(){
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container'){
-                var gross2 = $('#grossIncoming2').val() ? parseFloat($('#grossIncoming2').val()) : 0;
-                var tare2 = $(this).val() ? parseFloat($(this).val()) : 0;
-                var vehicleWeight2 = $('#vehicleWeight2').val() ? parseFloat($('#vehicleWeight2').val()) : 0;
-                var emptyContainerWeight2 = Math.abs(gross2 - vehicleWeight2);
-                $('#emptyContainerWeight2').val(emptyContainerWeight2);
-
-                // Container 1 weights
-                var emptyContainer1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
-                var nett = Math.abs(tare2 - vehicleWeight2 - emptyContainer1);
-            }else{
-                var tare = $(this).val() ? parseFloat($(this).val()) : 0;
-                var gross = $('#grossIncoming2').val() ? parseFloat($('#grossIncoming2').val()) : 0;
-                var nett = Math.abs(gross - tare);
-            }
-
+            var tare = $(this).val() ? parseFloat($(this).val()) : 0;
+            var gross = $('#grossIncoming2').val() ? parseFloat($('#grossIncoming2').val()) : 0;
+            var nett = Math.abs(gross - tare);
             $('#nettWeight2').val(nett.toFixed(0));
+            $('#tareOutgoingDate2').val(formatDate3(new Date()));
             $('#nettWeight2').trigger('change');
             $('#tareWeightBy2').val('<?php echo $username; ?>');
-
-            // Update the Flatpickr instance
-            tareOutgoingDatePicker2.setDate(new Date()); // sets it to current date/time
-            $('#tareOutgoingDate2').trigger('change');
-
         });
 
-        $('#tareCapture2').on('click', function(event){
-            event.preventDefault();
+        $('#tareCapture2').on('click', function(){
             var text = $('#indicatorWeight').text();
             $('#tareOutgoing2').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing2').trigger('keyup');
         });
 
         $('#nettWeight2').on('change', function(){
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container'){
-                var current = $(this).val() ? parseFloat($(this).val()) : 0;
-            }else{
-                var nett2 = $(this).val() ? parseFloat($(this).val()) : 0;
-                var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
-                var current = Math.abs(nett1 - nett2);
-            }
-
-            // Enhancement to add additional product weight
-            if ($('#productTable tr').length > 0){
-                let totalNett = 0;
-                $('#productTable tr').each(function () {
-                    let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-                    totalNett += nettVal;
-                });
-
-                current = current + totalNett;
-            }
-
+            var nett2 = $(this).val() ? parseFloat($(this).val()) : 0;
+            var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
+            var current = Math.abs(nett1 - nett2);
             $('#currentWeight').text(current.toFixed(0));
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
@@ -4238,7 +3594,6 @@ else{
         //Empty Container No
         $('#emptyContainerNo').on('change', function (){
             var emptyContainerNo = $(this).val();
-            var weightType = $('#weightType').val();
             $('#containerNo').val(emptyContainerNo);
 
             if (emptyContainerNo == '-'){
@@ -4248,7 +3603,6 @@ else{
                 $('#addModal').find('#tareOutgoing').val(0);
                 $('#addModal').find('#tareOutgoingDate').val("");
                 $('#addModal').find('#nettWeight').val(0);
-                $('#tareOutgoing2').trigger('keyup');
                 $('#normalCard').hide();
             } else if (emptyContainerNo) { 
                 $.post('php/getEmptyContainer.php', {userID: emptyContainerNo}, function (data){
@@ -4259,11 +3613,8 @@ else{
                         $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
                         $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
                         $('#addModal').find('#sealNo').val(obj.message.seal_no);
-
-                        if (weightType != 'Different Container'){
-                            $('#addModal').find('#containerNo2').val(obj.message.container_no2);
-                            $('#addModal').find('#sealNo2').val(obj.message.seal_no2);
-                        }
+                        $('#addModal').find('#containerNo2').val(obj.message.container_no2);
+                        $('#addModal').find('#sealNo2').val(obj.message.seal_no2);
 
                         if (obj.message.transaction_status == 'Sales' || obj.message.transaction_status == 'Misc'){
                             $('#addModal').find('#customerName').val(obj.message.customer_name).trigger('change');
@@ -4278,13 +3629,11 @@ else{
 
                         
                         $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
-                        $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1); console.log(obj.message.gross_weight1_date);
-                        grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date)); 
-                        // $('#addModal').find('#grossIncomingDate').val(obj.message.gross_weight1_date);
+                        $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
+                        $('#addModal').find('#grossIncomingDate').val(obj.message.gross_weight1_date);
                         $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);
                         $('#addModal').find('#tareOutgoing').val(obj.message.tare_weight1);
-                        tareOutgoingDatePicker.setDate(new Date(obj.message.tare_weight1_date));
-                        // $('#addModal').find('#tareOutgoingDate').val(obj.message.tare_weight1_date);
+                        $('#addModal').find('#tareOutgoingDate').val(obj.message.tare_weight1_date);
                         $('#addModal').find('#tareWeightBy1').val(obj.message.tare_weight_by1);
                         $('#addModal').find('#nettWeight').val(obj.message.nett_weight1);
 
@@ -4303,7 +3652,6 @@ else{
                             $('#vehicleNoTxt').hide();
                         }
                         
-                        $('#tareOutgoing2').trigger('keyup');
                         
                         $('#normalCard').show();
                     }
@@ -4325,7 +3673,6 @@ else{
                 $('#addModal').find('#tareOutgoing').val(0);
                 $('#addModal').find('#tareOutgoingDate').val("");
                 $('#addModal').find('#nettWeight').val(0);
-                $('#tareOutgoing2').trigger('keyup');
                 $('#normalCard').hide();
             }
         });
@@ -4377,61 +3724,6 @@ else{
             $('#sealNoSearch').val(x);
         });
 
-        // Find and remove selected table rows
-        $("#productTable").on('click', 'button[id^="remove"]', function () {
-            $(this).parents("tr").remove();
-
-            $("#productTable tr").each(function (index) {
-                $(this).find('input[name^="no"]').val(index + 1);
-            });
-
-            rowCount--;
-        });
-
-        // Event delegation for gross weight to calculate nett weight
-        $("#productTable").on('change', 'input[id^="productGross"]', function(){
-            // Retrieve the input's attributes
-            var gross = parseFloat($(this).val());
-            var tare = parseFloat($(this).closest('.details').find('input[id^="productTare"]').val());
-            var nettWeight = Math.abs(gross - tare);
-
-            // Update the respective inputs for productNett
-            $(this).closest('.details').find('input[id^="productNett"]').val(nettWeight);
-            $('#nettWeight').trigger('change');
-        });
-
-        // Event delegation for tare weight to calculate nett weight
-        $("#productTable").on('change', 'input[id^="productTare"]', function(){
-            // Retrieve the input's attributes
-            var tare = $(this).val();
-            var gross = parseFloat($(this).closest('.details').find('input[id^="productGross"]').val());
-            var nettWeight = Math.abs(gross - tare);
-
-            // Update the respective inputs for productNett
-            $(this).closest('.details').find('input[id^="productNett"]').val(nettWeight);
-            $('#nettWeight').trigger('change');
-        });
-
-        // Add additional products
-        $(".add-product").click(function(){
-            var $addContents = $("#productDetail").clone();
-            $("#productTable").append($addContents.html());
-
-            $("#productTable").find('.details:last').attr("id", "detail" + rowCount);
-            $("#productTable").find('.details:last').attr("data-index", rowCount);
-            $("#productTable").find('#remove:last').attr("id", "remove" + rowCount);
-
-            $("#productTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount + 1);
-            $("#productTable").find('#weightProductId:last').attr('name', 'weightProductId['+rowCount+']').attr("id", "weightProductId" + rowCount);
-            $("#productTable").find('#product:last').attr('name', 'product['+rowCount+']').attr("id", "product" + rowCount);
-            $("#productTable").find('#productPacking:last').attr('name', 'productPacking['+rowCount+']').attr("id", "productPacking" + rowCount);
-            $("#productTable").find('#productGross:last').attr('name', 'productGross['+rowCount+']').attr("id", "productGross" + rowCount);
-            $("#productTable").find('#productTare:last').attr('name', 'productTare['+rowCount+']').attr("id", "productTare" + rowCount);
-            $("#productTable").find('#productNett:last').attr('name', 'productNett['+rowCount+']').attr("id", "productNett" + rowCount);
-
-            rowCount++;
-        });
-
         <?php
             if(isset($_GET['weight'])){
                 echo 'edit('.$_GET['weight'].');';
@@ -4464,15 +3756,6 @@ else{
             $('#addModal').find('#nettWeight2').val(0);
             $('#containerCard').hide();
             $('#normalCard').show();
-        }else if(weightType == 'Different Container'){
-            $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
-            $('#addModal').find('#grossIncoming').val(0);
-            $('#addModal').find('#grossIncomingDate').val("");
-            $('#addModal').find('#tareOutgoing').val(0);
-            $('#addModal').find('#tareOutgoingDate').val("");
-            $('#addModal').find('#nettWeight').val(0);
-            $('#normalCard').hide();
-            $('#containerCard').show();
         }else{
             $('#addModal').find('#manualVehicle2').prop('checked', false).trigger('change');
             $('#addModal').find('#grossIncoming2').val(0);
@@ -4505,8 +3788,6 @@ else{
             weightType = 'Primer Mover + Container';
         }else if(row.weight_type == 'Normal'){
             weightType = 'Normal Weighing';
-        }else if(row.weight_type == 'Different Container'){
-            weightType = 'Primer Mover + Different Bins';
         }else{
             weightType = row.weight_type;
         }
@@ -4701,7 +3982,7 @@ else{
                 }
                 else{
                     $('#addModal').find('#vehiclePlateNo1Edit').val('EDIT');
-                    $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).select2('destroy').select2();
+                    $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
                     $('#manualVehicle').val(0);
                     $('#manualVehicle').prop("checked", false);
                     $('.index-vehicle').show();
@@ -4716,7 +3997,7 @@ else{
                     $('#vehicleNoTxt2').show();
                 }
                 else{
-                    $('#addModal').find('#vehiclePlateNo2').val(obj.message.lorry_plate_no2).select2('destroy').select2();
+                    $('#addModal').find('#vehiclePlateNo2').val(obj.message.lorry_plate_no2).trigger('change');
                     $('#manualVehicle2').val(0);
                     $('#manualVehicle2').prop("checked", false);
                     $('.index-vehicle2').show();
@@ -4735,10 +4016,9 @@ else{
                 $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
                 $('#addModal').find('#transporterCode').val(obj.message.transporter_code);
                 $('#addModal').find('#transporter').val(obj.message.transporter).trigger('change');
-                $('#addModal').find('#customerName').val(obj.message.customer_name).select2('destroy').select2();
-                $('#addModal').find('#customerCode').val(obj.message.customer_code);
-                $('#addModal').find('#supplierName').val(obj.message.supplier_name).select2('destroy').select2();
+                $('#addModal').find('#customerName').val(obj.message.customer_name).trigger('change');
                 $('#addModal').find('#supplierCode').val(obj.message.supplier_code);
+                $('#addModal').find('#supplierName').val(obj.message.supplier_name).trigger('change')
                 $('#addModal').find('#siteCode').val(obj.message.site_code);
                 $('#addModal').find('#siteName').val(obj.message.site_name).trigger('change');
                 $('#addModal').find('#agent').val(obj.message.agent_name).trigger('change');
@@ -4756,20 +4036,17 @@ else{
                 
                 $('#addModal').find('#otherRemarks').val(obj.message.remarks);
                 $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
-                grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
+                $('#addModal').find('#grossIncomingDate').val(formatDate3(new Date(obj.message.gross_weight1_date)));
                 $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);
                 $('#addModal').find('#tareOutgoing').val(obj.message.tare_weight1);
-                tareOutgoingDatePicker.setDate(obj.message.tare_weight1_date != null ? new Date(obj.message.tare_weight1_date) : null);
+                $('#addModal').find('#tareOutgoingDate').val(obj.message.tare_weight1_date != null ? formatDate3(new Date(obj.message.tare_weight1_date)) : '');
                 $('#addModal').find('#tareWeightBy1').val(obj.message.tare_weight_by1);
                 $('#addModal').find('#nettWeight').val(obj.message.nett_weight1);
-                $('#addModal').find('#vehicleWeight2').val(obj.message.lorry_no2_weight);
-                $('#addModal').find('#emptyContainerWeight2').val(obj.message.empty_container2_weight);
-                $('#addModal').find('#replacementContainer').val(obj.message.replacement_container).trigger('keyup');
                 $('#addModal').find('#grossIncoming2').val(obj.message.gross_weight2);
-                grossIncomingDatePicker2.setDate(obj.message.gross_weight2_date != null ? new Date(obj.message.gross_weight2_date) : null);
+                $('#addModal').find('#grossIncomingDate2').val(obj.message.gross_weight2_date != null ? formatDate3(new Date(obj.message.gross_weight2_date)) : '');
                 $('#addModal').find('#grossWeightBy2').val(obj.message.gross_weight_by2);
                 $('#addModal').find('#tareOutgoing2').val(obj.message.tare_weight2);
-                tareOutgoingDatePicker2.setDate(obj.message.tare_weight2_date != null ? new Date(obj.message.tare_weight2_date) : null);
+                $('#addModal').find('#tareOutgoingDate2').val(obj.message.tare_weight2_date != null ? formatDate3(new Date(obj.message.tare_weight2_date)) : '');
                 $('#addModal').find('#tareWeightBy2').val(obj.message.tare_weight_by2);
                 $('#addModal').find('#nettWeight2').val(obj.message.nett_weight2);
                 $('#addModal').find('#reduceWeight').val(obj.message.reduce_weight);
@@ -4811,7 +4088,7 @@ else{
                 $('#addModal').find('#sealNo2').val(obj.message.seal_no2);
 
                 // Load container data and update the emptyContainerNo field if it's a container
-                if((obj.message.weight_type == 'Container' || obj.message.weight_type == 'Different Container') && obj.message.container_no){
+                if(obj.message.weight_type == 'Container' && obj.message.container_no){
                     loadContainerData(function() {
                         $('#normalCard').show();
 
@@ -4850,32 +4127,6 @@ else{
                         });
                     });
                 }
-
-                $('#productTable').html('');
-                rowCount = 0;
-
-                if (obj.message.products.length > 0){
-                    for(var i = 0; i < obj.message.products.length; i++){
-                        var item = obj.message.products[i];
-                        var $addContents = $("#productDetail").clone();
-                        $("#productTable").append($addContents.html());
-
-                        $("#productTable").find('.details:last').attr("id", "detail" + rowCount);
-                        $("#productTable").find('.details:last').attr("data-index", rowCount);
-                        $("#productTable").find('#remove:last').attr("id", "remove" + rowCount);
-
-                        $("#productTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount + 1);
-                        $("#productTable").find('#weightProductId:last').attr('name', 'weightProductId['+rowCount+']').attr("id", "weightProductId" + rowCount).val(item.id);
-                        $("#productTable").find('#product:last').attr('name', 'product['+rowCount+']').attr("id", "product" + rowCount).val(item.product);
-                        $("#productTable").find('#productPacking:last').attr('name', 'productPacking['+rowCount+']').attr("id", "productPacking" + rowCount).val(item.product_packing);
-                        $("#productTable").find('#productGross:last').attr('name', 'productGross['+rowCount+']').attr("id", "productGross" + rowCount).val(item.product_gross);
-                        $("#productTable").find('#productTare:last').attr('name', 'productTare['+rowCount+']').attr("id", "productTare" + rowCount).val(item.product_tare);
-                        $("#productTable").find('#productNett:last').attr('name', 'productNett['+rowCount+']').attr("id", "productNett" + rowCount).val(item.product_nett);
-
-                        rowCount++;
-                    }
-                }
-
 
                 // Load these field after PO/SO is loaded
                 /*$('#addModal').on('orderLoaded', function() {
@@ -5086,7 +4337,7 @@ else{
     //     });
     // }
 
-    function print(id, transactionStatus, isEmptyContainer = 'N') {
+    function print(id, transactionStatus) {
         /*if (transactionStatus == "Sales"){
             $('#prePrintModal').find('#id').val(id);
             $('#prePrintModal').find('#prePrint').val("");
@@ -5131,7 +4382,7 @@ else{
         //var id = $('#prePrintModal').find('#id').val();
         var prePrintStatus = 'N';
 
-        $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+        $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

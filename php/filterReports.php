@@ -77,10 +77,6 @@ if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'
   $searchQuery .= " and is_complete = 'Y'";
 }
 
-if($_POST['invDelPo'] != null && $_POST['invDelPo'] != '' && $_POST['invDelPo'] != '-'){
-	$searchQuery .= " and (purchase_order like '%".$_POST['invDelPo']."%' OR invoice_no like '%".$_POST['invDelPo']."%' OR delivery_no like '%".$_POST['invDelPo']."%')";
-}
-
 if($searchValue != ''){
   $searchQuery = " and (transaction_id like '%".$searchValue."%' or lorry_plate_no1 like '%".$searchValue."%')";
 }
@@ -145,9 +141,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     $weightType = 'Primer Mover';
   }elseif($row['weight_type'] == 'Empty Container'){
     $weightType = 'Primer Mover + Container';
-  }else if($row['weight_type'] == 'Different Container'){
-    $weightType = 'Primer Mover + Different Bins';
-  } else{
+  }else{
     $weightType = $row['weight_type'];
   }
 

@@ -29,7 +29,7 @@ if($_POST['toDate'] != null && $_POST['toDate'] != ''){
 }
 
 if($searchValue != ''){
-  $searchQuery = " and (transaction_id like '%".$searchValue."%' or lorry_plate_no1 like '%".$searchValue."%' or container_no like '%".$searchValue."%')";
+  $searchQuery = " and (transaction_id like '%".$searchValue."%' or lorry_plate_no1 like '%".$searchValue."%')";
 }
 
 ## Total number of records without filtering

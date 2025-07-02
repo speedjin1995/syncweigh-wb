@@ -115,14 +115,14 @@ if (isset($_POST['supplierCode'])) {
                 );
             }
             else{
-                // if ($insert_stmt = $db->prepare("INSERT INTO Supplier_Log (supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                //     $insert_stmt->bind_param('sssssssssssssss', $supplierId, $supplierCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $action, $username);
+                if ($insert_stmt = $db->prepare("INSERT INTO Supplier_Log (supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $insert_stmt->bind_param('sssssssssssssss', $supplierId, $supplierCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $action, $username);
         
-                //     // Execute the prepared query.
-                //     if (! $insert_stmt->execute()) {}
-                //     else{
-                //         $insert_stmt->close();
-                //     }
+                    // Execute the prepared query.
+                    if (! $insert_stmt->execute()) {}
+                    else{
+                        $insert_stmt->close();
+                    }
 
                     $update_stmt->close();
                     $db->close();
@@ -133,7 +133,7 @@ if (isset($_POST['supplierCode'])) {
                             "message"=> "Updated Successfully!!" 
                         )
                     );
-                // }
+                }
             }
         }
     }
@@ -160,19 +160,19 @@ if (isset($_POST['supplierCode'])) {
                     )
                 );
 
-                // $sel = mysqli_query($db,"select count(*) as allcount from Supplier");
-                // $records = mysqli_fetch_assoc($sel);
-                // $totalRecords = $records['allcount'];
+                $sel = mysqli_query($db,"select count(*) as allcount from Supplier");
+                $records = mysqli_fetch_assoc($sel);
+                $totalRecords = $records['allcount'];
 
-                // if ($insert_log = $db->prepare("INSERT INTO Supplier_Log (supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                //     $insert_log->bind_param('sssssssssssssss', $totalRecords, $supplierCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $action, $username);
+                if ($insert_log = $db->prepare("INSERT INTO Supplier_Log (supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $insert_log->bind_param('sssssssssssssss', $totalRecords, $supplierCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $action, $username);
         
-                //     // Execute the prepared query.
-                //     if (! $insert_log->execute()) {}
-                //     else{
-                //         $insert_log->close();
-                //     }
-                // }
+                    // Execute the prepared query.
+                    if (! $insert_log->execute()) {}
+                    else{
+                        $insert_log->close();
+                    }
+                }
 
                 $insert_stmt->close();
                 $db->close();

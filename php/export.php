@@ -68,10 +68,10 @@ if($_GET['customer'] != null && $_GET['customer'] != '' && $_GET['customer'] != 
 
 if(isset($_GET['supplier']) && $_GET['supplier'] != null && $_GET['supplier'] != '' && $_GET['supplier'] != '-'){
     if($_GET["file"] == 'weight'){
-        $searchQuery .= " and Weight.supplier_code = '".$_GET['supplier']."'";
+        $searchQuery .= " and Weight.supplier_code = '".$_POST['supplier']."'";
     }
     else{
-        $searchQuery .= " and count.supplier_code = '".$_GET['supplier']."'";
+        $searchQuery .= " and count.supplier_code = '".$_POST['supplier']."'";
     }
 }
 
@@ -132,28 +132,13 @@ if(isset($_GET['status']) && $_GET['status'] != null && $_GET['status'] != '' &&
             $searchQuery .= " and Weight.is_complete = 'Y'";
         }
     }
+    
 }
-
-if($_GET['isMulti'] != null && $_GET['isMulti'] != '' && $_GET['isMulti'] != '-'){
-    $isMulti = $_GET['isMulti'];
-
-    if ($isMulti == 'Y'){
-        if(is_array($_GET['ids'])){
-			$ids = implode(",", $_GET['ids']);
-		}else{
-			$ids = $_GET['ids'];
-		}
-
-        $searchQuery = " and id IN ($ids)";
-    }
-}
-
 
 // Column names 
 $fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'CUSTOMER CODE', 'CUSTOMER NAME', 
     'SUPPLIER CODE', 'SUPPLIER NAME', 'PRODUCT CODE', 'PRODUCT NAME', 'PRODUCT DESCRIPTION', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 
-    'DELIVERED BY', 'PO NO.', 'DO NO.', 'CONTAINER NO', 'SEAL NO', 'CONTAINER NO 2', 'SEAL NO 2', 'ORDER WEIGHT', 'SUPPLIER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME',
-    'GROSS WEIGHT 2', 'TARE WEIGHT 2', 'NET WEIGHT 2', 'IN TIME2', 'OUT TIME2', 'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT',  'MANUAL', 'CANCELLED', 'PLANT CODE', 
+    'DELIVERED BY', 'EX-QUARRY / DELIVERED', 'PO NO.', 'DO NO.', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME', 'MANUAL', 'CANCELLED', 'PLANT CODE', 
     'PLANT NAME', 'WEIGHTED BY'); 
 
 // Display column names as first row 
@@ -178,43 +163,42 @@ if($query->num_rows > 0){
         $lineData = []; // Ensure it starts as an empty array each iteration
 
         if($_GET["file"] == 'weight'){
-            $productCode = $row['product_code'];
-            $productName = $row['product_name'];
+            $exDel = '';
+            
+            if ($row['ex_del'] == 'EX'){
+                $exDel = 'E';
+            }else{
+                $exDel = 'D';
+            }
 
             if($row['transaction_status'] == 'Sales'){
                 $transactionStatus = 'Dispatch';
             }
             else if($row['transaction_status'] == 'Purchase'){
                 $transactionStatus = 'Receiving';
-                $productCode = $row['raw_mat_code'];
-                $productName = $row['raw_mat_name'];
             }
             else if($row['transaction_status'] == 'Misc'){
                 $transactionStatus = 'Miscellaneous';
             }
             else{
                 $transactionStatus = 'Internal Transfer';
-                $productCode = $row['raw_mat_code'];
-                $productName = $row['raw_mat_name'];
             }
 
             if($row['weight_type'] == 'Container'){
                 $weightType = 'Primer Mover';
             }elseif($row['weight_type'] == 'Empty Container'){
                 $weightType = 'Primer Mover + Container';
-            }else if($row['weight_type'] == 'Different Container'){
-                $weightType = 'Primer Mover + Different Bins';
-            } else{
+            }else{
                 $weightType = $row['weight_type'];
             }
-
-            $lineData = array($row['transaction_id'], $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['customer_code'],
-            $row['customer_name'], $row['supplier_code'], $row['supplier_name'], $productCode, $productName, $row['product_description'], $row['destination_code'], 
-            $row['destination'], $row['transporter_code'], $row['transporter'], $row['purchase_order'], $row['delivery_no'], $row['container_no'], $row['seal_no'], 
-            $row['container_no2'], $row['seal_no2'], $row['order_weight'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], $row['nett_weight1'], $row['gross_weight1_date'], 
-            $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], $row['tare_weight2_date'],
-            $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], 
-            $row['created_by']);
+            
+            if($row['product_code'] != '501A-011'){
+                $lineData = array($row['transaction_id'], $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['customer_code'],
+                $row['customer_name'], $row['supplier_code'], $row['supplier_name'], $row['product_code'], $row['product_name'], $row['product_description'], $row['destination_code'], 
+                $row['destination'], $row['transporter_code'], $row['transporter'], $exDel, $row['purchase_order'], $row['delivery_no'], $row['gross_weight1'], $row['tare_weight1'], 
+                $row['nett_weight1'], $row['gross_weight1_date'], $row['tare_weight1_date'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], 
+                $row['created_by']);
+            }
         }
         else{
             $lineData = array($row['serialNo'], $row['product_name'], $row['units'], $row['unitWeight'], $row['tare'], $row['currentWeight'], $row['actualWeight'],

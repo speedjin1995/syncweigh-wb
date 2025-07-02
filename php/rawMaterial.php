@@ -85,28 +85,28 @@ if (isset($_POST['productCode'])) {
                 );
             }
             else{
-                // if ($insert_stmt = $db->prepare("INSERT INTO Raw_Mat_Log (raw_mat_id, raw_mat_code, name, price, description, variance, high, low, type, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                //     $insert_stmt->bind_param('sssssssssss', $productId, $productCode, $productName, $productPrice, $description, $varianceType, $high, $low, $type, $action, $username);
+                if ($insert_stmt = $db->prepare("INSERT INTO Raw_Mat_Log (raw_mat_id, raw_mat_code, name, price, description, variance, high, low, type, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $insert_stmt->bind_param('sssssssssss', $productId, $productCode, $productName, $productPrice, $description, $varianceType, $high, $low, $type, $action, $username);
         
-                //     // Execute the prepared query.
-                //     if (! $insert_stmt->execute()) {
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "failed", 
-                //         //         "message"=> $insert_stmt->error
-                //         //     )
-                //         // );
-                //     }
-                //     else{
-                //         $insert_stmt->close();
+                    // Execute the prepared query.
+                    if (! $insert_stmt->execute()) {
+                        // echo json_encode(
+                        //     array(
+                        //         "status"=> "failed", 
+                        //         "message"=> $insert_stmt->error
+                        //     )
+                        // );
+                    }
+                    else{
+                        $insert_stmt->close();
                         
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "success", 
-                //         //         "message"=> "Added Successfully!!" 
-                //         //     )
-                //         // );
-                //     }
+                        // echo json_encode(
+                        //     array(
+                        //         "status"=> "success", 
+                        //         "message"=> "Added Successfully!!" 
+                        //     )
+                        // );
+                    }
 
                     $update_stmt->close();
                     $db->close();
@@ -117,7 +117,7 @@ if (isset($_POST['productCode'])) {
                             "message"=> "Updated Successfully!!" 
                         )
                     );
-                // }
+                }
             }
         }
     }
@@ -144,32 +144,32 @@ if (isset($_POST['productCode'])) {
                     )
                 );
 
-                // $sel = mysqli_query($db,"select count(*) as allcount from Product");
-                // $records = mysqli_fetch_assoc($sel);
-                // $totalRecords = $records['allcount'];
+                $sel = mysqli_query($db,"select count(*) as allcount from Product");
+                $records = mysqli_fetch_assoc($sel);
+                $totalRecords = $records['allcount'];
 
-                // if ($insert_log = $db->prepare("INSERT INTO Raw_Mat_Log (raw_mat_id, raw_mat_code, name, price, description, variance, high, low, type, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                //     $insert_log->bind_param('sssssssssss', $totalRecords, $productCode, $productName, $productPrice, $description, $varianceType, $high, $low, $type, $action, $username);
+                if ($insert_log = $db->prepare("INSERT INTO Raw_Mat_Log (raw_mat_id, raw_mat_code, name, price, description, variance, high, low, type, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $insert_log->bind_param('sssssssssss', $totalRecords, $productCode, $productName, $productPrice, $description, $varianceType, $high, $low, $type, $action, $username);
         
-                //     // Execute the prepared query.
-                //     if (! $insert_log->execute()) {
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "failed", 
-                //         //         "message"=> $insert_stmt->error
-                //         //     )
-                //         // );
-                //     }
-                //     else{
-                //         $insert_log->close();
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "success", 
-                //         //         "message"=> "Added Successfully!!" 
-                //         //     )
-                //         // );
-                //     }
-                // }
+                    // Execute the prepared query.
+                    if (! $insert_log->execute()) {
+                        // echo json_encode(
+                        //     array(
+                        //         "status"=> "failed", 
+                        //         "message"=> $insert_stmt->error
+                        //     )
+                        // );
+                    }
+                    else{
+                        $insert_log->close();
+                        // echo json_encode(
+                        //     array(
+                        //         "status"=> "success", 
+                        //         "message"=> "Added Successfully!!" 
+                        //     )
+                        // );
+                    }
+                }
 
                 $insert_stmt->close();
                 $db->close();

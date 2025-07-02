@@ -35,10 +35,6 @@ if($_POST['customer'] != null && $_POST['customer'] != '' && $_POST['customer'] 
 	$searchQuery .= " and customer_code = '".$_POST['customer']."'";
 }
 
-if($_POST['supplier'] != null && $_POST['supplier'] != '' && $_POST['supplier'] != '-'){
-	$searchQuery .= " and supplier_code = '".$_POST['supplier']."'";
-}
-
 if($_POST['vehicle'] != null && $_POST['vehicle'] != '' && $_POST['vehicle'] != '-'){
 	$searchQuery .= " and lorry_plate_no1 like '%".$_POST['vehicle']."%'";
 }
@@ -73,10 +69,6 @@ if($_POST['containerNo'] != null && $_POST['containerNo'] != '' && $_POST['conta
 
 if($_POST['sealNo'] != null && $_POST['sealNo'] != '' && $_POST['sealNo'] != '-'){
 	$searchQuery .= " and (seal_no like '%".$_POST['sealNo']."%' OR seal_no2 like '%".$_POST['sealNo']."%')";
-}
-
-if($_POST['invDelPo'] != null && $_POST['invDelPo'] != '' && $_POST['invDelPo'] != '-'){
-	$searchQuery .= " and (purchase_order like '%".$_POST['invDelPo']."%' OR invoice_no like '%".$_POST['invDelPo']."%' OR delivery_no like '%".$_POST['invDelPo']."%')";
 }
 
 if($searchValue != ''){
@@ -177,9 +169,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     $weightType = 'Primer Mover';
   }elseif($row['weight_type'] == 'Empty Container'){
     $weightType = 'Primer Mover + Container';
-  }else if($row['weight_type'] == 'Different Container'){
-    $weightType = 'Primer Mover + Different Bins';
-  } else{
+  }else{
     $weightType = $row['weight_type'];
   }
 

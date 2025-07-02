@@ -167,9 +167,6 @@ if(isset($_POST['userID'])){
                             $message['tare_weight1_date'] = $row['tare_weight1_date'];
                             $message['tare_weight_by1'] = $row['tare_weight_by1'];
                             $message['nett_weight1'] = $row['nett_weight1'];
-                            $message['lorry_no2_weight'] = $row['lorry_no2_weight'];
-                            $message['empty_container2_weight'] = $row['empty_container2_weight'];
-                            $message['replacement_container'] = $row['replacement_container'];
                             $message['gross_weight2'] = $row['gross_weight2'];
                             $message['gross_weight2_date'] = $row['gross_weight2_date'];
                             $message['gross_weight_by2'] = $row['gross_weight_by2'];
@@ -198,28 +195,6 @@ if(isset($_POST['userID'])){
                             $message['final_weight'] = $row['final_weight'];
                             $message['load_drum'] = $row['load_drum'];
                             $message['no_of_drum'] = $row['no_of_drum'];
-
-                            // retrieve products
-                            $empQuery = "SELECT * FROM Weight_Product WHERE weight_id = $id AND status = '0' ORDER BY id ASC";
-                            $empRecords = mysqli_query($db, $empQuery);
-                            $products = array();
-                            $productCount = 1;
-            
-                            while($row4 = mysqli_fetch_assoc($empRecords)) {
-                                $products[] = array(
-                                    "no" => $productCount,
-                                    "id" => $row4['id'],
-                                    "weight_id" => $row4['weight_id'],
-                                    "product" => $row4['product'],
-                                    "product_packing" => $row4['product_packing'],
-                                    "product_gross" => $row4['product_gross'],
-                                    "product_tare" => $row4['product_tare'],
-                                    "product_nett" => $row4['product_nett']
-                                );
-                                $productCount++;
-                            }
-            
-                            $message['products'] = $products;
     
                             if ($update_stmt2 = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=?")) {
                                 $update_stmt2->bind_param('s', $row['lorry_plate_no1']);
@@ -407,9 +382,6 @@ if(isset($_POST['userID'])){
                             $message['tare_weight1_date'] = $row['tare_weight1_date'];
                             $message['tare_weight_by1'] = $row['tare_weight_by1'];
                             $message['nett_weight1'] = $row['nett_weight1'];
-                            $message['lorry_no2_weight'] = $row['lorry_no2_weight'];
-                            $message['empty_container2_weight'] = $row['empty_container2_weight'];
-                            $message['replacement_container'] = $row['replacement_container'];
                             $message['gross_weight2'] = $row['gross_weight2'];
                             $message['gross_weight2_date'] = $row['gross_weight2_date'];
                             $message['gross_weight_by2'] = $row['gross_weight_by2'];
@@ -438,28 +410,6 @@ if(isset($_POST['userID'])){
                             $message['final_weight'] = $row['final_weight'];
                             $message['load_drum'] = $row['load_drum'];
                             $message['no_of_drum'] = $row['no_of_drum'];
-
-                            // retrieve products
-                            $empQuery = "SELECT * FROM Weight_Product WHERE weight_id = $id AND status = '0' ORDER BY id ASC";
-                            $empRecords = mysqli_query($db, $empQuery);
-                            $products = array();
-                            $productCount = 1;
-            
-                            while($row4 = mysqli_fetch_assoc($empRecords)) {
-                                $products[] = array(
-                                    "no" => $productCount,
-                                    "id" => $row4['id'],
-                                    "weight_id" => $row4['weight_id'],
-                                    "product" => $row4['product'],
-                                    "product_packing" => $row4['product_packing'],
-                                    "product_gross" => $row4['product_gross'],
-                                    "product_tare" => $row4['product_tare'],
-                                    "product_nett" => $row4['product_nett']
-                                );
-                                $productCount++;
-                            }
-            
-                            $message['products'] = $products;
     
                             if ($update_stmt2 = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=?")) {
                                 $update_stmt2->bind_param('s', $row['lorry_plate_no1']);

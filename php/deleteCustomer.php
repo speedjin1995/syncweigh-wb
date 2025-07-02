@@ -26,14 +26,14 @@ if(isset($_POST['userID'])){
 			$stmt2->bind_param('s', $del);
 			
 			if($stmt2->execute()){
-				// foreach($_POST['userID'] as $id){
-				// 	if ($insert_stmt = $db->prepare("INSERT INTO Customer_Log (customer_id, action_id, action_by) VALUES (?, ?, ?)")) {
-				// 		$insert_stmt->bind_param('sss', $id, $action, $username);
-				// 		// Execute the prepared query.
-				// 		$insert_stmt->execute();
-				// 		$insert_stmt->close();
-				// 	}
-				// }
+				foreach($_POST['userID'] as $id){
+					if ($insert_stmt = $db->prepare("INSERT INTO Customer_Log (customer_id, action_id, action_by) VALUES (?, ?, ?)")) {
+						$insert_stmt->bind_param('sss', $id, $action, $username);
+						// Execute the prepared query.
+						$insert_stmt->execute();
+						$insert_stmt->close();
+					}
+				}
 
 				$stmt2->close();
 				$db->close();
@@ -66,28 +66,28 @@ if(isset($_POST['userID'])){
 			$stmt2->bind_param('ss', $del , $id);
 			
 			if($stmt2->execute()){
-				// if ($insert_stmt = $db->prepare("INSERT INTO Customer_Log (customer_id, action_id, action_by) VALUES (?, ?, ?)")) {
-				// 	$insert_stmt->bind_param('sss', $id, $action, $username);
+				if ($insert_stmt = $db->prepare("INSERT INTO Customer_Log (customer_id, action_id, action_by) VALUES (?, ?, ?)")) {
+					$insert_stmt->bind_param('sss', $id, $action, $username);
 		
-				// 	// Execute the prepared query.
-				// 	if (! $insert_stmt->execute()) {
-				// 		echo json_encode(
-				// 			array(
-				// 				"status"=> "failed", 
-				// 				"message"=> $insert_stmt->error
-				// 			)
-				// 		);
-				// 	}
-				// 	else{
-				// 		$insert_stmt->close();
+					// Execute the prepared query.
+					if (! $insert_stmt->execute()) {
+						echo json_encode(
+							array(
+								"status"=> "failed", 
+								"message"=> $insert_stmt->error
+							)
+						);
+					}
+					else{
+						$insert_stmt->close();
 						echo json_encode(
 							array(
 								"status"=> "success", 
 								"message"=> "Deleted"
 							)
 						);
-				// 	}
-				// }
+					}
+				}
 	
 				$stmt2->close();
 				$db->close();
