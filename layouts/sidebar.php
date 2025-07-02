@@ -1,23 +1,23 @@
 <!-- ========== App Menu ========== -->
-<div class="app-menu navbar-menu">
+<div class="app-menu navbar-menu" style="background: transparent linear-gradient(360deg, #006D89 0%, #00DC53 160%, #108218 100%) 0% 0% no-repeat padding-box;">
     <!-- LOGO -->
     <div class="navbar-brand-box">
         <!-- Dark Logo-->
         <a href="index.php" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="assets/images/logo-sm.jpg" alt="" height="70">
+                <img src="assets/images/logo-sm.png" alt="" height="22">
             </span>
             <span class="logo-lg">
-                <img src="assets/images/logo-lg.png" alt="" height="60">
+                <img src="assets/images/logo-lg.png" alt="" height="50">
             </span>
         </a>
         <!-- Light Logo-->
         <a href="index.php" class="logo logo-light">
             <span class="logo-sm">
-                <img src="assets/images/logo-sm.jpg" alt="" height="70">
+                <img src="assets/images/logo-sm.png" alt="" height="22">
             </span>
             <span class="logo-lg">
-                <img src="assets/images/logo-lg.png" alt="" height="60">
+                <img src="assets/images/logo-lg.png" alt="" height="50">
             </span>
         </a>
         <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
