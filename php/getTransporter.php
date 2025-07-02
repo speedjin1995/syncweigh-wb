@@ -1,6 +1,7 @@
 <?php
-session_start();
 require_once "db_connect.php";
+
+session_start();
 
 if(isset($_POST['userID'])){
 	$id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
@@ -24,16 +25,12 @@ if(isset($_POST['userID'])){
                 $message['id'] = $row['id'];
                 $message['transporter_code'] = $row['transporter_code'];
                 $message['company_reg_no'] = $row['company_reg_no'];
-                $message['new_reg_no'] = $row['new_reg_no'];
                 $message['name'] = $row['name'];
                 $message['address_line_1'] = $row['address_line_1'];
                 $message['address_line_2'] = $row['address_line_2'];
                 $message['address_line_3'] = $row['address_line_3'];
                 $message['phone_no'] = $row['phone_no'];
                 $message['fax_no'] = $row['fax_no'];
-                $message['contact_name'] = $row['contact_name'];
-                $message['ic_no'] = $row['ic_no'];
-                $message['tin_no'] = $row['tin_no'];
             }
             
             echo json_encode(

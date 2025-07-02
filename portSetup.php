@@ -160,9 +160,9 @@ if($row = $result->fetch_assoc()){
         <!-- App js -->
         <script src="assets/js/app.js"></script>
         <!-- Include jQuery library -->
-        <script src="plugins/jquery/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <!-- Include jQuery Validate plugin -->
-        <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
         <script type="text/javascript">
             $(function () {
                 $.post('http://127.0.0.1:5002/getcomport', function(data){

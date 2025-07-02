@@ -11,15 +11,15 @@
     <!--Swiper slider css-->
     <link href="assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
     <!--datatable css-->
-    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <!--datatable responsive css-->
-    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
-    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
     <!-- Include jQuery library -->
-    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include jQuery Validate plugin -->
-    <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     
     <?php include 'layouts/head-css.php'; ?>
 
@@ -128,19 +128,7 @@
                                                                                 <div class="row">
                                                                                     <label for="companyRegNo" class="col-sm-4 col-form-label">Company Reg No</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <div class="row">
-                                                                                            <div class="col-sm-4">
-                                                                                                <input type="text" class="form-control" id="companyRegNo" name="companyRegNo">
-                                                                                            </div>
-                                                                                            <div class="col-sm-8">
-                                                                                                <div class="row">
-                                                                                                    <label for="newRegNo" class="col-sm-4 col-form-label">New Reg No</label>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <input type="text" class="form-control" id="newRegNo" name="newRegNo" required>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                        <input type="text" class="form-control" id="companyRegNo" name="companyRegNo" placeholder="Company Reg No">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -176,14 +164,14 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <!-- <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="addressLine4" class="col-sm-4 col-form-label">Address Line 4</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="addressLine4" name="addressLine4" placeholder="Address Line 4">
                                                                                     </div>
                                                                                 </div>
-                                                                            </div> -->
+                                                                            </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="phoneNo" class="col-sm-4 col-form-label">Phone No</label>
@@ -197,30 +185,6 @@
                                                                                     <label for="faxNo" class="col-sm-4 col-form-label">Fax No</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="Fax No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="contactName" class="col-sm-4 col-form-label">Contact Name</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="contactName" name="contactName" placeholder="Contact Name">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="icNo" class="col-sm-4 col-form-label">I/C No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="icNo" name="icNo" placeholder="I/C No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="tinNo" class="col-sm-4 col-form-label">Tin No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="Tin No">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -265,23 +229,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="errorModal" style="display:none">
-                                        <div class="modal-dialog modal-xl" style="max-width: 50%;">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-gray-dark color-palette">
-                                                    <h4 class="modal-title">Error Log</h4>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="form-group">
-                                                            <ol id="errorList" class="text-danger mt-2" style="padding-left: 20px;"></ol>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>     
                                 </div>
                             </div> <!-- end row-->
 
@@ -326,16 +273,12 @@
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th>Customer Code</th>
                                                                     <th>Company Reg No</th>
-                                                                    <th>New Reg No</th>
                                                                     <th>Company Name</th>
                                                                     <th>Address Line 1</th>
                                                                     <th>Address Line 2</th>
                                                                     <th>Address Line 3</th>
                                                                     <th>Phone No</th>
                                                                     <th>Fax No</th>
-                                                                    <th>Contact Name</th>
-                                                                    <th>I/C No</th>
-                                                                    <th>Tin No</th>
                                                                     <th>Status</th>
                                                                     <th>Action</th>
                                                                 </tr>
@@ -384,12 +327,13 @@
 
     <!-- notifications init -->
     <script src="assets/js/pages/notifications.init.js"></script>
-    <script src="plugins/datatables/jquery.dataTables.js"></script>
-    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
 
 
@@ -439,23 +383,19 @@ $(function () {
             },
             { data: 'customer_code' },
             { data: 'company_reg_no' },
-            { data: 'new_reg_no' },
             { data: 'name' },
             { data: 'address_line_1' },
             { data: 'address_line_2' },
             { data: 'address_line_3' },
             { data: 'phone_no' },
             { data: 'fax_no' },
-            { data: 'contact_name' },
-            { data: 'ic_no' },
-            { data: 'tin_no' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
                     if (row.status == '1'){
                         return '<button title="Reactivate" type="button" id="reactivate'+data+'" onclick="reactivate('+data+')" class="btn btn-warning btn-sm">Reactivate</button>';
                     }else{
-                        return 'Active';
+                        return '';
                     }
                 }
             },
@@ -545,20 +485,6 @@ $(function () {
                     $("#failBtn").attr('data-toast-text', obj.message );
                     $("#failBtn").click();
                 } 
-                else if (obj.status === 'error') {
-                    $('#spinnerLoading').hide();
-                    $('#uploadModal').modal('hide');
-                    // alert(obj.message);
-                    // $("#failBtn").attr('data-toast-text', obj.message );
-                    // $("#failBtn").click();
-                    $('#customerTable').DataTable().ajax.reload(null, false);
-                    $('#errorModal').find('#errorList').empty();
-                    var errorMessage = obj.message;
-                    for (var i = 0; i < errorMessage.length; i++) {
-                        $('#errorModal').find('#errorList').append(`<li>${errorMessage[i]}</li>`);                            
-                    }
-                    $('#errorModal').modal('show');
-                } 
                 else {
                     $('#spinnerLoading').hide();
                     $("#failBtn").attr('data-toast-text', 'Failed to save');
@@ -573,16 +499,12 @@ $(function () {
         $('#addModal').find('#customerCode').val("");
         $('#addModal').find('#companyName').val("");
         $('#addModal').find('#companyRegNo').val("");
-        $('#addModal').find('#newRegNo').val("");
         $('#addModal').find('#addressLine1').val("");
         $('#addModal').find('#addressLine2').val("");
         $('#addModal').find('#addressLine3').val("");
         $('#addModal').find('#addressLine4').val("");
         $('#addModal').find('#phoneNo').val("");
         $('#addModal').find('#faxNo').val("");
-        $('#addModal').find('#contactName').val("");
-        $('#addModal').find('#icNo').val("");
-        $('#addModal').find('#tinNo').val("");
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -687,15 +609,12 @@ function edit(id){
             $('#addModal').find('#customerCode').val(obj.message.customer_code);
             $('#addModal').find('#companyName').val(obj.message.name);
             $('#addModal').find('#companyRegNo').val(obj.message.company_reg_no);
-            $('#addModal').find('#newRegNo').val(obj.message.new_reg_no);
             $('#addModal').find('#addressLine1').val(obj.message.address_line_1);
             $('#addModal').find('#addressLine2').val(obj.message.address_line_2);
             $('#addModal').find('#addressLine3').val(obj.message.address_line_3);
+            $('#addModal').find('#addressLine4').val(obj.message.address_line_4);
             $('#addModal').find('#phoneNo').val(obj.message.phone_no);
             $('#addModal').find('#faxNo').val(obj.message.fax_no);
-            $('#addModal').find('#contactName').val(obj.message.contact_name);
-            $('#addModal').find('#icNo').val(obj.message.ic_no);
-            $('#addModal').find('#tinNo').val(obj.message.tin_no);
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -758,7 +677,7 @@ function displayPreview(data) {
     var headers = jsonData[0];
 
     // Ensure we handle cases where there may be less than 15 columns
-    while (headers.length < 12) {
+    while (headers.length < 9) {
         headers.push(''); // Adding empty headers to reach 15 columns
     }
 
@@ -775,11 +694,11 @@ function displayPreview(data) {
         var rowData = jsonData[i];
 
         // Ensure we handle cases where there may be less than 15 cells in a row
-        while (rowData.length < 12) {
+        while (rowData.length < 9) {
             rowData.push(''); // Adding empty cells to reach 15 columns
         }
 
-        for (var j = 0; j < 12; j++) {
+        for (var j = 0; j < 9; j++) {
             var cellData = rowData[j];
             var formattedData = cellData;
 

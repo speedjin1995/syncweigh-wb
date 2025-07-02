@@ -1,5 +1,4 @@
 <?php
-session_start();
 ## Database configuration
 require_once 'db_connect.php';
 
@@ -24,12 +23,12 @@ $records = mysqli_fetch_assoc($sel);
 $totalRecords = $records['allcount'];
 
 ## Total number of record with filtering
-$sel = mysqli_query($db,"select count(*) as allcount from Product WHERE status IN (0)".$searchQuery);
+$sel = mysqli_query($db,"select count(*) as allcount from Product WHERE status IN (0,1)".$searchQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
-$empQuery = "select * from Product WHERE status IN (0)".$searchQuery."order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+$empQuery = "select * from Product WHERE status IN (0,1)".$searchQuery."order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 $empRecords = mysqli_query($db, $empQuery);
 $data = array();
 

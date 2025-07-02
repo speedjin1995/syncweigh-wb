@@ -15,7 +15,7 @@
     $lang["t-masterdata"]="Master Data";
     $lang["t-customer"]="Customer";
     $lang["t-supplier"]="Supplier";
-    $lang["t-product"]="Sales Product";
+    $lang["t-product"]="Product";
     $lang["t-destination"]="Destination";
     $lang["t-transporter"]="Transporter";
     $lang["t-user"]="User";
@@ -23,7 +23,7 @@
     $lang["t-vehicle"]="Vehicle";
     $lang["t-inventory"]="Inventory";
     $lang["t-agent"]="Sales Representative";
-    $lang["t-raw-mat"]="Purchase Product";
+    $lang["t-raw-mat"]="Raw Materials";
     $lang["t-site"]="Site";
     $lang["t-plant"]="Plant";
 
@@ -36,7 +36,7 @@
 
     $lang["t-crm"]="CRM";
     $lang["t-billboard"]="Billboard";
-    $lang["t-weighing"]="Daily Weighing";
+    $lang["t-weighing"]="Weighing";
     $lang["t-bitumen"]="Bitumen";
     $lang["t-crypto"]="Crypto";
     $lang["t-projects"]="Projects";

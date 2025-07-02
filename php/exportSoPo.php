@@ -1,7 +1,8 @@
 <?php
-session_start();
-// Load the database configuration file 
+
 require_once 'db_connect.php';
+// // Load the database configuration file 
+session_start();
  
 // Filter the excel data 
 function filterData(&$str){ 

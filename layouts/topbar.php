@@ -1,127 +1,38 @@
 <?php
 require_once "php/db_connect.php";
 
-## Fetch records
-// Lorry SQL
-$lorryWeighingSQL = "(select * from Weight where status = '0' AND is_complete = 'N' AND is_cancel='N') UNION ALL (select * from Weight_Container where status = '0' AND is_complete = 'N' AND is_cancel='N')";
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
-    $username = implode("', '", $_SESSION["plant"]);
-    $normalWeighingSQL = "(select * from Weight where status = '0' AND is_complete = 'N' AND is_cancel='N' AND plant_code IN ('$username')) UNION ALL (select * from Weight_Container where status = '0' AND is_complete = 'N' AND is_cancel='N' AND plant_code IN ('$username'))";
-}
-$normalWeighing = $db->query($lorryWeighingSQL);
-
-// Container SQL
-$containerWeighingSQL = "select * from Weight_Container where status = '0' AND is_complete = 'Y' AND is_cancel='N'";
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
-    $username = implode("', '", $_SESSION["plant"]);
-    $normalWeighingSQL = "select * from Weight_Container where status = '0' AND is_complete = 'Y' AND is_cancel='N' AND plant_code IN ('$username'))";
-}
-$containerWeighing = $db->query($containerWeighingSQL);
-
+$weighing = $db->query("SELECT * FROM Weight WHERE is_complete = 'N'");
 $weighing2 = $db->query("SELECT * FROM Weight WHERE is_approved = 'N'");
-# Lorry
 $salesList = array();
 $purchaseList = array();
 $localList = array();
-$miscList = array();
 $count = 0;
-# Container
-$salesContainerList = array();
-$purchaseContainerList = array();
-$localContainerList = array();
-$miscContainerList = array();
-$containerCount = 0;
 
 $salesList2 = array();
 $purchaseList2 = array();
 $localList2 = array();
-$miscList2 = array();
 $count2 = 0;
 
-while($row=mysqli_fetch_assoc($normalWeighing)){
-    $weightType = '';
-    if ($row['weight_type'] == 'Empty Container') {
-        $weightType = 'Primer Mover + Container';
-    } elseif ($row['weight_type'] == 'Container') {
-        $weightType = 'Primer Mover';
-    } else if($row['weight_type'] == 'Different Container'){
-        $weightType = 'Primer Mover + Different Bins';
-    } else {
-        $weightType = $row['weight_type'];
-    }
-
+while($row=mysqli_fetch_assoc($weighing)){
     if($row['transaction_status'] == 'Sales'){
         $salesList[] = array(
             "id" => $row['id'],
             "transaction_id" => $row['transaction_id'],
-            "weight_type" => $weightType
+            "weight_type" => $row['weight_type']
         );
     }
     else if($row['transaction_status'] == 'Purchase'){
         $purchaseList[] = array(
             "id" => $row['id'],
             "transaction_id" => $row['transaction_id'],
-            "weight_type" => $weightType
+            "weight_type" => $row['weight_type']
         );
     }
-    else if($row['transaction_status'] == 'Local'){
+    else{
         $localList[] = array(
             "id" => $row['id'],
             "transaction_id" => $row['transaction_id'],
-            "weight_type" => $weightType
-        );
-    }
-    else{
-        $miscList[] = array(
-            "id" => $row['id'],
-            "transaction_id" => $row['transaction_id'],
-            "weight_type" => $weightType
-        );
-    }
-}
-
-while($row3=mysqli_fetch_assoc($containerWeighing)){
-    $weightType = ''; 
-    if ($row3['weight_type'] == 'Empty Container') {
-        $weightType = 'Primer Mover + Container';
-    } else if($row3['weight_type'] == 'Different Container'){
-        $weightType = 'Primer Mover + Different Bins';
-    } elseif ($row3['weight_type'] == 'Container') {
-        $weightType = 'Primer Mover';
-    } else {
-        $weightType = $row3['weight_type'];
-    }
-
-    if($row3['transaction_status'] == 'Sales'){
-        $salesContainerList[] = array(
-            "id" => $row3['id'],
-            "transaction_id" => $row3['transaction_id'],
-            "container_no" => $row3['container_no'],
-            "weight_type" => $weightType
-        );
-    }
-    else if($row3['transaction_status'] == 'Purchase'){
-        $purchaseContainerList[] = array(
-            "id" => $row3['id'],
-            "transaction_id" => $row3['transaction_id'],
-            "container_no" => $row3['container_no'],
-            "weight_type" => $weightType
-        );
-    }
-    else if($row3['transaction_status'] == 'Local'){
-        $localContainerList[] = array(
-            "id" => $row3['id'],
-            "transaction_id" => $row3['transaction_id'],
-            "container_no" => $row3['container_no'],
-            "weight_type" => $weightType
-        );
-    }
-    else{
-        $miscContainerList[] = array(
-            "id" => $row3['id'],
-            "transaction_id" => $row3['transaction_id'],
-            "container_no" => $row3['container_no'],
-            "weight_type" => $weightType
+            "weight_type" => $row['weight_type']
         );
     }
 }
@@ -141,41 +52,22 @@ while($row2=mysqli_fetch_assoc($weighing2)){
             "weight_type" => $row2['weight_type']
         );
     }
-    else if($row2['transaction_status'] == 'Local'){
+    else{
         $localList2[] = array(
             "id" => $row2['id'],
             "transaction_id" => $row2['transaction_id'],
             "weight_type" => $row2['weight_type']
         );
     }
-    else{
-        $miscList2[] = array(
-            "id" => $row2['id'],
-            "transaction_id" => $row2['transaction_id'],
-            "weight_type" => $row2['weight_type']
-        );
-    }
 }
 
-$compids = '1';
-$stmtComp = $db->prepare("SELECT * FROM Company WHERE id=?");
-$stmtComp->bind_param('s', $compids);
-$stmtComp->execute();
-$resultC = $stmtComp->get_result();
-$compname = '';
-        
-if ($rowc = $resultC->fetch_assoc()) {
-    $compname = $rowc['name'];
-}
-
-$count = count($salesList) + count($purchaseList) + count($localList) + count($miscList);
-$containerCount = count($salesContainerList) + count($purchaseContainerList) + count($localContainerList) + count($miscContainerList);
-$count2 = count($salesList2) + count($purchaseList2) + count($localList2) + count($miscList2);
+$count = count($salesList) + count($purchaseList) + count($localList);
+$count2 = count($salesList2) + count($purchaseList2) + count($localList2);
 ?>
 <header id="page-topbar">
     <div class="layout-width">
         <div class="navbar-header">
-            <div class="d-flex align-items-center">
+            <div class="d-flex">
                 <!-- LOGO -->
                 <div class="navbar-brand-box horizontal-logo">
                     <a href="index.php" class="logo logo-dark">
@@ -206,10 +98,103 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                     </span>
                 </button>
 
-                <h3><?=$compname ?></h3>
+                <!-- App Search-->
+                <!--form class="app-search d-none d-md-block">
+                    <div class="position-relative">
+                        <input type="text" class="form-control" placeholder="Search..." autocomplete="off"
+                            id="search-options" value="">
+                        <span class="mdi mdi-magnify search-widget-icon"></span>
+                        <span class="mdi mdi-close-circle search-widget-icon search-widget-icon-close d-none"
+                            id="search-close-options"></span>
+                    </div>
+                    <div class="dropdown-menu dropdown-menu-lg" id="search-dropdown">
+                        <div data-simplebar style="max-height: 320px;">
+                            <!-- item->
+                            <div class="dropdown-header">
+                                <h6 class="text-overflow text-muted mb-0 text-uppercase">Recent Searches</h6>
+                            </div>
+
+                            <div class="dropdown-item bg-transparent text-wrap">
+                                <a href="index.php" class="btn btn-soft-secondary btn-sm btn-rounded">how to setup <i
+                                        class="mdi mdi-magnify ms-1"></i></a>
+                                <a href="index.php" class="btn btn-soft-secondary btn-sm btn-rounded">buttons <i
+                                        class="mdi mdi-magnify ms-1"></i></a>
+                            </div>
+                            <!-- item->
+                            <div class="dropdown-header mt-2">
+                                <h6 class="text-overflow text-muted mb-1 text-uppercase">Pages</h6>
+                            </div>
+
+                            <!-- item->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="ri-bubble-chart-line align-middle fs-18 text-muted me-2"></i>
+                                <span>Analytics Dashboard</span>
+                            </a>
+
+                            <!-- item->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="ri-lifebuoy-line align-middle fs-18 text-muted me-2"></i>
+                                <span>Help Center</span>
+                            </a>
+
+                            <!-- item->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="ri-user-settings-line align-middle fs-18 text-muted me-2"></i>
+                                <span>My account settings</span>
+                            </a>
+
+                            <!-- item->
+                            <div class="dropdown-header mt-2">
+                                <h6 class="text-overflow text-muted mb-2 text-uppercase">Members</h6>
+                            </div>
+
+                            <div class="notification-list">
+                                <!-- item ->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
+                                    <div class="d-flex">
+                                        <img src="assets/images/users/avatar-2.jpg"
+                                            class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                                        <div class="flex-1">
+                                            <h6 class="m-0">Angela Bernier</h6>
+                                            <span class="fs-11 mb-0 text-muted">Manager</span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <!-- item ->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
+                                    <div class="d-flex">
+                                        <img src="assets/images/users/avatar-3.jpg"
+                                            class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                                        <div class="flex-1">
+                                            <h6 class="m-0">David Grasso</h6>
+                                            <span class="fs-11 mb-0 text-muted">Web Designer</span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <!-- item ->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
+                                    <div class="d-flex">
+                                        <img src="assets/images/users/avatar-5.jpg"
+                                            class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                                        <div class="flex-1">
+                                            <h6 class="m-0">Mike Bunch</h6>
+                                            <span class="fs-11 mb-0 text-muted">React Developer</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="text-center pt-3 pb-1">
+                            <a href="pages-search-results.php" class="btn btn-primary btn-sm">View All Results <i
+                                    class="ri-arrow-right-line ms-1"></i></a>
+                        </div>
+                    </div>
+                </form-->
             </div>
 
             <div class="d-flex align-items-center">
+
                 <!--div class="dropdown d-md-none topbar-head-dropdown header-item">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
                         id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
@@ -659,7 +644,6 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                 </div-->
 
                 <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
-                    <span class="fw-bold">LW</span>
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
                         id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
                         aria-haspopup="true" aria-expanded="false">
@@ -668,13 +652,13 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                         <span class="visually-hidden">unread messages</span></span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                        aria-labelledby="page-header-notifications-dropdown" style="width: 580px;">
+                        aria-labelledby="page-header-notifications-dropdown">
 
-                        <div class="dropdown-head bg-primary bg-pattern rounded-top">
+                        <div class="dropdown-head bg-success bg-pattern rounded-top">
                             <div class="p-3">
                                 <div class="row align-items-center">
                                     <div class="col">
-                                        <h6 class="m-0 fs-16 fw-semibold text-white"> Pending Lorry Weighing </h6>
+                                        <h6 class="m-0 fs-16 fw-semibold text-white"> Pending Weighing </h6>
                                     </div>
                                     <div class="col-auto dropdown-tabs">
                                         <span class="badge badge-soft-light fs-13"> <?=$count ?> New</span>
@@ -688,25 +672,19 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab" role="tab"
                                             aria-selected="true">
-                                            Dispatch <?php echo (count($salesList) == 0 ? '' : '('.count($salesList).')'); ?>
+                                            Sales <?php echo (count($salesList) == 0 ? '' : '('.count($salesList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#messages-tab" role="tab"
                                             aria-selected="false">
-                                            Receiving <?php echo (count($purchaseList) == 0 ? '' : '('.count($purchaseList).')'); ?>
+                                            Purchase <?php echo (count($purchaseList) == 0 ? '' : '('.count($purchaseList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#alerts-tab" role="tab"
                                             aria-selected="false">
-                                            Internal Transfer <?php echo (count($localList) == 0 ? '' : '('.count($localList).')'); ?>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#misc-tab" role="tab"
-                                            aria-selected="false">
-                                            Miscellaneous <?php echo (count($miscList) == 0 ? '' : '('.count($miscList).')'); ?>
+                                            Local <?php echo (count($localList) == 0 ? '' : '('.count($localList).')'); ?>
                                         </a>
                                     </li>
                                 </ul>
@@ -751,7 +729,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade py-2 ps-2" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab">
+                            <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($localList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -762,156 +740,6 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                                             is <span class="text-secondary">Pending</span>
                                                         </h6>
                                                     </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade py-2 ps-2" id="misc-tab" role="tabpanel" aria-labelledby="misc-tab">
-                                <div data-simplebar style="max-height: 300px;" class="pe-2">
-                                    <?php for($i=0; $i<count($miscList); $i++){ ?>
-                                        <div class="text-reset notification-item d-block dropdown-item position-relative">
-                                            <div class="d-flex">
-                                                <div class="flex-1">
-                                                    <a href="index.php?weight=<?=$miscList[$i]['id'] ?>" class="stretched-link">
-                                                        <h6 class="mt-0 mb-2 lh-base">There is a <?=$miscList[$i]['weight_type'] ?> weighing with <b><?=$miscList[$i]['transaction_id'] ?></b>
-                                                            is <span class="text-secondary">Pending</span>
-                                                        </h6>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
-                                </div>
-                            </div>
-
-                            <div class="notification-actions" id="notification-actions">
-                                <div class="d-flex text-muted justify-content-center">
-                                    Select <div id="select-content" class="text-body fw-semibold px-1">0</div> Result
-                                    <button type="button" class="btn btn-link link-danger p-0 ms-3"
-                                        data-bs-toggle="modal" data-bs-target="#removeNotificationModal">Remove</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="cwNotificationDropdown">
-                    <span class="fw-bold">CW</span>
-                    <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
-                        id="page-header-cw-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                        aria-haspopup="true" aria-expanded="false">
-                        <i class='bx bx-bell fs-22'></i>
-                        <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"><?=$containerCount ?>
-                        <span class="visually-hidden">unread messages</span></span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                        aria-labelledby="page-header-cw-dropdown" style="width: 580px;">
-
-                        <div class="dropdown-head bg-primary bg-pattern rounded-top">
-                            <div class="p-3">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h6 class="m-0 fs-16 fw-semibold text-white"> Pending Container Weighing </h6>
-                                    </div>
-                                    <div class="col-auto dropdown-tabs">
-                                        <span class="badge badge-soft-light fs-13"> <?=$containerCount ?> New</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="px-2 pt-2">
-                                <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true"
-                                    id="cwNotificationItemsTab" role="tablist">
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#sales-cw-tab" role="tab"
-                                            aria-selected="true">
-                                            Dispatch <?php echo (count($salesContainerList) == 0 ? '' : '('.count($salesContainerList).')'); ?>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#purchase-cw-tab" role="tab"
-                                            aria-selected="false">
-                                            Receiving <?php echo (count($purchaseContainerList) == 0 ? '' : '('.count($purchaseContainerList).')'); ?>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#local-cw-tab" role="tab"
-                                            aria-selected="false">
-                                            Internal Transfer <?php echo (count($localContainerList) == 0 ? '' : '('.count($localContainerList).')'); ?>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#misc-cw-tab" role="tab"
-                                            aria-selected="false">
-                                            Miscellaneous <?php echo (count($miscContainerList) == 0 ? '' : '('.count($miscContainerList).')'); ?>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                        </div>
-
-                        <div class="tab-content position-relative" id="notificationItemsTabContent">
-                            <div class="tab-pane fade show active py-2 ps-2" id="sales-cw-tab" role="tabpanel">
-                                <div data-simplebar style="max-height: 300px;" class="pe-2">
-                                    <?php for($i=0; $i<count($salesContainerList); $i++){ ?>
-                                        <div class="text-reset notification-item d-block dropdown-item position-relative">
-                                            <div class="d-flex">
-                                                <div class="flex-1">
-                                                    <!-- <a href="index.php?weight=<?=$salesContainerList[$i]['id'] ?>" class="stretched-link"> -->
-                                                        <h6 class="mt-0 mb-2 lh-base"><span class="text-secondary">Pending</span> weighing: <b><?=$salesContainerList[$i]['container_no'] ?></b> (<?=$salesContainerList[$i]['weight_type'] ?> )</h6>
-                                                    <!-- </a> -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade py-2 ps-2" id="purchase-cw-tab" role="tabpanel" aria-labelledby="messages-tab">
-                                <div data-simplebar style="max-height: 300px;" class="pe-2">
-                                    <?php for($i=0; $i<count($purchaseContainerList); $i++){ ?>
-                                        <div class="text-reset notification-item d-block dropdown-item position-relative">
-                                            <div class="d-flex">
-                                                <div class="flex-1">
-                                                    <!-- <a href="index.php?weight=<?=$purchaseContainerList[$i]['id'] ?>" class="stretched-link"> -->
-                                                        <h6 class="mt-0 mb-2 lh-base"><span class="text-secondary">Pending</span> weighing: <b><?=$purchaseContainerList[$i]['container_no'] ?></b> (<?=$purchaseContainerList[$i]['weight_type'] ?> )</h6>
-                                                    <!-- </a> -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade py-2 ps-2" id="local-cw-tab" role="tabpanel" aria-labelledby="local-cw-tab">
-                                <div data-simplebar style="max-height: 300px;" class="pe-2">
-                                    <?php for($i=0; $i<count($localContainerList); $i++){ ?>
-                                        <div class="text-reset notification-item d-block dropdown-item position-relative">
-                                            <div class="d-flex">
-                                                <div class="flex-1">
-                                                    <!-- <a href="index.php?weight=<?=$localContainerList[$i]['id'] ?>" class="stretched-link"> -->
-                                                        <h6 class="mt-0 mb-2 lh-base"><span class="text-secondary">Pending</span> weighing: <b><?=$localContainerList[$i]['container_no'] ?></b> (<?=$localContainerList[$i]['weight_type'] ?> )</h6>
-                                                    <!-- </a> -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade py-2 ps-2" id="misc-cw-tab" role="tabpanel" aria-labelledby="misc-cw-tab">
-                                <div data-simplebar style="max-height: 300px;" class="pe-2">
-                                    <?php for($i=0; $i<count($miscContainerList); $i++){ ?>
-                                        <div class="text-reset notification-item d-block dropdown-item position-relative">
-                                            <div class="d-flex">
-                                                <div class="flex-1">
-                                                    <!-- <a href="index.php?weight=<?=$miscContainerList[$i]['id'] ?>" class="stretched-link"> -->
-                                                        <h6 class="mt-0 mb-2 lh-base"><span class="text-secondary">Pending</span> weighing: <b><?=$miscContainerList[$i]['container_no'] ?></b> (<?=$miscContainerList[$i]['weight_type'] ?> )</h6>
-                                                    <!-- </a> -->
                                                 </div>
                                             </div>
                                         </div>

@@ -1,6 +1,7 @@
 <?php
-session_start();
 require_once 'db_connect.php';
+
+session_start();
 
 if(!isset($_SESSION['id'])){
 	echo '<script type="text/javascript">location.href = "../login.php";</script>'; 
@@ -9,8 +10,6 @@ if(!isset($_SESSION['id'])){
 }
 // Check if the user is already logged in, if yes then redirect him to index page
 $id = $_SESSION['id'];
-
-$today = date('ym');
 
 // Processing form data when form is submitted
 if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightType'], $_POST['transactionDate'], $_POST['grossIncoming'], $_POST['grossIncomingDate']
@@ -58,12 +57,6 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         }
     }
 
-    if (empty($_POST["weightType"])) {
-        $weightType = 'Normal';
-    } else {
-        $weightType = trim($_POST["weightType"]);
-    }
-
     if (empty($_POST["transactionId"])) {
         $status = $_POST['transactionStatus'];
 
@@ -85,14 +78,8 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
 
 				if ($row2 = $result2->fetch_assoc()) {
 					//$id = $row2['misc_id'];
-
-                    if ($weightType == 'Container'){
-                        $transactionId .= 'C/'.$row2['prefix'] . '/'.$today . '-';
-                    }else{
-                        $transactionId .= $row2['prefix'] . '/' .$today . '-';
-                        $diffContainerTransId = $transactionId;
-                    }
-				} 
+					$transactionId .= $row2['prefix'];
+				}
 
                 $queryPlant = "SELECT sales as curcount FROM Plant WHERE plant_code='$plantCode'";
 
@@ -123,7 +110,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
 							$charSize = strlen($row['curcount']);
 							$misValue = $row['curcount'];
 		
-							for($i=0; $i<(4-(int)$charSize); $i++){
+							for($i=0; $i<(5-(int)$charSize); $i++){
 								$transactionId.='0';  // S0000
 							}
 					
@@ -168,6 +155,12 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $totalPrice = trim($_POST["totalPrice"]);
     }
 
+    if (empty($_POST["weightType"])) {
+        $weightType = 'Normal';
+    } else {
+        $weightType = trim($_POST["weightType"]);
+    }
+
     if (empty($_POST["customerType"])) {
         $customerType = 'Normal';
     } else {
@@ -208,15 +201,8 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $grossIncomingDate = null;
     } 
     else {
-        // $grossIncomingDate = trim(str_replace(["AM", "PM"], "", $_POST["grossIncomingDate"]));
-        // $grossIncomingDate = DateTime::createFromFormat('d/m/Y H:i:s', $_POST["grossIncomingDate"])->format('Y-m-d H:i:s');
-        $grossIncomingDate = $_POST['grossIncomingDate'];
-    }
-
-    if (empty($_POST["grossWeightBy1"])) {
-        $grossWeightBy1 = 0;
-    } else {
-        $grossWeightBy1 = trim($_POST["grossWeightBy1"]);
+        $grossIncomingDate = trim(str_replace(["AM", "PM"], "", $_POST["grossIncomingDate"]));
+        $grossIncomingDate = DateTime::createFromFormat('d/m/Y H:i:s', $grossIncomingDate)->format('Y-m-d H:i:s');
     }
     
     if (empty($_POST["tareOutgoing"])) {
@@ -228,15 +214,8 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
     if (empty($_POST["tareOutgoingDate"])) {
         $tareOutgoingDate = null;
     } else {
-        // $tareOutgoingDate = trim(str_replace(["AM", "PM"], "", $_POST["tareOutgoingDate"]));
-        // $tareOutgoingDate = DateTime::createFromFormat('d/m/Y H:i:s', $_POST["tareOutgoingDate"])->format('Y-m-d H:i:s');
-        $tareOutgoingDate = $_POST["tareOutgoingDate"];
-    }
-
-    if (empty($_POST["tareWeightBy1"])) {
-        $tareWeightBy1 = 0;
-    } else {
-        $tareWeightBy1 = trim($_POST["tareWeightBy1"]);
+        $tareOutgoingDate = trim(str_replace(["AM", "PM"], "", $_POST["tareOutgoingDate"]));
+        $tareOutgoingDate = DateTime::createFromFormat('d/m/Y H:i:s', $tareOutgoingDate)->format('Y-m-d H:i:s');
     }
 
     if (empty($_POST["nettWeight"])) {
@@ -269,6 +248,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $invoiceNo = trim($_POST["invoiceNo"]);
     }
 
+
     /*if ($transactionStatus == 'Sales'){
         $deliveryNo = $transactionId;
     }else{*/
@@ -286,38 +266,9 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
     }
 
     if (empty($_POST["containerNo"])) {
-        /*if ($weightType == 'Container'){
-            echo json_encode(
-                array(
-                    "status"=> "failed", 
-                    "message"=> "Container No cannot be empty"
-                )
-            );
-
-            exit;
-        }else{*/
-            $containerNo = null;
-        //}
+        $containerNo = null;
     } else {
         $containerNo = trim($_POST["containerNo"]);
-    }
-
-    if (empty($_POST["sealNo"])) {
-        $sealNo = null;
-    } else {
-        $sealNo = trim($_POST["sealNo"]);
-    }
-
-    if (empty($_POST["containerNo2"])) {
-        $containerNo2 = null;
-    } else {
-        $containerNo2 = trim($_POST["containerNo2"]);
-    }
-
-    if (empty($_POST["sealNo2"])) {
-        $sealNo2 = null;
-    } else {
-        $sealNo2 = trim($_POST["sealNo2"]);
     }
 
     if (empty($_POST["customerName"])) {
@@ -387,16 +338,6 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $vehiclePlateNo2 = trim($_POST["vehiclePlateNo2"]);
     }
 
-    if(filter_has_var(INPUT_POST,'manualVehicle2')) {
-        $vehiclePlateNo2 = trim($_POST["vehicleNoTxt2"]);
-    }
-
-    if (empty($_POST["vehicleWeight2"])) {
-        $vehicleWeight2 = null;
-    } else {
-        $vehicleWeight2 = trim($_POST["vehicleWeight2"]);
-    }
-
     if (empty($_POST["grossIncoming2"])) {
         $grossIncoming2 = null;
     } else {
@@ -405,29 +346,8 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
 
     if (empty($_POST["grossIncomingDate2"])) {
         $grossIncomingDate2 = null;
-    } 
-    else {
-        // $grossIncomingDate = trim(str_replace(["AM", "PM"], "", $_POST["grossIncomingDate"]));
-        // $grossIncomingDate = DateTime::createFromFormat('d/m/Y H:i:s', $_POST["grossIncomingDate"])->format('Y-m-d H:i:s');
-        $grossIncomingDate2 = $_POST['grossIncomingDate2'];
-    }
-
-    if (empty($_POST["emptyContainerWeight2"])) {
-        $emptyContainerWeight2 = 0;
     } else {
-        $emptyContainerWeight2 = trim($_POST["emptyContainerWeight2"]);
-    }
-
-    if (empty($_POST["replacementContainer"])) {
-        $replacementContainer = 0;
-    } else {
-        $replacementContainer = trim($_POST["replacementContainer"]);
-    }
-
-    if (empty($_POST["grossWeightBy2"])) {
-        $grossWeightBy2 = 0;
-    } else {
-        $grossWeightBy2 = trim($_POST["grossWeightBy2"]);
+        $grossIncomingDate2 = DateTime::createFromFormat('d/m/Y H:i:s A', $_POST["grossIncomingDate2"])->format('Y-m-d H:i:s');
     }
 
     if (empty($_POST["tareOutgoing2"])) {
@@ -439,15 +359,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
     if (empty($_POST["tareOutgoingDate2"])) {
         $tareOutgoingDate2 = null;
     } else {
-        // $tareOutgoingDate = trim(str_replace(["AM", "PM"], "", $_POST["tareOutgoingDate"]));
-        // $tareOutgoingDate = DateTime::createFromFormat('d/m/Y H:i:s', $_POST["tareOutgoingDate"])->format('Y-m-d H:i:s');
-        $tareOutgoingDate2 = $_POST["tareOutgoingDate2"];
-    }
-
-    if (empty($_POST["tareWeightBy2"])) {
-        $tareWeightBy2 = 0;
-    } else {
-        $tareWeightBy2 = trim($_POST["tareWeightBy2"]);
+        $tareOutgoingDate2 = DateTime::createFromFormat('d/m/Y H:i:s A', $_POST["tareOutgoingDate2"])->format('Y-m-d H:i:s');
     }
 
     if (empty($_POST["nettWeight2"])) {
@@ -544,10 +456,10 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $vehiclePlateNo1 = trim($_POST["vehicleNoTxt"]);
     }
 
-    if(($weightType == 'Normal' || $weightType == 'Empty Container') && ($grossIncoming != null && $tareOutgoing != null)){
+    if($weightType == 'Normal' && ($grossIncoming != null && $tareOutgoing != null)){
         $isComplete = 'Y';
     }
-    else if(($weightType == 'Container' || $weightType == 'Different Container') && ($grossIncoming != null && $tareOutgoing != null && $grossIncoming2 != null && $tareOutgoing2 != null)){
+    else if($weightType == 'Container' && ($grossIncoming != null && $tareOutgoing != null && $grossIncoming2 != null && $tareOutgoing2 != null)){
         $isComplete = 'Y';
     }
     else{
@@ -580,16 +492,9 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
     }
     else{
         $prevBalance = 0;
-    } 
-
-    /*if(isset($_POST['emptyContainerNo']) && $_POST['emptyContainerNo'] != null && $_POST['emptyContainerNo'] != ''){
-        $emptyContainerNo = $_POST['emptyContainerNo'];
     }
-    else{
-        $emptyContainerNo = null;
-    } 
 
-    if($_POST['grossIncomingDate'] != null && $_POST['grossIncomingDate'] != ''){
+    /*if($_POST['grossIncomingDate'] != null && $_POST['grossIncomingDate'] != ''){
         // $inDate = new DateTime($_POST['grossIncomingDate']);
         // $inCDateTime = date_format($inDate,"Y-m-d H:i:s");
         $pStatus = "Pending";
@@ -601,164 +506,211 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $pStatus = "Complete";
     }*/
 
-    if($weightType == 'Empty Container'){
-        if((int)$grossIncoming < (int)$tareOutgoing){
-            echo json_encode(array("status"=> "failed", "message"=> "Incoming Weight cannot greater than outgoing weight"));
+    if(! empty($weightId)){
+        // $sql = "UPDATE Customer SET company_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, created_by=?, modified_by=? WHERE customer_code=?";
+        $action = "2";
+        
+        # Checking to find balance weight before edit
+        /*$record_stmt = $db->prepare("SELECT * FROM Weight WHERE id=?");
+        $record_stmt->bind_param('s', $weightId);
+        $record_stmt->execute();
+        $record_result = $record_stmt->get_result();
+        $recordRow = $record_result->fetch_assoc();    
+        
+        # Update PO or SO table row balance
+        if ($transactionStatus == 'Purchase'){
+            $beforeEditNettWeight = $recordRow['supplier_weight'];
+            $balanceBeforeEdit = $beforeEditNettWeight + $prevBalance;
+            $currentBalance = $balanceBeforeEdit - $supplierWeight;
+            $poSo_stmt = $db->prepare("SELECT * FROM Purchase_Order WHERE po_no=? AND status='Open' AND deleted='0'");
         }else{
-            if(! empty($weightId)){
-                $action = "2";
-                
-                // First, check if the record exists
-                $check_stmt = $db->prepare("SELECT id FROM Weight_Container WHERE id = ?");
-                $check_stmt->bind_param("s", $weightId);
-                $check_stmt->execute();
-                $check_stmt->store_result();
-                
-                if ($check_stmt->num_rows > 0) {
-                    // === Record exists, proceed to UPDATE ===
-                    $check_stmt->close();
-                
-                    $update_stmt = $db->prepare("UPDATE Weight_Container SET transaction_id=?, transaction_status=?, weight_type=?, customer_type=?, transaction_date=?, lorry_plate_no1=?, lorry_plate_no2=?, supplier_weight=?, order_weight=?, customer_code=?, customer_name=?, supplier_code=?, supplier_name=?,
-                        product_code=?, product_name=?, ex_del=?, raw_mat_code=?, raw_mat_name=?, site_name=?, site_code=?, container_no=?, seal_no=?, container_no2=?, seal_no2=?, invoice_no=?, purchase_order=?, delivery_no=?, transporter_code=?, transporter=?, destination_code=?, destination=?, remarks=?, gross_weight1=?, gross_weight1_date=?, gross_weight_by1=?, tare_weight1=?, tare_weight1_date=?, tare_weight_by1=?, nett_weight1=?,
-                        gross_weight2=?, gross_weight2_date=?, gross_weight_by2=?, tare_weight2=?, tare_weight2_date=?, tare_weight_by2=?, nett_weight2=?, reduce_weight=?, final_weight=?, weight_different=?, is_complete=?, is_cancel=?, manual_weight=?, indicator_id=?, weighbridge_id=?, created_by=?, modified_by=?, indicator_id_2=?, 
-                        product_description=?, unit_price=?, sub_total=?, sst=?, total_price=?, is_approved=?, approved_reason=?, plant_code=?, plant_name=?, agent_code=?, agent_name=?, load_drum=?, no_of_drum=? WHERE id=?");
-                
-                    $update_stmt->bind_param('sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', 
-                        $transactionId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo1, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
-                        $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $containerNo, $sealNo, $containerNo2, $sealNo2, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
-                        $grossIncoming, $grossIncomingDate, $grossWeightBy1, $tareOutgoing, $tareOutgoingDate, $tareWeightBy1, $nettWeight, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $tareOutgoing2, $tareOutgoingDate2, $tareWeightBy2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
-                        $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum, $weightId);
-                
-                    if (!$update_stmt->execute()) {
-                        echo json_encode(array("status"=> "failed", "message"=> $update_stmt->error));
-                    } else {
-                        echo json_encode(array("status"=> "success", "message"=> "Updated Successfully!!", "id"=>$weightId));
-                    }
-                
-                    $update_stmt->close();
-                } else {
-                    // === Record not found, proceed to INSERT ===
-                    $check_stmt->close();
-                
-                    $insert_stmt = $db->prepare("INSERT INTO Weight_Container (
-                        id, transaction_id, transaction_status, weight_type, customer_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, customer_code, customer_name, supplier_code, supplier_name,
-                        product_code, product_name, ex_del, raw_mat_code, raw_mat_name, site_name, site_code, container_no, seal_no, container_no2, seal_no2, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, gross_weight_by1, tare_weight1, tare_weight1_date, tare_weight_by1, nett_weight1,
-                        gross_weight2, gross_weight2_date, gross_weight_by2, tare_weight2, tare_weight2_date, tare_weight_by2, nett_weight2, reduce_weight, final_weight, weight_different, is_complete, is_cancel, manual_weight, indicator_id, weighbridge_id, created_by, modified_by, indicator_id_2, 
-                        product_description, unit_price, sub_total, sst, total_price, is_approved, approved_reason, plant_code, plant_name, agent_code, agent_name, load_drum, no_of_drum
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                
-                    $insert_stmt->bind_param('sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', 
-                        $weightId, $transactionId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo1, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
-                        $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $containerNo, $sealNo, $containerNo2, $sealNo2, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
-                        $grossIncoming, $grossIncomingDate, $grossWeightBy1, $tareOutgoing, $tareOutgoingDate, $tareWeightBy1, $nettWeight, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $tareOutgoing2, $tareOutgoingDate2, $tareWeightBy2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
-                        $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum);
-                
-                    if (!$insert_stmt->execute()) {
-                        echo json_encode(array("status"=> "failed", "message"=> $insert_stmt->error));
-                    } 
-                    else {
-                        echo json_encode(array("status"=> "success", "message"=> "Inserted Successfully!!", "id"=>$weightId));
-                    }
-                
-                    $insert_stmt->close();
-                }
-                
+            $beforeEditNettWeight = $recordRow['nett_weight1'];
+            $balanceBeforeEdit = $beforeEditNettWeight + $prevBalance;
+            $currentBalance = $balanceBeforeEdit - $nettWeight;
+            $poSo_stmt = $db->prepare("SELECT * FROM Sales_Order WHERE order_no=? AND status='Open' AND deleted='0'");
+        }
+
+        $poSo_stmt->bind_param('s', $purchaseOrder);
+        $poSo_stmt->execute();
+        $result = $poSo_stmt->get_result();
+        $poSoRow = $result->fetch_assoc();    
+        $poSoId = $poSoRow['id'];
+
+        if ($currentBalance <= 0){
+            $poSoStatus = 'Close'; //set status to close if current balance is less than equal 0
+        }else{
+            $poSoStatus = 'Open';
+        }
+
+        $poSo_stmt->close();
+
+        if ($transactionStatus == 'Purchase'){
+            $updatePoSoStmt = $db->prepare("UPDATE Purchase_Order SET balance=?, status=? WHERE id=?");
+        }else{
+            $updatePoSoStmt = $db->prepare("UPDATE Sales_Order SET balance=?, status=? WHERE id=?");
+        }
+
+        $updatePoSoStmt->bind_param('sss', $currentBalance, $poSoStatus, $poSoId);
+        $updatePoSoStmt->execute();
+        $updatePoSoStmt->close();*/
+
+        if ($update_stmt = $db->prepare("UPDATE Weight SET transaction_id=?, transaction_status=?, weight_type=?, customer_type=?, transaction_date=?, lorry_plate_no1=?, lorry_plate_no2=?, supplier_weight=?, order_weight=?, customer_code=?, customer_name=?, supplier_code=?, supplier_name=?,
+        product_code=?, product_name=?, ex_del=?, raw_mat_code=?, raw_mat_name=?, site_name=?, site_code=?, container_no=?, invoice_no=?, purchase_order=?, delivery_no=?, transporter_code=?, transporter=?, destination_code=?, destination=?, remarks=?, gross_weight1=?, gross_weight1_date=?, tare_weight1=?, tare_weight1_date=?, nett_weight1=?,
+        gross_weight2=?, gross_weight2_date=?, tare_weight2=?, tare_weight2_date=?, nett_weight2=?, reduce_weight=?, final_weight=?, weight_different=?, is_complete=?, is_cancel=?, manual_weight=?, indicator_id=?, weighbridge_id=?, created_by=?, modified_by=?, indicator_id_2=?, 
+        product_description=?, unit_price=?, sub_total=?, sst=?, total_price=?, is_approved=?, approved_reason=?, plant_code=?, plant_name=?, agent_code=?, agent_name=?, load_drum=?, no_of_drum=? WHERE id=?"))
+        {
+            $update_stmt->bind_param('ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', $transactionId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo1, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
+            $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $containerNo, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
+            $grossIncoming, $grossIncomingDate, $tareOutgoing, $tareOutgoingDate, $nettWeight, $grossIncoming2, $grossIncomingDate2, $tareOutgoing2, $tareOutgoingDate2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
+            $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum, $weightId);
+
+            // Execute the prepared query.
+            if (! $update_stmt->execute()) {
+                echo json_encode(
+                    array(
+                        "status"=> "failed", 
+                        "message"=> $update_stmt->error
+                    )
+                );
+            }
+            else
+            {
+                // if ($insert_stmt = $db->prepare("INSERT INTO Vehicle_Log (vehicle_id, veh_number, vehicle_weight, action_id, action_by) VALUES (?, ?, ?, ?, ?)")) {
+                //     $insert_stmt->bind_param('sssss', $vehicleId, $vehicleNo, $vehicleWeight, $action, $username);
+        
+                //     // Execute the prepared query.
+                //     if (! $insert_stmt->execute()) {
+                //         // echo json_encode(
+                //         //     array(
+                //         //         "status"=> "failed", 
+                //         //         "message"=> $insert_stmt->error
+                //         //     )
+                //         // );
+                //     }
+                //     else{
+                //         $insert_stmt->close();
+                        
+                //         // echo json_encode(
+                //         //     array(
+                //         //         "status"=> "success", 
+                //         //         "message"=> "Added Successfully!!" 
+                //         //     )
+                //         // );
+                //     }
+
+                $update_stmt->close();
                 $db->close();
+
+                echo json_encode(
+                    array(
+                        "status"=> "success", 
+                        "message"=> "Updated Successfully!!",
+                        "id"=>$weightId
+                    )
+                );
+            }
+            
+        }
+    }
+    else{
+        $action = "1";
+
+        if ($insert_stmt = $db->prepare("INSERT INTO Weight (transaction_id, transaction_status, weight_type, customer_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, customer_code, customer_name, supplier_code, supplier_name,
+        product_code, product_name, ex_del, raw_mat_code, raw_mat_name, site_code, site_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1,
+        gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, is_complete, is_cancel, manual_weight, indicator_id, weighbridge_id, created_by, modified_by, indicator_id_2, 
+        product_description, unit_price, sub_total, sst, total_price, is_approved, approved_reason, plant_code, plant_name, agent_code, agent_name, load_drum, no_of_drum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            $insert_stmt->bind_param('sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', $transactionId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo1, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
+            $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $containerNo, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
+            $grossIncoming, $grossIncomingDate, $tareOutgoing, $tareOutgoingDate, $nettWeight, $grossIncoming2, $grossIncomingDate2, $tareOutgoing2, $tareOutgoingDate2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
+            $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum);
+
+            // Execute the prepared query.
+            if (! $insert_stmt->execute()) {
+                echo json_encode(
+                    array(
+                        "status"=> "failed", 
+                        "message"=> $insert_stmt->error
+                    )
+                );
             }
             else{
-                $action = "1";
-        
-                if ($insert_stmt = $db->prepare("INSERT INTO Weight_Container (transaction_id, transaction_status, weight_type, customer_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, customer_code, customer_name, supplier_code, supplier_name,
-                product_code, product_name, ex_del, raw_mat_code, raw_mat_name, site_code, site_name, container_no, seal_no, container_no2, seal_no2, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, gross_weight_by1, tare_weight1, tare_weight1_date, tare_weight_by1, nett_weight1,
-                gross_weight2, gross_weight2_date, gross_weight_by2, tare_weight2, tare_weight2_date, tare_weight_by2, nett_weight2, reduce_weight, final_weight, weight_different, is_complete, is_cancel, manual_weight, indicator_id, weighbridge_id, created_by, modified_by, indicator_id_2, 
-                product_description, unit_price, sub_total, sst, total_price, is_approved, approved_reason, plant_code, plant_name, agent_code, agent_name, load_drum, no_of_drum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                    $insert_stmt->bind_param('ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', $transactionId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo1, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
-                    $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $containerNo, $sealNo, $containerNo2, $sealNo2, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
-                    $grossIncoming, $grossIncomingDate, $grossWeightBy1, $tareOutgoing, $tareOutgoingDate, $tareWeightBy1, $nettWeight, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $tareOutgoing2, $tareOutgoingDate2, $tareWeightBy2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
-                    $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum);
-        
-                    // Execute the prepared query.
-                    if (! $insert_stmt->execute()) {
-                        echo json_encode(
-                            array(
-                                "status"=> "failed", 
-                                "message"=> $insert_stmt->error
-                            )
-                        );
-                    }
-                    else{
-                        $misValue++;
-                        $id = $insert_stmt->insert_id;
-        
-                        $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
-        
-                        if($transactionStatus == 'Purchase'){
-                            $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
-                        }
-                        else if($transactionStatus == 'Local'){
-                            $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
-                        }
-                        else if($transactionStatus == 'Misc'){
-                            $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
-                        }
-                        
-                        ///insert miscellaneous
-                        if ($update_stmt = $db->prepare($queryPlantU)){
-                            $update_stmt->bind_param('s', $misValue);
-                            
-                            // Execute the prepared query.
-                            if (! $update_stmt->execute()){
+                $misValue++;
+                $id = $insert_stmt->insert_id;
+
+                $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
+
+                if($status == 'Purchase'){
+                    $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
+                }
+                else if($status == 'Local'){
+                    $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
+                }
+                else if($status == 'Misc'){
+                    $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
+                }
                 
-                                echo json_encode(
-                                    array(
-                                        "status"=> "failed", 
-                                        "message"=> $update_stmt->error
-                                    )
-                                );
-                            } 
-                            else{
-                                $update_stmt->close();
-    
-                                echo json_encode(
-                                    array(
-                                        "status"=> "success", 
-                                        "message"=> "Added Successfully!!",
-                                        "id"=>$id
-                                    )
-                                );
-                            }
-                        } 
-                        else{
-                            echo json_encode(
-                                array(
-                                    "status"=> "failed", 
-                                    "message"=> $update_stmt->error
-                                )
-                            );
-                        }
+                ///insert miscellaneous
+                if ($update_stmt = $db->prepare($queryPlantU)){
+                    $update_stmt->bind_param('s', $misValue);
+                    
+                    // Execute the prepared query.
+                    if (! $update_stmt->execute()){
         
-                        $insert_stmt->close();
-                        $db->close();
-                    }
-                }
-            }  
-        }
-    }else if($weightType == 'Different Container') {
-        if(! empty($weightId)){
-            $action = "2";
-            
-            if ($update_stmt = $db->prepare("UPDATE Weight SET transaction_id=?, transaction_status=?, weight_type=?, customer_type=?, transaction_date=?, lorry_plate_no1=?, lorry_plate_no2=?, supplier_weight=?, order_weight=?, customer_code=?, customer_name=?, supplier_code=?, supplier_name=?,
-            product_code=?, product_name=?, ex_del=?, raw_mat_code=?, raw_mat_name=?, site_name=?, site_code=?, container_no=?, seal_no=?, container_no2=?, seal_no2=?, invoice_no=?, purchase_order=?, delivery_no=?, transporter_code=?, transporter=?, destination_code=?, destination=?, remarks=?, gross_weight1=?, gross_weight1_date=?, gross_weight_by1=?, tare_weight1=?, tare_weight1_date=?, tare_weight_by1=?, nett_weight1=?, lorry_no2_weight=?, empty_container2_weight=?, 
-            replacement_container=?, gross_weight2=?, gross_weight2_date=?, gross_weight_by2=?, tare_weight2=?, tare_weight2_date=?, tare_weight_by2=?, nett_weight2=?, reduce_weight=?, final_weight=?, weight_different=?, is_complete=?, is_cancel=?, manual_weight=?, indicator_id=?, weighbridge_id=?, created_by=?, modified_by=?, indicator_id_2=?, 
-            product_description=?, unit_price=?, sub_total=?, sst=?, total_price=?, is_approved=?, approved_reason=?, plant_code=?, plant_name=?, agent_code=?, agent_name=?, load_drum=?, no_of_drum=? WHERE id=?"))
-            {
-                $update_stmt->bind_param('ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', $transactionId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo1, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
-                $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $containerNo, $sealNo, $containerNo2, $sealNo2, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
-                $grossIncoming, $grossIncomingDate, $grossWeightBy1, $tareOutgoing, $tareOutgoingDate, $tareWeightBy1, $nettWeight, $vehicleWeight2, $emptyContainerWeight2, $replacementContainer, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $tareOutgoing2, $tareOutgoingDate2, $tareWeightBy2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
-                $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum, $weightId);
+                        echo json_encode(
+                            array(
+                                "status"=> "failed", 
+                                "message"=> $update_stmt->error
+                            )
+                        );
+                    } 
+                    else{
+                        $update_stmt->close();
+                        //$db->close();
+
+                        # Update PO or SO table row balance
+                        /*if ($transactionStatus == 'Purchase'){
+                            $currentBalance = $prevBalance - $supplierWeight;
+                            $poSo_stmt = $db->prepare("SELECT * FROM Purchase_Order WHERE po_no=? AND status='Open' AND deleted='0'");
+                        }else{
+                            $currentBalance = $prevBalance - $nettWeight;
+                            $poSo_stmt = $db->prepare("SELECT * FROM Sales_Order WHERE order_no=? AND status='Open' AND deleted='0'");
+                        }
+
+                        $poSo_stmt->bind_param('s', $purchaseOrder);
+                        $poSo_stmt->execute();
+                        $result = $poSo_stmt->get_result();
+                        $poSoRow = $result->fetch_assoc();    
+                        $poSoId = $poSoRow['id'];
+
+                        if ($currentBalance <= 0){
+                            $poSoStatus = 'Close'; //set status to close if current balance is less than equal 0
+                        }else{
+                            $poSoStatus = 'Open';
+                        }
+
+                        $poSo_stmt->close();
+
+                        if ($transactionStatus == 'Purchase'){
+                            $updatePoSoStmt = $db->prepare("UPDATE Purchase_Order SET balance=?, status=? WHERE id=?");
+                        }else{
+                            $updatePoSoStmt = $db->prepare("UPDATE Sales_Order SET balance=?, status=? WHERE id=?");
+                        }
+
+                        $updatePoSoStmt->bind_param('sss', $currentBalance, $poSoStatus, $poSoId);
+                        $updatePoSoStmt->execute();
     
-                // Execute the prepared query.
-                if (! $update_stmt->execute()) {
+                        $updatePoSoStmt->close();*/
+                        
+                        echo json_encode(
+                            array(
+                                "status"=> "success", 
+                                "message"=> "Added Successfully!!",
+                                "id"=>$id
+                            )
+                        );
+                    }
+                } 
+                else{
                     echo json_encode(
                         array(
                             "status"=> "failed", 
@@ -766,760 +718,39 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                         )
                     );
                 }
-                else{
-                    # Weight_Product 
-                    $no = isset($_POST['no']) ? $_POST['no']: [];
-                    $weightProductId = isset($_POST['weightProductId']) ? $_POST['weightProductId']: [];
-                    $product =  isset($_POST['product']) ? $_POST['product']: [];
-                    $productPacking = isset($_POST['productPacking']) ? $_POST['productPacking']: [];
-                    $productGross = isset($_POST['productGross']) ? $_POST['productGross']: [];
-                    $productTare = isset($_POST['productTare']) ? $_POST['productTare']: [];
-                    $productNett = isset($_POST['productNett']) ? $_POST['productNett']: [];
 
-                    if(isset($no) && $no != null && count($no) > 0){ 
-                        # Set all Weight_Product records deleted to 1 first
-                        if ($delete_prod_stmt = $db->prepare("UPDATE Weight_Product SET status = '1' WHERE weight_id=?")){
-                            $delete_prod_stmt->bind_param('s', $weightId);
-                            
-                            if ($delete_prod_stmt->execute()){
-                                $delete_prod_stmt->close();
+                // $sel = mysqli_query($db,"select count(*) as allcount from Vehicle");
+                // $records = mysqli_fetch_assoc($sel);
+                // $totalRecords = $records['allcount'];
 
-                                foreach ($no as $i => $no) {
-                                    if(isset($weightProductId[$i]) && $weightProductId[$i] > 0){ // Update FE existing product deleted to 0 but deleted products remain deleted='1'
-                                        if ($product_stmt = $db->prepare("UPDATE Weight_Product SET weight_id=?, product=?, product_packing=?, product_gross=?, product_tare=?, product_nett=?, status='0' WHERE id=?")){
-                                            $product_stmt->bind_param('sssssss', $weightId, $product[$i], $productPacking[$i], $productGross[$i], $productTare[$i], $productNett[$i], $weightProductId[$i]);
-                                            $product_stmt->execute();
-                                        }
-                                    }
-                                    else{ // if got new then insert new record
-                                        if ($product_stmt = $db->prepare("INSERT INTO Weight_Product (weight_id, product, product_packing, product_gross, product_tare, product_nett) VALUES (?, ?, ?, ?, ?, ?)")){
-                                            $product_stmt->bind_param('ssssss', $weightId, $product[$i], $productPacking[$i], $productGross[$i], $productTare[$i], $productNett[$i]);
-                                            $product_stmt->execute();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        
-                        $product_stmt->close();
-                    }else{
-                        # Added this section to update all weight product related to the weighing to deleted
-                        if ($update_prod_stmt = $db->prepare("UPDATE Weight_Product SET status = '1' WHERE weight_id=?")){
-                            $update_prod_stmt->bind_param('s', $weightId);
-                            $update_prod_stmt->execute();
-                            $update_prod_stmt->close();
-                        }
-                    }
-
-                    // update empty container status
-                    if(!empty($containerNo) && $weightType == 'Different Container'){
-                        if ($update_container = $db->prepare("UPDATE Weight_Container SET is_cancel=? WHERE container_no=? AND status='0'")){
-                           $update_container->bind_param('ss', $isComplete, $containerNo);
-
-                           // Execute the prepared query.
-                           if (! $update_container->execute()) {
-                               echo json_encode(
-                                   array(
-                                       "status"=> "failed", 
-                                       "message"=> $update_container->error
-                                   )
-                               );
-                           }
-                           else
-                           {
-                                $update_container->close();
-
-                                if ($isComplete == 'Y'){
-                                    // Checking to update container if exist
-                                    $sql = "SELECT * FROM Weight_Container WHERE container_no=? AND is_complete='Y' AND is_cancel='N' AND status='0'";
-                                    $weightContainer_stmt = $db->prepare($sql);
-                                    $weightContainer_stmt->bind_param('s', $replacementContainer);
-                                    // Execute the prepared query.
-                                    if (! $weightContainer_stmt->execute()) {
-                                        echo json_encode(
-                                            array(
-                                                "status"=> "failed", 
-                                                "message"=> $weightContainer_stmt->error
-                                            )
-                                        );
-                                    }
-                                    else{
-                                        $weightContainerResult = $weightContainer_stmt->get_result();
-
-                                        if ($weightContainerRow = $weightContainerResult->fetch_assoc()){
-                                            $containerId = $weightContainerRow['id'];
-                                            if ($insert_stmt = $db->prepare("UPDATE Weight_Container SET transaction_status=?, weight_type=?, customer_type=?, transaction_date=?, lorry_plate_no1=?, lorry_plate_no2=?, supplier_weight=?, order_weight=?, customer_code=?, customer_name=?, supplier_code=?, supplier_name=?,
-                                            product_code=?, product_name=?, ex_del=?, raw_mat_code=?, raw_mat_name=?, site_name=?, site_code=?, container_no=?, seal_no=?, container_no2=?, seal_no2=?, invoice_no=?, purchase_order=?, delivery_no=?, transporter_code=?, transporter=?, destination_code=?, destination=?, remarks=?, gross_weight1=?, gross_weight1_date=?, gross_weight_by1=?, tare_weight1=?, tare_weight1_date=?, tare_weight_by1=?, nett_weight1=?, lorry_no2_weight=?, empty_container2_weight=?, replacement_container=?,
-                                            gross_weight2=?, gross_weight2_date=?, gross_weight_by2=?, tare_weight2=?, tare_weight2_date=?, tare_weight_by2=?, nett_weight2=?, reduce_weight=?, final_weight=?, weight_different=?, is_complete=?, is_cancel=?, manual_weight=?, indicator_id=?, weighbridge_id=?, created_by=?, modified_by=?, indicator_id_2=?, 
-                                            product_description=?, unit_price=?, sub_total=?, sst=?, total_price=?, is_approved=?, approved_reason=?, plant_code=?, plant_name=?, agent_code=?, agent_name=?, load_drum=?, no_of_drum=? WHERE id=?"))
-                                            {
-                                                $insert_stmt->bind_param('sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo2, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
-                                                $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $replacementContainer, $sealNo, $containerNo2, $sealNo2, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $vehicleWeight2, $grossIncomingDate2, $grossWeightBy2, $emptyContainerWeight2, $replacementContainer, $vehicleWeight2, $emptyContainerWeight2, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $tareOutgoing2, $tareOutgoingDate2, $tareWeightBy2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
-                                                $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum, $containerId);
-                                    
-                                                // Execute the prepared query.
-                                                if (! $insert_stmt->execute()) {
-                                                    echo json_encode(
-                                                        array(
-                                                            "status"=> "failed", 
-                                                            "message"=> $update_stmt->error
-                                                        )
-                                                    );
-                                                }
-                                                else
-                                                {
-                                                    $insert_stmt->close();
-                                    
-                                                    echo json_encode(
-                                                        array(
-                                                            "status"=> "success", 
-                                                            "message"=> "Updated Successfully!!",
-                                                            "id"=>$weightId
-                                                        )
-                                                    );
-                                                }
-                                                
-                                            }
-
-                                        }else{
-                                            ########## Set new transaction ID for different container insert to Weight_Container ##########
-                                            if($diff_trans_stmt = $db->prepare("SELECT * FROM status WHERE status=?")){
-                                                $diff_trans_stmt->bind_param('s', $transactionStatus);
-
-                                                if (! $diff_trans_stmt->execute()) {
-                                                    echo json_encode(
-                                                        array(
-                                                            "status" => "failed",
-                                                            "message" => "Something went wrong when pulling status"
-                                                        )
-                                                    ); 
-                                                }
-                                                else{
-                                                    $diffResult = $diff_trans_stmt->get_result();
-                                                    $id = '1';
-                                                    $diffContainerTransId = $plantCode.'/';
-
-                                                    if ($row2 = $diffResult->fetch_assoc()) {
-                                                        $diffContainerTransId .= $row2['prefix'] . '/' .$today . '-';
-                                                    } 
-
-                                                    $queryPlant = "SELECT sales as curcount FROM Plant WHERE plant_code='$plantCode'";
-
-                                                    if($transactionStatus == 'Purchase'){
-                                                        $queryPlant = "SELECT purchase as curcount FROM Plant WHERE plant_code='$plantCode'";
-                                                    }
-                                                    else if($transactionStatus == 'Local'){
-                                                        $queryPlant = "SELECT locals as curcount FROM Plant WHERE plant_code='$plantCode'";
-                                                    }
-                                                    else if($transactionStatus == 'Misc'){
-                                                        $queryPlant = "SELECT misc as curcount FROM Plant WHERE plant_code='$plantCode'";
-                                                    }
-
-                                                    if ($diff_plant_stmt = $db->prepare($queryPlant)) {
-                                                        // Execute the prepared query.
-                                                        if (! $diff_plant_stmt->execute()) {
-                                                            echo json_encode(
-                                                                array(
-                                                                    "status" => "failed",
-                                                                    "message" => "Something went wrong"
-                                                                )); 
-                                                        }
-                                                        else{
-                                                            $diffPlantResult = $diff_plant_stmt->get_result();
-
-                                                            if ($row = $diffPlantResult->fetch_assoc()) {
-                                                                $charSize = strlen($row['curcount']);
-                                                                $misValue = $row['curcount'];
-                                            
-                                                                for($i=0; $i<(4-(int)$charSize); $i++){
-                                                                    $diffContainerTransId.='0';  // S0000
-                                                                }
-                                                        
-                                                                $diffContainerTransId .= $misValue;  //S00009
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            if ($insert_stmt = $db->prepare("INSERT INTO Weight_Container (transaction_id, transaction_status, weight_type, customer_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, customer_code, customer_name, supplier_code, supplier_name,
-                                            product_code, product_name, ex_del, raw_mat_code, raw_mat_name, site_code, site_name, container_no, seal_no, container_no2, seal_no2, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, gross_weight_by1, tare_weight1, tare_weight1_date, tare_weight_by1, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container,
-                                            gross_weight2, gross_weight2_date, gross_weight_by2, tare_weight2, tare_weight2_date, tare_weight_by2, nett_weight2, reduce_weight, final_weight, weight_different, is_complete, is_cancel, manual_weight, indicator_id, weighbridge_id, created_by, modified_by, indicator_id_2, 
-                                            product_description, unit_price, sub_total, sst, total_price, is_approved, approved_reason, plant_code, plant_name, agent_code, agent_name, load_drum, no_of_drum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                                                $insert_stmt->bind_param('sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', $diffContainerTransId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo2, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
-                                                $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $replacementContainer, $sealNo, $containerNo2, $sealNo2, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
-                                                $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $vehicleWeight2, $grossIncomingDate2, $grossWeightBy2, $emptyContainerWeight2, $vehicleWeight2, $emptyContainerWeight2, $replacementContainer, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $tareOutgoing2, $tareOutgoingDate2, $tareWeightBy2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
-                                                $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum);
-                                    
-                                                // Execute the prepared query.
-                                                if (! $insert_stmt->execute()) {
-                                                    echo json_encode(
-                                                        array(
-                                                            "status"=> "failed", 
-                                                            "message"=> $insert_stmt->error
-                                                        )
-                                                    );
-                                                }
-                                                else{
-                                                    $misValue++;
-                                                    $id = $insert_stmt->insert_id;
-                                    
-                                                    $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
-                                    
-                                                    if($transactionStatus == 'Purchase'){
-                                                        $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
-                                                    }
-                                                    else if($transactionStatus == 'Local'){
-                                                        $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
-                                                    }
-                                                    else if($transactionStatus == 'Misc'){
-                                                        $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
-                                                    }
-                                                    
-                                                    ///insert miscellaneous
-                                                    if ($update_stmt2 = $db->prepare($queryPlantU)){
-                                                        $update_stmt2->bind_param('s', $misValue);
-                                                        
-                                                        // Execute the prepared query.
-                                                        if (! $update_stmt2->execute()){
-                                            
-                                                            echo json_encode(
-                                                                array(
-                                                                    "status"=> "failed", 
-                                                                    "message"=> $update_stmt2->error
-                                                                )
-                                                            );
-                                                        } 
-                                                        else{
-                                                            $update_stmt2->close();
-                                                            echo json_encode(
-                                                                array(
-                                                                    "status"=> "success", 
-                                                                    "message"=> "Updated Successfully!!",
-                                                                    "id"=>$weightId
-                                                                )
-                                                            );
-                                                        }
-                                                    } 
-                                                    else{
-                                                        echo json_encode(
-                                                            array(
-                                                                "status"=> "failed", 
-                                                                "message"=> $update_stmt2->error
-                                                            )
-                                                        );
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                }else{
-                                    echo json_encode(
-                                        array(
-                                            "status"=> "success", 
-                                            "message"=> "Updated Successfully!!",
-                                            "id"=>$weightId
-                                        )
-                                    );
-                                }
-                           }
-                        }
-                    }else{
-                        echo json_encode(
-                            array(
-                                "status"=> "success", 
-                                "message"=> "Updated Successfully!!",
-                                "id"=>$weightId
-                            )
-                        );
-                    }
-    
-                    $update_stmt->close();
-                    $db->close();
-                }
-            }
-        }
-        else{
-            $action = "1";
-
-            if (empty($grossIncomingDate)){
-                $grossIncomingDate = $grossIncomingDate2;
-            }
-
-            // Insert into Weight Table for Primer Mover + Different Bins
-            if ($insert_stmt = $db->prepare("INSERT INTO Weight (transaction_id, transaction_status, weight_type, customer_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, customer_code, customer_name, supplier_code, supplier_name,
-            product_code, product_name, ex_del, raw_mat_code, raw_mat_name, site_code, site_name, container_no, seal_no, container_no2, seal_no2, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, gross_weight_by1, tare_weight1, tare_weight1_date, tare_weight_by1, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container,
-            gross_weight2, gross_weight2_date, gross_weight_by2, tare_weight2, tare_weight2_date, tare_weight_by2, nett_weight2, reduce_weight, final_weight, weight_different, is_complete, is_cancel, manual_weight, indicator_id, weighbridge_id, created_by, modified_by, indicator_id_2, 
-            product_description, unit_price, sub_total, sst, total_price, is_approved, approved_reason, plant_code, plant_name, agent_code, agent_name, load_drum, no_of_drum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                $insert_stmt->bind_param('sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', $transactionId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo1, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
-                $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $containerNo, $sealNo, $containerNo2, $sealNo2, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
-                $grossIncoming, $grossIncomingDate, $grossWeightBy1, $tareOutgoing, $tareOutgoingDate, $tareWeightBy1, $nettWeight, $vehicleWeight2, $emptyContainerWeight2, $replacementContainer, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $tareOutgoing2, $tareOutgoingDate2, $tareWeightBy2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
-                $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum);
-    
-                // Execute the prepared query.
-                if (! $insert_stmt->execute()) {
-                    echo json_encode(
-                        array(
-                            "status"=> "failed", 
-                            "message"=> $insert_stmt->error
-                        )
-                    );
-                }
-                else{
-                    $misValue++;
-                    $id = $insert_stmt->insert_id;
-    
-                    $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
-    
-                    if($transactionStatus == 'Purchase'){
-                        $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
-                    }
-                    else if($transactionStatus == 'Local'){
-                        $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
-                    }
-                    else if($transactionStatus == 'Misc'){
-                        $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
-                    }
-                    
-                    ///insert miscellaneous
-                    if ($update_stmt2 = $db->prepare($queryPlantU)){
-                        $update_stmt2->bind_param('s', $misValue);
-                        
-                        // Execute the prepared query.
-                        if (! $update_stmt2->execute()){
-            
-                            echo json_encode(
-                                array(
-                                    "status"=> "failed", 
-                                    "message"=> $update_stmt2->error
-                                )
-                            );
-                        } 
-                        else{
-                            $update_stmt2->close();
-                            
-                            if ($isComplete == 'Y'){
-
-                                ############## Insert Different Transaction Id For Different Container Insert to Weight_Container ##############
-                                $diffCharLength = strlen($misValue);
-            
-                                for($i=0; $i<(4-(int)$diffCharLength); $i++){
-                                    $diffContainerTransId.='0';  // S0000
-                                }
-                        
-                                $diffContainerTransId .= $misValue;  //S00009
-
-                                if ($insert_stmt2 = $db->prepare("INSERT INTO Weight_Container (transaction_id, transaction_status, weight_type, customer_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, customer_code, customer_name, supplier_code, supplier_name,
-                                product_code, product_name, ex_del, raw_mat_code, raw_mat_name, site_code, site_name, container_no, seal_no, container_no2, seal_no2, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, gross_weight_by1, tare_weight1, tare_weight1_date, tare_weight_by1, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container,
-                                gross_weight2, gross_weight2_date, gross_weight_by2, tare_weight2, tare_weight2_date, tare_weight_by2, nett_weight2, reduce_weight, final_weight, weight_different, is_complete, is_cancel, manual_weight, indicator_id, weighbridge_id, created_by, modified_by, indicator_id_2, 
-                                product_description, unit_price, sub_total, sst, total_price, is_approved, approved_reason, plant_code, plant_name, agent_code, agent_name, load_drum, no_of_drum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                                    $insert_stmt2->bind_param('sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', $diffContainerTransId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo2, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
-                                    $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $replacementContainer, $sealNo, $containerNo2, $sealNo2, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
-                                    $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $vehicleWeight2, $grossIncomingDate2, $grossWeightBy2, $emptyContainerWeight2, $vehicleWeight2, $emptyContainerWeight2, $replacementContainer, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $tareOutgoing2, $tareOutgoingDate2, $tareWeightBy2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
-                                    $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum);
-                        
-                                    // Execute the prepared query.
-                                    if (! $insert_stmt2->execute()) {
-                                        echo json_encode(
-                                            array(
-                                                "status"=> "failed", 
-                                                "message"=> $insert_stmt->error
-                                            )
-                                        );
-                                    }
-                                    else{
-                                        $misValue++;
-                                        // $id2 = $insert_stmt2->insert_id;
-                        
-                                        $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
-                        
-                                        if($transactionStatus == 'Purchase'){
-                                            $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
-                                        }
-                                        else if($transactionStatus == 'Local'){
-                                            $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
-                                        }
-                                        else if($transactionStatus == 'Misc'){
-                                            $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
-                                        }
-                                        
-                                        ///insert miscellaneous
-                                        if ($update_stmt = $db->prepare($queryPlantU)){
-                                            $update_stmt->bind_param('s', $misValue);
-                                            
-                                            // Execute the prepared query.
-                                            if (! $update_stmt->execute()){
-                                
-                                                echo json_encode(
-                                                    array(
-                                                        "status"=> "failed", 
-                                                        "message"=> $update_stmt->error
-                                                    )
-                                                );
-                                            } 
-                                            else{
-                                                $update_stmt->close();
-                                            }
-                                        } 
-                                        else{
-                                            echo json_encode(
-                                                array(
-                                                    "status"=> "failed", 
-                                                    "message"=> $update_stmt->error
-                                                )
-                                            );
-                                        }
-                                    }
-                                }
-                            }
-
-                            # Weight_Product 
-                            $no = isset($_POST['no']) ? $_POST['no']: [];
-                            $weightProductId = isset($_POST['weightProductId']) ? $_POST['weightProductId']: [];
-                            $product =  isset($_POST['product']) ? $_POST['product']: [];
-                            $productPacking = isset($_POST['productPacking']) ? $_POST['productPacking']: [];
-                            $productGross = isset($_POST['productGross']) ? $_POST['productGross']: [];
-                            $productTare = isset($_POST['productTare']) ? $_POST['productTare']: [];
-                            $productNett = isset($_POST['productNett']) ? $_POST['productNett']: [];
-
-                            if(isset($no) && $no != null && count($no) > 0){ 
-                                foreach ($no as $i => $no) {
-                                    if ($product_stmt = $db->prepare("INSERT INTO Weight_Product (weight_id, product, product_packing, product_gross, product_tare, product_nett) VALUES (?, ?, ?, ?, ?, ?)")){
-                                        $product_stmt->bind_param('ssssss', $id, $product[$i], $productPacking[$i], $productGross[$i], $productTare[$i], $productNett[$i]);
-                                        $product_stmt->execute();
-                                    }
-                                }
-                                
-                                $product_stmt->close();
-                            }
-
-                            // update empty container status
-                            if(!empty($containerNo) && $weightType == 'Different Container'){
-                                if ($update_container = $db->prepare("UPDATE Weight_Container SET is_cancel=? WHERE container_no=? AND status='0'")){
-                                    $update_container->bind_param('ss', $isComplete, $containerNo);
-
-                                    // Execute the prepared query.
-                                    if (! $update_container->execute()) {
-                                        echo json_encode(
-                                            array(
-                                                "status"=> "failed", 
-                                                "message"=> $update_container->error
-                                            )
-                                        );
-                                    }
-                                }
-                            }
-
-                            echo json_encode(
-                                array(
-                                    "status"=> "success", 
-                                    "message"=> "Added Successfully!!",
-                                    "id"=>$id
-                                )
-                            );
-                        }
-                    } 
-                    else{
-                        echo json_encode(
-                            array(
-                                "status"=> "failed", 
-                                "message"=> $update_stmt->error
-                            )
-                        );
-                    }
-    
-                    $insert_stmt->close();
-                    $db->close();
-                }
-            }
-        }  
-    }else{
-        if(! empty($weightId)){
-            $action = "2";
-    
-            if ($update_stmt = $db->prepare("UPDATE Weight SET transaction_id=?, transaction_status=?, weight_type=?, customer_type=?, transaction_date=?, lorry_plate_no1=?, lorry_plate_no2=?, supplier_weight=?, order_weight=?, customer_code=?, customer_name=?, supplier_code=?, supplier_name=?,
-            product_code=?, product_name=?, ex_del=?, raw_mat_code=?, raw_mat_name=?, site_name=?, site_code=?, container_no=?, seal_no=?, container_no2=?, seal_no2=?, invoice_no=?, purchase_order=?, delivery_no=?, transporter_code=?, transporter=?, destination_code=?, destination=?, remarks=?, gross_weight1=?, gross_weight1_date=?, gross_weight_by1=?, tare_weight1=?, tare_weight1_date=?, tare_weight_by1=?, nett_weight1=?,
-            gross_weight2=?, gross_weight2_date=?, gross_weight_by2=?, tare_weight2=?, tare_weight2_date=?, tare_weight_by2=?, nett_weight2=?, reduce_weight=?, final_weight=?, weight_different=?, is_complete=?, is_cancel=?, manual_weight=?, indicator_id=?, weighbridge_id=?, created_by=?, modified_by=?, indicator_id_2=?, 
-            product_description=?, unit_price=?, sub_total=?, sst=?, total_price=?, is_approved=?, approved_reason=?, plant_code=?, plant_name=?, agent_code=?, agent_name=?, load_drum=?, no_of_drum=? WHERE id=?"))
-            {
-                $update_stmt->bind_param('sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', $transactionId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo1, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
-                $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $containerNo, $sealNo, $containerNo2, $sealNo2, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
-                $grossIncoming, $grossIncomingDate, $grossWeightBy1, $tareOutgoing, $tareOutgoingDate, $tareWeightBy1, $nettWeight, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $tareOutgoing2, $tareOutgoingDate2, $tareWeightBy2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
-                $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum, $weightId);
-    
-                // Execute the prepared query.
-                if (! $update_stmt->execute()) {
-                    echo json_encode(
-                        array(
-                            "status"=> "failed", 
-                            "message"=> $update_stmt->error
-                        )
-                    );
-                }
-                else{
-                    # Weight_Product 
-                    $no = isset($_POST['no']) ? $_POST['no']: [];
-                    $weightProductId = isset($_POST['weightProductId']) ? $_POST['weightProductId']: [];
-                    $product =  isset($_POST['product']) ? $_POST['product']: [];
-                    $productPacking = isset($_POST['productPacking']) ? $_POST['productPacking']: [];
-                    $productGross = isset($_POST['productGross']) ? $_POST['productGross']: [];
-                    $productTare = isset($_POST['productTare']) ? $_POST['productTare']: [];
-                    $productNett = isset($_POST['productNett']) ? $_POST['productNett']: [];
-
-                    if(isset($no) && $no != null && count($no) > 0){ 
-                        # Set all Weight_Product records deleted to 1 first
-                        if ($delete_prod_stmt = $db->prepare("UPDATE Weight_Product SET status = '1' WHERE weight_id=?")){
-                            $delete_prod_stmt->bind_param('s', $weightId);
-                            
-                            if ($delete_prod_stmt->execute()){
-                                $delete_prod_stmt->close();
-
-                                foreach ($no as $i => $no) {
-                                    if(isset($weightProductId[$i]) && $weightProductId[$i] > 0){ // Update FE existing product deleted to 0 but deleted products remain deleted='1'
-                                        if ($product_stmt = $db->prepare("UPDATE Weight_Product SET weight_id=?, product=?, product_packing=?, product_gross=?, product_tare=?, product_nett=?, status='0' WHERE id=?")){
-                                            $product_stmt->bind_param('sssssss', $weightId, $product[$i], $productPacking[$i], $productGross[$i], $productTare[$i], $productNett[$i], $weightProductId[$i]);
-                                            $product_stmt->execute();
-                                        }
-                                    }
-                                    else{ // if got new then insert new record
-                                        if ($product_stmt = $db->prepare("INSERT INTO Weight_Product (weight_id, product, product_packing, product_gross, product_tare, product_nett) VALUES (?, ?, ?, ?, ?, ?)")){
-                                            $product_stmt->bind_param('ssssss', $weightId, $product[$i], $productPacking[$i], $productGross[$i], $productTare[$i], $productNett[$i]);
-                                            $product_stmt->execute();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        
-                        $product_stmt->close();
-                    }else{
-                        # Added this section to update all weight product related to the weighing to deleted
-                        if ($update_prod_stmt = $db->prepare("UPDATE Weight_Product SET status = '1' WHERE weight_id=?")){
-                            $update_prod_stmt->bind_param('s', $weightId);
-                            $update_prod_stmt->execute();
-                            $update_prod_stmt->close();
-                        }
-                    }
-
-                    // update empty container status
-                    if(!empty($containerNo) && $weightType == 'Container'){
-                        if ($update_container = $db->prepare("UPDATE Weight_Container SET is_cancel=? WHERE container_no=? AND status='0'")){
-                           $update_container->bind_param('ss', $isComplete, $containerNo);
-
-                           // Execute the prepared query.
-                           if (! $update_container->execute()) {
-                               echo json_encode(
-                                   array(
-                                       "status"=> "failed", 
-                                       "message"=> $update_container->error
-                                   )
-                               );
-                           }
-                           else
-                           {
-                               $update_container->close();
-
-                               echo json_encode(
-                                   array(
-                                       "status"=> "success", 
-                                       "message"=> "Updated Successfully!!",
-                                       "id"=>$weightId
-                                   )
-                               );
-                           }
-                        }
-                    }else{
-                        echo json_encode(
-                            array(
-                                "status"=> "success", 
-                                "message"=> "Updated Successfully!!",
-                                "id"=>$weightId
-                            )
-                        );
-                    }
-    
-                    $update_stmt->close();
-                    $db->close();
-                }
-            }
-        }
-        else{
-            $action = "1";
-    
-            if ($insert_stmt = $db->prepare("INSERT INTO Weight (transaction_id, transaction_status, weight_type, customer_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, customer_code, customer_name, supplier_code, supplier_name,
-            product_code, product_name, ex_del, raw_mat_code, raw_mat_name, site_code, site_name, container_no, seal_no, container_no2, seal_no2, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, gross_weight_by1, tare_weight1, tare_weight1_date, tare_weight_by1, nett_weight1,
-            gross_weight2, gross_weight2_date, gross_weight_by2, tare_weight2, tare_weight2_date, tare_weight_by2, nett_weight2, reduce_weight, final_weight, weight_different, is_complete, is_cancel, manual_weight, indicator_id, weighbridge_id, created_by, modified_by, indicator_id_2, 
-            product_description, unit_price, sub_total, sst, total_price, is_approved, approved_reason, plant_code, plant_name, agent_code, agent_name, load_drum, no_of_drum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                $insert_stmt->bind_param('ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', $transactionId, $transactionStatus, $weightType, $customerType, $transactionDate, $vehiclePlateNo1, $vehiclePlateNo2, $supplierWeight, $orderWeight, $customerCode, $customerName,
-                $supplierCode, $supplierName, $productCode, $productName, $exDel, $rawMaterialCode, $rawMaterialName, $siteCode, $siteName, $containerNo, $sealNo, $containerNo2, $sealNo2, $invoiceNo, $purchaseOrder, $deliveryNo, $transporterCode, $transporter, $destinationCode, $destination, $otherRemarks,
-                $grossIncoming, $grossIncomingDate, $grossWeightBy1, $tareOutgoing, $tareOutgoingDate, $tareWeightBy1, $nettWeight, $grossIncoming2, $grossIncomingDate2, $grossWeightBy2, $tareOutgoing2, $tareOutgoingDate2, $tareWeightBy2, $nettWeight2, $reduceWeight, $finalWeight, $weightDifference,
-                $isComplete, $isCancel, $manualWeight, $indicatorId, $weighbridge, $username, $username, $indicatorId2, $productDescription, $unitPrice, $subTotalPrice, $sstPrice, $totalPrice, $isApproved, $approved_reason, $plantCode, $plant, $agentCode, $agent, $loadDrum, $noOfDrum);
-    
-                // Execute the prepared query.
-                if (! $insert_stmt->execute()) {
-                    echo json_encode(
-                        array(
-                            "status"=> "failed", 
-                            "message"=> $insert_stmt->error
-                        )
-                    );
-                }
-                else{
-                    $misValue++;
-                    $id = $insert_stmt->insert_id;
-    
-                    $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
-    
-                    if($transactionStatus == 'Purchase'){
-                        $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
-                    }
-                    else if($transactionStatus == 'Local'){
-                        $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
-                    }
-                    else if($transactionStatus == 'Misc'){
-                        $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
-                    }
-                    
-                    ///insert miscellaneous
-                    if ($update_stmt = $db->prepare($queryPlantU)){
-                        $update_stmt->bind_param('s', $misValue);
-                        
-                        // Execute the prepared query.
-                        if (! $update_stmt->execute()){
-            
-                            echo json_encode(
-                                array(
-                                    "status"=> "failed", 
-                                    "message"=> $update_stmt->error
-                                )
-                            );
-                        } 
-                        else{
-                            $update_stmt->close();
-    
-                            # Update PO or SO table row balance
-                            /*if ($transactionStatus == 'Purchase'){
-                                $currentBalance = $prevBalance - $supplierWeight;
-                                $poSo_stmt = $db->prepare("SELECT * FROM Purchase_Order WHERE po_no=? AND status='Open' AND deleted='0'");
-                            }else{
-                                $currentBalance = $prevBalance - $nettWeight;
-                                $poSo_stmt = $db->prepare("SELECT * FROM Sales_Order WHERE order_no=? AND status='Open' AND deleted='0'");
-                            }
-    
-                            $poSo_stmt->bind_param('s', $purchaseOrder);
-                            $poSo_stmt->execute();
-                            $result = $poSo_stmt->get_result();
-                            $poSoRow = $result->fetch_assoc();    
-                            $poSoId = $poSoRow['id'];
-    
-                            if ($currentBalance <= 0){
-                                $poSoStatus = 'Close'; //set status to close if current balance is less than equal 0
-                            }else{
-                                $poSoStatus = 'Open';
-                            }
-    
-                            $poSo_stmt->close();
-    
-                            if ($transactionStatus == 'Purchase'){
-                                $updatePoSoStmt = $db->prepare("UPDATE Purchase_Order SET balance=?, status=? WHERE id=?");
-                            }else{
-                                $updatePoSoStmt = $db->prepare("UPDATE Sales_Order SET balance=?, status=? WHERE id=?");
-                            }
-    
-                            $updatePoSoStmt->bind_param('sss', $currentBalance, $poSoStatus, $poSoId);
-                            $updatePoSoStmt->execute();
+                // if ($insert_log = $db->prepare("INSERT INTO Vehicle_Log (vehicle_id, veh_number, vehicle_weight, action_id, action_by) VALUES (?, ?, ?, ?, ?)")) {
+                //     $insert_log->bind_param('sssss', $totalRecords, $vehicleNo, $vehicleWeight, $action, $username);
         
-                            $updatePoSoStmt->close();*/
+                //     // Execute the prepared query.
+                //     if (! $insert_log->execute()) {
+                //         // echo json_encode(
+                //         //     array(
+                //         //         "status"=> "failed", 
+                //         //         "message"=> $insert_stmt->error
+                //         //     )
+                //         // );
+                //     }
+                //     else{
+                //         $insert_log->close();
+                //         // echo json_encode(
+                //         //     array(
+                //         //         "status"=> "success", 
+                //         //         "message"=> "Added Successfully!!" 
+                //         //     )
+                //         // );
+                //     }
+                // }
 
-                            # Weight_Product 
-                            $no = isset($_POST['no']) ? $_POST['no']: [];
-                            $weightProductId = isset($_POST['weightProductId']) ? $_POST['weightProductId']: [];
-                            $product =  isset($_POST['product']) ? $_POST['product']: [];
-                            $productPacking = isset($_POST['productPacking']) ? $_POST['productPacking']: [];
-                            $productGross = isset($_POST['productGross']) ? $_POST['productGross']: [];
-                            $productTare = isset($_POST['productTare']) ? $_POST['productTare']: [];
-                            $productNett = isset($_POST['productNett']) ? $_POST['productNett']: [];
-
-                            if(isset($no) && $no != null && count($no) > 0){ 
-                                foreach ($no as $i => $no) {
-                                    if ($product_stmt = $db->prepare("INSERT INTO Weight_Product (weight_id, product, product_packing, product_gross, product_tare, product_nett) VALUES (?, ?, ?, ?, ?, ?)")){
-                                        $product_stmt->bind_param('ssssss', $id, $product[$i], $productPacking[$i], $productGross[$i], $productTare[$i], $productNett[$i]);
-                                        $product_stmt->execute();
-                                    }
-                                }
-                                
-                                $product_stmt->close();
-                            }
-
-                            // update empty container status
-                            if(!empty($containerNo) && $weightType == 'Container'){
-                                if ($update_container = $db->prepare("UPDATE Weight_Container SET is_cancel=? WHERE container_no=? AND status='0'")){
-                                    $update_container->bind_param('ss', $isComplete, $containerNo);
-
-                                    // Execute the prepared query.
-                                    if (! $update_container->execute()) {
-                                        echo json_encode(
-                                            array(
-                                                "status"=> "failed", 
-                                                "message"=> $update_container->error
-                                            )
-                                        );
-                                    }
-                                }
-                            }
-
-                            echo json_encode(
-                                array(
-                                    "status"=> "success", 
-                                    "message"=> "Added Successfully!!",
-                                    "id"=>$id
-                                )
-                            );
-                        }
-                    } 
-                    else{
-                        echo json_encode(
-                            array(
-                                "status"=> "failed", 
-                                "message"=> $update_stmt->error
-                            )
-                        );
-                    }
-    
-                    // $sel = mysqli_query($db,"select count(*) as allcount from Vehicle");
-                    // $records = mysqli_fetch_assoc($sel);
-                    // $totalRecords = $records['allcount'];
-    
-                    // if ($insert_log = $db->prepare("INSERT INTO Vehicle_Log (vehicle_id, veh_number, vehicle_weight, action_id, action_by) VALUES (?, ?, ?, ?, ?)")) {
-                    //     $insert_log->bind_param('sssss', $totalRecords, $vehicleNo, $vehicleWeight, $action, $username);
-            
-                    //     // Execute the prepared query.
-                    //     if (! $insert_log->execute()) {
-                    //         // echo json_encode(
-                    //         //     array(
-                    //         //         "status"=> "failed", 
-                    //         //         "message"=> $insert_stmt->error
-                    //         //     )
-                    //         // );
-                    //     }
-                    //     else{
-                    //         $insert_log->close();
-                    //         // echo json_encode(
-                    //         //     array(
-                    //         //         "status"=> "success", 
-                    //         //         "message"=> "Added Successfully!!" 
-                    //         //     )
-                    //         // );
-                    //     }
-                    // }
-    
-                    $insert_stmt->close();
-                    $db->close();
-                }
+                $insert_stmt->close();
+                $db->close();
             }
-        }  
-    }
+        }
+    }   
 }
 else
 {

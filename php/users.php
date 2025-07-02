@@ -1,6 +1,7 @@
 <?php
-session_start();
 require_once "db_connect.php";
+
+session_start();
 
 if(!isset($_SESSION['username'])){
     echo '<script type="text/javascript">';

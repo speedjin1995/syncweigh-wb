@@ -7,7 +7,6 @@
 require_once "layouts/config.php";
 
 // Check if the user is already logged in, if yes then redirect him to index page
-$user = $_SESSION['id'];
 $id = '1';
 $stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no from Company where id = ?");
 mysqli_stmt_bind_param($stmt2, "s", $id);
@@ -24,26 +23,6 @@ if (mysqli_stmt_fetch($stmt2)) {
     $userphone_no = $phone_no;
     $userfax_no = $fax_no;
 }
-
-$role = 'NORMAL';
-if ($user != null && $user != ''){
-    $stmt3 = $link->prepare("SELECT * from Users WHERE id = ?");
-    $stmt3->bind_param('s', $user);
-    $stmt3->execute();
-    $result3 = $stmt3->get_result();
-        
-    if(($row3 = $result3->fetch_assoc()) !== null){
-        $role = $row3['role'];
-    }
-}
-
-$readonly = '';
-$hidden = false;
-if ($role != 'SADMIN'){
-    $readonly = 'readonly';
-    $hidden = true;
-}
-
 ?>
 
     <head>
@@ -81,7 +60,7 @@ if ($role != 'SADMIN'){
                                                 <div class="row">
                                                     <label for="companyRegNo" class="col-sm-4 col-form-label">Company Reg No. *</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyRegNo" name="companyRegNo" placeholder="Company Reg No" value="<?=$usercompany_reg_no ?>" required <?= $readonly ?>>
+                                                        <input type="text" class="form-control" id="companyRegNo" name="companyRegNo" placeholder="Company Reg No" value="<?=$usercompany_reg_no ?>" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -89,7 +68,7 @@ if ($role != 'SADMIN'){
                                                 <div class="row">
                                                     <label for="companyName" class="col-sm-4 col-form-label">Company Name *</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyName" name="companyName" placeholder="Company Name" value="<?=$username ?>" required <?= $readonly ?>>
+                                                        <input type="text" class="form-control" id="companyName" name="companyName" placeholder="Company Name" value="<?=$username ?>" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -97,7 +76,7 @@ if ($role != 'SADMIN'){
                                                 <div class="row">
                                                     <label for="companyAddress" class="col-sm-4 col-form-label">Company Address 1 *</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyAddress" name="companyAddress" placeholder="Company Address 1" value="<?=$useraddress_line_1 ?>" required <?= $readonly ?>>
+                                                        <input type="text" class="form-control" id="companyAddress" name="companyAddress" placeholder="Company Address 1" value="<?=$useraddress_line_1 ?>" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -105,7 +84,7 @@ if ($role != 'SADMIN'){
                                                 <div class="row">
                                                     <label for="companyAddress2" class="col-sm-4 col-form-label">Company Address 2</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyAddress2" name="companyAddress2" placeholder="Company Address 2" value="<?=$useraddress_line_2 ?>" <?= $readonly ?>>
+                                                        <input type="text" class="form-control" id="companyAddress2" name="companyAddress2" placeholder="Company Address 2" value="<?=$useraddress_line_2 ?>">
                                                     </div>
                                                 </div>
                                             </div>
@@ -113,7 +92,7 @@ if ($role != 'SADMIN'){
                                                 <div class="row">
                                                     <label for="companyAddress3" class="col-sm-4 col-form-label">Company Address 3</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyAddress3" name="companyAddress3" placeholder="Company Address 3" value="<?=$useraddress_line_3 ?>" <?= $readonly ?>>
+                                                        <input type="text" class="form-control" id="companyAddress3" name="companyAddress3" placeholder="Company Address 3" value="<?=$useraddress_line_3 ?>">
                                                     </div>
                                                 </div>
                                             </div>
@@ -121,7 +100,7 @@ if ($role != 'SADMIN'){
                                                 <div class="row">
                                                     <label for="companyPhone" class="col-sm-4 col-form-label">Company Phone</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyPhone" name="companyPhone" placeholder="Company Phone" value="<?=$userphone_no ?>" required <?= $readonly ?>>
+                                                        <input type="text" class="form-control" id="companyPhone" name="companyPhone" placeholder="Company Phone" value="<?=$userphone_no ?>" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -129,11 +108,11 @@ if ($role != 'SADMIN'){
                                                 <div class="row">
                                                     <label for="companyFax" class="col-sm-4 col-form-label">Fax No.</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyFax" name="companyFax" placeholder="Company Fax" value="<?=$userfax_no ?>" <?= $readonly ?>>
+                                                        <input type="text" class="form-control" id="companyFax" name="companyFax" placeholder="Company Fax" value="<?=$userfax_no ?>">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="mt-4" <?= $hidden ? 'style="display:none;"' : '' ?>>
+                                            <div class="mt-4">
                                                 <button class="btn btn-success w-100" type="submit">Update</button>
                                             </div>
                                         </div>

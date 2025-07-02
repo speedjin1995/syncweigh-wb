@@ -5,7 +5,6 @@
 require_once "php/db_connect.php";
 
 $user = $_SESSION['id'];
-$username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
 $stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
 $stmt->bind_param('s', $user);
@@ -73,7 +72,6 @@ $agent = $db->query("SELECT * FROM Agents WHERE status = '0' ORDER BY name ASC")
 $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $site = $db->query("SELECT * FROM Site WHERE status = '0' ORDER BY name ASC");
-$container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
@@ -103,15 +101,15 @@ else{
     <!--Swiper slider css-->
     <link href="assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
     <!--datatable css-->
-    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <!--datatable responsive css-->
-    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
-    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
     <!-- Include jQuery library -->
-    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include jQuery Validate plugin -->
-    <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 
     <?php include 'layouts/head-css.php'; ?>
     <style>
@@ -169,7 +167,7 @@ else{
 
                             <div class="col-xxl-12 col-lg-12">
                                 <div class="card">
-                                    <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" style="background-color: #405189;">
+                                    <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" style="background-color: #099885;">
                                         <i class="mdi mdi-chevron-down pull-right"></i>
                                         Search Records
                                     </div>
@@ -194,8 +192,8 @@ else{
                                                             <label for="statusSearch" class="form-label">Transaction Status</label>
                                                             <select id="statusSearch" class="form-select select2">
                                                                 <option selected>-</option>
-                                                                <option value="Sales">Dispatch</option>
-                                                                <option value="Purchase">Receiving</option>
+                                                                <option value="Sales">Sales</option>
+                                                                <option value="Purchase">Purchase</option>
                                                                 <option value="Local">Internal Transfer</option>
                                                                 <option value="Misc">Miscellaneous</option>
                                                             </select>
@@ -234,10 +232,8 @@ else{
                                                             <label for="invoiceNoSearch" class="form-label">Weighing Type</label>
                                                             <select id="invoiceNoSearch" class="form-select select2"  >
                                                                 <option selected>-</option>
-                                                                <option value="Normal">Normal Weighing</option>
-                                                                <option value="Container">Primer Mover</option>
-                                                                <option value="Empty Container">Primer Mover + Container</option>
-                                                                <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                <option value="Normal">Normal</option>
+                                                                <option value="Container">Container</option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -283,30 +279,6 @@ else{
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
-                                                    <div class="col-3">
-                                                        <div class="mb-3">
-                                                            <label for="transactionIdSearch" class="form-label">Transaction ID</label>
-                                                            <input type="text" class="form-control" id="transactionIdSearch" name="transactionIdSearch" placeholder="Transaction ID">                                                                                  
-                                                        </div>
-                                                    </div><!--end col-->
-                                                    <div class="col-3">
-                                                        <div class="mb-3">
-                                                            <label for="containerNoSearch" class="form-label">Container No</label>
-                                                            <input type="text" class="form-control" id="containerNoSearch" name="containerNoSearch" placeholder="Container No">                                                                                  
-                                                        </div>
-                                                    </div><!--end col-->
-                                                    <div class="col-3">
-                                                        <div class="mb-3">
-                                                            <label for="sealNoSearch" class="form-label">Seal No</label>
-                                                            <input type="text" class="form-control" id="sealNoSearch" name="sealNoSearch" placeholder="Seal No">                                                                                  
-                                                        </div>
-                                                    </div><!--end col-->
-                                                    <div class="col-3">
-                                                        <div class="mb-3">
-                                                            <label for="invDelPoSearch" class="form-label">INV/DO/PO No</label>
-                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
-                                                        </div>
-                                                    </div><!--end col-->
                                                     <div class="col-lg-12">
                                                         <div class="text-end">
                                                             <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> Search</button>
@@ -320,13 +292,14 @@ else{
                             </div>
                             
                             <div class="row">
-                                <!-- <div class="col-xl-3 col-md-6">
+                                <div class="col-xl-3 col-md-6">
+                                    <!-- card -->
                                     <div class="card card-animate" style="background-color: #4CAF50;">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
                                                     <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Dispatch
+                                                        Sales
                                                     </p>
                                                 </div>
                                             </div>
@@ -342,17 +315,18 @@ else{
                                                     </span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                        </div><!-- end card body -->
+                                    </div><!-- end card -->
+                                </div><!-- end col -->
 
                                 <div class="col-xl-3 col-md-6">
+                                    <!-- card -->
                                     <div class="card card-animate" style="background-color: #FFC107;">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
                                                     <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Receiving
+                                                        Purchase
                                                     </p>
                                                 </div>
                                             </div>
@@ -368,11 +342,12 @@ else{
                                                     </span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                        </div><!-- end card body -->
+                                    </div><!-- end card -->
+                                </div><!-- end col -->
 
                                 <div class="col-xl-3 col-md-6">
+                                    <!-- card -->
                                     <div class="card card-animate" style="background-color: #81D4FA;">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
@@ -394,11 +369,12 @@ else{
                                                     </span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                        </div><!-- end card body -->
+                                    </div><!-- end card -->
+                                </div><!-- end col -->
 
                                 <div class="col-xl-3 col-md-6">
+                                    <!-- card -->
                                     <div class="card card-animate" style="background-color: #9C27B0;">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
@@ -420,10 +396,10 @@ else{
                                                     </span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-                                
+                                        </div><!-- end card body -->
+                                    </div><!-- end card -->
+                                </div><!-- end col -->
+
                                 <div class="col-xl-3 col-md-6 add-new-weight">
                                     <!-- <button type="button" class="btn btn-lg btn-soft-success" data-bs-toggle="modal" data-bs-target="#addModal"><i
                                             class="ri-add-circle-line align-middle me-1"></i>
@@ -444,11 +420,10 @@ else{
                                                             <div class="col-lg-6">
                                                                 <div class="hstack gap-2 justify-content-center">
                                                                     <div class="col-xl-12 col-md-12 col-md-12">
-                                                                        <div class="card bg-primary">
+                                                                        <div class="card bg-success">
                                                                             <div class="card-body">
                                                                                 <div class="d-flex justify-content-between">
                                                                                     <div>
-                                                                                        <h3 class="ff-secondary fw-semibold text-white">Indicator Weight</h3>
                                                                                         <h2 class="mt-4 ff-secondary fw-semibold display-3 text-white"><span class="counter-value" id="indicatorWeight">0</span> Kg</h2>
                                                                                     </div>
                                                                                     <div>
@@ -467,11 +442,10 @@ else{
                                                             <div class="col-lg-6">
                                                                 <div class="hstack gap-2 justify-content-center">
                                                                     <div class="col-xl-12 col-md-12 col-md-12">
-                                                                        <div class="card bg-primary">
+                                                                        <div class="card bg-success">
                                                                             <div class="card-body">
                                                                                 <div class="d-flex justify-content-between">
                                                                                     <div>
-                                                                                        <h3 class="ff-secondary fw-semibold text-white">Final Weight</h3>
                                                                                         <h2 class="mt-4 ff-secondary fw-semibold display-3 text-white"><span class="counter-value" id="currentWeight">0</span> Kg</h2>
                                                                                     </div>
                                                                                     <div>
@@ -504,7 +478,7 @@ else{
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="purchaseOrder" class="col-sm-4 col-form-label">P/O No.</label>
+                                                                                    <label for="purchaseOrder" class="col-sm-4 col-form-label">Purchase Order</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder">
                                                                                     </div>
@@ -539,33 +513,19 @@ else{
                                                                                     <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
                                                                                     <div class="col-sm-8">
                                                                                         <select id="weightType" name="weightType" class="form-select select2">
-                                                                                            <option value="Normal" selected>Normal Weighing</option>
-                                                                                            <option value="Container">Primer Mover</option>
-                                                                                            <option value="Empty Container">Primer Mover + Container</option>
-                                                                                            <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                                            <option selected>Normal</option>
+                                                                                            <option>Container</option>
                                                                                         </select>   
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row" id="containerDisplay">
-                                                                                    <label for="containerNoInput" class="col-sm-4 col-form-label">Container No 1</label>
+                                                                                <div class="row">
+                                                                                    <label for="containerNo" class="col-sm-4 col-form-label">Container No</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="containerNoInput" name="containerNoInput" placeholder="Container No">
+                                                                                        <input type="text" class="form-control" id="containerNo" name="containerNo" placeholder="Container No">
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="row" id="emptyContainerDisplay" style="display:none" >
-                                                                                    <label for="emptyContainerNo" class="col-sm-4 col-form-label" id="containerNo1Label">Container No 1</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="emptyContainerNo" name="emptyContainerNo">
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php /*while($rowContainer=mysqli_fetch_assoc($container)){ ?>
-                                                                                                <option value="<?=$rowContainer['container_no'] ?>"><?=$rowContainer['container_no'] ?></option>
-                                                                                            <?php }*/ ?>
-                                                                                        </select>                   
-                                                                                    </div>
-                                                                                </div>
-                                                                                <input type="text" class="form-control" id="containerNo" name="containerNo" hidden>
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifference">
                                                                                 <div class="row">
@@ -585,116 +545,11 @@ else{
                                                                                     <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
                                                                                     <div class="col-sm-8">
                                                                                         <select id="transactionStatus" name="transactionStatus" class="form-select select2">
-                                                                                            <option value="Sales" selected>Dispatch</option>
-                                                                                            <option value="Purchase">Receiving</option>
+                                                                                            <option value="Sales" selected>Sales</option>
+                                                                                            <option value="Purchase">Purchase</option>
                                                                                             <option value="Local">Internal Transfer</option>
                                                                                             <option value="Misc">Miscellaneous</option>
                                                                                         </select>  
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="sealNo" class="col-sm-4 col-form-label">Seal No 1</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="sealNo" name="sealNo" placeholder="Seal No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoReplaceDisplay" style="display:none;">
-                                                                                <div class="row">
-                                                                                    
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transactionDate" class="col-sm-4 col-form-label">Transaction Date</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            Please fill in the field.
-                                                                                        </div>    
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2Display">
-                                                                                <div class="row">
-                                                                                    <label for="containerNo2" class="col-sm-4 col-form-label">Container No 2</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="containerNo2" name="containerNo2" placeholder="Container No 2">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2ReplaceDisplay">
-                                                                                <div class="row">
-                                                                                    
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="unitPriceDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="invoiceNo" class="col-sm-4 col-form-label">Invoice No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Invoice No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2Display">
-                                                                                <div class="row">
-                                                                                    <label for="sealNo2" class="col-sm-4 col-form-label">Seal No 2</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="sealNo2" name="sealNo2" placeholder="Seal No 2">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div> 
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2ReplaceDisplay">
-                                                                                <div class="row">
-                                                                                    
-                                                                                </div>
-                                                                            </div> 
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sstDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="doDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="Delivery No">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -724,6 +579,132 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="transactionDate" class="col-sm-4 col-form-label">Transaction Date</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
+                                                                                        <div class="invalid-feedback">
+                                                                                            Please fill in the field.
+                                                                                        </div>    
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row" id="productNameDisplay">
+                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product Name</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="productName" name="productName" required>
+                                                                                            <option selected="-">-</option>
+                                                                                            <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
+                                                                                                <option 
+                                                                                                    value="<?=$rowProduct['name'] ?>" 
+                                                                                                    data-price="<?=$rowProduct['price'] ?>" 
+                                                                                                    data-code="<?=$rowProduct['product_code'] ?>" 
+                                                                                                    data-high="<?=$rowProduct['high'] ?>" 
+                                                                                                    data-low="<?=$rowProduct['low'] ?>" 
+                                                                                                    data-variance="<?=$rowProduct['variance'] ?>" 
+                                                                                                    data-description="<?=$rowProduct['description'] ?>">
+                                                                                                    <?=$rowProduct['name'] ?>
+                                                                                                </option>
+                                                                                            <?php } ?>
+                                                                                        </select>                                                                                        
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row" id="rawMaterialDisplay" style="display:none;">
+                                                                                    <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
+                                                                                            <option selected="-">-</option>
+                                                                                            <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
+                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>           
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div> 
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="unitPriceDisplay">
+                                                                                <div class="row">
+                                                                                    <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">RM</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                             
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="invoiceNo" class="col-sm-4 col-form-label">Invoice No</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Invoice No">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="transporter" name="transporter" required>
+                                                                                            <option selected="-">-</option>
+                                                                                            <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
+                                                                                                <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>                                                                                          
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sstDisplay">
+                                                                                <div class="row">
+                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">RM</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="doDisplay">
+                                                                                <div class="row">
+                                                                                    <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="Delivery No">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="destination" class="col-sm-4 col-form-label">Destination</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="destination" name="destination" required>
+                                                                                            <option selected="-">-</option>
+                                                                                            <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
+                                                                                                <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>            
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="subTotalPriceDisplay">
                                                                                 <div class="row">
                                                                                     <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
@@ -738,7 +719,7 @@ else{
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
-                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN'){
+                                                                                if($_SESSION["roles"] != 'SADMIN'){
                                                                                     echo 'style="display:none;"';
                                                                                 }?>>
                                                                                 <div class="row">
@@ -761,35 +742,14 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row" id="productNameDisplay">
-                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product Code</label>
+                                                                                <div class="row">
+                                                                                    <label for="plant" class="col-sm-4 col-form-label">Plant</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="productName" name="productName" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
-                                                                                                <option 
-                                                                                                    value="<?=$rowProduct['name'] ?>" 
-                                                                                                    data-price="<?=$rowProduct['price'] ?>" 
-                                                                                                    data-code="<?=$rowProduct['product_code'] ?>" 
-                                                                                                    data-high="<?=$rowProduct['high'] ?>" 
-                                                                                                    data-low="<?=$rowProduct['low'] ?>" 
-                                                                                                    data-variance="<?=$rowProduct['variance'] ?>" 
-                                                                                                    data-description="<?=$rowProduct['description'] ?>">
-                                                                                                    <?=$rowProduct['product_code'] ?>
-                                                                                                </option>
+                                                                                        <select class="form-select select2" id="plant" name="plant" required>
+                                                                                            <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
+                                                                                                <option value="<?=$rowPlant['name'] ?>" data-code="<?=$rowPlant['plant_code'] ?>"><?=$rowPlant['name'] ?></option>
                                                                                             <?php } ?>
-                                                                                        </select>                                                                                        
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row" id="rawMaterialDisplay" style="display:none;">
-                                                                                    <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material Code</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>           
+                                                                                        </select>        
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -806,44 +766,6 @@ else{
                                                                             </div>
                                                                         </div>
                                                                         <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="plant" class="col-sm-4 col-form-label">Plant</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="plant" name="plant" required>
-                                                                                            <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
-                                                                                                <option value="<?=$rowPlant['name'] ?>" data-code="<?=$rowPlant['plant_code'] ?>"><?=$rowPlant['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>        
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="transporter" name="transporter" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
-                                                                                                <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>                                                                                          
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="destination" class="col-sm-4 col-form-label">Destination</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="destination" name="destination" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
-                                                                                                <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>            
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                                                 <div class="row">
                                                                                     <label for="agent" class="col-sm-4 col-form-label">Sales Representative</label>
@@ -857,50 +779,13 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="replacementContainerDisplay" style="display:none">
-                                                                                <div class="row">
-                                                                                    <label for="replacementContainer" class="col-sm-4 col-form-label">New Empty Entrance Bin</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="row col-12">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <button type="button" class="btn btn-success add-product" id="addProduct">Add Product</button>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <table class="table table-primary" style="text-align: center;">
-                                                                                <thead>
-                                                                                    <tr>
-                                                                                        <th width="5%">No</th>
-                                                                                        <th>Product</th>
-                                                                                        <th>Packing</th>
-                                                                                        <th>Gross Weight (kg)</th>
-                                                                                        <th>Tare Weight (kg)</th>
-                                                                                        <th>Nett Weight (kg)</th>
-                                                                                        <th>Action</th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody id="productTable"></tbody>
-                                                                            </table>                                            
-                                                                        </div><!-- end row -->     
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row col-12">
-                                                            <div class="col-xxl-4 col-lg-4" id="normalCard">
+                                                            <div class="col-xxl-4 col-lg-4">
                                                                 <div class="card bg-light">
                                                                     <div class="card-body">
                                                                         <div class="row mb-3">
@@ -912,9 +797,9 @@ else{
                                                                                     <div class="input-group-text">
                                                                                         <input class="form-check-input mt-0" id="manualVehicle" name="manualVehicle" type="checkbox" value="0" aria-label="Checkbox for following text input">
                                                                                     </div>
-                                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No" style="display:none" >
+                                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No" style="display:none" required>
                                                                                     <div class="col-10 index-vehicle">
-                                                                                        <select class="form-select select2" id="vehiclePlateNo1" name="vehiclePlateNo1" >
+                                                                                        <select class="form-select select2" id="vehiclePlateNo1" name="vehiclePlateNo1" required>
                                                                                             <option selected="-">-</option>
                                                                                             <?php while($row2=mysqli_fetch_assoc($vehicles)){ ?>
                                                                                                 <option value="<?=$row2['veh_number'] ?>" data-weight="<?=$row2['vehicle_weight'] ?>"><?=$row2['veh_number'] ?></option>
@@ -922,9 +807,9 @@ else{
                                                                                         </select>
                                                                                         <input type="text" class="form-control" id="vehiclePlateNo1Edit" name="vehiclePlateNo1Edit" hidden>
                                                                                         </div>
-                                                                                    <!--div class="invalid-feedback">
+                                                                                    <div class="invalid-feedback">
                                                                                         Please fill in the field.
-                                                                                    </div-->
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -951,7 +836,7 @@ else{
                                                                         <div class="row mb-3">
                                                                             <label for="grossIncomingDate" class="col-sm-4 col-form-label">Incoming Date</label>
                                                                             <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate" name="grossIncomingDate">
+                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate" name="grossIncomingDate" readonly>
                                                                             </div>
                                                                         </div>
 
@@ -971,7 +856,7 @@ else{
                                                                         <div class="row mb-3">
                                                                             <label for="tareOutgoingDate" class="col-sm-4 col-form-label">Outgoing Date</label>
                                                                             <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" id="tareOutgoingDate" name="tareOutgoingDate">
+                                                                                <input type="text" class="form-control input-readonly" id="tareOutgoingDate" name="tareOutgoingDate" readonly>
                                                                             </div>
                                                                         </div>                                                                        
                                                                         <div class="row mb-3">
@@ -1011,17 +896,8 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="row mb-3" id="vehicleWeight2Display" style="display:none">
-                                                                            <label for="vehicleWeight2" class="col-sm-4 col-form-label">Vehicle Weight</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="vehicleWeight2" name="vehicleWeight2" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
                                                                         <div class="row mb-3">
-                                                                            <label for="grossIncoming2" class="col-sm-4 col-form-label">Incoming</label>
+                                                                            <label for="grossIncoming2" class="col-sm-4 col-form-label">3.Gross Incoming</label>
                                                                             <div class="col-sm-8">
                                                                                 <div class="input-group">
                                                                                     <input type="number" class="form-control input-readonly" id="grossIncoming2" name="grossIncoming2" placeholder="0" readonly>
@@ -1033,22 +909,11 @@ else{
                                                                         <div class="row mb-3">
                                                                             <label for="grossIncomingDate2" class="col-sm-4 col-form-label">Incoming Date</label>
                                                                             <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate2" name="grossIncomingDate2">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3" id="container2WeightDisplay" style="display:none">
-                                                                            <label for="emptyContainerWeight2" class="col-sm-4 col-form-label">Empty Container Weight</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="emptyContainerWeight2" name="emptyContainerWeight2" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                    <div class="input-group-text">-</div>
-                                                                                    <div class="input-group-text" id="replaceContainerText"></div>
-                                                                                </div>
+                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate2" name="grossIncomingDate2" readonly>
                                                                             </div>
                                                                         </div>
                                                                         <div class="row mb-3">
-                                                                            <label for="tareOutgoing2" class="col-sm-4 col-form-label">Outgoing</label>
+                                                                            <label for="tareOutgoing2" class="col-sm-4 col-form-label">4.Tare Outgoing</label>
                                                                             <div class="col-sm-8">
                                                                                 <div class="input-group">
                                                                                     <input type="number" class="form-control input-readonly" id="tareOutgoing2" name="tareOutgoing2" placeholder="0" readonly>
@@ -1060,7 +925,7 @@ else{
                                                                         <div class="row mb-3">
                                                                             <label for="tareOutgoingDate2" class="col-sm-4 col-form-label">Outgoing Date</label>
                                                                             <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" placeholder="" id="tareOutgoingDate2" name="tareOutgoingDate2">
+                                                                                <input type="text" class="form-control input-readonly" placeholder="" id="tareOutgoingDate2" name="tareOutgoingDate2" readonly>
                                                                             </div>
                                                                         </div>                                                                        
                                                                         <div class="row mb-3">
@@ -1075,7 +940,7 @@ else{
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-xxl-4 col-lg-4">
+                                                            <div class="col-xxl-4 col-lg-4 mb-3">
                                                                 <div class="row">
                                                                     <label for="otherRemarks" class="col-sm-2 col-form-label">Other Remarks</label>
                                                                     <div class="col-sm-10">
@@ -1212,10 +1077,6 @@ else{
                                                         <input type="hidden" id="id" name="id">  
                                                         <input type="hidden" id="weighbridge" name="weighbridge" value="Weigh1">
                                                         <input type="hidden" id="previousRecordsTag" name="previousRecordsTag">
-                                                        <input type="hidden" id="grossWeightBy1" name="grossWeightBy1">
-                                                        <input type="hidden" id="tareWeightBy1" name="tareWeightBy1">
-                                                        <input type="hidden" id="grossWeightBy2" name="grossWeightBy2">
-                                                        <input type="hidden" id="tareWeightBy2" name="tareWeightBy2">
                                                     </form>
                                                 </div>
                                             </div><!-- /.modal-content -->
@@ -1367,9 +1228,6 @@ else{
                                                                 <textarea class="form-control" id="cancelReason" name="cancelReason" rows="3"></textarea>
                                                             </div>
                                                             <input type="hidden" class="form-control" id="id" name="id">                                   
-                                                            <input type="hidden" class="form-control" id="containerId" name="containerId">                                   
-                                                            <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">                                   
-                                                            <input type="hidden" class="form-control" id="isMulti" name="isMulti">                                   
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
@@ -1412,24 +1270,12 @@ else{
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="card">
-                                                    <div class="card-header" style="background-color: #405189;">
+                                                    <div class="card-header" style="background-color: #099885;">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title mb-0 text-white">Previous Records (Lorry)</h5>
+                                                                <h5 class="card-title mb-0 text-white">Previous Records</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light">
-                                                                    <i class="ri-file-pdf-line align-middle me-1"></i>
-                                                                    Export PDF
-                                                                </button>
-                                                                <button type="button" id="exportExcel" class="btn btn-info waves-effect waves-light" >
-                                                                    <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Export Excel
-                                                                </button>
-                                                                <button type="button" id="multiDeleteLorry" class="btn btn-warning waves-effect waves-light" >
-                                                                    <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Delete Weight
-                                                                </button>
                                                                 <!--a href="/template/Weight_Template.xlsx" download>
                                                                     <button type="button" class="btn btn-info waves-effect waves-light">
                                                                         <i class="mdi mdi-file-import-outline align-middle me-1"></i>
@@ -1451,81 +1297,13 @@ else{
                                                         <table id="weightTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                                                             <thead>
                                                                 <tr>
-                                                                    <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th>Transaction <br>Id</th>
-                                                                    <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
                                                                     <th>Customer/ <br> Supplier</th>
-                                                                    <th>Container No</th>
-                                                                    <th>Seal No</th>
                                                                     <th>Vehicle</th>
-                                                                    <th>Gross <br>Incoming</th>
-                                                                    <th>Incoming <br>Date</th>
-                                                                    <th>Tare <br>Outgoing</th>
-                                                                    <th>Outgoing <br>Date</th>
-                                                                    <th>Nett <br>Weight</th>
-                                                                    <th>Vehicle 2</th>
-                                                                    <th>Gross <br>Incoming 2</th>
-                                                                    <th>Incoming <br>Date 2</th>
-                                                                    <th>Tare <br>Outgoing 2</th>
-                                                                    <th>Outgoing <br>Date 2</th>
-                                                                    <th>Nett <br>Weight 2</th>
-                                                                    <th>Action</th>
-                                                                </tr>
-                                                            </thead>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div><!--end row-->
-                                    </div> <!-- end .h-100-->
-                                </div> <!-- end col -->
-                            </div><!-- container-fluid -->
-
-                            <!-- Second Card for Empty Container -->
-                            <div class="row">
-                                <div class="col">
-                                    <div class="h-100">
-                                        <!--datatable--> 
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="card">
-                                                    <div class="card-header" style="background-color: #405189;">
-                                                        <div class="d-flex justify-content-between">
-                                                            <div>
-                                                                <h5 class="card-title mb-0 text-white">Pending Empty Container Records</h5>
-                                                            </div>
-                                                            <div class="flex-shrink-0">
-                                                                <!--a href="/template/Weight_Template.xlsx" download>
-                                                                    <button type="button" class="btn btn-info waves-effect waves-light">
-                                                                        <i class="mdi mdi-file-import-outline align-middle me-1"></i>
-                                                                        Download Template 
-                                                                    </button>
-                                                                </a>
-                                                                <button type="button" id="uploadExccl" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal">
-                                                                    <i class="mdi mdi-file-excel align-middle me-1"></i>
-                                                                    Import Orders
-                                                                </button-->
-                                                                <!-- <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
-                                                                    <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                    Add New Weight
-                                                                </button> -->
-                                                                <button type="button" id="multiDeleteContainer" class="btn btn-warning waves-effect waves-light" >
-                                                                    <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Delete Weight
-                                                                </button>
-                                                            </div> 
-                                                        </div> 
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <table id="emptyContainerTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th><input type="checkbox" id="selectAllContainerCheckbox" class="selectAllContainerCheckbox"></th>
-                                                                    <th>Container <br>No</th>
-                                                                    <th>Seal <br>No</th>
-                                                                    <th>Weight <br> Status</th>
-                                                                    <th>Vehicle</th>
+                                                                    <th>Product/ <br> Raw Material</th>
+                                                                    <th>SO/PO</th>
+                                                                    <th>DO</th>
                                                                     <th>Gross <br>Incoming</th>
                                                                     <th>Incoming <br>Date</th>
                                                                     <th>Tare <br>Outgoing</th>
@@ -1640,35 +1418,6 @@ else{
         <!-- end main content-->
 
     </div>
-
-    <script type="text/html" id="productDetail">
-        <tr class="details">
-            <td>
-                <input type="text" class="form-control" id="no" name="no" readonly>
-                <input type="text" class="form-control" id="weightProductId" name="weightProductId" hidden>
-            </td>
-            <td>
-                <input type="text" class="form-control" id="product" name="product" style="background-color:white;" required>
-            </td>
-            <td>
-                <input type="text" class="form-control" id="productPacking" name="productPacking" style="background-color:white;" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="productGross" name="productGross" style="background-color:white;" value="0" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="productTare" name="productTare" style="background-color:white;" value="0" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="productNett" name="productNett" style="background-color:white;" value="0" readonly required>
-            </td>
-            <td class="d-flex" style="text-align:center">
-                <button class="btn btn-danger" id="remove" style="background-color: #f06548;">
-                    <i class="fa fa-times"></i>
-                </button>
-            </td>
-        </tr>
-    </script>
     <!-- END layout-wrapper -->
 
     <?php include 'layouts/customizer.php'; ?>
@@ -1688,27 +1437,19 @@ else{
     <script src="assets/libs/prismjs/prism.js"></script>
     <!-- notifications init -->
     <script src="assets/js/pages/notifications.init.js"></script>
-    <script src="plugins/datatables/jquery.dataTables.js"></script>
-    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
     <!-- Additional js -->
     <script src="assets/js/additional.js"></script>
 
     <script type="text/javascript">
     var table = null;
-    var emptyContainerTable = null;
-    let clickTimer = null;
-
-    var grossIncomingDatePicker;
-    var tareOutgoingDatePicker; 
-    var grossIncomingDatePicker2;
-    var tareOutgoingDatePicker2; 
-    var rowCount = $("#productTable").find(".details").length;
-
+    
     $(function () {
         var userRole = '<?=$role ?>';
         var ind = '<?=$indicator ?>';
@@ -1756,59 +1497,29 @@ else{
         });
 
         //Date picker
-        $('#fromDateSearch').flatpickr({
-            dateFormat: "d-m-Y",
-            defaultDate: ''
-        });
+        <?php if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'MANAGER'){
+            echo '$("#fromDateSearch").flatpickr({
+                dateFormat: "d-m-Y",
+                defaultDate: today,
+                minDate: today
+            });';
+        }
+        else{
+            echo '$("#fromDateSearch").flatpickr({
+                dateFormat: "d-m-Y",
+                defaultDate: today
+            });';
+        }
+        ?>
 
         $('#toDateSearch').flatpickr({
             dateFormat: "d-m-Y",
-            defaultDate: ''
+            defaultDate: today
         });
 
         $('#transactionDate').flatpickr({
             dateFormat: "d-m-Y",
-            defaultDate: ''
-        });
-
-        grossIncomingDatePicker = $('#grossIncomingDate').flatpickr({
-            enableTime: true,
-            enableSeconds: true,
-            time_24hr: true,
-            dateFormat: "Y-m-d H:i:S",
-            altInput: true,
-            altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
-        });
-
-        tareOutgoingDatePicker = $('#tareOutgoingDate').flatpickr({
-            enableTime: true,
-            enableSeconds: true,
-            time_24hr: true,
-            dateFormat: "Y-m-d H:i:S",
-            altInput: true,
-            altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
-        });
-
-        grossIncomingDatePicker2 = $('#grossIncomingDate2').flatpickr({
-            enableTime: true,
-            enableSeconds: true,
-            time_24hr: true,
-            dateFormat: "Y-m-d H:i:S",
-            altInput: true,
-            altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
-        });
-
-        tareOutgoingDatePicker2 = $('#tareOutgoingDate2').flatpickr({
-            enableTime: true,
-            enableSeconds: true,
-            time_24hr: true,
-            dateFormat: "Y-m-d H:i:S",
-            altInput: true,
-            altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
+            defaultDate: today
         });
 
         if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
@@ -1843,31 +1554,16 @@ else{
 
         // $('#statusSearch').val('Sales').trigger('change');
 
-        $('#selectAllCheckbox').on('change', function() {
-            var checkboxes = $('#weightTable tbody input[type="checkbox"]');
-            checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
-        });
-
-        $('#selectAllContainerCheckbox').on('change', function() {
-            var checkboxes = $('#emptyContainerTable tbody input[type="checkbox"]');
-            checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
-        });
-
         var fromDateI = $('#fromDateSearch').val();
         var toDateI = $('#toDateSearch').val();
         var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
         var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-        var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
         var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
         var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
         var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
         var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
         var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
         var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-        var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
-        var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
-        var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
-        var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
 
         table = $("#weightTable").DataTable({
             "responsive": true,
@@ -1883,51 +1579,30 @@ else{
                     toDate: toDateI,
                     status: statusI,
                     customer: customerNoI,
-                    supplier: supplierI,
                     vehicle: vehicleNoI,
                     invoice: invoiceNoI,
                     batch: batchNoI,
                     product: productSearchI,
                     rawMaterial: rawMaterialI,
                     plant: plantNoI,
-                    transactionId: transactionIdI,
-                    containerNo: containerNoI,
-                    sealNo: sealNoI,
-                    invDelPoI: invDelPoI
                 } 
             },
             'columns': [
-                {
-                    // Add a checkbox with a unique ID for each row
-                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                    className: 'select-checkbox',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        if (row.weight_type == 'Primer Mover + Container'){
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
-                        }else{
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
-                        }
-                    }
-                },
-                { data: 'transaction_id' },                
-                { data: 'weight_type' },
+                { 
+                    data: 'transaction_id',
+                    class: 'transaction-column'
+                },                
                 { data: 'transaction_status' },
                 { data: 'customer' },
-                { data: 'container_no' },
-                { data: 'seal_no' },
                 { data: 'lorry_plate_no1' },
+                { data: 'product_name' },
+                { data: 'purchase_order' },
+                { data: 'delivery_no' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
                 { data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
-                { data: 'lorry_plate_no2' },
-                { data: 'gross_weight2' },
-                { data: 'gross_weight2_date' },
-                { data: 'tare_weight2' },
-                { data: 'tare_weight2_date' },
-                { data: 'nett_weight2' },
                 { 
                     data: 'id',
                     class: 'action-button',
@@ -1935,53 +1610,32 @@ else{
                         let buttons = `<div class="row g-1 d-flex">`;
 
                         if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                            // if (row.is_complete != 'Y' ){
-                            if (row.weight_type == 'Primer Mover + Container'){
+                            if (row.is_complete != 'Y' ){
                                 buttons += `
                                 <div class="col-auto">
-                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </div>`;
-                            }else{
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data})" class="btn btn-warning btn-sm">
                                         <i class="fas fa-pen"></i>
                                     </button>
                                 </div>`;
                             }
-                            // }
                         }else {
                             if (row.is_complete != 'Y' ){
-                                if (row.weight_type == 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;    
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;  
-                                }
-
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data})" class="btn btn-warning btn-sm">
+                                        <i class="fa-solid fa-weight-hanging"></i>
+                                    </button>
+                                </div>`;
                             }
                         }
 
                         if (row.is_approved == 'Y') {
-                            if (row.weight_type != 'Primer Mover + Container'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                        <i class="fa-solid fa-print"></i>
-                                    </button>
-                                </div>`;
-                            }
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                    <i class="fa-solid fa-print"></i>
+                                </button>
+                            </div>`;
                         }
 
                         if (row.is_approved == 'N') {
@@ -1994,21 +1648,12 @@ else{
                         }
 
                         if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                            if (row.weight_type == 'Primer Mover + Container'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>`;
-                            }else{
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>`;
-                            }
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data})" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>`;
                         }
                             
                         buttons += `</div>`;
@@ -2046,141 +1691,28 @@ else{
             }   
         });
 
-        emptyContainerTable = $("#emptyContainerTable").DataTable({
-            "responsive": true,
-            "autoWidth": false,
-            'processing': true,
-            'serverSide': true,
-            'searching': true,
-            'serverMethod': 'post',
-            'ajax': {
-                'url':'php/filterEmptyContainer.php',
-                'data': {
-                    fromDate: fromDateI,
-                    toDate: toDateI
-                } 
-            },
-            'columns': [
-                {
-                    // Add a checkbox with a unique ID for each row
-                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                    className: 'select-checkbox',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                    }
-                },
-                { data: 'container_no' },                
-                { data: 'seal_no' },                
-                { data: 'transaction_status' },
-                { data: 'lorry_plate_no1' },
-                { data: 'gross_weight1' },
-                { data: 'gross_weight1_date' },
-                { data: 'tare_weight1' },
-                { data: 'tare_weight1_date' },
-                { data: 'nett_weight1' },
-                { 
-                    data: 'id',
-                    class: 'action-button',
-                    render: function (data, type, row) {
-                        let buttons = `<div class="row g-1 d-flex">`;
-
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                            if (row.is_complete != 'Y' ){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </div>`;
-                            }
-                        }else {
-                            if (row.is_complete != 'Y' ){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fa-solid fa-weight-hanging"></i>
-                                    </button>
-                                </div>`;
-                            }
-                        }
-
-                        buttons += `
-                        <div class="col-auto">
-                            <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                <i class="fa-solid fa-print"></i>
-                            </button>
-                        </div>`;
-
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                            buttons += `
-                            <div class="col-auto">
-                                <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </div>`;
-                        }
-                            
-                        buttons += `</div>`;
-
-                        return buttons;
-                    }
-                }
-            ]
-        });
-
         // Add event listener for opening and closing details on row click
         $('#weightTable tbody').on('click', 'tr', function (e) {
             var tr = $(this); // The row that was clicked
             var row = table.row(tr);
-            if (!row.data()) return; // <-- Exit early if row data is not available
 
             // Exclude specific td elements by checking the event target
-            if ($(e.target).closest('td').hasClass('select-checkbox') || $(e.target).closest('td').hasClass('action-button') || row.data().weight_type =='Primer Mover + Container') {
+            if ($(e.target).closest('td').hasClass('transaction-column') || $(e.target).closest('td').hasClass('action-button')) {
                 return;
             }
 
-            // Clear any previous timer if have
-            if (clickTimer) {
-                clearTimeout(clickTimer);
-                clickTimer = null;
-            }
-
-            // Delay to detect double-click
-            clickTimer = setTimeout(function () {
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    $.post('php/getWeight.php', { userID: row.data().id, format: 'EXPANDABLE' }, function (data) {
-                        var obj = JSON.parse(data);
-                        if (obj.status === 'success') {
-                            row.child(format(obj.message)).show();
-                            tr.addClass("shown");
-                        }
-                    });
-                }
-
-                clickTimer = null; // Reset after execution
-            }, 250); // Delay to distinguish from double-click
-        });
-
-        // Add event listener for double click
-        $('#weightTable tbody').on('dblclick', 'tr', function (e) {
-            if (clickTimer) {
-                clearTimeout(clickTimer); // Cancel single-click
-                clickTimer = null;
-            }
-
-            var row = table.row(this);
-            var id = row.data().id;
-            var weightType = row.data().weight_type;
-
-            // run edit function
-            if (weightType == 'Empty Container'){
-                edit(id, 'Y');
-            }else{
-                edit(id, 'N');
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                $.post('php/getWeight.php', { userID: row.data().id, format: 'EXPANDABLE' }, function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status === 'success') {
+                        row.child(format(obj.message)).show();
+                        tr.addClass("shown");
+                    }
+                });
             }
         });
 
@@ -2279,13 +1811,11 @@ else{
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
-                        alert(obj.message);
                         $("#failBtn").attr('data-toast-text', obj.message );
                         $("#failBtn").click();
                     }
                     else{
                         $('#spinnerLoading').hide();
-                        alert(obj.message);
                         $("#failBtn").attr('data-toast-text', 'Failed to save');
                         $("#failBtn").click();
                     }
@@ -2397,11 +1927,6 @@ else{
 
             pass = true;
 
-            var isEmptyContainer = 'N';
-            if ($('#weightType').val() == 'Empty Container'){
-                isEmptyContainer = 'Y';
-            }
-
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight.php', $('#weightForm').serialize(), function(data){
@@ -2412,7 +1937,7 @@ else{
                         $("#successBtn").attr('data-toast-text', obj.message);
                         $("#successBtn").click();
 
-                        $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+                        $.post('php/print.php', {userID: obj.id, file: 'weight'}, function(data){
                             var obj2 = JSON.parse(data);
 
                             if(obj2.status === 'success'){
@@ -2423,9 +1948,9 @@ else{
                                     printWindow.print();
                                     printWindow.close();
                                     table.ajax.reload();
-                                    window.location = 'index.php';
+                                    //window.location = 'index.php';
                                     
-                                    /*setTimeout(function () {
+                                    setTimeout(function () {
                                         if (confirm("Do you need to reprint?")) {
                                             $.post('php/print.php', { userID: obj.id, file: 'weight' }, function (data) {
                                                 var obj = JSON.parse(data);
@@ -2443,7 +1968,7 @@ else{
                                                 }
                                             });
                                         }
-                                    }, 500);*/
+                                    }, 500);
                                 }, 500);
                             }
                             else if(obj.status === 'failed'){
@@ -2675,7 +2200,6 @@ else{
                     
                     if(obj.status === 'success'){
                         table.ajax.reload();
-                        emptyContainerTable.ajax.reload();
                         $('#spinnerLoading').hide();
                         $('#cancelModal').modal('hide');
                         $("#successBtn").attr('data-toast-text', obj.message);
@@ -2714,17 +2238,15 @@ else{
                     console.log("Data Received:" + data);
                     
                     if(ind == 'X2S' || ind == 'X722'){
-                        if(data.includes("GS")){
-                            var text = data.split(" ");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(text2);
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
+                        var text = data.split(" ");
+                        var text2 = text[text.length - 1];
+                        text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
+                        $('#indicatorWeight').html(text2);
+                        $('#indicatorConnected').addClass('bg-primary');
+                        $('#checkingConnection').removeClass('bg-danger');
                     }
                     else if(ind == 'BDI'){
-                        if(data.includes("GS") || data.includes("NT") || data.includes("ST") || data.includes("US")){
+                        if(data.includes("GS")){
                             var text = data.split(" ");
                             var text2 = text[text.length - 1];
                             text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
@@ -2734,25 +2256,20 @@ else{
                         }
                     }
                     else if(ind == 'EX2001'){
-                        data = data.replace("kg", "").replace("KG", "").replace("Kg", "").replace("g", "");
-                        if(data != null && data != ''){
-                            var text = data.split(",");
-                            var text2 = text[text.length - 1];
-                            //text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(parseInt(text2.replaceAll(",", "").trim()).toString());
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
+                        var text = data.split(" ");
+                        let newArray = text.slice(1, -1);
+                        let newtext = newArray.join();
+                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
+                        $('#indicatorConnected').addClass('bg-primary');
+                        $('#checkingConnection').removeClass('bg-danger');
                     }
                     else if(ind == 'D2008'){
-                        if(data.includes("GS")){
-                            var text = data.split(",");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(parseInt(text2).toString());
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
+                        var text = data.split(",");
+                        var text2 = text[text.length - 1];
+                        text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
+                        $('#indicatorWeight').html(parseInt(text2).toString());
+                        $('#indicatorConnected').addClass('bg-primary');
+                        $('#checkingConnection').removeClass('bg-danger');
                     }
                 }
                 else{
@@ -2768,21 +2285,15 @@ else{
             var toDateI = $('#toDateSearch').val();
             var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
             var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-            var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
             var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
             var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
             var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
             var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-            var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
-            var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
-            var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
-            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
 
             //Destroy the old Datatable
             $("#weightTable").DataTable().clear().destroy();
-            $("#emptyContainerTable").DataTable().clear().destroy();
 
             //Create new Datatable
             table = $("#weightTable").DataTable({
@@ -2799,51 +2310,30 @@ else{
                         toDate: toDateI,
                         status: statusI,
                         customer: customerNoI,
-                        supplier: supplierI,
                         vehicle: vehicleNoI,
                         invoice: invoiceNoI,
                         batch: batchNoI,
                         product: productSearchI,
                         rawMaterial: rawMaterialI,
                         plant: plantNoI,
-                        transactionId: transactionIdI,
-                        containerNo: containerNoI,
-                        sealNo: sealNoI,
-                        invDelPo: invDelPoI
                     } 
                 },
                 'columns': [
-                    {
-                        // Add a checkbox with a unique ID for each row
-                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                        className: 'select-checkbox',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            if (row.weight_type == 'Primer Mover + Container'){
-                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
-                            }else{
-                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
-                            }
-                        }
+                    { 
+                        data: 'transaction_id',
+                        class: 'transaction-column'
                     },
-                    { data: 'transaction_id' }, 
-                    { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
-                    { data: 'container_no' },
-                    { data: 'seal_no' },
                     { data: 'lorry_plate_no1' },
+                    { data: 'product_name' },
+                    { data: 'purchase_order' },
+                    { data: 'delivery_no' },
                     { data: 'gross_weight1' },
                     { data: 'gross_weight1_date' },
                     { data: 'tare_weight1' },
                     { data: 'tare_weight1_date' },
                     { data: 'nett_weight1' },
-                    { data: 'lorry_plate_no2' },
-                    { data: 'gross_weight2' },
-                    { data: 'gross_weight2_date' },
-                    { data: 'tare_weight2' },
-                    { data: 'tare_weight2_date' },
-                    { data: 'nett_weight2' },
                     { 
                         data: 'id',
                         class: 'action-button',
@@ -2851,53 +2341,32 @@ else{
                             let buttons = `<div class="row g-1 d-flex">`;
 
                             if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                                // if (row.is_complete != 'Y' ){
-                                if (row.weight_type == 'Primer Mover + Container'){
+                                if (row.is_complete != 'Y' ){
                                     buttons += `
                                     <div class="col-auto">
-                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                    </div>`;
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data})" class="btn btn-warning btn-sm">
                                             <i class="fas fa-pen"></i>
                                         </button>
                                     </div>`;
                                 }
-                                // }
                             }else {
                                 if (row.is_complete != 'Y' ){
-                                    if (row.weight_type == 'Primer Mover + Container'){
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;    
-                                    }else{
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;  
-                                    }
-
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data})" class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-weight-hanging"></i>
+                                        </button>
+                                    </div>`;
                                 }
                             }
 
                             if (row.is_approved == 'Y') {
-                                if (row.weight_type != 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                            <i class="fa-solid fa-print"></i>
-                                        </button>
-                                    </div>`;
-                                }
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                        <i class="fa-solid fa-print"></i>
+                                    </button>
+                                </div>`;
                             }
 
                             if (row.is_approved == 'N') {
@@ -2910,21 +2379,12 @@ else{
                             }
 
                             if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                                if (row.weight_type == 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>`;
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>`;
-                                }
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data})" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>`;
                             }
                                 
                             buttons += `</div>`;
@@ -2951,7 +2411,7 @@ else{
                             // dropdownMenu += '</ul></div>';
                             // return dropdownMenu;
                         }
-                    }
+                }
                 ],
                 "drawCallback": function(settings) {
                     $('#salesInfo').text(settings.json.salesTotal);
@@ -2960,90 +2420,6 @@ else{
                     $('#miscInfo').text(settings.json.miscTotal);
                 }   
             });
-
-            //Create new Datatable for empty container
-            emptyContainerTable = $("#emptyContainerTable").DataTable({
-                "responsive": true,
-                "autoWidth": false,
-                'processing': true,
-                'serverSide': true,
-                'searching': true,
-                'serverMethod': 'post',
-                'ajax': {
-                    'url':'php/filterEmptyContainer.php',
-                    'data': {
-                        fromDate: fromDateI,
-                        toDate: toDateI
-                    } 
-                },
-                'columns': [
-                    {
-                        // Add a checkbox with a unique ID for each row
-                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                        className: 'select-checkbox',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                        }
-                    },
-                    { data: 'container_no' },                
-                    { data: 'seal_no' },                
-                    { data: 'transaction_status' },
-                    { data: 'lorry_plate_no1' },
-                    { data: 'gross_weight1' },
-                    { data: 'gross_weight1_date' },
-                    { data: 'tare_weight1' },
-                    { data: 'tare_weight1_date' },
-                    { data: 'nett_weight1' },
-                    { 
-                        data: 'id',
-                        class: 'action-button',
-                        render: function (data, type, row) {
-                            let buttons = `<div class="row g-1 d-flex">`;
-
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                                if (row.is_complete != 'Y' ){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                            }else {
-                                if (row.is_complete != 'Y' ){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                            }
-
-                            buttons += `
-                            <div class="col-auto">
-                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                    <i class="fa-solid fa-print"></i>
-                                </button>
-                            </div>`;
-
-                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>`;
-                            }
-                                
-                            buttons += `</div>`;
-
-                            return buttons;
-                        }
-                    }
-                ]
-            });
         });
 
         $('#addWeight').on('click', function(){
@@ -3051,10 +2427,8 @@ else{
             $('#addModal').find('#grossCapture').show();
             $('#addModal').find('#tareCapture').show();
             $('#addModal').find('#id').val("");
-            $('#addModal').find('#currentWeight').text("0");
             $('#addModal').find('#transactionId').val("");
             $('#addModal').find('#transactionStatus').val("Sales").trigger('change');
-            $('#addModal').find('#emptyContainerNo').val("").trigger('change');
             $('#addModal').find('#weightType').val("Normal").trigger('change');
             $('#addModal').find('#customerType').val("Normal").trigger('change');
             $('#addModal').find('#transactionDate').val(formatDate2(today));
@@ -3063,55 +2437,50 @@ else{
             $('#addModal').find('#supplierWeight').val("");
             $('#addModal').find('#bypassReason').val("");
             $('#addModal').find('#customerCode').val("");
-            $('#addModal').find('#customerName').val("-").trigger('change');
+            $('#addModal').find('#customerName').val("").trigger('change');
             $('#addModal').find('#supplierCode').val("");
-            $('#addModal').find('#supplierName').val("-").trigger('change');
+            $('#addModal').find('#supplierName').val("").trigger('change');
             $('#addModal').find('#productCode').val("");
-            $('#addModal').find('#productName').val("-").trigger('change');
+            $('#addModal').find('#productName').val("").trigger('change');
             $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true).trigger('change');
             $('#addModal').find('#rawMaterialCode').val("");
-            $('#addModal').find('#rawMaterialName').val("-").trigger('change');
+            $('#addModal').find('#rawMaterialName').val("").trigger('change');
             $('#addModal').find('#siteCode').val("");
             $('#addModal').find('#siteName').val("").trigger('change');
             $('#addModal').find('#plantCode').val("");
-            $('#addModal').find('#sealNo').val("");
+            $('#addModal').find('#containerNo').val("");
             $('#addModal').find('#invoiceNo').val("");
             $('#addModal').find('#purchaseOrder').val("").trigger('change');
             $('#addModal').find('#salesOrder').val("").trigger('change');
             $('#addModal').find('#deliveryNo').val("");
             $('#addModal').find('#transporterCode').val("");
-            $('#addModal').find('#transporter').val("-").trigger('change');
+            $('#addModal').find('#transporter').val("").trigger('change');
             $('#addModal').find('#destinationCode').val("");
             $('#addModal').find('#agent').val("").trigger('change');
             $('#addModal').find('#agentCode').val("");
             $('#addModal').find('#plantCode').val("");
             $('#addModal').find('#plant').val("<?=$plantName ?>").trigger('change');
-            $('#addModal').find('#destination').val("-").trigger('change');
-            $('#addModal').find('#replacementContainer').val('').trigger('keyup');
+            $('#addModal').find('#destination').val("").trigger('change');
             $('#addModal').find('#otherRemarks').val("");
             $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
-            $('#addModal').find('#manualVehicle2').prop('checked', false).trigger('change');
             $('#addModal').find('#grossIncoming').val("");
-            grossIncomingDatePicker.clear();
+            $('#addModal').find('#grossIncomingDate').val("");
             $('#addModal').find('#tareOutgoing').val("");
-            tareOutgoingDatePicker.clear();
+            $('#addModal').find('#tareOutgoingDate').val("");
             $('#addModal').find('#nettWeight').val("");
-            $('#addModal').find('#vehicleWeight2').val("");
-            $('#addModal').find('#emptyContainerWeight2').val("");
             $('#addModal').find('#grossIncoming2').val("");
             $('#addModal').find('#status').val("");
-            grossIncomingDatePicker2.clear();
+            $('#addModal').find('#grossIncomingDate2').val("");
             $('#addModal').find('#tareOutgoing2').val("");
-            tareOutgoingDatePicker2.clear();
+            $('#addModal').find('#tareOutgoingDate2').val("");
             $('#addModal').find('#nettWeight2').val("");
             $('#addModal').find('#reduceWeight').val("");
             // $('#addModal').find('#vehicleNo').val(obj.message.final_weight);
             $('#addModal').find('#weightDifference').val("");
             // $('#addModal').find('#id').val(obj.message.is_complete);
             // $('#addModal').find('#vehicleNo').val(obj.message.is_cancel);
-            // $('#addModal').find("#manualWeightNo").prop("checked", true);
-            // $('#addModal').find("#manualWeightYes").prop("checked", false);
-            $('#addModal').find('#manualWeightNo').trigger('click');
+            $('#addModal').find("#manualWeightNo").prop("checked", true);
+            $('#addModal').find("#manualWeightYes").prop("checked", false);
             //$('#addModal').find('input[name="manualWeight"]').val("false");
             //$('#addModal').find('#indicatorId').val("");
             $('#addModal').find('#weighbridge').val("");
@@ -3131,18 +2500,11 @@ else{
             $('#addModal').find('#noOfDrum').val("");
             $('#addModal').find('#balance').val("");
             $('#addModal').find('#insufficientBalDisplay').hide();
-            $('#addModal').find('#containerNoInput').val("");
-            $('#addModal').find('#containerNo').val("");
-            $('#addModal').find('#containerNo2').val("");
-            $('#addModal').find('#sealNo2').val("");
 
             // Show select and hide input readonly
             $('#addModal').find('#salesOrderEdit').val("").hide();
             $('#addModal').find('#purchaseOrderEdit').val("").hide();
             $('#addModal').find('#salesOrder').next('.select2-container').show();
-
-            $('#addModal').find('#productTable').html('');
-            rowCount = 0;
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -3204,369 +2566,15 @@ else{
             reader.readAsBinaryString(file);
         });
 
-        $('#exportPdf').on('click', function(){
-            var fromDateI = $('#fromDateSearch').val();
-            var toDateI = $('#toDateSearch').val();
-            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-            var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-            var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-            var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
-            var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
-            var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-            var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-
-            if (batchNoI == 'N'){
-                batchNoI = 'Pending';
-            }else if (batchNoI == 'Y'){
-                batchNoI = 'Complete';
-            }
-
-            var selectedIds = []; // An array to store the selected 'id' values
-
-            $("#weightTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    var type = $(this).data('type'); // Get data-type attribute
-                    if (type == 'Lorry'){
-                        selectedIds.push($(this).val());
-                    }
-                }
-            });
-
-            if (selectedIds.length > 0) {
-                $.post('php/exportPdf.php', {
-                    fromDate : fromDateI,
-                    toDate : fromDateI,
-                    transactionStatus : statusI,
-                    customer : customerNoI,
-                    supplier : supplierNoI,
-                    vehicle : vehicleNoI,
-                    weighingType : invoiceNoI,
-                    status : batchNoI,
-                    product : productSearchI,
-                    rawMat : rawMaterialI,
-                    plant : plantNoI,
-                    isMulti : 'Y',
-                    ids : selectedIds,
-                    file : 'weight'
-                }, function(response){
-                    var obj = JSON.parse(response);
-
-                    if(obj.status === 'success'){
-                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        printWindow.document.write(obj.message);
-                        printWindow.document.close();
-                        setTimeout(function(){
-                            printWindow.print();
-                            printWindow.close();
-                        }, 500);
-                    }
-                    else if(obj.status === 'failed'){
-                        toastr["error"](obj.message, "Failed:");
-                    }
-                    else{
-                        toastr["error"]("Something wrong when activate", "Failed:");
-                    }
-                }).fail(function(error){
-                    console.error("Error exporting PDF:", error);
-                    alert("An error occurred while generating the PDF.");
-                });
-            }else{
-                $.post('php/exportPdf.php', {
-                    fromDate : fromDateI,
-                    toDate : fromDateI,
-                    transactionStatus : statusI,
-                    customer : customerNoI,
-                    supplier : supplierNoI,
-                    vehicle : vehicleNoI,
-                    weighingType : invoiceNoI,
-                    status : batchNoI,
-                    product : productSearchI,
-                    rawMat : rawMaterialI,
-                    plant : plantNoI,
-                    isMulti : 'N',
-                    file : 'weight'
-                }, function(response){
-                    var obj = JSON.parse(response);
-
-                    if(obj.status === 'success'){
-                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        printWindow.document.write(obj.message);
-                        printWindow.document.close();
-                        setTimeout(function(){
-                            printWindow.print();
-                            printWindow.close();
-                        }, 500);
-                    }
-                    else if(obj.status === 'failed'){
-                        toastr["error"](obj.message, "Failed:");
-                    }
-                    else{
-                        toastr["error"]("Something wrong when activate", "Failed:");
-                    }
-                }).fail(function(error){
-                    console.error("Error exporting PDF:", error);
-                    alert("An error occurred while generating the PDF.");
-                });
-            }
-        });
-
-        $('#exportExcel').on('click', function(){
-            var fromDateI = $('#fromDateSearch').val();
-            var toDateI = $('#toDateSearch').val();
-            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-            var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-            var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-            var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
-            var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
-            var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-            var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-            
-            if (batchNoI == 'N'){
-                batchNoI = 'Pending';
-            }else if (batchNoI == 'Y'){
-                batchNoI = 'Complete';
-            }
-
-            var selectedIds = []; // An array to store the selected 'id' values
-
-            $("#weightTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    var type = $(this).data('type'); // Get data-type attribute
-                    if (type == 'Lorry'){
-                        selectedIds.push($(this).val());
-                    }
-                }
-            });
-
-            if (selectedIds.length > 0) {
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
-                "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI+"&isMulti=Y&ids="+selectedIds);
-            }else{
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
-                "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI+"&isMulti=N");
-            }
-        });
-
-        $('#multiDeleteLorry').on('click', function(){
-            var selectedLorryIds = []; // An array to store the selected 'id' values
-            var selectedEmptyContainerIds = []; // An array to store the selected 'id' values
-
-            $("#weightTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    var type = $(this).data('type'); // Get data-type attribute
-                    if (type == 'Lorry'){
-                        selectedLorryIds.push($(this).val());
-                    }else{
-                        selectedEmptyContainerIds.push($(this).val());
-                    }
-                }
-            });
-
-            if (selectedLorryIds.length > 0 || selectedEmptyContainerIds.length > 0) {
-                if (confirm('Are you sure you want to cancel these items?')) {
-                    $('#cancelModal').find('#id').val(selectedLorryIds);
-                    $('#cancelModal').find('#containerId').val(selectedEmptyContainerIds);
-                    $('#cancelModal').find('#isEmptyContainer').val('N');
-                    $('#cancelModal').find('#isMulti').val('Y');
-                    $('#cancelModal').modal('show');
-
-                    $('#cancelForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }else{
-                alert("Please select at least one weighing record to delete.");
-            }
-        });
-
-        $('#multiDeleteContainer').on('click', function(){
-            var selectedIds = []; // An array to store the selected 'id' values
-
-            $("#emptyContainerTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    selectedIds.push($(this).val());
-                }
-            });
-
-            if (selectedIds.length > 0) {
-                if (confirm('Are you sure you want to cancel these items?')) {
-                    $('#cancelModal').find('#id').val(selectedIds);
-                    $('#cancelModal').find('#isEmptyContainer').val('Y');
-                    $('#cancelModal').find('#isMulti').val('Y');
-                    $('#cancelModal').modal('show');
-
-                    $('#cancelForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }else{
-                alert("Please select at least one weighing record to delete.");
-            }
-        });
-
         $('#weightType').on('change', function(){
-            var weightType = $(this).val();
-            var transaType = $('#transactionStatus').val();
-
-            if (weightType == 'Container'){
-                $.post('php/getContainers.php', {userID: transaType}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        if (obj.message.length > 0){
-                            $('#addModal').find('#emptyContainerNo').empty();
-                            $('#addModal').find('#emptyContainerNo').append(`<option selected="-">-</option>`);
-
-                            var deliveredTransporter;
-
-                            for (var i = 0; i < obj.message.length; i++) {
-                                var id = obj.message[i].id;
-                                var container_no = obj.message[i].container_no;
-
-                                $('#addModal').find('#emptyContainerNo').append(
-                                    '<option value="'+container_no+'">'+container_no+'</option>'
-                                );  
-                            }
-                        }
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-
-                handleWeightType(weightType);
-                $('#addModal').find('#containerNo1Label').text("Container No 1");
-                $('#addModal').find('#emptyContainerDisplay').show();
-                $('#addModal').find('#replacementContainerDisplay').hide();
-                $('#addModal').find('#vehicleWeight2Display').hide();
-                $('#addModal').find('#container2WeightDisplay').hide();
-                $('#addModal').find('#containerNo2Display').show();
-                $('#addModal').find('#containerNo2ReplaceDisplay').hide();
-                $('#addModal').find('#sealNoDisplay').show();
-                $('#addModal').find('#sealNoReplaceDisplay').hide();
-                $('#addModal').find('#sealNo2Display').show();
-                $('#addModal').find('#sealNo2ReplaceDisplay').hide();
-                $('#addModal').find('#containerDisplay').hide();
-                $('#addModal').find('#containerNoInput').attr('required', false);
-                $('#addModal').find('#emptyContainerNo').attr('required', true);
-            }else if (weightType == 'Empty Container'){
-                handleWeightType(weightType);
-                $('#addModal').find('#containerNo1Label').text("Container No 1");
-                $('#addModal').find('#emptyContainerDisplay').hide();
-                $('#addModal').find('#replacementContainerDisplay').hide();
-                $('#addModal').find('#vehicleWeight2Display').hide();
-                $('#addModal').find('#container2WeightDisplay').hide();
-                $('#addModal').find('#containerNo2Display').show();
-                $('#addModal').find('#containerNo2ReplaceDisplay').hide();
-                $('#addModal').find('#sealNoDisplay').show();
-                $('#addModal').find('#sealNoReplaceDisplay').hide();
-                $('#addModal').find('#sealNo2Display').show();
-                $('#addModal').find('#sealNo2ReplaceDisplay').hide();
-                $('#addModal').find('#containerDisplay').show();
-                $('#addModal').find('#containerNoInput').attr('required', true);
-                $('#addModal').find('#emptyContainerNo').attr('required', false);
-            }else if (weightType == 'Different Container') {
-                $.post('php/getContainers.php', {userID: transaType}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        if (obj.message.length > 0){
-                            $('#addModal').find('#emptyContainerNo').empty();
-                            $('#addModal').find('#emptyContainerNo').append(`<option selected="-">-</option>`);
-
-                            var deliveredTransporter;
-
-                            for (var i = 0; i < obj.message.length; i++) {
-                                var id = obj.message[i].id;
-                                var container_no = obj.message[i].container_no;
-
-                                $('#addModal').find('#emptyContainerNo').append(
-                                    '<option value="'+container_no+'">'+container_no+'</option>'
-                                );  
-                            }
-                        }
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-                handleWeightType(weightType);
-                $('#addModal').find('#containerNo1Label').text("Pending Dispatch Bin");
-                $('#addModal').find('#emptyContainerDisplay').show();
-                $('#addModal').find('#replacementContainerDisplay').show();
-                $('#addModal').find('#vehicleWeight2Display').show();
-                $('#addModal').find('#container2WeightDisplay').show();
-                $('#addModal').find('#containerNo2Display').hide();
-                $('#addModal').find('#containerNo2ReplaceDisplay').show();
-                $('#addModal').find('#sealNoDisplay').hide();
-                $('#addModal').find('#sealNoReplaceDisplay').show();
-                $('#addModal').find('#sealNo2Display').hide();
-                $('#addModal').find('#sealNo2ReplaceDisplay').show();
-                $('#addModal').find('#containerDisplay').hide();
-                $('#addModal').find('#containerNoInput').attr('required', false);
-                $('#addModal').find('#emptyContainerNo').attr('required', true);
-            }else{
-                handleWeightType(weightType);
-                $('#addModal').find('#containerNo1Label').text("Container No 1");
-                $('#addModal').find('#emptyContainerDisplay').hide();
-                $('#addModal').find('#replacementContainerDisplay').hide();
-                $('#addModal').find('#vehicleWeight2Display').hide();
-                $('#addModal').find('#container2WeightDisplay').hide();
-                $('#addModal').find('#containerNo2Display').show();
-                $('#addModal').find('#containerNo2ReplaceDisplay').hide();
-                $('#addModal').find('#sealNoDisplay').show();
-                $('#addModal').find('#sealNoReplaceDisplay').hide();
-                $('#addModal').find('#sealNo2Display').show();
-                $('#addModal').find('#sealNo2ReplaceDisplay').hide();
-                $('#addModal').find('#containerDisplay').show();
-                $('#addModal').find('#containerNoInput').attr('required', false);
-                $('#addModal').find('#emptyContainerNo').attr('required', false);
+            if($(this).val() == "Container")
+            {
+                $('#containerCard').show();
             }
-        });
-
-        $('#replacementContainer').on('keyup', function(){
-            var replacementContainer = $(this).val();
-            $('#replaceContainerText').text(replacementContainer);
+            else
+            {
+                $('#containerCard').hide();
+            }
         });
 
         /*$('#customerType').on('change', function(){
@@ -3613,25 +2621,49 @@ else{
             var x = $('#vehicleNoTxt').val();
             x = x.toUpperCase();
             $('#vehicleNoTxt').val(x);
-            var transactionStatus = $('#transactionStatus').val();
 
-            if (x){
-                $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
+            var exDel = $('input[name="exDel"]:checked').val();
+            if (exDel == 'true'){
+                // $('#addModal').find('#transporter').val('Own Transportation').trigger('change');
+                // $('#addModal').find('#transporterCode').val('T01');
+                $.post('php/getVehicle.php', {userID: x, type: 'lookup'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
+                        // var customerName = obj.message.customer_name;
+                        // var customerCode = obj.message.customer_code;
 
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#addModal').find('#customerName').val(customerName).trigger('change');
-                            $('#addModal').find('#customerCode').val(customerCode);
-                        }else{
-                            $('#addModal').find('#supplierName').val(supplierName).trigger('change');
-                            $('#addModal').find('#supplierCode').val(supplierCode);
-                        }
+                        // $('#addModal').find('#customerName').val(customerName).trigger('change');
+                        // $('#addModal').find('#customerCode').val(customerCode);
+                    }
+                    else if(obj.status === 'error'){
+                        alert(obj.message);
+                        $('#vehicleNoTxt').val('');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }else{
+                // $('#addModal').find('#customerName').val('').trigger('change');
+                // $('#addModal').find('#customerCode').val('');
+
+                $.post('php/getVehicle.php', {userID: x, type: 'lookup'}, function (data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        // var transporterName = obj.message.transporter_name;
+                        // var transporterCode = obj.message.transporter_code;
+
+                        // $('#addModal').find('#transporter').val(transporterName).trigger('change');
+                        // $('#addModal').find('#transporterCode').val(transporterCode);
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);
@@ -3652,29 +2684,39 @@ else{
         });
 
         $('#vehiclePlateNo1').on('change', function(){
-            var vehiclePlateNo1 = $(this).val();
-            var transactionStatus = $('#transactionStatus').val();
-            if (vehiclePlateNo1){
-                $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
+            //var tare = $('#vehiclePlateNo1 :selected').data('weight') ? parseFloat($('#vehiclePlateNo1 :selected').data('weight')) : 0;
+        
+            //if($('#transactionStatus').val() == "Purchase" || $(this).val() == "Local"){
+                //$('#grossIncoming').val(parseFloat(tare).toFixed(0));
+                //$('#grossIncoming').trigger('keyup');
+            /*}
+            else{
+                $('#tareOutgoing').val(parseFloat(tare).toFixed(0));
+                $('#tareOutgoing').trigger('keyup');
+            }*/
+
+            /*var vehicleNo1 = $(this).val();
+            var vehicleNo1Edit = $('#vehiclePlateNo1Edit').val();
+            var exDel = $('input[name="exDel"]:checked').val();
+            if (vehicleNo1Edit == 'EDIT'){
+                return;
+            }
+            else if (exDel == 'true'){
+                // $('#addModal').find('#transporter').val('Own Transportation').trigger('change');
+                // $('#addModal').find('#transporterCode').val('T01');
+                $.post('php/getVehicle.php', {userID: vehicleNo1, type: 'lookup'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
+                        // var customerName = obj.message.customer_name;
+                        // var customerCode = obj.message.customer_code;
 
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#addModal').find('#customerName').val(customerName).trigger('change');
-                            $('#addModal').find('#customerCode').val(customerCode);
-                        }else{
-                            $('#addModal').find('#supplierName').val(supplierName).trigger('change');
-                            $('#addModal').find('#supplierCode').val(supplierCode);
-                        }
+                        // $('#addModal').find('#customerName').val(customerName).trigger('change');
+                        // $('#addModal').find('#customerCode').val(customerCode);
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);
-                        $('#vehicleNoTxt').val('');
+                        $('#vehiclePlateNo1').val('').trigger('change');
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -3688,9 +2730,52 @@ else{
                     }
                 });
             }
+            else{
+                // $('#addModal').find('#customerName').val('').trigger('change');
+                // $('#addModal').find('#customerCode').val('');
+
+                $.post('php/getVehicle.php', {userID: vehicleNo1, type: 'lookup'}, function (data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        // var transporterName = obj.message.transporter_name;
+                        // var transporterCode = obj.message.transporter_code;
+
+                        // $('#addModal').find('#transporter').val(transporterName).trigger('change');
+                        // $('#addModal').find('#transporterCode').val(transporterCode);
+                    }
+                    else if(obj.status === 'error'){
+                        alert(obj.message);
+                        $('#vehiclePlateNo1').val('').trigger('change');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }*/
         });
 
-        $('#manualVehicle2').on('change', function(){
+        $('#vehiclePlateNo2').on('change', function(){
+            //var tare = $('#vehiclePlateNo2 :selected').data('weight') ? parseFloat($('#vehiclePlateNo2 :selected').data('weight')) : 0;
+        
+            //if($('#transactionStatus').val() == "Purchase" || $(this).val() == "Local"){
+                //$('#grossIncoming2').val(parseFloat(tare).toFixed(0));
+                //$('#grossIncoming2').trigger('keyup');
+            /*}
+            else{
+                $('#tareOutgoing2').val(parseFloat(tare).toFixed(0));
+                $('#tareOutgoing2').trigger('keyup');
+            }*/
+        });
+
+        $('#manualVehicle2').on('click', function(){
             if($(this).is(':checked')){
                 $(this).val(1);
                 $('#vehiclePlateNo2').val('-');
@@ -3709,61 +2794,6 @@ else{
             var x = $('#vehicleNoTxt2').val();
             x = x.toUpperCase();
             $('#vehicleNoTxt2').val(x);
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container' && x) {
-                $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        var vehicleWeight = obj.message.vehicle_weight;
-                        $('#vehicleWeight2').val(vehicleWeight);
-                    }
-                    else if(obj.status === 'error'){
-                        alert(obj.message);
-                        $('#vehicleNoTxt').val('');
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }
-        });
-
-        $('#vehiclePlateNo2').on('change', function(){
-            var vehiclePlateNo2 = $(this).val();
-            var weightType = $('#weightType').val();
-            if (weightType == 'Different Container' && vehiclePlateNo2){
-                $.post('php/getVehicle.php', {userID: vehiclePlateNo2, type: 'pullCustomer'}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        var vehicleWeight = obj.message.vehicle_weight;
-                        $('#vehicleWeight2').val(vehicleWeight);
-                    }
-                    else if(obj.status === 'error'){
-                        alert(obj.message);
-                        $('#vehicleNoTxt').val('');
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }
         });
 
         $('.radio-manual-weight').on('click', function(){
@@ -3786,16 +2816,11 @@ else{
             var tare = $('#tareOutgoing').val() ? parseFloat($('#tareOutgoing').val()) : 0;
             var nett = Math.abs(gross - tare);
             $('#nettWeight').val(nett.toFixed(0));
+            $('#grossIncomingDate').val(formatDate3(new Date()));
             $('#nettWeight').trigger('change');
-            $('#grossWeightBy1').val('<?php echo $username; ?>');
-
-            // Update the Flatpickr instance
-            grossIncomingDatePicker.setDate(new Date()); // sets it to current date/time
-            $('#grossIncomingDate').trigger('change');
         });
 
-        $('#grossCapture').on('click', function(event){
-            event.preventDefault();
+        $('#grossCapture').on('click', function(){
             var text = $('#indicatorWeight').text();
             $('#grossIncoming').val(parseFloat(text).toFixed(0));
             $('#grossIncoming').trigger('keyup');
@@ -3806,44 +2831,20 @@ else{
             var gross = $('#grossIncoming').val() ? parseFloat($('#grossIncoming').val()) : 0;
             var nett = Math.abs(gross - tare);
             $('#nettWeight').val(nett.toFixed(0));
+            $('#tareOutgoingDate').val(formatDate3(new Date()));
             $('#nettWeight').trigger('change');
-            $('#tareWeightBy1').val('<?php echo $username; ?>');
-
-            // Update the Flatpickr instance
-            tareOutgoingDatePicker.setDate(new Date()); // sets it to current date/time
-            $('#tareOutgoingDate').trigger('change');
-
         });
 
-        $('#tareCapture').on('click', function(event){
-            event.preventDefault();
+        $('#tareCapture').on('click', function(){
             var text = $('#indicatorWeight').text();
             $('#tareOutgoing').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing').trigger('keyup');
         });
 
         $('#nettWeight').on('change', function(){
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container'){
-                var current = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-            }else{
-                var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-                var nett1 = $(this).val() ? parseFloat($(this).val()) : 0;
-                var current = Math.abs(nett1 - nett2);
-            }
-
-            // Enhancement to add additional product weight
-            if ($('#productTable tr').length > 0){
-                let totalNett = 0;
-                $('#productTable tr').each(function () {
-                    let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-                    totalNett += nettVal;
-                });
-
-                current = current + totalNett;
-            }
-
+            var nett1 = $(this).val() ? parseFloat($(this).val()) : 0;
+            var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
+            var current = Math.abs(nett1 - nett2);
             $('#currentWeight').text(current.toFixed(0));
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
@@ -3851,30 +2852,10 @@ else{
         });
         
         $('#reduceWeight').on('change', function(){
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container'){
-                var current = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-            }else{
-                var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-                var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
-                var current = Math.abs(nett1 - nett2);
-            }
-
-            // Enhancement to add additional product weight
-            if ($('#productTable tr').length > 0){
-                let totalNett = 0;
-                $('#productTable tr').each(function () {
-                    let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-                    totalNett += nettVal;
-                });
-
-                current = current + totalNett;
-            }
-
+            debugger;
             var reduce = $(this).val() ? parseFloat($(this).val()) : 0;
-            //var nett1 = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
-            var final = Math.abs(current - reduce);
+            var nett1 = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
+            var final = Math.abs(nett1 - reduce);
             $('#currentWeight').text(final.toFixed(0));
             $('#finalWeight').val(final.toFixed(0));
             $('#currentWeight').trigger('change');
@@ -3933,99 +2914,39 @@ else{
         });
 
         $('#grossIncoming2').on('keyup', function(){
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container'){
-                var gross2 = $(this).val() ? parseFloat($(this).val()) : 0;
-                var tare2 = $('#tareOutgoing2').val() ? parseFloat($('#tareOutgoing2').val()) : 0;
-                var vehicleWeight2 = $('#vehicleWeight2').val() ? parseFloat($('#vehicleWeight2').val()) : 0;
-                var emptyContainerWeight2 = Math.abs(gross2 - vehicleWeight2);
-
-                // Container 1 weights
-                var emptyContainer1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
-                var nett = Math.abs(tare2 - vehicleWeight2 - emptyContainer1);
-
-                $('#emptyContainerWeight2').val(emptyContainerWeight2);
-            }else{
-                var gross = $(this).val() ? parseFloat($(this).val()) : 0;
-                var tare = $('#tareOutgoing2').val() ? parseFloat($('#tareOutgoing2').val()) : 0;
-                var nett = Math.abs(gross - tare);
-            }
-
+            var gross = $(this).val() ? parseFloat($(this).val()) : 0;
+            var tare = $('#tareOutgoing2').val() ? parseFloat($('#tareOutgoing2').val()) : 0;
+            var nett = Math.abs(gross - tare);
             $('#nettWeight2').val(nett.toFixed(0));
+            $('#grossIncomingDate2').val(formatDate3(new Date()));
             $('#nettWeight2').trigger('change');
-            $('#grossWeightBy2').val('<?php echo $username; ?>');
-
-            // Update the Flatpickr instance
-            grossIncomingDatePicker2.setDate(new Date()); // sets it to current date/time
-            $('#grossIncomingDate2').trigger('change');
         });
 
-        $('#grossCapture2').on('click', function(event){
-            event.preventDefault();
+        $('#grossCapture2').on('click', function(){
             var text = $('#indicatorWeight').text();
             $('#grossIncoming2').val(parseFloat(text).toFixed(0));
             $('#grossIncoming2').trigger('keyup');
         });
 
         $('#tareOutgoing2').on('keyup', function(){
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container'){
-                var gross2 = $('#grossIncoming2').val() ? parseFloat($('#grossIncoming2').val()) : 0;
-                var tare2 = $(this).val() ? parseFloat($(this).val()) : 0;
-                var vehicleWeight2 = $('#vehicleWeight2').val() ? parseFloat($('#vehicleWeight2').val()) : 0;
-                var emptyContainerWeight2 = Math.abs(gross2 - vehicleWeight2);
-                $('#emptyContainerWeight2').val(emptyContainerWeight2);
-
-                // Container 1 weights
-                var emptyContainer1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
-                var nett = Math.abs(tare2 - vehicleWeight2 - emptyContainer1);
-            }else{
-                var tare = $(this).val() ? parseFloat($(this).val()) : 0;
-                var gross = $('#grossIncoming2').val() ? parseFloat($('#grossIncoming2').val()) : 0;
-                var nett = Math.abs(gross - tare);
-            }
-
+            var tare = $(this).val() ? parseFloat($(this).val()) : 0;
+            var gross = $('#grossIncoming2').val() ? parseFloat($('#grossIncoming2').val()) : 0;
+            var nett = Math.abs(gross - tare);
             $('#nettWeight2').val(nett.toFixed(0));
+            $('#tareOutgoingDate2').val(formatDate3(new Date()));
             $('#nettWeight2').trigger('change');
-            $('#tareWeightBy2').val('<?php echo $username; ?>');
-
-            // Update the Flatpickr instance
-            tareOutgoingDatePicker2.setDate(new Date()); // sets it to current date/time
-            $('#tareOutgoingDate2').trigger('change');
-
         });
 
-        $('#tareCapture2').on('click', function(event){
-            event.preventDefault();
+        $('#tareCapture2').on('click', function(){
             var text = $('#indicatorWeight').text();
             $('#tareOutgoing2').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing2').trigger('keyup');
         });
 
         $('#nettWeight2').on('change', function(){
-            var weightType = $('#weightType').val();
-
-            if (weightType == 'Different Container'){
-                var current = $(this).val() ? parseFloat($(this).val()) : 0;
-            }else{
-                var nett2 = $(this).val() ? parseFloat($(this).val()) : 0;
-                var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
-                var current = Math.abs(nett1 - nett2);
-            }
-
-            // Enhancement to add additional product weight
-            if ($('#productTable tr').length > 0){
-                let totalNett = 0;
-                $('#productTable tr').each(function () {
-                    let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-                    totalNett += nettVal;
-                });
-
-                current = current + totalNett;
-            }
-
+            var nett2 = $(this).val() ? parseFloat($(this).val()) : 0;
+            var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
+            var current = Math.abs(nett1 - nett2);
             $('#currentWeight').text(current.toFixed(0));
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
@@ -4045,41 +2966,6 @@ else{
 
         $('#transactionStatus').on('change', function(){
             var customerType = $('#addModal').find('#customerType').val();
-            var weightType = $('#addModal').find('#weightType').val();
-
-            if(weightType == 'Container'){
-                $.post('php/getContainers.php', {userID: $(this).val()}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        if (obj.message.length > 0){
-                            $('#addModal').find('#emptyContainerNo').empty();
-                            $('#addModal').find('#emptyContainerNo').append(`<option selected="-">-</option>`);
-
-                            var deliveredTransporter;
-
-                            for (var i = 0; i < obj.message.length; i++) {
-                                var id = obj.message[i].id;
-                                var container_no = obj.message[i].container_no;
-
-                                $('#addModal').find('#emptyContainerNo').append(
-                                    '<option value="'+container_no+'">'+container_no+'</option>'
-                                );  
-                            }
-                        }
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }
 
             if($(this).val() == "Purchase" || $(this).val() == "Local"){
                 $('#divWeightDifference').show();
@@ -4235,77 +3121,76 @@ else{
             }
         });
 
-        //Empty Container No
-        $('#emptyContainerNo').on('change', function (){
-            var emptyContainerNo = $(this).val();
-            var weightType = $('#weightType').val();
-            $('#containerNo').val(emptyContainerNo);
+        /*$('#purchaseOrder').on('change', function (){
+            var purchaseOrder = $(this).val();
+            var type = $('#addModal').find('#transactionStatus').val();
 
-            if (emptyContainerNo == '-'){
-                $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
-                $('#addModal').find('#grossIncoming').val(0);
-                $('#addModal').find('#grossIncomingDate').val("");
-                $('#addModal').find('#tareOutgoing').val(0);
-                $('#addModal').find('#tareOutgoingDate').val("");
-                $('#addModal').find('#nettWeight').val(0);
-                $('#tareOutgoing2').trigger('keyup');
-                $('#normalCard').hide();
-            } else if (emptyContainerNo) { 
-                $.post('php/getEmptyContainer.php', {userID: emptyContainerNo}, function (data){
+            if (purchaseOrder){
+                $.post('php/getOrderSupplier.php', {code: purchaseOrder, type: type}, function (data){
                     var obj = JSON.parse(data);
 
-                    if (obj.status == 'success'){ 
-                        $('#addModal').find('#invoiceNo').val(obj.message.invoice_no);
-                        $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
-                        $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
-                        $('#addModal').find('#sealNo').val(obj.message.seal_no);
+                    if (obj.status == 'success'){
+                        var customerSupplierName = obj.message.customer_supplier_name;
+                        var destinationName = obj.message.destination_name;
+                        var siteName = obj.message.site_name;
+                        var agentName = obj.message.agent_name;
+                        var productName = obj.message.product_name;
+                        var plantName = obj.message.plant_name;
+                        var transporterName = obj.message.transporter_name;
+                        var vehNo = obj.message.veh_number;
+                        var exDel = obj.message.ex_del;
+                        var orderSupplierWeight = obj.message.order_supplier_weight;
+                        var balance = obj.message.balance;
+                        // var finalWeight = obj.message.final_weight;
+                        // var previousRecordsTag = obj.message.previousRecordsTag;
 
-                        if (weightType != 'Different Container'){
-                            $('#addModal').find('#containerNo2').val(obj.message.container_no2);
-                            $('#addModal').find('#sealNo2').val(obj.message.seal_no2);
-                        }
+                        // Change Details
+                        $('#addModal').find('#supplierName').val(customerSupplierName).trigger('change');
+                        $('#addModal').find('#destination').val(destinationName).trigger('change');
+                        $('#addModal').find('#siteName').val(siteName).trigger('change');
+                        $('#addModal').find('#agent').val(agentName).trigger('change');
+                        $('#addModal').find('#rawMaterialName').val(productName).trigger('change');
+                        $('#addModal').find('#plant').val(plantName).trigger('change');
+                        $('#addModal').find('#transporter').val(transporterName).trigger('change');
+                        $('#addModal').find('#vehiclePlateNo1').val(vehNo).trigger('change');
 
-                        if (obj.message.transaction_status == 'Sales' || obj.message.transaction_status == 'Misc'){
-                            $('#addModal').find('#customerName').val(obj.message.customer_name).trigger('change');
-                            $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
+                        if(exDel == 'E'){
+                            $('#addModal').find("input[name='exDel'][value='true']").prop("checked", true).trigger('change');
                         }else{
-                            $('#addModal').find('#supplierName').val(obj.message.supplier_name).trigger('change');
-                            $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
+                            $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true).trigger('change');
                         }
-                        $('#addModal').find('#plant').val(obj.message.plant_name).trigger('change');
-                        $('#addModal').find('#transporter').val(obj.message.transporter).trigger('change');
-                        $('#addModal').find('#destination').val(obj.message.destination).trigger('change');
 
-                        
-                        $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
-                        $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1); console.log(obj.message.gross_weight1_date);
-                        grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date)); 
-                        // $('#addModal').find('#grossIncomingDate').val(obj.message.gross_weight1_date);
-                        $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);
-                        $('#addModal').find('#tareOutgoing').val(obj.message.tare_weight1);
-                        tareOutgoingDatePicker.setDate(new Date(obj.message.tare_weight1_date));
-                        // $('#addModal').find('#tareOutgoingDate').val(obj.message.tare_weight1_date);
-                        $('#addModal').find('#tareWeightBy1').val(obj.message.tare_weight_by1);
-                        $('#addModal').find('#nettWeight').val(obj.message.nett_weight1);
+                        $('#addModal').find('#poSupplyWeight').val(orderSupplierWeight)
+                        $('#addModal').find('#balance').val(balance);
+                        // $('#addModal').find('#previousRecordsTag').val(previousRecordsTag);
 
-                        if(obj.message.vehicleNoTxt != null){
-                            $('#addModal').find('#vehicleNoTxt').val(obj.message.vehicleNoTxt);
-                            $('#manualVehicle').val(1);
-                            $('#manualVehicle').prop("checked", true);
-                            $('.index-vehicle').hide();
-                            $('#vehicleNoTxt').show();
-                        }
-                        else{
-                            $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
-                            $('#manualVehicle').val(0);
-                            $('#manualVehicle').prop("checked", false);
-                            $('.index-vehicle').show();
-                            $('#vehicleNoTxt').hide();
-                        }
-                        
-                        $('#tareOutgoing2').trigger('keyup');
-                        
-                        $('#normalCard').show();
+                        // if (previousRecordsTag){
+                        //     $('#addModal').find('#balance').val(parseFloat(orderSupplierWeight) - parseFloat(finalWeight));
+
+                        //     // Hide or show insufficient balance
+                        //     if (parseFloat(orderSupplierWeight) - parseFloat(finalWeight) <= 0) {
+                        //         $('#addModal').find('#insufficientBalDisplay').hide();
+                        //     } else {
+                        //         $('#addModal').find('#insufficientBalDisplay').show();
+                        //     }
+                        // }else{
+                        //     var weight = 0;
+                        //     if (type == 'Purchase'){
+                        //         weight = $('#addModal').find('#supplierWeight').val();
+                        //     }else{
+                        //         weight = $('#addModal').find('#orderWeight').val();
+                        //     }
+
+                        //     $('#addModal').find('#balance').val(weight);
+                        //     // Hide or show insufficient balance
+                        //     if (weight <= 0) {
+                        //         $('#addModal').find('#insufficientBalDisplay').hide();
+                        //     } else {
+                        //         $('#addModal').find('#insufficientBalDisplay').show();
+                        //     }
+                        // }
+
+                        $('#addModal').trigger('orderLoaded');
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -4319,118 +3204,100 @@ else{
                     }
                 });
             }else{
-                $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
-                $('#addModal').find('#grossIncoming').val(0);
-                $('#addModal').find('#grossIncomingDate').val("");
-                $('#addModal').find('#tareOutgoing').val(0);
-                $('#addModal').find('#tareOutgoingDate').val("");
-                $('#addModal').find('#nettWeight').val(0);
-                $('#tareOutgoing2').trigger('keyup');
-                $('#normalCard').hide();
+                $('#addModal').trigger('orderLoaded');
             }
         });
 
-        //Container No
-        $('#containerNoInput').on('keyup', function(){
-            var x = $('#containerNoInput').val();
-            x = x.toUpperCase();
-            $('#containerNoInput').val(x);
-            $('#containerNo').val(x);
-        });
-        
-        $('#containerNoInput').on('change', function () {
-            $('#containerNo').val($(this).val());
-        });
+        $('#salesOrder').on('change', function (){
+            var salesOrder = $(this).val(); 
+            var type = $('#addModal').find('#transactionStatus').val(); 
+            if (salesOrder){
+                $.post('php/getOrderSupplier.php', {code: salesOrder, type: type}, function (data){
+                    var obj = JSON.parse(data);
 
-        //Seal No
-        $('#sealNo').on('keyup', function(){
-            var x = $('#sealNo').val();
-            x = x.toUpperCase();
-            $('#sealNo').val(x);
-        });
+                    if (obj.status == 'success'){
+                        var customerSupplierName = obj.message.customer_supplier_name;
+                        var destinationName = obj.message.destination_name;
+                        var siteName = obj.message.site_name;
+                        var agentName = obj.message.agent_name;
+                        var productName = obj.message.product_name;
+                        var plantName = obj.message.plant_name;
+                        var transporterName = obj.message.transporter_name;
+                        var vehNo = obj.message.veh_number;
+                        var exDel = obj.message.ex_del;
+                        var orderSupplierWeight = obj.message.order_supplier_weight;
+                        var balance = obj.message.balance;
+                        // var finalWeight = obj.message.final_weight;
+                        // var previousRecordsTag = obj.message.previousRecordsTag;
 
-        //Container No 2
-        $('#containerNo2').on('keyup', function(){
-            var x = $('#containerNo2').val();
-            x = x.toUpperCase();
-            $('#containerNo2').val(x);
-        });
+                        $('#addModal').find('#customerName').val(customerSupplierName).trigger('change');
+                        $('#addModal').find('#destination').val(destinationName).trigger('change');
+                        $('#addModal').find('#siteName').val(siteName).trigger('change');
+                        $('#addModal').find('#agent').val(agentName).trigger('change');
+                        $('#addModal').find('#productName').val(productName).trigger('change');
+                        $('#addModal').find('#plant').val(plantName).trigger('change');
+                        $('#addModal').find('#transporter').val(transporterName).trigger('change');
+                        $('#addModal').find('#vehiclePlateNo1').val(vehNo).trigger('change');
 
-        //Seal No 2
-        $('#sealNo2').on('keyup', function(){
-            var x = $('#sealNo2').val();
-            x = x.toUpperCase();
-            $('#sealNo2').val(x);
-        });
+                        if(exDel == 'E'){
+                            $('#addModal').find("input[name='exDel'][value='true']").prop("checked", true).trigger('change');
+                        }else{
+                            $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true).trigger('change');
+                        }
 
-        //Container No Search
-        $('#containerNoSearch').on('keyup', function(){
-            var x = $('#containerNoSearch').val();
-            x = x.toUpperCase();
-            $('#containerNoSearch').val(x);
-        });
+                        $('#addModal').find('#orderWeight').val(orderSupplierWeight);
+                        $('#addModal').find('#balance').val(balance);
+                        // $('#addModal').find('#previousRecordsTag').val(previousRecordsTag);
 
-        //Seal No Search
-        $('#sealNoSearch').on('keyup', function(){
-            var x = $('#sealNoSearch').val();
-            x = x.toUpperCase();
-            $('#sealNoSearch').val(x);
-        });
+                        if (parseFloat(balance) <= 0) {
+                            $('#addModal').find('#insufficientBalDisplay').hide();
+                        } else {
+                            $('#addModal').find('#insufficientBalDisplay').show();
+                        }
 
-        // Find and remove selected table rows
-        $("#productTable").on('click', 'button[id^="remove"]', function () {
-            $(this).parents("tr").remove();
 
-            $("#productTable tr").each(function (index) {
-                $(this).find('input[name^="no"]').val(index + 1);
-            });
+                        // if (previousRecordsTag){
+                        //     // $('#addModal').find('#balance').val(parseFloat(orderSupplierWeight) - parseFloat(finalWeight));
 
-            rowCount--;
-        });
+                        //     // Hide or show insufficient balance
+                        //     if (parseFloat(balance) <= 0) {
+                        //         $('#addModal').find('#insufficientBalDisplay').hide();
+                        //     } else {
+                        //         $('#addModal').find('#insufficientBalDisplay').show();
+                        //     }
+                        // }else{
+                        //     var weight = 0;
+                        //     if (type == 'Purchase'){
+                        //         weight = $('#addModal').find('#supplierWeight').val();
+                        //     }else{
+                        //         weight = $('#addModal').find('#orderWeight').val();
+                        //     }
 
-        // Event delegation for gross weight to calculate nett weight
-        $("#productTable").on('change', 'input[id^="productGross"]', function(){
-            // Retrieve the input's attributes
-            var gross = parseFloat($(this).val());
-            var tare = parseFloat($(this).closest('.details').find('input[id^="productTare"]').val());
-            var nettWeight = Math.abs(gross - tare);
+                        //     $('#addModal').find('#balance').val(weight);
+                        //     // Hide or show insufficient balance
+                        //     if (weight <= 0) {
+                        //         $('#addModal').find('#insufficientBalDisplay').hide();
+                        //     } else {
+                        //         $('#addModal').find('#insufficientBalDisplay').show();
+                        //     }
+                        // }
+                        
+                        $('#addModal').trigger('orderLoaded');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
 
-            // Update the respective inputs for productNett
-            $(this).closest('.details').find('input[id^="productNett"]').val(nettWeight);
-            $('#nettWeight').trigger('change');
-        });
-
-        // Event delegation for tare weight to calculate nett weight
-        $("#productTable").on('change', 'input[id^="productTare"]', function(){
-            // Retrieve the input's attributes
-            var tare = $(this).val();
-            var gross = parseFloat($(this).closest('.details').find('input[id^="productGross"]').val());
-            var nettWeight = Math.abs(gross - tare);
-
-            // Update the respective inputs for productNett
-            $(this).closest('.details').find('input[id^="productNett"]').val(nettWeight);
-            $('#nettWeight').trigger('change');
-        });
-
-        // Add additional products
-        $(".add-product").click(function(){
-            var $addContents = $("#productDetail").clone();
-            $("#productTable").append($addContents.html());
-
-            $("#productTable").find('.details:last').attr("id", "detail" + rowCount);
-            $("#productTable").find('.details:last').attr("data-index", rowCount);
-            $("#productTable").find('#remove:last').attr("id", "remove" + rowCount);
-
-            $("#productTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount + 1);
-            $("#productTable").find('#weightProductId:last').attr('name', 'weightProductId['+rowCount+']').attr("id", "weightProductId" + rowCount);
-            $("#productTable").find('#product:last').attr('name', 'product['+rowCount+']').attr("id", "product" + rowCount);
-            $("#productTable").find('#productPacking:last').attr('name', 'productPacking['+rowCount+']').attr("id", "productPacking" + rowCount);
-            $("#productTable").find('#productGross:last').attr('name', 'productGross['+rowCount+']').attr("id", "productGross" + rowCount);
-            $("#productTable").find('#productTare:last').attr('name', 'productTare['+rowCount+']').attr("id", "productTare" + rowCount);
-            $("#productTable").find('#productNett:last').attr('name', 'productNett['+rowCount+']').attr("id", "productNett" + rowCount);
-
-            rowCount++;
-        });
+        });*/
 
         <?php
             if(isset($_GET['weight'])){
@@ -4445,143 +3312,60 @@ else{
         ?>
     });
 
-    function handleWeightType(weightType){
-        if (weightType == 'Container'){
-            $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
-            $('#addModal').find('#grossIncoming').val(0);
-            $('#addModal').find('#grossIncomingDate').val("");
-            $('#addModal').find('#tareOutgoing').val(0);
-            $('#addModal').find('#tareOutgoingDate').val("");
-            $('#addModal').find('#nettWeight').val(0);
-            $('#normalCard').hide();
-            $('#containerCard').show();
-        }else if(weightType == 'Empty Container'){
-            $('#addModal').find('#manualVehicle2').prop('checked', false).trigger('change');
-            $('#addModal').find('#grossIncoming2').val(0);
-            $('#addModal').find('#grossIncomingDate2').val("");
-            $('#addModal').find('#tareOutgoing2').val(0);
-            $('#addModal').find('#tareOutgoingDate2').val("");
-            $('#addModal').find('#nettWeight2').val(0);
-            $('#containerCard').hide();
-            $('#normalCard').show();
-        }else if(weightType == 'Different Container'){
-            $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
-            $('#addModal').find('#grossIncoming').val(0);
-            $('#addModal').find('#grossIncomingDate').val("");
-            $('#addModal').find('#tareOutgoing').val(0);
-            $('#addModal').find('#tareOutgoingDate').val("");
-            $('#addModal').find('#nettWeight').val(0);
-            $('#normalCard').hide();
-            $('#containerCard').show();
-        }else{
-            $('#addModal').find('#manualVehicle2').prop('checked', false).trigger('change');
-            $('#addModal').find('#grossIncoming2').val(0);
-            $('#addModal').find('#grossIncomingDate2').val("");
-            $('#addModal').find('#tareOutgoing2').val(0);
-            $('#addModal').find('#tareOutgoingDate2').val("");
-            $('#addModal').find('#nettWeight2').val(0);
-            $('#normalCard').show();
-            $('#containerCard').hide();
-        }
-    }
-
     function format (row) {
-        var transactionStatus = '';
-        var weightType = '';
-
-        if (row.transaction_status == 'Sales') {
-            transactionStatus = 'Dispatch';
-        } else if (row.transaction_status == 'Purchase') {
-            transactionStatus = 'Receiving';
-        } else if (row.transaction_status == 'Local') {
-            transactionStatus = 'Internal Transfer';
-        } else {
-            transactionStatus = 'Miscellaneous';
-        }
-
-        if(row.weight_type == 'Container'){
-            weightType = 'Primer Mover';
-        }else if(row.weight_type == 'Empty Container'){
-            weightType = 'Primer Mover + Container';
-        }else if(row.weight_type == 'Normal'){
-            weightType = 'Normal Weighing';
-        }else if(row.weight_type == 'Different Container'){
-            weightType = 'Primer Mover + Different Bins';
-        }else{
-            weightType = row.weight_type;
-        }
-
         var returnString = `
-        <!-- Customer Section -->
+        <!-- Weighing Section -->
         <div class="row">
-            <div class="col-6">
-                <p><span><strong style="font-size:120%; text-decoration: underline;">Customer/Supplier</strong></span><br>
+            <div class="col-2">
                 <p><strong>${row.name}</strong></p>
                 <p>${row.address_line_1}</p>
                 <p>${row.address_line_2}</p>
                 <p>${row.address_line_3}</p>
                 <p>TEL: ${row.phone_no} FAX: ${row.fax_no}</p>
             </div>
-        </div>
-        <hr>
-        <!-- Delivery Order Section -->
-        <div class="row">
-            <p><span><strong style="font-size:120%; text-decoration: underline;">Delivery Order Information</strong></span><br>
-            <div class="col-6">
-                <p><strong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
-                <p><strong>DESTINATION NAME:</strong> ${row.destination}</p>
-                <p><strong>SITE NAME:</strong> ${row.site_name}</p>
-                <p><strong>PLANT NAME:</strong> ${row.plant_name}</p>`;
-                if (row.transaction_status == 'Purchase' || row.transaction_status == 'Local'){
-                    returnString += `<p><strong>PURCHASE PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
-                }else{
-                    returnString += `<p><strong>SALES PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
-                }
-        
-            returnString += `
-                <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
-                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
-            </div>
-            <div class="col-6">
-                <p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
-                <p><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
-                <p><strong>WEIGHT TYPE:</strong> ${weightType}</p>
-                <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p>
-                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
-                <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
-                <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>
-            </div>
-        </div>
-        <hr>
+            <div class="col-10">
+                <div class="row">
+                    <div class="col-3">
+                        <p><strong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
+                        <p><strong>DESTINATION NAME:</strong> ${row.destination}</p>
+                        <p><strong>SITE NAME:</strong> ${row.site_name}</p>
+                        <p><strong>PLANT NAME:</strong> ${row.plant_name}</p>`;
 
-        <!-- Weighing Section -->
-        <div class="row">
-            <p><span><strong style="font-size:120%; text-decoration: underline;">Weighing Information</strong></span><br>
-            <!-- Normal -->
-            <div class="col-6">
-                <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
-                <p><strong>IN WEIGHT:</strong> ${row.gross_weight1}</p>
-                <p><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
-                <p><strong>IN WEIGH BY:</strong> ${row.gross_weight_by1}</p>
-                <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1}</p>
-                <p><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
-                <p><strong>OUT WEIGH BY:</strong> ${row.tare_weight_by1}</p>
-                <p><strong>NETT WEIGHT:</strong> ${row.nett_weight1}</p>
-                <p><strong>SUB TOTAL WEIGHT:</strong> ${row.final_weight}</p>
-            </div>
-            <!-- Container -->
-            <div class="col-6">
-                <p><strong>VEHICLE PLATE 2:</strong> ${row.lorry_plate_no2}</p>
-                <p><strong>IN WEIGHT 2:</strong> ${row.gross_weight2}</p>
-                <p><strong>IN DATE / TIME 2:</strong> ${row.gross_weight2_date}</p>
-                <p><strong>IN WEIGH BY 2:</strong> ${row.gross_weight_by2}</p>
-                <p><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2}</p>
-                <p><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
-                <p><strong>OUT WEIGH BY 2:</strong> ${row.tare_weight_by2}</p>
-                <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2}</p>            
+                    if (row.transaction_status == 'Purchase'){
+                        returnString += `<p><strong>RAW MATERIAL NAME:</strong> ${row.product_rawmat_name}</p>`;
+                    }else{
+                        returnString += `<p><strong>PRODUCT NAME:</strong> ${row.product_rawmat_name}</p>`;
+                    }
+
+                    returnString += `</div>
+                    <div class="col-3">
+                        <p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
+                        <p><strong>WEIGHT STATUS:</strong> ${row.transaction_status}</p>
+                        <p><strong>INVOICE NO:</strong> ${row.invoice_no}</p>
+                        <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p> `;
+
+                    if (row.transaction_status == 'Purchase'){
+                        returnString += `<p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>`;
+                    }else{
+                        returnString += `<p><strong>SALE ORDER:</strong> ${row.purchase_order}</p>`;
+                    }
+                    
+                    returnString += `</div>
+                    <div class="col-3">
+                        <p><strong>CREATED DATE:</strong> ${row.created_date}</p>
+                        <p><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
+                        <p><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
+                    </div>
+                    <div class="col-3">
+                        <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
+                        <p><strong>IN WEIGHT:</strong> ${row.gross_weight1}</p>
+                        <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1}</p>
+                        <p><strong>NETT WEIGHT:</strong> ${row.nett_weight1}</p>
+                        <p><strong>SUB TOTAL WEIGHT:</strong> ${row.final_weight}</p>
+                    </div>
                 </div>
-        </div>
-        `;
+            </div>
+        </div>`;
         
         return returnString;
     }
@@ -4645,17 +3429,9 @@ else{
         previewTable.innerHTML = htmlTable;
     }
 
-    function edit(id, isContainer){
+    function edit(id){
         $('#spinnerLoading').show();
-
-        var type = '';
-        if (isContainer == 'Y'){
-            type = 'Container';
-        }else{
-            type = 'Weight'
-        }
-
-        $.post('php/getWeight.php', {userID: id, type: type}, function(data)
+        $.post('php/getWeight.php', {userID: id}, function(data)
         {
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
@@ -4673,7 +3449,7 @@ else{
                 $('#addModal').find('#id').val(obj.message.id);
                 $('#addModal').find('#transactionId').val(obj.message.transaction_id);
                 $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
-                $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
+                $('#addModal').find('#weightType').val(obj.message.weight_type);
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
                 $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
@@ -4701,7 +3477,7 @@ else{
                 }
                 else{
                     $('#addModal').find('#vehiclePlateNo1Edit').val('EDIT');
-                    $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).select2('destroy').select2();
+                    $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
                     $('#manualVehicle').val(0);
                     $('#manualVehicle').prop("checked", false);
                     $('.index-vehicle').show();
@@ -4716,7 +3492,7 @@ else{
                     $('#vehicleNoTxt2').show();
                 }
                 else{
-                    $('#addModal').find('#vehiclePlateNo2').val(obj.message.lorry_plate_no2).select2('destroy').select2();
+                    $('#addModal').find('#vehiclePlateNo2').val(obj.message.lorry_plate_no2);
                     $('#manualVehicle2').val(0);
                     $('#manualVehicle2').prop("checked", false);
                     $('.index-vehicle2').show();
@@ -4731,14 +3507,14 @@ else{
                 }
                 
                 $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
+                $('#addModal').find('#containerNo').val(obj.message.container_no);
                 $('#addModal').find('#invoiceNo').val(obj.message.invoice_no);
                 $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
                 $('#addModal').find('#transporterCode').val(obj.message.transporter_code);
                 $('#addModal').find('#transporter').val(obj.message.transporter).trigger('change');
-                $('#addModal').find('#customerName').val(obj.message.customer_name).select2('destroy').select2();
-                $('#addModal').find('#customerCode').val(obj.message.customer_code);
-                $('#addModal').find('#supplierName').val(obj.message.supplier_name).select2('destroy').select2();
+                $('#addModal').find('#customerName').val(obj.message.customer_name).trigger('change');
                 $('#addModal').find('#supplierCode').val(obj.message.supplier_code);
+                $('#addModal').find('#supplierName').val(obj.message.supplier_name).trigger('change')
                 $('#addModal').find('#siteCode').val(obj.message.site_code);
                 $('#addModal').find('#siteName').val(obj.message.site_name).trigger('change');
                 $('#addModal').find('#agent').val(obj.message.agent_name).trigger('change');
@@ -4756,25 +3532,17 @@ else{
                 
                 $('#addModal').find('#otherRemarks').val(obj.message.remarks);
                 $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
-                grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
-                $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);
+                $('#addModal').find('#grossIncomingDate').val(formatDate3(new Date(obj.message.gross_weight1_date)));
                 $('#addModal').find('#tareOutgoing').val(obj.message.tare_weight1);
-                tareOutgoingDatePicker.setDate(obj.message.tare_weight1_date != null ? new Date(obj.message.tare_weight1_date) : null);
-                $('#addModal').find('#tareWeightBy1').val(obj.message.tare_weight_by1);
+                $('#addModal').find('#tareOutgoingDate').val(obj.message.tare_weight1_date != null ? formatDate3(new Date(obj.message.tare_weight1_date)) : '');
                 $('#addModal').find('#nettWeight').val(obj.message.nett_weight1);
-                $('#addModal').find('#vehicleWeight2').val(obj.message.lorry_no2_weight);
-                $('#addModal').find('#emptyContainerWeight2').val(obj.message.empty_container2_weight);
-                $('#addModal').find('#replacementContainer').val(obj.message.replacement_container).trigger('keyup');
                 $('#addModal').find('#grossIncoming2').val(obj.message.gross_weight2);
-                grossIncomingDatePicker2.setDate(obj.message.gross_weight2_date != null ? new Date(obj.message.gross_weight2_date) : null);
-                $('#addModal').find('#grossWeightBy2').val(obj.message.gross_weight_by2);
+                $('#addModal').find('#grossIncomingDate2').val(obj.message.gross_weight2_date != null ? formatDate3(new Date(obj.message.gross_weight2_date)) : '');
                 $('#addModal').find('#tareOutgoing2').val(obj.message.tare_weight2);
-                tareOutgoingDatePicker2.setDate(obj.message.tare_weight2_date != null ? new Date(obj.message.tare_weight2_date) : null);
-                $('#addModal').find('#tareWeightBy2').val(obj.message.tare_weight_by2);
+                $('#addModal').find('#tareOutgoingDate2').val(obj.message.tare_weight2_date != null ? formatDate3(new Date(obj.message.tare_weight2_date)) : '');
                 $('#addModal').find('#nettWeight2').val(obj.message.nett_weight2);
                 $('#addModal').find('#reduceWeight').val(obj.message.reduce_weight);
                 $('#addModal').find('#weightDifference').val(obj.message.weight_different);
-                $('#addModal').find('#currentWeight').text(obj.message.final_weight);
 
                 if(obj.message.manual_weight == 'true'){
                     $("#manualWeightYes").prop("checked", true);
@@ -4804,78 +3572,6 @@ else{
                 }
                 
                 $('#addModal').find('#noOfDrum').val(obj.message.no_of_drum);
-                $('#addModal').find('#containerNoInput').val(obj.message.container_no);
-                $('#addModal').find('#containerNo').val(obj.message.container_no);
-                $('#addModal').find('#containerNo2').val(obj.message.container_no2);
-                $('#addModal').find('#sealNo').val(obj.message.seal_no);
-                $('#addModal').find('#sealNo2').val(obj.message.seal_no2);
-
-                // Load container data and update the emptyContainerNo field if it's a container
-                if((obj.message.weight_type == 'Container' || obj.message.weight_type == 'Different Container') && obj.message.container_no){
-                    loadContainerData(function() {
-                        $('#normalCard').show();
-
-                        // Check if container value exist in the select tag
-                        var emptyContainerExists = $('#addModal').find('#emptyContainerNo option').filter(function() {
-                            return $(this).val() === obj.message.container_no;
-                        }).length > 0;
-
-                        if (!emptyContainerExists){
-                            // Append missing empty container no
-                            $('#addModal').find('#emptyContainerNo').append(
-                                '<option value="'+obj.message.container_no+'">'+obj.message.container_no+'</option>'
-                            );
-                        }
-
-                        // Callback to ensure the dropdown is updated before setting the value
-                        $('#addModal').find('#emptyContainerNo').val(obj.message.container_no).select2('destroy').select2();
-
-                        // Initialize all Select2 elements in the modal
-                        $('#addModal .select2').select2({
-                            allowClear: true,
-                            placeholder: "Please Select",
-                            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
-                        });
-
-                        // Apply custom styling to Select2 elements in addModal
-                        $('#addModal .select2-container .select2-selection--single').css({
-                            'padding-top': '4px',
-                            'padding-bottom': '4px',
-                            'height': 'auto'
-                        });
-
-                        $('#addModal .select2-container .select2-selection__arrow').css({
-                            'padding-top': '33px',
-                            'height': 'auto'
-                        });
-                    });
-                }
-
-                $('#productTable').html('');
-                rowCount = 0;
-
-                if (obj.message.products.length > 0){
-                    for(var i = 0; i < obj.message.products.length; i++){
-                        var item = obj.message.products[i];
-                        var $addContents = $("#productDetail").clone();
-                        $("#productTable").append($addContents.html());
-
-                        $("#productTable").find('.details:last').attr("id", "detail" + rowCount);
-                        $("#productTable").find('.details:last').attr("data-index", rowCount);
-                        $("#productTable").find('#remove:last').attr("id", "remove" + rowCount);
-
-                        $("#productTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount + 1);
-                        $("#productTable").find('#weightProductId:last').attr('name', 'weightProductId['+rowCount+']').attr("id", "weightProductId" + rowCount).val(item.id);
-                        $("#productTable").find('#product:last').attr('name', 'product['+rowCount+']').attr("id", "product" + rowCount).val(item.product);
-                        $("#productTable").find('#productPacking:last').attr('name', 'productPacking['+rowCount+']').attr("id", "productPacking" + rowCount).val(item.product_packing);
-                        $("#productTable").find('#productGross:last').attr('name', 'productGross['+rowCount+']').attr("id", "productGross" + rowCount).val(item.product_gross);
-                        $("#productTable").find('#productTare:last').attr('name', 'productTare['+rowCount+']').attr("id", "productTare" + rowCount).val(item.product_tare);
-                        $("#productTable").find('#productNett:last').attr('name', 'productNett['+rowCount+']').attr("id", "productNett" + rowCount).val(item.product_nett);
-
-                        rowCount++;
-                    }
-                }
-
 
                 // Load these field after PO/SO is loaded
                 /*$('#addModal').on('orderLoaded', function() {
@@ -4907,25 +3603,6 @@ else{
                     //     $('#addModal').find('#salesOrderEdit').val(obj.message.purchase_order).show();
                     // }
                 });*/
-
-                // Initialize all Select2 elements in the modal
-                $('#addModal .select2').select2({
-                    allowClear: true,
-                    placeholder: "Please Select",
-                    dropdownParent: $('#addModal') // Ensures dropdown is not cut off
-                });
-
-                // Apply custom styling to Select2 elements in addModal
-                $('#addModal .select2-container .select2-selection--single').css({
-                    'padding-top': '4px',
-                    'padding-bottom': '4px',
-                    'height': 'auto'
-                });
-
-                $('#addModal .select2-container .select2-selection__arrow').css({
-                    'padding-top': '33px',
-                    'height': 'auto'
-                });
 
                 // Remove Validation Error Message
                 $('#addModal .is-invalid').removeClass('is-invalid');
@@ -4968,39 +3645,6 @@ else{
         });
     }
 
-    function loadContainerData(callback) {
-        var transactionStatus = $('#transactionStatus').val();
-        $.post('php/getContainers.php', {userID: transactionStatus}, function (data){
-            var obj = JSON.parse(data);
-
-            if (obj.status == 'success'){
-                if (obj.message.length > 0){
-                    $('#addModal').find('#emptyContainerNo').empty();
-                    $('#addModal').find('#emptyContainerNo').append('<option selected="-">-</option>');
-
-                    // Populate container numbers
-                    for (var i = 0; i < obj.message.length; i++) {
-                        var id = obj.message[i].id;
-                        var container_no = obj.message[i].container_no;
-
-                        $('#addModal').find('#emptyContainerNo').append(
-                            '<option value="'+container_no+'">'+container_no+'</option>'
-                        );
-                    }
-
-                    // Execute the callback to finalize the process
-                    if (callback) {
-                        callback();
-                    }
-                }
-            } else {
-                $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-        });
-    }
-
     function approve(id){
         $('#spinnerLoading').show();
         $.post('php/getWeight.php', {userID: id}, function(data){
@@ -5039,10 +3683,9 @@ else{
         });
     }
 
-    function deactivate(id, isEmptyContainer) {
+    function deactivate(id) {
         if (confirm('Are you sure you want to cancel this item?')) {
             $('#cancelModal').find('#id').val(id);
-            $('#cancelModal').find('#isEmptyContainer').val(isEmptyContainer);
             $('#cancelModal').modal('show');
 
             $('#cancelForm').validate({
@@ -5086,7 +3729,7 @@ else{
     //     });
     // }
 
-    function print(id, transactionStatus, isEmptyContainer = 'N') {
+    function print(id, transactionStatus) {
         /*if (transactionStatus == "Sales"){
             $('#prePrintModal').find('#id').val(id);
             $('#prePrintModal').find('#prePrint').val("");
@@ -5131,7 +3774,7 @@ else{
         //var id = $('#prePrintModal').find('#id').val();
         var prePrintStatus = 'N';
 
-        $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+        $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

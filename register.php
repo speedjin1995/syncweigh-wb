@@ -1,6 +1,5 @@
 <?php
 // Include config file
-session_start();
 require_once "layouts/config.php";
 
 // Define variables and initialize with empty values

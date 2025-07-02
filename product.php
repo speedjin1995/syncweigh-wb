@@ -16,15 +16,15 @@
     <!--Swiper slider css-->
     <link href="assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
     <!--datatable css-->
-    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <!--datatable responsive css-->
-    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
-    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
     <!-- Include jQuery library -->
-    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include jQuery Validate plugin -->
-    <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     
     <?php include 'layouts/head-css.php'; ?>
     
@@ -274,23 +274,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="errorModal" style="display:none">
-                                        <div class="modal-dialog modal-xl" style="max-width: 50%;">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-gray-dark color-palette">
-                                                    <h4 class="modal-title">Error Log</h4>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="form-group">
-                                                            <ol id="errorList" class="text-danger mt-2" style="padding-left: 20px;"></ol>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div> <!-- end row-->
 
@@ -385,12 +368,13 @@
 
     <!-- notifications init -->
     <script src="assets/js/pages/notifications.init.js"></script>
-    <script src="plugins/datatables/jquery.dataTables.js"></script>
-    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
 
     <script type="text/html" id="rawMaterialDetail">
@@ -478,7 +462,7 @@ $(function () {
                     if (row.status == '1'){
                         return '<button title="Reactivate" type="button" id="reactivate'+data+'" onclick="reactivate('+data+')" class="btn btn-warning btn-sm">Reactivate</button>';
                     }else{
-                        return 'Active';
+                        return '';
                     }
                 }
             },
@@ -578,26 +562,12 @@ $(function () {
                     $('#uploadModal').modal('hide');
                     $("#successBtn").attr('data-toast-text', obj.message);
                     $("#successBtn").click();
-                    $('#productTable').DataTable().ajax.reload(null, false);
+                    $('#customerTable').DataTable().ajax.reload(null, false);
                 } 
                 else if (obj.status === 'failed') {
                     $('#spinnerLoading').hide();
                     $("#failBtn").attr('data-toast-text', obj.message );
                     $("#failBtn").click();
-                } 
-                else if (obj.status === 'error') {
-                    $('#spinnerLoading').hide();
-                    $('#uploadModal').modal('hide');
-                    // alert(obj.message);
-                    // $("#failBtn").attr('data-toast-text', obj.message );
-                    // $("#failBtn").click();
-                    $('#productTable').DataTable().ajax.reload(null, false);
-                    $('#errorModal').find('#errorList').empty();
-                    var errorMessage = obj.message;
-                    for (var i = 0; i < errorMessage.length; i++) {
-                        $('#errorModal').find('#errorList').append(`<li>${errorMessage[i]}</li>`);                            
-                    }
-                    $('#errorModal').modal('show');
                 } 
                 else {
                     $('#spinnerLoading').hide();
@@ -865,7 +835,7 @@ function displayPreview(data) {
     }
 
     // Create HTML table headers
-    var htmlTable = '<table style="width:30%;"><thead><tr>';
+    var htmlTable = '<table style="width:100%;"><thead><tr>';
     headers.forEach(function(header) {
         htmlTable += '<th>' + header + '</th>';
     });

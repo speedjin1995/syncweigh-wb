@@ -1,8 +1,9 @@
 <?php
-session_start();
 require_once 'db_connect.php';
 require_once 'requires/lookup.php';
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+session_start();
 
 $uid = $_SESSION['username'];
 
@@ -10,7 +11,6 @@ $uid = $_SESSION['username'];
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (!empty($data)) {
-    $errorSoProductArray = [];
     foreach ($data as $rows) {
         $DestinationCode = !empty($rows['DestinationCode']) ? trim($rows['DestinationCode']) : '';
         $DestinationName = !empty($rows['DestinationName']) ? trim($rows['DestinationName']) : '';
@@ -36,31 +36,18 @@ if (!empty($data)) {
                     $insert_log->close();
                 }            
             }
-        }else{
-            $errMsg = "Destination: ". $DestinationName ." already exist in master data.";
-            $errorSoProductArray[] = $errMsg;
-            continue;
         }
         
     }
 
     $db->close();
 
-    if (!empty($errorSoProductArray)){
-        echo json_encode(
-            array(
-                "status"=> "error", 
-                "message"=> $errorSoProductArray 
-            )
-        );
-    }else{
-        echo json_encode(
-            array(
-                "status"=> "success", 
-                "message"=> "Added Successfully!!" 
-            )
-        );
-    }
+    echo json_encode(
+        array(
+            "status"=> "success", 
+            "message"=> "Added Successfully!!" 
+        )
+    );
 } else {
     echo json_encode(
         array(
