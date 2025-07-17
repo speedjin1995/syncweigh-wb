@@ -1893,7 +1893,7 @@ else{
                     transactionId: transactionIdI,
                     containerNo: containerNoI,
                     sealNo: sealNoI,
-                    invDelPoI: invDelPoI
+                    invDelPo: invDelPoI
                 } 
             },
             'columns': [
@@ -3831,15 +3831,15 @@ else{
             }
 
             // Enhancement to add additional product weight
-            if ($('#productTable tr').length > 0){
-                let totalNett = 0;
-                $('#productTable tr').each(function () {
-                    let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-                    totalNett += nettVal;
-                });
+            // if ($('#productTable tr').length > 0){
+            //     let totalNett = 0;
+            //     $('#productTable tr').each(function () {
+            //         let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
+            //         totalNett += nettVal;
+            //     });
 
-                current = current + totalNett;
-            }
+            //     current = current + totalNett;
+            // }
 
             $('#currentWeight').text(current.toFixed(0));
             $('#finalWeight').val(current.toFixed(0));
@@ -3859,15 +3859,15 @@ else{
             }
 
             // Enhancement to add additional product weight
-            if ($('#productTable tr').length > 0){
-                let totalNett = 0;
-                $('#productTable tr').each(function () {
-                    let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-                    totalNett += nettVal;
-                });
+            // if ($('#productTable tr').length > 0){
+            //     let totalNett = 0;
+            //     $('#productTable tr').each(function () {
+            //         let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
+            //         totalNett += nettVal;
+            //     });
 
-                current = current + totalNett;
-            }
+            //     current = current + totalNett;
+            // }
 
             var reduce = $(this).val() ? parseFloat($(this).val()) : 0;
             //var nett1 = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
@@ -4013,15 +4013,15 @@ else{
             }
 
             // Enhancement to add additional product weight
-            if ($('#productTable tr').length > 0){
-                let totalNett = 0;
-                $('#productTable tr').each(function () {
-                    let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-                    totalNett += nettVal;
-                });
+            // if ($('#productTable tr').length > 0){
+            //     let totalNett = 0;
+            //     $('#productTable tr').each(function () {
+            //         let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
+            //         totalNett += nettVal;
+            //     });
 
-                current = current + totalNett;
-            }
+            //     current = current + totalNett;
+            // }
 
             $('#currentWeight').text(current.toFixed(0));
             $('#finalWeight').val(current.toFixed(0));
@@ -4275,7 +4275,7 @@ else{
 
                         
                         $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
-                        $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1); console.log(obj.message.gross_weight1_date);
+                        $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
                         grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date)); 
                         // $('#addModal').find('#grossIncomingDate').val(obj.message.gross_weight1_date);
                         $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);
