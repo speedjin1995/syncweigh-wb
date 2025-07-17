@@ -422,8 +422,13 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <td style="border:1px solid black;">Nett Weight</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['final_weight']).' kg</td>
                                         </tr>
-                                        <tr>
-                                            <td colspan="7" style="font-size: 5px; font-weight:bold; text-align: center; visibility:hidden;">Additional Products</td>
+                                        <tr style="font-size: 14px;text-align: center;">
+                                            <th style="border:1px solid black;">No</th>
+                                            <th style="border:1px solid black;">Product</th>
+                                            <th style="border:1px solid black;">Packing</th>
+                                            <th style="border:1px solid black;">Gross Weight</th>
+                                            <th style="border:1px solid black;">Tare Weight</th>
+                                            <th style="border:1px solid black;">Nett Weight</th>
                                         </tr>';
 
                                         $totalProductWeight = 0;
@@ -610,7 +615,6 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <tr>
                                                 <td colspan="4">
                                                     <span>Transporter&nbsp;&nbsp;:&nbsp;&nbsp; '.$row['transporter'].'</span><br>
-
                                                 </td>
                                                 <td class="table-border" colspan="2" style="text-align: center;">
                                                     Final Weight
@@ -619,8 +623,13 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                                     '.$row['final_weight'].' kg
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td colspan="7" style="font-size: 5px; font-weight:bold; text-align: center; visibility:hidden;">Additional Products</td>
+                                            <tr style="font-size: 14px; text-align: center;">
+                                                <th style="border:1px solid black;">No</th>
+                                                <th style="border:1px solid black;">Product</th>
+                                                <th style="border:1px solid black;">Packing</th>
+                                                <th style="border:1px solid black;">Gross Weight</th>
+                                                <th colspan="2" style="border:1px solid black;">Tare Weight</th>
+                                                <th colspan="2" style="border:1px solid black;">Nett Weight</th>
                                             </tr>
                                         ';
 
@@ -757,8 +766,14 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <td style="border:1px solid black;font-size: 16px;font-weight:bold;text-align: center;">Nett</td>
                                             <td style="border:1px solid black;font-size: 16px;font-weight:bold;text-align: center;">'.formatWeight($row['final_weight']).' kg</td>
                                         </tr>
-                                        <tr>
-                                            <td colspan="7" style="font-size: 5px; font-weight:bold; text-align: center; visibility:hidden;">Additional Products</td>
+                                        <tr style="font-size: 14px;text-align: center;">
+                                            <th style="border:1px solid black;">No</th>
+                                            <th style="border:1px solid black;">Product</th>
+                                            <th style="border:1px solid black;">Packing</th>
+                                            <th style="border:1px solid black;">Gross Weight</th>
+                                            <th style="border:1px solid black;">Tare Weight</th>
+                                            <th style="border:1px solid black;">Nett Weight</th>
+                                        </tr>
                                         ';
 
                                         $totalProductWeight = 0;
