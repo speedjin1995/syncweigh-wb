@@ -28,7 +28,7 @@ if(isset($_POST['userID'])){
                 $message['supplier_name'] = $row['supplier_name'];
                 $message['invoice_no'] = $row['invoice_no'];
                 $message['delivery_no'] = $row['delivery_no'];
-                $message['purchase_order'] = $row['delivery_no'];
+                $message['purchase_order'] = $row['purchase_order'];
                 $message['container_no'] = $row['container_no'];
                 $message['seal_no'] = $row['seal_no'];
                 $message['container_no2'] = $row['container_no2'];
