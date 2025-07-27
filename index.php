@@ -4247,6 +4247,8 @@ else{
                 $('#addModal').find('#nettWeight').val(0);
                 $('#tareOutgoing2').trigger('keyup');
                 $('#normalCard').hide();
+                $('#grossCapture').show();
+                $('#tareCapture').show();
             } else if (emptyContainerNo) { 
                 $.post('php/getEmptyContainer.php', {userID: emptyContainerNo}, function (data){
                     var obj = JSON.parse(data);
@@ -4303,6 +4305,8 @@ else{
                         $('#tareOutgoing2').trigger('keyup');
                         
                         $('#normalCard').show();
+                        $('#grossCapture').hide();
+                        $('#tareCapture').hide();
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -4324,6 +4328,8 @@ else{
                 $('#addModal').find('#nettWeight').val(0);
                 $('#tareOutgoing2').trigger('keyup');
                 $('#normalCard').hide();
+                $('#grossCapture').show();
+                $('#tareCapture').show();
             }
         });
 
@@ -4451,6 +4457,8 @@ else{
             $('#addModal').find('#tareOutgoingDate').val("");
             $('#addModal').find('#nettWeight').val(0);
             $('#normalCard').hide();
+            $('#grossCapture').hide();
+            $('#tareCapture').hide();
             $('#containerCard').show();
         }else if(weightType == 'Empty Container'){
             $('#addModal').find('#manualVehicle2').prop('checked', false).trigger('change');
@@ -4460,6 +4468,8 @@ else{
             $('#addModal').find('#tareOutgoingDate2').val("");
             $('#addModal').find('#nettWeight2').val(0);
             $('#containerCard').hide();
+            $('#grossCapture').show();
+            $('#tareCapture').show();
             $('#normalCard').show();
         }else if(weightType == 'Different Container'){
             $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
@@ -4469,6 +4479,8 @@ else{
             $('#addModal').find('#tareOutgoingDate').val("");
             $('#addModal').find('#nettWeight').val(0);
             $('#normalCard').hide();
+            $('#grossCapture').hide();
+            $('#tareCapture').hide();
             $('#containerCard').show();
         }else{
             $('#addModal').find('#manualVehicle2').prop('checked', false).trigger('change');
@@ -4478,6 +4490,8 @@ else{
             $('#addModal').find('#tareOutgoingDate2').val("");
             $('#addModal').find('#nettWeight2').val(0);
             $('#normalCard').show();
+            $('#grossCapture').show();
+            $('#tareCapture').show();
             $('#containerCard').hide();
         }
     }
