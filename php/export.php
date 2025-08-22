@@ -19,9 +19,11 @@ if($_GET["file"] == 'weight'){
 
 ## Search 
 $searchQuery = "";
+$searchContainerQuery = "";
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
     $searchQuery = "and plant_code IN ('$username')";
+    $searchContainerQuery = "and plant_code IN ('$username')";
 }
 
 if($_GET['fromDate'] != null && $_GET['fromDate'] != ''){
@@ -30,6 +32,7 @@ if($_GET['fromDate'] != null && $_GET['fromDate'] != ''){
 
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.transaction_date >= '".$formatted_date."'";
+        $searchContainerQuery = " and Weight_Container.transaction_date >= '".$formatted_date."'";
     }
     else{
         $searchQuery .= " and count.transaction_date >= '".$formatted_date."'";
@@ -42,6 +45,7 @@ if($_GET['toDate'] != null && $_GET['toDate'] != ''){
 
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.transaction_date <= '".$formatted_date."'";
+        $searchContainerQuery .= " and Weight_Container.transaction_date <= '".$formatted_date."'";
     }
     else{
         $searchQuery .= " and count.transaction_date <= '".$formatted_date."'";
@@ -51,6 +55,7 @@ if($_GET['toDate'] != null && $_GET['toDate'] != ''){
 if($_GET['transactionStatus'] != null && $_GET['transactionStatus'] != '' && $_GET['transactionStatus'] != '-'){
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.transaction_status = '".$_GET['transactionStatus']."'";
+        $searchContainerQuery .= " and Weight_Container.transaction_status = '".$_GET['transactionStatus']."'";
     }
     else{
         $searchQuery .= " and count.transaction_status = '".$_GET['transactionStatus']."'";
@@ -60,6 +65,7 @@ if($_GET['transactionStatus'] != null && $_GET['transactionStatus'] != '' && $_G
 if($_GET['customer'] != null && $_GET['customer'] != '' && $_GET['customer'] != '-'){
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.customer_code = '".$_GET['customer']."'";
+        $searchContainerQuery .= " and Weight_Container.customer_code = '".$_GET['customer']."'";
     }
     else{
         $searchQuery .= " and count.customer_code = '".$_GET['customer']."'";
@@ -69,6 +75,7 @@ if($_GET['customer'] != null && $_GET['customer'] != '' && $_GET['customer'] != 
 if(isset($_GET['supplier']) && $_GET['supplier'] != null && $_GET['supplier'] != '' && $_GET['supplier'] != '-'){
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.supplier_code = '".$_GET['supplier']."'";
+        $searchContainerQuery .= " and Weight_Container.supplier_code = '".$_GET['supplier']."'";
     }
     else{
         $searchQuery .= " and count.supplier_code = '".$_GET['supplier']."'";
@@ -78,6 +85,7 @@ if(isset($_GET['supplier']) && $_GET['supplier'] != null && $_GET['supplier'] !=
 if($_GET['vehicle'] != null && $_GET['vehicle'] != '' && $_GET['vehicle'] != '-'){
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.lorry_plate_no1 = '".$_GET['vehicle']."'";
+        $searchContainerQuery .= " and Weight_Container.lorry_plate_no1 = '".$_GET['vehicle']."'";
     }
     else{
         $searchQuery .= " and count.lorry_plate_no1 = '".$_GET['vehicle']."'";
@@ -87,6 +95,7 @@ if($_GET['vehicle'] != null && $_GET['vehicle'] != '' && $_GET['vehicle'] != '-'
 if($_GET['weighingType'] != null && $_GET['weighingType'] != '' && $_GET['weighingType'] != '-'){
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.weight_type like '%".$_GET['weighingType']."%'";
+        $searchContainerQuery .= " and Weight_Container.weight_type like '%".$_GET['weighingType']."%'";
     }
     else{
         $searchQuery .= " and count.weight_type like '%".$_GET['weighingType']."%'";
@@ -96,6 +105,7 @@ if($_GET['weighingType'] != null && $_GET['weighingType'] != '' && $_GET['weighi
 if($_GET['product'] != null && $_GET['product'] != '' && $_GET['product'] != '-'){
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.product_code = '".$_GET['product']."'";
+        $searchContainerQuery .= " and Weight_Container.product_code = '".$_GET['product']."'";
     }
     else{
         $searchQuery .= " and count.product_code = '".$_GET['product']."'";
@@ -105,6 +115,7 @@ if($_GET['product'] != null && $_GET['product'] != '' && $_GET['product'] != '-'
 if(isset($_GET['rawMat']) && $_GET['rawMat'] != null && $_GET['rawMat'] != '' && $_GET['rawMat'] != '-'){
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.raw_mat_code = '".$_GET['rawMat']."'";
+        $searchContainerQuery .= " and Weight_Container.raw_mat_code = '".$_GET['rawMat']."'";
     }
     else{
         $searchQuery .= " and count.raw_mat_code = '".$_GET['rawMat']."'";
@@ -114,6 +125,7 @@ if(isset($_GET['rawMat']) && $_GET['rawMat'] != null && $_GET['rawMat'] != '' &&
 if(isset($_GET['plant']) && $_GET['plant'] != null && $_GET['plant'] != '' && $_GET['plant'] != '-'){
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.plant_code = '".$_GET['plant']."'";
+        $searchContainerQuery .= " and Weight_Container.plant_code = '".$_GET['plant']."'";
     }
     else{
         $searchQuery .= " and count.raw_mat_code = '".$_GET['plant']."'";
@@ -124,10 +136,12 @@ if(isset($_GET['status']) && $_GET['status'] != null && $_GET['status'] != '' &&
     if($_GET["file"] == 'weight'){
         if ($_GET['status'] == 'Complete'){
             $searchQuery .= " and Weight.is_complete = 'Y'";
+            // $searchContainerQuery .= " and is_complete='Y' and is_cancel='Y'";
         }elseif ($_GET['status'] == 'Cancelled'){
             $searchQuery .= " and Weight.is_cancel = 'Y'";
         }elseif ($_GET['status'] == 'Pending'){
             $searchQuery .= " and is_complete='N' AND is_cancel='N'";
+            // $searchContainerQuery .= " and is_complete='Y'";
         }else{
             $searchQuery .= " and Weight.is_complete = 'Y'";
         }
@@ -161,7 +175,13 @@ $excelData = implode("\t", array_values($fields)) . "\n";
 
 // Fetch records from database
 if($_GET["file"] == 'weight'){
-    $query = $db->query("select * from Weight WHERE status='0'".$searchQuery);
+    // $query = $db->query("select * from Weight WHERE status='0'".$searchQuery);
+    $query = $db->query("
+        SELECT * FROM Weight WHERE Weight.status = '0'".$searchQuery."
+        UNION ALL
+        SELECT * FROM Weight_Container WHERE Weight_Container.status = '0'".$searchContainerQuery."
+        ORDER BY created_date ASC
+    ");
 }
 else{
     $query = $db->query("select count.id, count.serialNo, vehicles.veh_number, lots.lots_no, count.batchNo, count.invoiceNo, count.deliveryNo, 
@@ -174,7 +194,7 @@ else{
 
 if($query->num_rows > 0){ 
     // Output each row of the data 
-    while($row = $query->fetch_assoc()){ 
+    while($row = $query->fetch_assoc()){
         $lineData = []; // Ensure it starts as an empty array each iteration
 
         if($_GET["file"] == 'weight'){
