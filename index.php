@@ -775,7 +775,7 @@ else{
                                                                                                     data-low="<?=$rowProduct['low'] ?>" 
                                                                                                     data-variance="<?=$rowProduct['variance'] ?>" 
                                                                                                     data-description="<?=$rowProduct['description'] ?>">
-                                                                                                    <?=$rowProduct['product_code'] ?>
+                                                                                                    <?=$rowProduct['product_code'] ?> - <?=$rowProduct['name'] ?>
                                                                                                 </option>
                                                                                             <?php } ?>
                                                                                         </select>                                                                                        
@@ -787,7 +787,7 @@ else{
                                                                                         <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
                                                                                             <option selected="-">-</option>
                                                                                             <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
+                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?> - <?=$rowRowMat['name'] ?></option>
                                                                                             <?php } ?>
                                                                                         </select>           
                                                                                     </div>

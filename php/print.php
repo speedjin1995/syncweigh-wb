@@ -290,31 +290,36 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                         <body>
                             <table style="width:100%;">
                                 <tr>
-                                    <td style="width: 50%;">
-                                        <p style="font-size: 14px;">
-                                            <span style="font-weight: bold;font-size: 16px; margin-bottom: 10px; display: inline-block;">'.$compname.'</span><br>
-                                            <span> Reg No.: '.$compreg.'</span><br>
-                                            <span>'.$compaddress.'</span><br>
-                                            <span>'.$compaddress2.'</span><br>
-                                            <span>'.$compaddress3.'</span><br>
-                                            <span>Tel/Fax: '.$compphone.' / '.$compiemail.'</span>
-                                        </p>
-                                    </td>
-                                    <td style="vertical-align: top;">
-                                        <p style="vertical-align: top; margin-left:30px; font-size: 14px;">
-                                            <span style="font-size: 24px; font-weight: bold; margin-bottom: 10px; display: inline-block;">'. $transacationStatus .' Slip</span><br>
-                                            <span>Ticket No &nbsp;:&nbsp; <b>'.$row['transaction_id'].'</b></span><br>
-                                            <span>Date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 1.5px;">:&nbsp;&nbsp;'.$transactionDate.'</span><br>
-                                            <span>D/O No &nbsp;&nbsp;&nbsp;&nbsp;</span><span>:&nbsp;&nbsp;'.$row['delivery_no'].'</span><br>
-                                            <span>P/O No &nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left:2.5px">:&nbsp;&nbsp;'.$row['purchase_order'].'</span><br>
-                                        </p>
-                                    </td>
+                                  <td style="width: 15%; vertical-align: top; text-align: center;">
+                                    <img src="https://comfort.syncweigh.com/assets/images/slip-logo.png" width="80%">
+                                  </td>
+                                
+                                  <td style="width: 55%; vertical-align: top;">
+                                    <p style="font-size: 14px; margin: 0;">
+                                      <span style="font-weight: bold; font-size: 16px; margin-bottom: 10px; display: inline-block;">'.$compname.'</span><br>
+                                      <span>Reg No.: '.$compreg.'</span><br>
+                                      <span>'.$compaddress.'</span><br>
+                                      <span>'.$compaddress2.'</span><br>
+                                      <span>'.$compaddress3.'</span><br>
+                                      <span>Tel/Fax: '.$compphone.' / '.$compiemail.'</span>
+                                    </p>
+                                  </td>
+                                
+                                  <td style="vertical-align: top;">
+                                    <p style="margin-left:30px; font-size: 14px; margin: 0;">
+                                      <span style="font-size: 24px; font-weight: bold; margin-bottom: 10px; display: inline-block;">'.$transacationStatus.' Slip</span><br>
+                                      <span>Ticket No : <b>'.$row['transaction_id'].'</b></span><br>
+                                      <span>Date : '.$transactionDate.'</span><br>
+                                      <span>D/O No : '.$row['delivery_no'].'</span><br>
+                                      <span>P/O No : '.$row['purchase_order'].'</span><br>
+                                    </p>
+                                  </td>
                                 </tr>
                                 <tr style="visibility:hidden;">
                                     <td style="font-size: 3px;">Placeholder for empty space</td>
                                 </tr>
                                 <tr style="border-top: 1px solid black;">
-                                    <td style="vertical-align: top; width: 60%;">
+                                    <td style="vertical-align: top; width: 60%;" colspan="2">
                                         <p style="margin-top: 5px; font-size: 14px;">
                                             <span><b>'.$customer.'</b></span>';
                                             if ($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc'){
