@@ -851,14 +851,19 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                             <table style="width: 100%; position: fixed; bottom: 0; left: 0;">
                                 <tr>
                                     <!-- This empty cell pushes the content to the right -->
-                                    <td style="width: 50%;"></td>
+                                    <td style="width: 21%;"></td>
 
-                                    <td style="vertical-align: top; font-size: 14px; width: 28%;">
+                                    <td style="vertical-align: top; font-size: 14px; width: 25%;">
+                                        <hr width="100%" style="margin-left: 0; text-align: left;">
+                                        <span>1st Weight By: '.$row['gross_weight_by1'].'<br> 2nd Weight By: '.$row['tare_weight_by1'].'</span>
+                                    </td>
+                                    <td style="width: 2%;"></td>
+                                    <td style="vertical-align: top; font-size: 14px; width: 25%;">
                                         <hr width="100%" style="margin-left: 0; text-align: left;">
                                         <span>Acknowledge By Administrator</span>
                                     </td>
                                     <td style="width: 2%;"></td>
-                                    <td style="vertical-align: top; font-size: 14px; width: 20%;">
+                                    <td style="vertical-align: top; font-size: 14px; width: 25%;">
                                         <hr width="100%" style="margin-left: 0; text-align: left;">
                                         <span>Received By</span><br>
                                         <span>Name: </span><br>
