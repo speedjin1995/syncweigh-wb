@@ -825,7 +825,7 @@ else{
                                                                                         <select class="form-select select2" id="transporter" name="transporter" required>
                                                                                             <option selected="-">-</option>
                                                                                             <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
-                                                                                                <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
+                                                                                                <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['transporter_code'] ?> - <?=$rowTransporter['name'] ?></option>
                                                                                             <?php } ?>
                                                                                         </select>                                                                                          
                                                                                     </div>
