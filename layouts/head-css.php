@@ -9,7 +9,7 @@
 <!-- custom Css-->
 <link href="assets/css/custom.min.css" id="app-style" rel="stylesheet" type="text/css" />
 
-<link href="plugins/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
 <link rel="stylesheet" href="plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">

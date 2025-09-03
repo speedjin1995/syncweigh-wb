@@ -670,7 +670,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                         aria-labelledby="page-header-notifications-dropdown" style="width: 580px;">
 
-                        <div class="dropdown-head bg-primary bg-pattern rounded-top">
+                        <div class="dropdown-head bg-success bg-pattern rounded-top">
                             <div class="p-3">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -810,7 +810,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                         aria-labelledby="page-header-cw-dropdown" style="width: 580px;">
 
-                        <div class="dropdown-head bg-primary bg-pattern rounded-top">
+                        <div class="dropdown-head bg-success bg-pattern rounded-top">
                             <div class="p-3">
                                 <div class="row align-items-center">
                                     <div class="col">
