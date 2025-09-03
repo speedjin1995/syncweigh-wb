@@ -803,10 +803,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     $message .= '<br>
                                     <table style="width:100%; border:0px solid black; margin-top: -10px;">
                                         <tr>
-                                            <th style="border:1px solid black;font-size: 18px;text-align: center;">Vehicle No</th>
-                                            <th colspan="2" style="border:1px solid black;font-size: 18px;text-align: center;">Product Description</th>
-                                            <th style="border:1px solid black;font-size: 18px;text-align: center;">Date/Time</th>
-                                            <th colspan="2" style="border:1px solid black;font-size: 18px;text-align: center;">Weight (kg)</th>
+                                            <th style="border:1px solid black;font-size: 18px;text-align: center;" width="20%">Vehicle No</th>
+                                            <th colspan="2" style="border:1px solid black;font-size: 18px;text-align: center;" width="30%">Product Description</th>
+                                            <th style="border:1px solid black;font-size: 18px;text-align: center;" width="25%">Date/Time</th>
+                                            <th colspan="2" style="border:1px solid black;font-size: 18px;text-align: center;" width="20%">Weight (kg)</th>
                                         </tr>
                                         <tr style="font-size: 16px;text-align: center;">
                                             <td style="border:1px solid black;">'.$row['lorry_plate_no1'].'</td>';
