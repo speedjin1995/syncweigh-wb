@@ -7,7 +7,7 @@ $purchaseCount = 0;
 $localCount = 0;
 $miscCount = 0;
 
-if ($select_stmt = $db->prepare("SELECT * FROM Weight WHERE transaction_date >= '2025-08-01 00:00:00' UNION ALL SELECT * FROM Weight_container WHERE transaction_date >= '2025-08-01 00:00:00' ORDER BY transaction_date ASC;
+if ($select_stmt = $db->prepare("SELECT * FROM Weight WHERE transaction_date >= '2025-08-01 00:00:00' UNION ALL SELECT * FROM Weight_Container WHERE transaction_date >= '2025-08-01 00:00:00' ORDER BY transaction_date ASC;
 ")) {
     // Execute the prepared query.
     if (! $select_stmt->execute()) {
