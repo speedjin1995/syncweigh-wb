@@ -11,6 +11,7 @@ $compaddress2 = 'Taman Bagan,';
 $compaddress3 = '13400 Butterworth. Penang. Malaysia.';
 $compphone = '6043325822';
 $compiemail = 'admin@synctronix.com.my';
+$id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
  
 // Filter the excel data 
 function filterData(&$str){ 
@@ -32,22 +33,6 @@ function formatWeight($weight){
 }
 
 if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
-    $stmt = $db->prepare("SELECT * FROM Company WHERE id=?");
-    $stmt->bind_param('s', $compids);
-    $stmt->execute();
-    $result1 = $stmt->get_result();
-    $id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
-            
-    if ($row = $result1->fetch_assoc()) {
-        $compname = $row['name'];
-        $compreg = $row['company_reg_no'];
-        $compaddress = $row['address_line_1'];
-        $compaddress2 = $row['address_line_2'];
-        $compaddress3 = $row['address_line_3'];
-        $compphone = $row['phone_no'];
-        $compiemail = $row['fax_no'];
-    }
-
     if($_POST["file"] == 'weight'){
         //i remove this because both(billboard and weight) also call this print page.
         //AND weight.pStatus = 'Pending'
@@ -191,6 +176,23 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 }
                             }
                         }
+                    }
+
+                    // Company
+                    $compids = $row['company'];
+                    $stmtcomp = $db->prepare("SELECT * FROM Company WHERE id=?");
+                    $stmtcomp->bind_param('s', $compids);
+                    $stmtcomp->execute();
+                    $resultcomp = $stmtcomp->get_result();
+                            
+                    if ($rowComp = $resultcomp->fetch_assoc()) {
+                        $compname = $rowComp['name'];
+                        $compreg = $rowComp['company_reg_no'];
+                        $compaddress = $rowComp['address_line_1'];
+                        $compaddress2 = $rowComp['address_line_2'];
+                        $compaddress3 = $rowComp['address_line_3'];
+                        $compphone = $rowComp['phone_no'];
+                        $compiemail = $rowComp['fax_no'];
                     }
 
                     # Weight_Product

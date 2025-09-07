@@ -368,6 +368,7 @@ if(isset($_POST['userID'])){
                             $message['transaction_status'] = $row['transaction_status'];
                             $message['weight_type'] = $row['weight_type'];
                             $message['customer_type'] = $row['customer_type'];
+                            $message['company'] = $row['company'];
                             $message['transaction_date'] = $row['transaction_date'];
                             $message['lorry_plate_no1'] = $row['lorry_plate_no1'];
                             $message['lorry_plate_no2'] = $row['lorry_plate_no2'];

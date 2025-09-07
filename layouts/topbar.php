@@ -157,7 +157,7 @@ while($row2=mysqli_fetch_assoc($weighing2)){
     }
 }
 
-$compids = '1';
+/*$compids = '1';
 $stmtComp = $db->prepare("SELECT * FROM Company WHERE id=?");
 $stmtComp->bind_param('s', $compids);
 $stmtComp->execute();
@@ -166,7 +166,7 @@ $compname = '';
         
 if ($rowc = $resultC->fetch_assoc()) {
     $compname = $rowc['name'];
-}
+}*/
 
 $count = count($salesList) + count($purchaseList) + count($localList) + count($miscList);
 $containerCount = count($salesContainerList) + count($purchaseContainerList) + count($localContainerList) + count($miscContainerList);
@@ -205,8 +205,6 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                         <span></span>
                     </span>
                 </button>
-
-                <h3><?=$compname ?></h3>
             </div>
 
             <div class="d-flex align-items-center">

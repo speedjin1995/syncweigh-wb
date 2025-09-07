@@ -74,6 +74,8 @@ $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY nam
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $site = $db->query("SELECT * FROM Site WHERE status = '0' ORDER BY name ASC");
 $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
+$company = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
+$company2 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
@@ -269,7 +271,7 @@ else{
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
                                                                     <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['name'] ?></option>
                                                                 <?php } ?>
-                                                            </select>
+                                                            </select>$company2
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3" id="plantSearchDisplay" style="display:none">
@@ -305,6 +307,17 @@ else{
                                                         <div class="mb-3">
                                                             <label for="invDelPoSearch" class="form-label">INV/DO/PO No</label>
                                                             <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
+                                                        </div>
+                                                    </div><!--end col-->
+                                                    <div class="col-3">
+                                                        <div class="mb-3">
+                                                            <label for="companySearch" class="form-label">Company</label>
+                                                            <select id="companySearch" class="form-select select2" >
+                                                                <option selected>-</option>
+                                                                <?php while($rowCompF=mysqli_fetch_assoc($company2)){ ?>
+                                                                    <option value="<?=$rowCompF['id'] ?>"><?=$rowCompF['name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
@@ -862,6 +875,20 @@ else{
                                                                                     <label for="replacementContainer" class="col-sm-4 col-form-label">New Empty Entrance Bin</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="company" class="col-sm-4 col-form-label">Company</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="company" name="company" class="form-select select2" required>
+                                                                                        <?php while($rowComp=mysqli_fetch_assoc($company)){ ?>
+                                                                                            <option value="<?=$rowComp['id'] ?>"><?=$rowComp['name'] ?></option>
+                                                                                        <?php } ?>
+                                                                                    </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -1868,6 +1895,7 @@ else{
         var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
         var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
         var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+        var companyI = $('#companySearch').val() ? $('#companySearch').val() : '';
 
         table = $("#weightTable").DataTable({
             "responsive": true,
@@ -1893,7 +1921,8 @@ else{
                     transactionId: transactionIdI,
                     containerNo: containerNoI,
                     sealNo: sealNoI,
-                    invDelPo: invDelPoI
+                    invDelPo: invDelPoI,
+                    company: companyI
                 } 
             },
             'columns': [
@@ -2779,6 +2808,7 @@ else{
             var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
             var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
             var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+            var companyI = $('#companySearch').val() ? $('#companySearch').val() : '';
 
             //Destroy the old Datatable
             $("#weightTable").DataTable().clear().destroy();
@@ -2809,7 +2839,8 @@ else{
                         transactionId: transactionIdI,
                         containerNo: containerNoI,
                         sealNo: sealNoI,
-                        invDelPo: invDelPoI
+                        invDelPo: invDelPoI,
+                        company: companyI
                     } 
                 },
                 'columns': [
@@ -3082,6 +3113,7 @@ else{
             $('#addModal').find('#transporterCode').val("");
             $('#addModal').find('#transporter').val("-").trigger('change');
             $('#addModal').find('#destinationCode').val("");
+            $('#addModal').find('#company').val("").trigger('change');
             $('#addModal').find('#agent').val("").trigger('change');
             $('#addModal').find('#agentCode').val("");
             $('#addModal').find('#plantCode').val("");
@@ -4689,6 +4721,7 @@ else{
                 $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
                 $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
+                $('#addModal').find('#company').val(obj.message.company).trigger('change');
                 $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
                 if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){

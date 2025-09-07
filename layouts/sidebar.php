@@ -165,7 +165,7 @@
                                 <?php
                                     if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
                                         echo '<li class="nav-item">
-                                            <a href="companyProfile.php" class="nav-link">'.$lang['t-companyProfile'].'</a>
+                                            <a href="companies.php" class="nav-link">'.$lang['t-companyProfile'].'</a>
                                         </li> ';
                                     }
                                 ?>

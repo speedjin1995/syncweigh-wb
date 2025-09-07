@@ -79,6 +79,10 @@ if($_POST['invDelPo'] != null && $_POST['invDelPo'] != '' && $_POST['invDelPo'] 
 	$searchQuery .= " and (purchase_order like '%".$_POST['invDelPo']."%' OR invoice_no like '%".$_POST['invDelPo']."%' OR delivery_no like '%".$_POST['invDelPo']."%')";
 }
 
+if($_POST['company'] != null && $_POST['company'] != '' && $_POST['company'] != '-'){
+  $searchQuery .= " and company = '".$_POST['company']."'";
+}
+
 if($searchValue != ''){
   $searchQuery = " and (transaction_id like '%".$searchValue."%' or lorry_plate_no1 like '%".$searchValue."%')";
 }
