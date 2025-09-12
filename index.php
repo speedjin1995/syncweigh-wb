@@ -4289,6 +4289,7 @@ else{
                         // $('#addModal').find('#tareOutgoingDate').val(obj.message.tare_weight1_date);
                         $('#addModal').find('#tareWeightBy1').val(obj.message.tare_weight_by1);
                         $('#addModal').find('#nettWeight').val(obj.message.nett_weight1);
+                        $('#addModal').find('#otherRemarks').val(obj.message.remarks);
 
                         if(obj.message.vehicleNoTxt != null){
                             $('#addModal').find('#vehicleNoTxt').val(obj.message.vehicleNoTxt);
