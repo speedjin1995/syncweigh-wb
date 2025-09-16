@@ -8,12 +8,15 @@ if(!isset($_SESSION['id'])){
 	$id = $_SESSION['id'];
 }
 
-if(isset($_POST['userName'], $_POST['userEmail'])){
+if(isset($_POST['userName'], $_POST['userEmail'], $_POST['language'])){
 	$name = filter_input(INPUT_POST, 'userName', FILTER_SANITIZE_STRING);
 	$username = filter_input(INPUT_POST, 'userEmail', FILTER_SANITIZE_STRING);
+	$language = filter_input(INPUT_POST, 'language', FILTER_SANITIZE_STRING);
+
+	$_SESSION['language'] = $language;
 	
-	if ($stmt2 = $db->prepare("UPDATE Users SET username=?, useremail=? WHERE employee_code=?")) {
-		$stmt2->bind_param('sss', $name, $username, $id);
+	if ($stmt2 = $db->prepare("UPDATE Users SET username=?, useremail=?, languages=? WHERE id=?")) {
+		$stmt2->bind_param('ssss', $name, $username, $language, $id);
 		
 		if($stmt2->execute()){
 			$stmt2->close();

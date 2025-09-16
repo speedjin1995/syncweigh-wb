@@ -674,7 +674,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                             <div class="p-3">
                                 <div class="row align-items-center">
                                     <div class="col">
-                                        <h6 class="m-0 fs-16 fw-semibold text-white"> Pending Lorry Weighing </h6>
+                                        <h6 class="m-0 fs-16 fw-semibold text-white"> <?=$languageArray['pending_lorry_weighing_code'][$language] ?> </h6>
                                     </div>
                                     <div class="col-auto dropdown-tabs">
                                         <span class="badge badge-soft-light fs-13"> <?=$count ?> New</span>
@@ -688,25 +688,25 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab" role="tab"
                                             aria-selected="true">
-                                            Dispatch <?php echo (count($salesList) == 0 ? '' : '('.count($salesList).')'); ?>
+                                            <?=$languageArray['dispatch_code'][$language] ?> <?php echo (count($salesList) == 0 ? '' : '('.count($salesList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#messages-tab" role="tab"
                                             aria-selected="false">
-                                            Receiving <?php echo (count($purchaseList) == 0 ? '' : '('.count($purchaseList).')'); ?>
+                                            <?=$languageArray['receiving_code'][$language] ?> <?php echo (count($purchaseList) == 0 ? '' : '('.count($purchaseList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#alerts-tab" role="tab"
                                             aria-selected="false">
-                                            Internal Transfer <?php echo (count($localList) == 0 ? '' : '('.count($localList).')'); ?>
+                                            <?=$languageArray['internal_transfer_code'][$language] ?> <?php echo (count($localList) == 0 ? '' : '('.count($localList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#misc-tab" role="tab"
                                             aria-selected="false">
-                                            Miscellaneous <?php echo (count($miscList) == 0 ? '' : '('.count($miscList).')'); ?>
+                                            <?=$languageArray['miscellaneous_code'][$language] ?> <?php echo (count($miscList) == 0 ? '' : '('.count($miscList).')'); ?>
                                         </a>
                                     </li>
                                 </ul>
@@ -814,7 +814,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                             <div class="p-3">
                                 <div class="row align-items-center">
                                     <div class="col">
-                                        <h6 class="m-0 fs-16 fw-semibold text-white"> Pending Container Weighing </h6>
+                                        <h6 class="m-0 fs-16 fw-semibold text-white"> <?=$languageArray['pending_container_weighing_code'][$language] ?> </h6>
                                     </div>
                                     <div class="col-auto dropdown-tabs">
                                         <span class="badge badge-soft-light fs-13"> <?=$containerCount ?> New</span>
@@ -828,25 +828,25 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#sales-cw-tab" role="tab"
                                             aria-selected="true">
-                                            Dispatch <?php echo (count($salesContainerList) == 0 ? '' : '('.count($salesContainerList).')'); ?>
+                                            <?=$languageArray['dispatch_code'][$language] ?> <?php echo (count($salesContainerList) == 0 ? '' : '('.count($salesContainerList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#purchase-cw-tab" role="tab"
                                             aria-selected="false">
-                                            Receiving <?php echo (count($purchaseContainerList) == 0 ? '' : '('.count($purchaseContainerList).')'); ?>
+                                            <?=$languageArray['receiving_code'][$language] ?> <?php echo (count($purchaseContainerList) == 0 ? '' : '('.count($purchaseContainerList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#local-cw-tab" role="tab"
                                             aria-selected="false">
-                                            Internal Transfer <?php echo (count($localContainerList) == 0 ? '' : '('.count($localContainerList).')'); ?>
+                                            <?=$languageArray['internal_transfer_code'][$language] ?> <?php echo (count($localContainerList) == 0 ? '' : '('.count($localContainerList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#misc-cw-tab" role="tab"
                                             aria-selected="false">
-                                            Miscellaneous <?php echo (count($miscContainerList) == 0 ? '' : '('.count($miscContainerList).')'); ?>
+                                            <?=$languageArray['miscellaneous_code'][$language] ?> <?php echo (count($miscContainerList) == 0 ? '' : '('.count($miscContainerList).')'); ?>
                                         </a>
                                     </li>
                                 </ul>

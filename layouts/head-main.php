@@ -1,5 +1,19 @@
 <?php
 require_once ("lang.php");
+$companies = include(dirname(__DIR__, 1) . '/php/db_connect.php');
+
+// Language
+$language = $_SESSION['language'];
+
+// Load message
+$message_resource = $db->query("SELECT * FROM message_resource");
+$languageArray = Array();
+
+while($row=mysqli_fetch_assoc($message_resource)){
+    $languageArray[$row['message_key_code']] = array("en"=>$row['en'],"zh"=>$row['zh'],"my"=>$row['my'],"ne"=>$row['ne']);
+}
+
+$_SESSION['languageArray'] = $languageArray;
 
 $isScssconverted = false;
 
@@ -30,4 +44,4 @@ if($isScssconverted){
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?=$lng?>" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+<html lang="<?=$language?>" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
