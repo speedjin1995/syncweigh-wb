@@ -163,7 +163,7 @@
                                                         <div class="text-end">
                                                             <button type="submit" class="btn btn-success">
                                                                 <i class="bx bx-search-alt"></i>
-                                                                Search</button>
+                                                                <?=$languageArray['search_code'][$language]?></button>
                                                         </div>
                                                     </div><!--end col-->
                                                 </div><!--end row-->
@@ -272,12 +272,12 @@
                                         <div class="card-header">
                                             <div class="d-flex justify-content-between">
                                                 <div>
-                                                    <h5 class="card-title mb-0">Previous Records</h5>
+                                                    <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                 </div>
                                                 <div class="flex-shrink-0">
                                                     <button type="button" class="btn btn-success waves-effect waves-light" id="excelSearch">
                                                     <i class="mdi mdi-file-excel-outline"></i>
-                                                    Export Excel
+                                                    <?=$languageArray['export_excel_code'][$language]?>
                                                     </button>
                                                 </div> 
                                             </div>                                            
@@ -294,9 +294,9 @@
                                                         <th>Assigned To</th>
                                                         <th>Created By</th>
                                                         <th>Create Date</th>
-                                                        <th>Status</th>
+                                                        <th><?=$languageArray['status_code'][$language]?></th>
                                                         <th>Priority</th>
-                                                        <th>Action</th>
+                                                        <th><?=$languageArray['action_code'][$language]?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

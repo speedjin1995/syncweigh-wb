@@ -1,6 +1,4 @@
 <?php
-require_once "php/db_connect.php";
-
 ## Fetch records
 // Lorry SQL
 $lorryWeighingSQL = "(select * from Weight where status = '0' AND is_complete = 'N' AND is_cancel='N') UNION ALL (select * from Weight_Container where status = '0' AND is_complete = 'N' AND is_cancel='N')";

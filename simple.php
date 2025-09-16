@@ -2,8 +2,6 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <?php
-require_once "php/db_connect.php";
-
 $user = $_SESSION['id'];
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
@@ -380,7 +378,7 @@ else{
                                             <div class="hstack gap-2 justify-content-end">
                                                 <button type="button" class="btn btn-warning" id="addWeight">New</button>
                                                 <button type="button" class="btn btn-success" id="submitWeightPrint">Submit & Print</button>
-                                                <button type="button" class="btn btn-primary" id="submitWeight">Submit</button>
+                                                <button type="button" class="btn btn-primary" id="submitWeight"><?=$languageArray['submit_code'][$language]?></button>
                                             </div>
                                         </div><!--end col--> 
                                     </form>
@@ -502,7 +500,7 @@ else{
                                                                         </div><!--end col-->
                                                                         <div class="col-6">
                                                                             <div class="text-end">
-                                                                                <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> Search</button>
+                                                                                <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> <?=$languageArray['search_code'][$language]?></button>
                                                                             </div>
                                                                         </div><!--end col-->
                                                                     </div><!--end row-->
@@ -527,11 +525,11 @@ else{
                                                                     <thead>
                                                                         <tr>
                                                                             <th>No.</th>
-                                                                            <th>Status</th>
+                                                                            <th><?=$languageArray['status_code'][$language]?></th>
                                                                             <th>Vehicle</th>
                                                                             <th>Incoming</th>
                                                                             <th>Incoming <br>Date</th>
-                                                                            <th>Action</th>
+                                                                            <th><?=$languageArray['action_code'][$language]?></th>
                                                                         </tr>
                                                                     </thead>
                                                                 </table>
@@ -599,7 +597,7 @@ else{
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                            <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
                             <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                     </form>
@@ -626,8 +624,8 @@ else{
                                 </div>
                             </div>
                             <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-success" id="submitCancel">Save changes</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                <button type="button" class="btn btn-success" id="submitCancel"><?=$languageArray['submit_code'][$language]?></button>
                             </div>
                         </form>
                     </div>

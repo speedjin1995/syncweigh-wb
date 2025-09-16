@@ -1,19 +1,21 @@
 <?php
 require_once ("lang.php");
-$companies = include(dirname(__DIR__, 1) . '/php/db_connect.php');
 
-// Language
-$language = $_SESSION['language'];
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+    require_once dirname(__DIR__, 1) . '/php/db_connect.php';
+    // Language
+    $language = $_SESSION['language'];
 
-// Load message
-$message_resource = $db->query("SELECT * FROM message_resource");
-$languageArray = Array();
+    // Load message
+    $message_resource = $db->query("SELECT * FROM message_resource");
+    $languageArray = Array();
 
-while($row=mysqli_fetch_assoc($message_resource)){
-    $languageArray[$row['message_key_code']] = array("en"=>$row['en'],"zh"=>$row['zh'],"my"=>$row['my'],"ne"=>$row['ne']);
+    while($row=mysqli_fetch_assoc($message_resource)){
+        $languageArray[$row['message_key_code']] = array("en"=>$row['en'],"zh"=>$row['zh'],"my"=>$row['my'],"ne"=>$row['ne']);
+    }
+
+    $_SESSION['languageArray'] = $languageArray;
 }
-
-$_SESSION['languageArray'] = $languageArray;
 
 $isScssconverted = false;
 

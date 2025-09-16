@@ -54,23 +54,23 @@ if (mysqli_stmt_fetch($stmt2)) {
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="transactionId" class="col-sm-4 col-form-label">Email</label>
+                                                    <label for="transactionId" class="col-sm-4 col-form-label"><?=$languageArray['email_code'][$language]?></label>
                                                     <div class="col-sm-8 ">
-                                                        <input type="email" class="form-control" id="email" name="userEmail" placeholder="Email" value="<?=$useremail ?>">
+                                                        <input type="email" class="form-control" id="email" name="userEmail" placeholder="<?=$languageArray['email_code'][$language]?>" value="<?=$useremail ?>">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="transactionDate" class="col-sm-4 col-form-label">Username</label>
+                                                    <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['username_code'][$language]?></label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="username" name="userName" placeholder="Transaction ID" value="<?=$username ?>" readonly>
+                                                        <input type="text" class="form-control" id="username" name="userName" placeholder="<?=$languageArray['download_template_code'][$language]?>" value="<?=$username ?>" readonly>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="transactionDate" class="col-sm-4 col-form-label">Language</label>
+                                                    <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['language_code'][$language]?></label>
                                                     <div class="col-sm-8">
                                                         <select class="form-control" style="width: 100%;" id="language" name="language" required>
                                                             <option value="en" <?= ($language == 'en') ? 'selected' : '' ?>>English</option>
@@ -82,7 +82,7 @@ if (mysqli_stmt_fetch($stmt2)) {
                                                 </div>
                                             </div>
                                             <div class="mt-4">
-                                                <button class="btn btn-success w-100" type="submit">Update</button>
+                                                <button class="btn btn-success w-100" type="submit"><?=$languageArray['submit_code'][$language]?></button>
                                             </div>
                                         </div>
                                     </form>

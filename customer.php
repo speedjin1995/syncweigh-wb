@@ -82,7 +82,7 @@
                                                     <div class="text-end mt-4">
                                                         <button type="submit" class="btn btn-success">
                                                             <i class="bx bx-search-alt"></i>
-                                                            Search</button>
+                                                            <?=$languageArray['search_code'][$language]?></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -102,7 +102,7 @@
                                         <div class="modal-dialog modal-dialog-scrollable modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Customer</h5>
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language]?></h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                     </button>
                                                 </div>
@@ -115,9 +115,9 @@
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="customerCode" class="col-sm-4 col-form-label">Customer Code</label>
+                                                                                    <label for="customerCode" class="col-sm-4 col-form-label"><?=$languageArray['customer_code_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="customerCode" name="customerCode" placeholder="Customer Code" required>
+                                                                                        <input type="text" class="form-control" id="customerCode" name="customerCode" placeholder="<?=$languageArray['customer_code_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div>
@@ -126,7 +126,7 @@
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="companyRegNo" class="col-sm-4 col-form-label">Company Reg No</label>
+                                                                                    <label for="companyRegNo" class="col-sm-4 col-form-label"><?=$languageArray['reg_no_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="row">
                                                                                             <div class="col-sm-4">
@@ -134,7 +134,7 @@
                                                                                             </div>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="row">
-                                                                                                    <label for="newRegNo" class="col-sm-4 col-form-label">New Reg No</label>
+                                                                                                    <label for="newRegNo" class="col-sm-4 col-form-label"><?=$languageArray['new_reg_no_code'][$language]?></label>
                                                                                                     <div class="col-sm-8">
                                                                                                         <input type="text" class="form-control" id="newRegNo" name="newRegNo" required>
                                                                                                     </div>
@@ -146,33 +146,33 @@
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="companyName" class="col-sm-4 col-form-label">Company Name</label>
+                                                                                    <label for="companyName" class="col-sm-4 col-form-label"><?=$languageArray['customer_name_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="companyName" name="companyName" placeholder="Customer Code">
+                                                                                        <input type="text" class="form-control" id="companyName" name="companyName" placeholder="<?=$languageArray['customer_name_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label">Address Line 1</label>
+                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 1</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="Address Line 1">
+                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="<?=$languageArray['address_code'][$language]?> 1">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label">Address Line 2</label>
+                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 2</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="Address Line 2">
+                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="<?=$languageArray['address_code'][$language]?> 2">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label">Address Line 3</label>
+                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 3</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="Address Line 3">
+                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="<?=$languageArray['address_code'][$language]?> 3">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -186,41 +186,41 @@
                                                                             </div> -->
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="phoneNo" class="col-sm-4 col-form-label">Phone No</label>
+                                                                                    <label for="phoneNo" class="col-sm-4 col-form-label"><?=$languageArray['phone_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="Phone No">
+                                                                                        <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?=$languageArray['phone_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="faxNo" class="col-sm-4 col-form-label">Fax No</label>
+                                                                                    <label for="faxNo" class="col-sm-4 col-form-label"><?=$languageArray['fax_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="Fax No">
+                                                                                        <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="<?=$languageArray['fax_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="contactName" class="col-sm-4 col-form-label">Contact Name</label>
+                                                                                    <label for="contactName" class="col-sm-4 col-form-label"><?=$languageArray['pic_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="contactName" name="contactName" placeholder="Contact Name">
+                                                                                        <input type="text" class="form-control" id="contactName" name="contactName" placeholder="<?=$languageArray['pic_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="icNo" class="col-sm-4 col-form-label">I/C No</label>
+                                                                                    <label for="icNo" class="col-sm-4 col-form-label"><?=$languageArray['ic_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="icNo" name="icNo" placeholder="I/C No">
+                                                                                        <input type="text" class="form-control" id="icNo" name="icNo" placeholder="<?=$languageArray['ic_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="tinNo" class="col-sm-4 col-form-label">Tin No</label>
+                                                                                    <label for="tinNo" class="col-sm-4 col-form-label"><?=$languageArray['tin_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="Tin No">
+                                                                                        <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="<?=$languageArray['tin_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -229,13 +229,12 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-
                                                         </div>
                                                         
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-success" id="submitCustomer">Submit</button>
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitCustomer"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
                                                         </div><!--end col-->                                                               
                                                     </form>
@@ -249,17 +248,17 @@
                                             <div class="modal-content">
                                                 <form role="form" id="uploadForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title">Upload Excel File</h4>
+                                                        <h4 class="modal-title"><?=$languageArray['upload_excel_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <input type="file" id="fileInput">
-                                                        <button type="button" id="previewButton">Preview Data</button>
+                                                        <button type="button" id="previewButton"><?=$languageArray['preview_data_code'][$language]?></button>
                                                         <div id="previewTable" style="overflow: auto;"></div>
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-success" id="submitWeights">Save changes</button>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                        <button type="button" class="btn btn-success" id="submitWeights"><?=$languageArray['submit_code'][$language]?></button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -295,26 +294,26 @@
                                                     <div class="card-header">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title mb-0">Previous Records</h5>
+                                                                <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
                                                                 <a href="template/Customer_Template.xlsx" download>
                                                                     <button type="button" class="btn btn-info waves-effect waves-light">
                                                                         <i class="mdi mdi-file-import-outline align-middle me-1"></i>
-                                                                        Download Template 
+                                                                        <?=$languageArray['download_template_code'][$language]?>
                                                                     </button>
                                                                 </a>
                                                                 <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
-                                                                    Upload Excel
+                                                                    <?=$languageArray['upload_excel_code'][$language]?>
                                                                 </button>
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
-                                                                    <i class="fa-solid fa-ban align-middle me-1"></i>
-                                                                    Delete Customer
+                                                                    <i class="ri-delete-bin-fill align-middle me-1"></i>
+                                                                    <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
                                                                 <button type="button" id="addCustomers" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                 <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                Add New Customer
+                                                                <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
                                                             </div> 
                                                         </div> 
@@ -324,20 +323,20 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Customer Code</th>
-                                                                    <th>Company Reg No</th>
-                                                                    <th>New Reg No</th>
-                                                                    <th>Company Name</th>
-                                                                    <th>Address Line 1</th>
-                                                                    <th>Address Line 2</th>
-                                                                    <th>Address Line 3</th>
-                                                                    <th>Phone No</th>
-                                                                    <th>Fax No</th>
-                                                                    <th>Contact Name</th>
-                                                                    <th>I/C No</th>
-                                                                    <th>Tin No</th>
-                                                                    <th>Status</th>
-                                                                    <th>Action</th>
+                                                                    <th><?=$languageArray['customer_code_code'][$language]?></th>
+                                                                    <th><?=$languageArray['reg_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['new_reg_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['customer_name_code'][$language]?></th>
+                                                                    <th><?=$languageArray['address_code'][$language]?> 1</th>
+                                                                    <th><?=$languageArray['address_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['address_code'][$language]?> 3</th>
+                                                                    <th><?=$languageArray['phone_code'][$language]?></th>
+                                                                    <th><?=$languageArray['fax_code'][$language]?></th>
+                                                                    <th><?=$languageArray['pic_code'][$language]?></th>
+                                                                    <th><?=$languageArray['ic_code'][$language]?></th>
+                                                                    <th><?=$languageArray['tin_code'][$language]?></th>
+                                                                    <th><?=$languageArray['status_code'][$language]?></th>
+                                                                    <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
                                                         </table>
@@ -465,8 +464,8 @@ $(function () {
                     // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
                     return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                     '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>' +
-                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete </a></li></ul></div>';
+                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
+                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
                 }
             }
         ]       

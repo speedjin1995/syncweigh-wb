@@ -198,7 +198,7 @@
                                                     <div class="text-end mt-4">
                                                         <button type="button" class="btn btn-success" id="searchLog">
                                                             <i class="bx bx-search-alt"></i>
-                                                            Search</button>
+                                                            <?=$languageArray['search_code'][$language]?></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -218,7 +218,7 @@
                                         <div class="modal-dialog modal-dialog-scrollable modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Transporter</h5>
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language]?></h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                     </button>
                                                 </div>
@@ -306,8 +306,8 @@
                                                         
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-success" id="submitTransporter">Submit</button>
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitTransporter"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
                                                         </div><!--end col-->                                                               
                                                     </form>
@@ -329,12 +329,12 @@
                                                     <div class="card-header">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title mb-0">Previous Records</h5>
+                                                                <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <!-- <div class="flex-shrink-0">
                                                                 <button type="button" id="addTransporter" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                 <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                Add New Transporter
+                                                                <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
                                                             </div>  -->
                                                         </div> 

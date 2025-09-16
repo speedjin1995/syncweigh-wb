@@ -1,12 +1,6 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 <?php
-// Initialize the session
-//session_start();
-// Include config file
-require_once "layouts/config.php";
-require_once "php/db_connect.php";
-
 // Check if the user is already logged in, if yes then redirect him to index page
 $id = $_SESSION['id'];
 $name = $_SESSION["username"];
@@ -17,7 +11,7 @@ if($_SESSION["roles"] == 'ADMIN'){
     $query = "SELECT role_code, role_name from roles WHERE role_code <> 'SADMIN' AND role_code <> 'ADMIN' AND deleted = '0'";
 }
 
-$stmt2 = $link->prepare($query);
+$stmt2 = $db->prepare($query);
 mysqli_stmt_execute($stmt2);
 mysqli_stmt_store_result($stmt2);
 mysqli_stmt_bind_result($stmt2, $code, $name);
@@ -31,7 +25,7 @@ else{
     $query4 = "SELECT id, name FROM Plant WHERE status = '0'";
 }
 
-$stmt4 = $link->prepare($query4);
+$stmt4 = $db->prepare($query4);
 mysqli_stmt_execute($stmt4);
 mysqli_stmt_store_result($stmt4);
 mysqli_stmt_bind_result($stmt4, $pcode, $pname);
@@ -91,20 +85,20 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                     <a href="template/User_Template.xlsx" download>
                                                         <button type="button" id="downloadTemplate" class="btn btn-info waves-effect waves-light">
                                                             <i class="ri-file-pdf-line align-middle me-1"></i>
-                                                            Download Template
+                                                            <?=$languageArray['download_template_code'][$language]?>
                                                         </button>
                                                     </a>
                                                     <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light">
                                                         <i class="ri-file-pdf-line align-middle me-1"></i>
-                                                        Upload Excel
+                                                        <?=$languageArray['upload_excel_code'][$language]?>
                                                     </button>
                                                     <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
-                                                        <i class="fa-solid fa-ban align-middle me-1"></i>
-                                                        Delete User
+                                                        <i class="ri-delete-bin-fill align-middle me-1"></i>
+                                                        <?=$languageArray['delete_code'][$language]?>
                                                     </button>
                                                     <button type="button" id="addMembers" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                         <i class="ri-add-circle-line align-middle me-1"></i>
-                                                        Add New User
+                                                        <?=$languageArray['add_new_code'][$language]?>
                                                     </button>
                                                 </div> 
                                             </div> 
@@ -116,7 +110,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                 <div class="col-2 d-flex justify-content-end">
                                                     <button type="button" id="addMembers" class="btn btn-md btn-soft-success" data-bs-toggle="modal" data-bs-target="#addModal">
                                                         <i class="ri-add-circle-line align-middle me-1"></i>
-                                                        Add New User
+                                                        <?=$languageArray['add_new_code'][$language]?>
                                                     </button>              
                                                 </div>
                                             </div> -->
@@ -132,8 +126,8 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                         <th>Email</th>
                                                         <th>Role</th>
                                                         <th>Plant Name</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
+                                                        <th><?=$languageArray['status_code'][$language]?></th>
+                                                        <th><?=$languageArray['action_code'][$language]?></th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -157,7 +151,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
         <div class="modal-dialog modal-dialog-scrollable custom-xxl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Users</h5>
+                    <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language]?></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
@@ -234,8 +228,8 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                         
                         <div class="col-lg-12">
                             <div class="hstack gap-2 justify-content-end">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-success" id="submitMember">Submit</button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                <button type="button" class="btn btn-success" id="submitMember"><?=$languageArray['submit_code'][$language]?></button>
                             </div>
                         </div><!--end col-->                                                               
                     </form>
@@ -248,17 +242,17 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             <div class="modal-content">
                 <form role="form" id="uploadForm">
                     <div class="modal-header bg-gray-dark color-palette">
-                        <h4 class="modal-title">Upload Excel File</h4>
+                        <h4 class="modal-title"><?=$languageArray['upload_excel_code'][$language]?></h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <input type="file" id="fileInput">
-                        <button type="button" id="previewButton">Preview Data</button>
+                        <button type="button" id="previewButton"><?=$languageArray['preview_data_code'][$language]?></button>
                         <div id="previewTable" style="overflow: auto;"></div>
                     </div>
                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success" id="uploadUser">Save changes</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                        <button type="button" class="btn btn-success" id="uploadUser"><?=$languageArray['submit_code'][$language]?></button>
                     </div>
                 </form>
             </div>
@@ -399,8 +393,8 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                         // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
                         return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                         '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>' +
-                        '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete </a></li></ul></div>';
+                        '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
+                        '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
                     }
                 }
             ]

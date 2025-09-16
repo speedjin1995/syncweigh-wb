@@ -2,7 +2,6 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <?php
-require_once "php/db_connect.php";
 $plantId = $_SESSION['plant'];
 
 $vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
@@ -117,7 +116,7 @@ else{
 
                             <div class="col-xxl-12 col-lg-12">
                                 <div class="card">
-                                    <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" style="background-color: #099885;">
+                                    <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" >
                                         <i class="mdi mdi-chevron-down pull-right"></i>
                                         Search Records
                                     </div>
@@ -258,7 +257,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
                                                         <div class="text-end">
-                                                            <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> Search</button>
+                                                            <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> <?=$languageArray['search_code'][$language]?></button>
                                                         </div>
                                                     </div><!--end col-->
                                                 </div><!--end row-->
@@ -382,7 +381,7 @@ else{
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="card">
-                                                    <div class="card-header" style="background-color: #099885;">
+                                                    <div class="card-header" >
                                                         <div class="d-flex justify-content-between">
                                                             <div>
                                                                 <h5 class="card-title text-white mb-0">Weighing Records</h5>
@@ -390,11 +389,11 @@ else{
                                                             <div class="flex-shrink-0">
                                                                 <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
-                                                                    Export PDF
+                                                                    <?=$languageArray['export_pdf_code'][$language]?>
                                                                 </button>
                                                                 <button type="button" id="exportExcel" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Export Excel
+                                                                    <?=$languageArray['export_excel_code'][$language]?>
                                                                 </button>
                                                             </div> 
                                                         </div> 
@@ -422,7 +421,7 @@ else{
                                                                     <th>Tare <br>Outgoing 2</th>
                                                                     <th>Outgoing <br>Date 2</th>
                                                                     <th>Nett <br>Weight 2</th>
-                                                                    <th>Action</th>
+                                                                    <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
                                                         </table>
@@ -502,8 +501,8 @@ else{
                         
                         <div class="col-lg-12">
                             <div class="hstack gap-2 justify-content-end">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-success" id="submit">Submit</button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                <button type="submit" class="btn btn-success" id="submit"><?=$languageArray['submit_code'][$language]?></button>
                             </div>
                         </div><!--end col-->                                                               
                     </form>

@@ -2,9 +2,6 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <?php
-require_once "php/db_connect.php";
-// $plantId = $_SESSION['plant'];
-
 $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0'");
 $supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0'");
 $company = $db->query("SELECT * FROM Company");
@@ -185,7 +182,7 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
                                                     </div><!--end col--> 
                                                     <div class="col-lg-12">
                                                         <div class="text-end">
-                                                            <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> Search</button>
+                                                            <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> <?=$languageArray['search_code'][$language]?></button>
                                                         </div>
                                                     </div><!--end col-->
                                                 </div><!--end row-->
@@ -202,7 +199,7 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
                                         <div class="modal-dialog modal-dialog-scrollable modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Purchase Order</h5>
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language]?></h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                     </button>
                                                 </div>
@@ -404,8 +401,8 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
                                                         
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-success" id="submitPO">Submit</button>
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitPO"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
                                                         </div><!--end col-->                                                               
                                                     </form>
@@ -418,17 +415,17 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
                                             <div class="modal-content">
                                                 <form role="form" id="uploadForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title">Upload Excel File</h4>
+                                                        <h4 class="modal-title"><?=$languageArray['upload_excel_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <input type="file" id="fileInput">
-                                                        <button type="button" id="previewButton">Preview Data</button>
+                                                        <button type="button" id="previewButton"><?=$languageArray['preview_data_code'][$language]?></button>
                                                         <div id="previewTable" style="overflow: auto;"></div>
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-success" id="uploadPo">Save changes</button>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                        <button type="button" class="btn btn-success" id="uploadPo"><?=$languageArray['submit_code'][$language]?></button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -453,7 +450,7 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
                                                                 <a href="template/Po_Template.xlsx" download>
                                                                     <button type="button" class="btn btn-info waves-effect waves-light">
                                                                         <i class="mdi mdi-file-import-outline align-middle me-1"></i>
-                                                                        Download Template 
+                                                                        <?=$languageArray['download_template_code'][$language]?>
                                                                     </button>
                                                                 </a>
                                                                 <button type="button" id="uploadExcel" class="btn btn-warning waves-effect waves-light">
@@ -462,11 +459,11 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
                                                                 </button>
                                                                 <button type="button" id="exportExcel" class="btn btn-success waves-effect waves-light">
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Export Excel
+                                                                    <?=$languageArray['export_excel_code'][$language]?>
                                                                 </button>
                                                                 <button type="button" id="addPurchaseOrder" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                    Add New P/O
+                                                                    <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
                                                             </div> 
                                                         </div> 
@@ -489,7 +486,7 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
                                                                     <th>EXQ/DEL</th>
                                                                     <th>Balance</th>
                                                                     <th>Modified Date</th>
-                                                                    <th>Action</th>
+                                                                    <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
                                                         </table>
@@ -1054,7 +1051,7 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
                             <th>Vehicle No</th>
                             <th>Nett Weight</th>
                             <th>Weighted By</th>
-                            <th>Action</th>
+                            <th><?=$languageArray['action_code'][$language]?></th>
                         </tr>
                     </thead>
                     <tbody>`;

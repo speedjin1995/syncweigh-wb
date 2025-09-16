@@ -1,6 +1,4 @@
 <?php
-require_once "php/db_connect.php";
-
 ## Fetch records
 // Lorry SQL
 $lorryWeighingSQL = "(select * from Weight where status = '0' AND is_complete = 'N' AND is_cancel='N') UNION ALL (select * from Weight_Container where status = '0' AND is_complete = 'N' AND is_cancel='N')";
@@ -549,7 +547,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                         aria-haspopup="true" aria-expanded="false">
                         <i class='bx bx-bookmarks fs-22'></i>
                         <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"><?=$count2 ?>
-                        <span class="visually-hidden">unread messages</span></span>
+                        <span class="visually-hidden"><?=$languageArray['unread_messages_code'][$language] ?></span></span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                         aria-labelledby="page-header-notifications-dropdown">
@@ -561,7 +559,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                         <h6 class="m-0 fs-16 fw-semibold text-white"> Pending Approval </h6>
                                     </div>
                                     <div class="col-auto dropdown-tabs">
-                                        <span class="badge badge-soft-light fs-13"> <?=$count2 ?> New</span>
+                                        <span class="badge badge-soft-light fs-13"> <?=$count2 ?> <?=$languageArray['new_code'][$language] ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -665,7 +663,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                         aria-haspopup="true" aria-expanded="false">
                         <i class='bx bx-bell fs-22'></i>
                         <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"><?=$count ?>
-                        <span class="visually-hidden">unread messages</span></span>
+                        <span class="visually-hidden"><?=$languageArray['unread_messages_code'][$language] ?></span></span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                         aria-labelledby="page-header-notifications-dropdown" style="width: 580px;">
@@ -677,7 +675,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                         <h6 class="m-0 fs-16 fw-semibold text-white"> <?=$languageArray['pending_lorry_weighing_code'][$language] ?> </h6>
                                     </div>
                                     <div class="col-auto dropdown-tabs">
-                                        <span class="badge badge-soft-light fs-13"> <?=$count ?> New</span>
+                                        <span class="badge badge-soft-light fs-13"> <?=$count ?> <?=$languageArray['new_code'][$language] ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -805,7 +803,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                         aria-haspopup="true" aria-expanded="false">
                         <i class='bx bx-bell fs-22'></i>
                         <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"><?=$containerCount ?>
-                        <span class="visually-hidden">unread messages</span></span>
+                        <span class="visually-hidden"><?=$languageArray['unread_messages_code'][$language] ?></span></span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                         aria-labelledby="page-header-cw-dropdown" style="width: 580px;">
@@ -817,7 +815,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                         <h6 class="m-0 fs-16 fw-semibold text-white"> <?=$languageArray['pending_container_weighing_code'][$language] ?> </h6>
                                     </div>
                                     <div class="col-auto dropdown-tabs">
-                                        <span class="badge badge-soft-light fs-13"> <?=$containerCount ?> New</span>
+                                        <span class="badge badge-soft-light fs-13"> <?=$containerCount ?> <?=$languageArray['new_code'][$language] ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -962,7 +960,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                 class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Balance : <b>$5971.67</b></span></a>
                         <a class="dropdown-item" href="pages-profile-settings.php"><span
-                                class="badge bg-soft-success text-success mt-1 float-end">New</span><i
+                                class="badge bg-soft-success text-success mt-1 float-end"><?=$languageArray['new_code'][$language] ?></span><i
                                 class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Settings</span></a>
                         <a class="dropdown-item" href="auth-lockscreen-basic.php"><i
@@ -970,7 +968,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                 class="align-middle">Lock screen</span></a-->
                         <a class="dropdown-item" href="php/logout.php"><i
                                 class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
-                                class="align-middle" data-key=t-logout><?=$lang['t-logout']?></span></a>
+                                class="align-middle" data-key=t-logout><?=$languageArray['logout_code'][$language]?></span></a>
                     </div>
                 </div>
             </div>

@@ -2,8 +2,6 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <?php
-require_once "php/db_connect.php";
-
 $user = $_SESSION['id'];
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
@@ -309,7 +307,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
                                                         <div class="text-end">
-                                                            <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> Search</button>
+                                                            <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> <?=$languageArray['search_code'][$language]?></button>
                                                         </div>
                                                     </div><!--end col-->
                                                 </div><!--end row-->
@@ -427,14 +425,14 @@ else{
                                 <div class="col-xl-3 col-md-6 add-new-weight">
                                     <!-- <button type="button" class="btn btn-lg btn-soft-success" data-bs-toggle="modal" data-bs-target="#addModal"><i
                                             class="ri-add-circle-line align-middle me-1"></i>
-                                        Add New Weight</button> -->
+                                        <?=$languageArray['add_new_code'][$language]?></button> -->
 
                                     <!-- /.modal-dialog -->
                                     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-scrollable custom-xxl">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Entry</h5>
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language]?></h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                     </button>
                                                 </div>
@@ -889,7 +887,7 @@ else{
                                                                                         <th>Gross Weight (kg)</th>
                                                                                         <th>Tare Weight (kg)</th>
                                                                                         <th>Nett Weight (kg)</th>
-                                                                                        <th>Action</th>
+                                                                                        <th><?=$languageArray['action_code'][$language]?></th>
                                                                                     </tr>
                                                                                 </thead>
                                                                                 <tbody id="productTable"></tbody>
@@ -1087,9 +1085,9 @@ else{
                                                         
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
                                                                 <button type="button" class="btn btn-success" id="submitWeightPrint">Submit & Print</button>
-                                                                <button type="button" class="btn btn-primary" id="submitWeight">Submit</button>
+                                                                <button type="button" class="btn btn-primary" id="submitWeight"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
                                                         </div><!--end col-->   
 
@@ -1249,8 +1247,8 @@ else{
                                                         </div>
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-success" id="submitBypass">Submit</button>
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitBypass"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
                                                         </div><!--end col-->   
                                                     </div>
@@ -1290,8 +1288,8 @@ else{
                                                         </div>
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-success" id="submitApproval">Submit</button>
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitApproval"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
                                                         </div><!--end col-->   
                                                     </div>
@@ -1305,17 +1303,17 @@ else{
                                             <div class="modal-content">
                                                 <form role="form" id="uploadForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title">Upload Excel File</h4>
+                                                        <h4 class="modal-title"><?=$languageArray['upload_excel_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <input type="file" id="fileInput">
-                                                        <button type="button" id="previewButton">Preview Data</button>
+                                                        <button type="button" id="previewButton"><?=$languageArray['preview_data_code'][$language]?></button>
                                                         <div id="previewTable" style="overflow: auto;"></div>
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-success" id="submitWeights">Save changes</button>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                        <button type="button" class="btn btn-success" id="submitWeights"><?=$languageArray['submit_code'][$language]?></button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -1344,8 +1342,8 @@ else{
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-success" id="submitPrePrint">Save changes</button>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                        <button type="button" class="btn btn-success" id="submitPrePrint"><?=$languageArray['submit_code'][$language]?></button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -1373,8 +1371,8 @@ else{
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-success" id="submitCancel">Save changes</button>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                        <button type="button" class="btn btn-success" id="submitCancel"><?=$languageArray['submit_code'][$language]?></button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -1385,18 +1383,18 @@ else{
                                             <div class="modal-content">
                                                 <form role="form" id="uploadForm" class="needs-validation" novalidate autocomplete="off">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="importModalScrollableTitle">Upload Excel File</h5>
+                                                        <h5 class="modal-title" id="importModalScrollableTitle"><?=$languageArray['upload_excel_code'][$language]?></h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <input type="file" id="fileInput">
-                                                        <button type="button" id="previewButton">Preview Data</button>
+                                                        <button type="button" id="previewButton"><?=$languageArray['preview_data_code'][$language]?></button>
                                                         <div id="previewTable" style="overflow: auto;"></div>
                                                     </div> 
 
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-success" id="saveButton">Submit</button>
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                        <button type="button" class="btn btn-success" id="saveButton"><?=$languageArray['submit_code'][$language]?></button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -1415,25 +1413,25 @@ else{
                                                     <div class="card-header" style="background-color: #405189;">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title mb-0 text-white">Previous Records (Lorry)</h5>
+                                                                <h5 class="card-title mb-0 text-white"><?=$languageArray['previous_records_code'][$language]?> (Lorry)</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
                                                                 <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
-                                                                    Export PDF
+                                                                    <?=$languageArray['export_pdf_code'][$language]?>
                                                                 </button>
                                                                 <button type="button" id="exportExcel" class="btn btn-info waves-effect waves-light" >
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Export Excel
+                                                                    <?=$languageArray['export_excel_code'][$language]?>
                                                                 </button>
                                                                 <button type="button" id="multiDeleteLorry" class="btn btn-warning waves-effect waves-light" >
-                                                                    <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Delete Weight
+                                                                    <i class="ri-delete-bin-fill align-middle me-1"></i>
+                                                                    <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
                                                                 <!--a href="/template/Weight_Template.xlsx" download>
                                                                     <button type="button" class="btn btn-info waves-effect waves-light">
                                                                         <i class="mdi mdi-file-import-outline align-middle me-1"></i>
-                                                                        Download Template 
+                                                                        <?=$languageArray['download_template_code'][$language]?>
                                                                     </button>
                                                                 </a>
                                                                 <button type="button" id="uploadExccl" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal">
@@ -1442,7 +1440,7 @@ else{
                                                                 </button-->
                                                                 <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                    Add New Weight
+                                                                    <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
                                                             </div> 
                                                         </div> 
@@ -1470,7 +1468,7 @@ else{
                                                                     <th>Tare <br>Outgoing 2</th>
                                                                     <th>Outgoing <br>Date 2</th>
                                                                     <th>Nett <br>Weight 2</th>
-                                                                    <th>Action</th>
+                                                                    <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
                                                         </table>
@@ -1499,7 +1497,7 @@ else{
                                                                 <!--a href="/template/Weight_Template.xlsx" download>
                                                                     <button type="button" class="btn btn-info waves-effect waves-light">
                                                                         <i class="mdi mdi-file-import-outline align-middle me-1"></i>
-                                                                        Download Template 
+                                                                        <?=$languageArray['download_template_code'][$language]?>
                                                                     </button>
                                                                 </a>
                                                                 <button type="button" id="uploadExccl" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal">
@@ -1508,11 +1506,11 @@ else{
                                                                 </button-->
                                                                 <!-- <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                    Add New Weight
+                                                                    <?=$languageArray['add_new_code'][$language]?>
                                                                 </button> -->
                                                                 <button type="button" id="multiDeleteContainer" class="btn btn-warning waves-effect waves-light" >
-                                                                    <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Delete Weight
+                                                                    <i class="ri-delete-bin-fill align-middle me-1"></i>
+                                                                    <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
                                                             </div> 
                                                         </div> 
@@ -1531,7 +1529,7 @@ else{
                                                                     <th>Tare <br>Outgoing</th>
                                                                     <th>Outgoing <br>Date</th>
                                                                     <th>Nett <br>Weight</th>
-                                                                    <th>Action</th>
+                                                                    <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
                                                         </table>
@@ -1597,8 +1595,8 @@ else{
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                            <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                            <button type="submit" class="btn btn-primary"><?=$languageArray['submit_code'][$language]?></button>
                         </div>
                     </form>
                 </div>
@@ -1629,8 +1627,8 @@ else{
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                            <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                            <button type="submit" class="btn btn-primary"><?=$languageArray['submit_code'][$language]?></button>
                         </div>
                     </form>
                 </div>
@@ -2018,7 +2016,7 @@ else{
                         // let dropdownMenu = '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">';
 
                         // if (row.is_complete != 'Y' || userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                        //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>'; 
+                        //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>'; 
                         // }
 
                         // if (row.is_approved == 'Y') {
@@ -2933,7 +2931,7 @@ else{
                             // let dropdownMenu = '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">';
 
                             // if (row.is_complete != 'Y' || userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') {
-                            //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>'; 
+                            //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>'; 
                             // }
 
                             // if (row.is_approved == 'Y') {

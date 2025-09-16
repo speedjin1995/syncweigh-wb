@@ -2,8 +2,6 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <?php
-require_once "php/db_connect.php";
-
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and plant_code IN ('$username')");
@@ -111,7 +109,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
                                                         <div class="text-end">
-                                                            <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> Search</button>
+                                                            <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> <?=$languageArray['search_code'][$language]?></button>
                                                         </div>
                                                     </div><!--end col-->
                                                 </div><!--end row-->
@@ -136,11 +134,11 @@ else{
                                                             <!--div class="flex-shrink-0">
                                                                 <button type="button" id="exportPdf" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
-                                                                    Export PDF
+                                                                    <?=$languageArray['export_pdf_code'][$language]?>
                                                                 </button>
                                                                 <button type="button" id="exportExcel" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
-                                                                    Export Excel
+                                                                    <?=$languageArray['export_excel_code'][$language]?>
                                                                 </button>
                                                             </div--> 
                                                         </div> 
@@ -154,7 +152,7 @@ else{
                                                                     <th>Raw Material Name</th>
                                                                     <th>Weight (Kg)</th>
                                                                     <th>Drum</th>
-                                                                    <th>Action</th>
+                                                                    <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
                                                         </table>
@@ -237,8 +235,8 @@ else{
                             
                             <div class="col-lg-12">
                                 <div class="hstack gap-2 justify-content-end">
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-success" id="submitSite">Submit</button>
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                    <button type="button" class="btn btn-success" id="submitSite"><?=$languageArray['submit_code'][$language]?></button>
                                 </div>
                             </div><!--end col-->                                                               
                         </form>
@@ -312,7 +310,7 @@ else{
                     render: function ( data, type, row ) {
                         return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                         '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pen align-bottom me-2 text-muted"></i> Edit</a></li></ul></div>';
+                        '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pen align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li></ul></div>';
                     }
                 }
             ] 
@@ -350,7 +348,7 @@ else{
                         render: function ( data, type, row ) {
                             return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                             '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                            '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pen align-bottom me-2 text-muted"></i> Edit</a></li></ul></div>';
+                            '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pen align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li></ul></div>';
                         }
                     }
                 ] 

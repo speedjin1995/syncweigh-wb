@@ -37,7 +37,7 @@
                     <a href="dashboard.php" class="nav-link"><i class="mdi mdi-billboard"></i><?=$lang['t-billboard']?></a>
                 </li-->
                 <li class="nav-item">
-                    <a href="index.php" class="nav-link"><i class="mdi mdi-weight"></i><?=$lang['t-weighing']?></a>
+                    <a href="index.php" class="nav-link"><i class="mdi mdi-weight"></i><?=$languageArray['daily_weighing_code'][$language]?></a>
                 </li>                
                 <!--li class="nav-item">
                     <a href="bitumen.php" class="nav-link"><i class="mdi mdi-domain"></i></i><?=$lang['t-bitumen']?></a>
@@ -78,51 +78,51 @@
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#sidebarMasterdata" data-bs-toggle="collapse" role="button"
                                 aria-expanded="false" aria-controls="sidebarMasterdata">
-                                <i class="ri-pages-line"></i> <span>'.$lang['t-masterdata'].'</span>
+                                <i class="ri-pages-line"></i> <span>'.$languageArray['master_data_code'][$language].'</span>
                             </a>
                             <div class="collapse menu-dropdown" id="sidebarMasterdata">
                                 <ul class="nav nav-sm flex-column">';
 
                     if($_SESSION["roles"] == 'SADMIN'){
                         echo '<li class="nav-item">
-                            <a href="message.php" class="nav-link">'.$lang['t-message'].'</a>
+                            <a href="message.php" class="nav-link">'.$languageArray['message_resource_code'][$language].'</a>
                         </li>';
                     }
 
                     if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
                         echo '<li class="nav-item">
-                                        <a href="customer.php" class="nav-link">'.$lang['t-customer'].'</a>
+                                        <a href="customer.php" class="nav-link">'.$languageArray['customer_code'][$language].'</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="destination.php" class="nav-link">'.$lang['t-destination'].'</a>
+                                        <a href="destination.php" class="nav-link">'.$languageArray['destination_code'][$language].'</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="product.php" class="nav-link">'.$lang['t-product'].'</a>
+                                        <a href="product.php" class="nav-link">'.$languageArray['product_code'][$language].'</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="rawMaterial.php" class="nav-link">'.$lang['t-raw-mat'].'</a>
+                                        <a href="rawMaterial.php" class="nav-link">'.$languageArray['raw_material_code'][$language].'</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="supplier.php" class="nav-link">'.$lang['t-supplier'].'</a>
+                                        <a href="supplier.php" class="nav-link">'.$languageArray['supplier_code'][$language].'</a>
                                     </li>       
                                     <li class="nav-item">
-                                        <a href="vehicle.php" class="nav-link">'.$lang['t-vehicle'].'</a>
+                                        <a href="vehicle.php" class="nav-link">'.$languageArray['vehicle_code'][$language].'</a>
                                     </li>             
                                     <li class="nav-item">
-                                        <a href="transporter.php" class="nav-link">'.$lang['t-transporter'].'</a>
+                                        <a href="transporter.php" class="nav-link">'.$languageArray['transporter_code'][$language].'</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="user.php" class="nav-link">'.$lang['t-user'].'</a>
+                                        <a href="user.php" class="nav-link">'.$languageArray['staff_code'][$language].'</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="plant.php" class="nav-link">'.$languageArray['plant_code'][$language].'</a>
+                                    </li> 
                                     <!--li class="nav-item">
                                         <a href="unit.php" class="nav-link">'.$lang['t-unit'].'</a>
                                     </li-->                           
                                     <!--li class="nav-item">
                                         <a href="agent.php" class="nav-link">'.$lang['t-agent'].'</a>
-                                    </li--> 
-                                    <li class="nav-item">
-                                        <a href="plant.php" class="nav-link">'.$lang['t-plant'].'</a>
-                                    </li>                                    
+                                    </li-->                           
                                     <!--li class="nav-item">
                                         <a href="site.php" class="nav-link">'.$lang['t-site'].'</a>
                                     </li-->    
@@ -135,13 +135,13 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarReport" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarReport">
-                        <i class="ri-account-circle-line"></i> <span><?=$lang['t-report']?></span>
+                        <i class="ri-account-circle-line"></i> <span><?=$languageArray['report_code'][$language]?></span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarReport">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <li class="nav-item">
-                                    <a href="weighingReport.php" class="nav-link"><?=$lang['t-weighingReport']?></a>
+                                    <a href="weighingReport.php" class="nav-link"><?=$languageArray['weighing_report_code'][$language]?></a>
                                 </li-->
                                 <!--li class="nav-item">
                                     <a href="salesReport.php" class="nav-link"><?=$lang['t-soReport']?></a>
@@ -152,7 +152,7 @@
                                 <?php
                                     if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
                                         echo '<li class="nav-item">
-                                            <a href="auditLog.php" class="nav-link">'.$lang['t-auditLog'].'</a>
+                                            <a href="auditLog.php" class="nav-link">'.$languageArray['audit_log_code'][$language].'</a>
                                         </li> ';
                                     }
                                 ?>                            
@@ -164,7 +164,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarAuth">
-                        <i class="ri-account-circle-line"></i> <span><?=$lang['t-setting']?></span>
+                        <i class="ri-account-circle-line"></i> <span><?=$languageArray['setting_code'][$language]?></span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarAuth">
                         <ul class="nav nav-sm flex-column">
@@ -172,19 +172,19 @@
                                 <?php
                                     if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
                                         echo '<li class="nav-item">
-                                            <a href="companyProfile.php" class="nav-link">'.$lang['t-companyProfile'].'</a>
+                                            <a href="companyProfile.php" class="nav-link">'.$languageArray['company_profile_code'][$language].'</a>
                                         </li> ';
                                     }
                                 ?>
                                 
                                 <li class="nav-item">
-                                    <a href="portSetup.php" class="nav-link"><?=$lang['t-portSetup']?></a>
+                                    <a href="portSetup.php" class="nav-link"><?=$languageArray['port_setup_code'][$language]?></a>
                                 </li> 
                                 <li class="nav-item">
-                                    <a href="myProfile.php" class="nav-link"><?=$lang['t-myProfile']?></a>
+                                    <a href="myProfile.php" class="nav-link"><?=$languageArray['profile_code'][$language]?></a>
                                 </li> 
                                 <li class="nav-item">
-                                    <a href="ChangePassword.php" class="nav-link"><?=$lang['t-changePassword']?></a>
+                                    <a href="ChangePassword.php" class="nav-link"><?=$languageArray['change_password_code'][$language]?></a>
                                 </li>                                 
                             </li>
                         </ul>
@@ -192,7 +192,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="php/logout.php" class="nav-link"><i class="mdi mdi-logout-variant"></i> <span><?=$lang['t-logout']?></span></a>
+                    <a href="php/logout.php" class="nav-link"><i class="mdi mdi-logout-variant"></i> <span><?=$languageArray['logout_code'][$language]?></span></a>
                 </li>                 
             </ul>
         </div>

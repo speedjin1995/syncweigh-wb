@@ -139,8 +139,8 @@
                                                         
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-success" id="submitSite">Submit</button>
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitSite"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
                                                         </div><!--end col-->                                                               
                                                     </form>
@@ -161,7 +161,7 @@
                                                     <div class="card-header">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title mb-0">Previous Records</h5>
+                                                                <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
                                                                 <button type="button" id="addSite" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#messageModal">
@@ -181,7 +181,7 @@
                                                                     <th>中文</th>
                                                                     <th>Bahasa Malaysia</th>
                                                                     <th>नेपाली</th>
-                                                                    <th>Action</th>
+                                                                    <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
                                                         </table>

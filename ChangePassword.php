@@ -34,30 +34,30 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="transactionId" class="col-sm-4 col-form-label">Old Password</label>
+                                                    <label for="transactionId" class="col-sm-4 col-form-label"><?=$languageArray['old_password_code'][$language]?></label>
                                                     <div class="col-sm-8 ">
-                                                        <input type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="Enter Old Password">
+                                                        <input type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="<?=$languageArray['old_password_code'][$language]?>">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="transactionDate" class="col-sm-4 col-form-label">New Password</label>
+                                                    <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['new_password_code'][$language]?></label>
                                                     <div class="col-sm-8">
-                                                        <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Enter New Password">
+                                                        <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="<?=$languageArray['new_password_code'][$language]?>">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="transactionDate" class="col-sm-4 col-form-label">Confirm Password</label>
+                                                    <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['confirm_password_code'][$language]?></label>
                                                     <div class="col-sm-8">
-                                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Enter Confirm Password">
+                                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="<?=$languageArray['confirm_password_code'][$language]?>">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="mt-4">
-                                                <button class="btn btn-success w-100" type="submit">Update</button>
+                                                <button class="btn btn-success w-100" type="submit"><?=$languageArray['submit_code'][$language]?></button>
                                             </div>
                                         </div>
                                     </form>
