@@ -360,10 +360,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 $message .= '
                                     <table style="width:100%; border:0px solid black; margin-top: 10px;">
                                         <tr style="font-size: 14px;text-align: center;">
-                                            <th width="25%" style="border:1px solid black;">'.$languageArray['container_no1'][$language].'</th>
-                                            <th width="25%" style="border:1px solid black;">'.$languageArray['seal_no1'][$language].'</th>
-                                            <th width="25%" style="border:1px solid black;">'.$languageArray['container_no2'][$language].'</th>
-                                            <th width="25%" style="border:1px solid black;">'.$languageArray['seal_no2'][$language].'</th>
+                                            <th width="25%" style="border:1px solid black;">'.$languageArray['container_no1_code'][$language].'</th>
+                                            <th width="25%" style="border:1px solid black;">'.$languageArray['seal_no1_code'][$language].'</th>
+                                            <th width="25%" style="border:1px solid black;">'.$languageArray['container_no2_code'][$language].'</th>
+                                            <th width="25%" style="border:1px solid black;">'.$languageArray['seal_no2_code'][$language].'</th>
                                         </tr>
                                         <tr style="font-size: 14px;text-align: center;">
                                             <td style="border:1px solid black;">'.(!empty($row["container_no"]) ? $row["container_no"] : '&nbsp;').'</td>
