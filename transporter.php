@@ -115,9 +115,9 @@
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="transporterCode" class="col-sm-4 col-form-label">Transporter Code</label>
+                                                                                    <label for="transporterCode" class="col-sm-4 col-form-label"><?=$languageArray['transporter_code_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="transporterCode" name="transporterCode" placeholder="Transporter Code" required>
+                                                                                        <input type="text" class="form-control" id="transporterCode" name="transporterCode" placeholder="<?=$languageArray['transporter_code_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div>
@@ -126,7 +126,7 @@
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="companyRegNo" class="col-sm-4 col-form-label">Company Reg No</label>
+                                                                                    <label for="companyRegNo" class="col-sm-4 col-form-label"><?=$languageArray['company_reg_no_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="row">
                                                                                             <div class="col-sm-4">
@@ -134,7 +134,7 @@
                                                                                             </div>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="row">
-                                                                                                    <label for="newRegNo" class="col-sm-4 col-form-label">New Reg No</label>
+                                                                                                    <label for="newRegNo" class="col-sm-4 col-form-label"><?=$languageArray['new_reg_no_code'][$language]?></label>
                                                                                                     <div class="col-sm-8">
                                                                                                         <input type="text" class="form-control" id="newRegNo" name="newRegNo" required>
                                                                                                     </div>
@@ -146,73 +146,73 @@
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="companyName" class="col-sm-4 col-form-label">Company Name</label>
+                                                                                    <label for="companyName" class="col-sm-4 col-form-label"><?=$languageArray['company_name_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="companyName" name="companyName" placeholder="Customer Code">
+                                                                                        <input type="text" class="form-control" id="companyName" name="companyName" placeholder="<?=$languageArray['company_name_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label">Address Line 1</label>
+                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?>1</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="Address Line 1">
+                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="<?=$languageArray['address_code'][$language]?>1">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label">Address Line 2</label>
+                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?>2</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="Address Line 2">
+                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="<?=$languageArray['address_code'][$language]?>2">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label">Address Line 3</label>
+                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?>3</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="Address Line 3">
+                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="<?=$languageArray['address_code'][$language]?>3">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="phoneNo" class="col-sm-4 col-form-label">Phone No</label>
+                                                                                    <label for="phoneNo" class="col-sm-4 col-form-label"><?=$languageArray['phone_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="Phone No">
+                                                                                        <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?=$languageArray['phone_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="faxNo" class="col-sm-4 col-form-label">Fax No</label>
+                                                                                    <label for="faxNo" class="col-sm-4 col-form-label"><?=$languageArray['fax_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="Fax No">
+                                                                                        <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="<?=$languageArray['fax_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="contactName" class="col-sm-4 col-form-label">Contact Name</label>
+                                                                                    <label for="contactName" class="col-sm-4 col-form-label"><?=$languageArray['pic_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="contactName" name="contactName" placeholder="Contact Name">
+                                                                                        <input type="text" class="form-control" id="contactName" name="contactName" placeholder="<?=$languageArray['pic_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="icNo" class="col-sm-4 col-form-label">I/C No</label>
+                                                                                    <label for="icNo" class="col-sm-4 col-form-label"><?=$languageArray['ic_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="icNo" name="icNo" placeholder="I/C No">
+                                                                                        <input type="text" class="form-control" id="icNo" name="icNo" placeholder="<?=$languageArray['ic_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="tinNo" class="col-sm-4 col-form-label">Tin No</label>
+                                                                                    <label for="tinNo" class="col-sm-4 col-form-label"><?=$languageArray['tin_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="Tin No">
+                                                                                        <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="<?=$languageArray['tin_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -315,18 +315,18 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Transporter Code</th>
-                                                                    <th>Company Reg No</th>
-                                                                    <th>New Reg No</th>
-                                                                    <th>Company Name</th>
-                                                                    <th>Address Line 1</th>
-                                                                    <th>Address Line 2</th>
-                                                                    <th>Address Line 3</th>
-                                                                    <th>Phone No</th>
-                                                                    <th>Fax No</th>
-                                                                    <th>Contact Name</th>
-                                                                    <th>I/C No</th>
-                                                                    <th>Tin No</th>
+                                                                    <th><?=$languageArray['transporter_code_code'][$language]?></th>
+                                                                    <th><?=$languageArray['company_reg_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['new_reg_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['company_name_code'][$language]?></th>
+                                                                    <th><?=$languageArray['address_code'][$language]?>1</th>
+                                                                    <th><?=$languageArray['address_code'][$language]?>2</th>
+                                                                    <th><?=$languageArray['address_code'][$language]?>3</th>
+                                                                    <th><?=$languageArray['phone_code'][$language]?></th>
+                                                                    <th><?=$languageArray['fax_code'][$language]?></th>
+                                                                    <th><?=$languageArray['pic_code'][$language]?></th>
+                                                                    <th><?=$languageArray['ic_code'][$language]?></th>
+                                                                    <th><?=$languageArray['tin_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>

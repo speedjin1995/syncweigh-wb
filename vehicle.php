@@ -121,9 +121,9 @@
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="vehicleNo" class="col-sm-4 col-form-label">Vehicle No</label>
+                                                                                    <label for="vehicleNo" class="col-sm-4 col-form-label"><?=$languageArray['vehicle_no_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="Vehicle No" required>
+                                                                                        <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="<?=$languageArray['vehicle_no_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div>
@@ -133,9 +133,9 @@
 
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="vehicleWeight" class="col-sm-4 col-form-label">Vehicle Weight</label>
+                                                                                    <label for="vehicleWeight" class="col-sm-4 col-form-label"><?=$languageArray['vehicle_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="vehicleWeight" name="vehicleWeight" placeholder="Vehicle Weight" required>
+                                                                                        <input type="text" class="form-control" id="vehicleWeight" name="vehicleWeight" placeholder="<?=$languageArray['vehicle_weight_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div>
@@ -145,7 +145,7 @@
 
                                                                             <div class="col-xxl-12 col-lg-12 mb-3" style="display:none">
                                                                                 <div class="row">
-                                                                                    <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
+                                                                                    <label for="transporter" class="col-sm-4 col-form-label"><?=$languageArray['transporter_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <select class="form-control select2" id="transporter" name="transporter">
                                                                                             <option value="" selected disabled hidden>Please Select</option>
@@ -159,7 +159,7 @@
 
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="customer" class="col-sm-4 col-form-label">Customer</label>
+                                                                                    <label for="customer" class="col-sm-4 col-form-label"><?=$languageArray['customer_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <select class="form-select select2" id="customer" name="customer">
                                                                                             <option selected>-</option>
@@ -173,7 +173,7 @@
 
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="supplier" class="col-sm-4 col-form-label">Supplier</label>
+                                                                                    <label for="supplier" class="col-sm-4 col-form-label"><?=$languageArray['supplier_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <select class="form-select select2" id="supplier" name="supplier">
                                                                                             <option selected>-</option>
@@ -288,12 +288,12 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Vehicle No</th>
-                                                                    <th>Vehicle Weight</th>
+                                                                    <th><?=$languageArray['vehicle_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['vehicle_weight_code'][$language]?></th>
                                                                     <!-- <th>EX-Quarry/Delivered</th>
                                                                     <th>Transporter</th> -->
-                                                                    <th>Customer</th>
-                                                                    <th>Supplier</th>
+                                                                    <th><?=$languageArray['customer_code'][$language]?></th>
+                                                                    <th><?=$languageArray['supplier_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
