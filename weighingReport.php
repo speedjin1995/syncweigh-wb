@@ -182,7 +182,7 @@ else{
                                                             <select id="invoiceNoSearch" class="form-select"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal">Normal Weighing</option>
-                                                                <option value="Container">Primer Mover</option>
+                                                                <!-- <option value="Container">Primer Mover</option> -->
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->                                               
