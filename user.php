@@ -219,7 +219,29 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                         </select>
                                                     </div>
                                                 </div>
-                                            </div>                                              
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                    <label for="allowManual" class="col-sm-4 col-form-label">Allow Manual *</label>
+                                                    <div class="col-sm-8">
+                                                        <select id="allowManual" name="allowManual" class="form-control" required>
+                                                            <option value="Y">YES</option>
+                                                            <option value="N">NO</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>                                        
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                    <label for="allowDeduct" class="col-sm-4 col-form-label">Allow Deduct *</label>
+                                                    <div class="col-sm-8">
+                                                        <select id="allowDeduct" name="allowDeduct" class="form-control" required>
+                                                            <option value="Y">YES</option>
+                                                            <option value="N">NO</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>                                        
                                         </div>
                                     </div>
                                 </div>
@@ -457,6 +479,8 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             $('#addModal').find('#useremail').val("");
             $('#addModal').find('#roles').val("");
             $('#addModal').find('#plantId').val('').trigger('change');
+            $('#addModal').find('#allowManual').val("N");
+            $('#addModal').find('#allowDeduct').val("N");
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -633,6 +657,8 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 $('#addModal').find('#useremail').val(obj.message.useremail);
                 $('#addModal').find('#roles').val(obj.message.role_code);
                 $("#addModal").find("#plantId").val(JSON.parse(obj.message.plant)).trigger("change");
+                $('#addModal').find('#allowManual').val(obj.message.allow_manual);
+                $('#addModal').find('#allowDeduct').val(obj.message.allow_deduct);
 
                 // Remove Validation Error Message
                 $('#addModal .is-invalid').removeClass('is-invalid');
