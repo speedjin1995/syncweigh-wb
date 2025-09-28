@@ -74,7 +74,7 @@ $result->free();
                         <div class="row col-12">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <form action="php/updateDeduction.php" method="post">
+                                    <form id="profileForm" action="php/updateDeduction.php" method="post">
                                         <!-- Status -->
                                         <div class="row mb-3">
                                             <div class="col-4 d-flex align-items-center">
@@ -152,13 +152,13 @@ $result->free();
                     </div>
                     <div class="modal-body">
                         <form id="passwordCheckForm">
-                            <div class="mb-3">
+                            <div class="mb-3" id="password2Div">
                                 <label for="password2" class="form-label"><?=$languageArray['password_code'][$language]?> 2</label>
-                                <input type="password" class="form-control" id="password2" name="password2" required>
+                                <input type="password" class="form-control" id="password2" name="password2">
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-3" id="password3Div">
                                 <label for="password3" class="form-label"><?=$languageArray['password_code'][$language]?> 3</label>
-                                <input type="password" class="form-control" id="password3" name="password3" required>
+                                <input type="password" class="form-control" id="password3" name="password3">
                             </div>
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-success"><?=$languageArray['submit_code'][$language]?></button>
@@ -184,7 +184,9 @@ $result->free();
         <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
         <script type="text/javascript">
             $(function () {
-                // Check Password Logic
+                // Check Password Logic when load screen
+                $('#passwordModal').find('#password2Div').val('').show(); // show password2 input
+                $('#passwordModal').find('#password3Div').val('').hide(); // hide password3 input
                 $("#passwordModal").modal({
                     backdrop: 'static', // disable closing by clicking outside
                     keyboard: false // disable ESC close
@@ -198,8 +200,9 @@ $result->free();
 
                 $("#passwordCheckForm").on("submit", function (e) {
                     e.preventDefault();
+                    var password2 = $('#passwordModal').find('#password2').val();
 
-                    $.post("php/checkPasswords.php", $(this).serialize(), function (data) {
+                    $.post("php/checkPasswords.php", { type: 'screen', password2: password2 }, function (data) {
                         let obj = JSON.parse(data);
 
                         if (obj.status === "success") {
@@ -220,24 +223,58 @@ $result->free();
                     this.value = this.checked ? "Enable" : "Disable";
                 });
 
+                // ===== VALIDATION & SAVE WITH PASSWORD3 =====
                 $.validator.setDefaults({
                     submitHandler: function () {
                         $('#spinnerLoading').show();
-                        $.post('php/updateDeduction.php', $('#profileForm').serialize(), function(data){
-                            var obj = JSON.parse(data); 
-                            
-                            if(obj.status === 'success'){
-                                toastr["success"](obj.message, "Success:");
-                                window.location.reload();
-                            }
-                            else if(obj.status === 'failed'){
-                                toastr["error"](obj.message, "Failed:");
-                                $('#spinnerLoading').hide();
-                            }
-                            else{
-                                toastr["error"]("Failed to update ports", "Failed:");
-                                $('#spinnerLoading').hide();
-                            }
+
+                        // Switch modal to ask for password3
+                        $('#passwordModal').find('#password2Div').val('').hide();
+                        $('#passwordModal').find('#password3Div').val('').show();
+
+                        $("#passwordModal").modal({
+                            backdrop: 'static',
+                            keyboard: false
+                        }).on("shown.bs.modal", function () {
+                            $(".page-content").addClass("blur");
+                        }).on("hidden.bs.modal", function () {
+                            $(".page-content").removeClass("blur");
+                        });
+
+                        $("#passwordModal").modal("show");
+
+                        // Handle password3 submit
+                        $("#passwordCheckForm").off("submit").on("submit", function (e) {
+                            e.preventDefault();
+                            var password3 = $('#password3').val();
+
+                            $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
+                                let obj = JSON.parse(data);
+
+                                if (obj.status === "success") {
+                                    $("#passwordModal").modal("hide");
+
+                                    // Proceed with saving form
+                                    $.post('php/updateDeduction.php', $('#profileForm').serialize(), function (data) {
+                                        var obj = JSON.parse(data);
+
+                                        if (obj.status === 'success') {
+                                            toastr["success"](obj.message, "Success:");
+                                            window.location.reload();
+                                        } else if (obj.status === 'failed') {
+                                            toastr["error"](obj.message, "Failed:");
+                                            $('#spinnerLoading').hide();
+                                        } else {
+                                            toastr["error"]("Failed to update ports", "Failed:");
+                                            $('#spinnerLoading').hide();
+                                        }
+                                    });
+
+                                } else {
+                                    alert(obj.message);
+                                    window.location.href = "index.php";
+                                }
+                            });
                         });
                     }
                 });
