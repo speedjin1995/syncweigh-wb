@@ -52,6 +52,31 @@ if ($user != null && $user != ''){
     }
 }
 
+// For Deductions
+$did = '1';
+$status = 'Disable';
+$F1 = $F2 = $F3 = $F4 = $F5 = $F6 = $F7 = $F8 = $F9 = $F10 = $F11 = $F12 = 0;
+
+$stmtd = $db->prepare("SELECT * FROM Deduction WHERE id = ? LIMIT 1");
+$stmtd->bind_param('s', $did);
+$stmtd->execute();
+$resultd = $stmtd->get_result();
+
+if ($rowd = $resultd->fetch_assoc()) {
+    $dstatus = $rowd['status'] ?? 'Disable';
+    $F1 = $rowd['F1'] ?? 0;
+    $F2 = $rowd['F2'] ?? 0;
+    $F3 = $rowd['F3'] ?? 0;
+    $F4 = $rowd['F4'] ?? 0;
+    $F5 = $rowd['F5'] ?? 0;
+    $F6 = $rowd['F6'] ?? 0;
+    $F7 = $rowd['F7'] ?? 0;
+    $F8 = $rowd['F8'] ?? 0;
+    $F9 = $rowd['F9'] ?? 0;
+    $F10 = $rowd['F10'] ?? 0;
+    $F11 = $rowd['F11'] ?? 0;
+    $F12 = $rowd['F12'] ?? 0;
+}
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
 $vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
@@ -1710,6 +1735,7 @@ else{
     $(function () {
         var userRole = '<?=$role ?>';
         var ind = '<?=$indicator ?>';
+        const dstatus = "<?= $dstatus ?>";
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
@@ -2422,26 +2448,6 @@ else{
                                     printWindow.close();
                                     table.ajax.reload();
                                     window.location = 'index.php';
-                                    
-                                    /*setTimeout(function () {
-                                        if (confirm("Do you need to reprint?")) {
-                                            $.post('php/print.php', { userID: obj.id, file: 'weight' }, function (data) {
-                                                var obj = JSON.parse(data);
-                                                if (obj.status === 'success') {
-                                                    var reprintWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                                    reprintWindow.document.write(obj.message);
-                                                    reprintWindow.document.close();
-                                                    setTimeout(function () {
-                                                        reprintWindow.print();
-                                                        reprintWindow.close();
-                                                    }, 500);
-                                                } 
-                                                else {
-                                                    window.location = 'index.php';
-                                                }
-                                            });
-                                        }
-                                    }, 500);*/
                                 }, 500);
                             }
                             else if(obj.status === 'failed'){
@@ -2466,58 +2472,6 @@ else{
                     }
                 });
             }
-            /*else{
-                let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
-                if (userChoice) {
-                    $('#addModal').find('#status').val("pending");
-                    $('#spinnerLoading').show();
-                    $.post('php/weight.php', $('#weightForm').serialize(), function(data){
-                        var obj = JSON.parse(data); 
-                        if(obj.status === 'success'){
-                            <?php
-                                if(isset($_GET['weight'])){
-                                    echo "window.location = 'index.php';";
-                                }
-                            ?>
-                            table.ajax.reload();
-                            window.location = 'index.php';
-                            $('#spinnerLoading').hide();
-                            $('#addModal').modal('hide');
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-                        }
-                        else if(obj.status === 'failed'){
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', obj.message );
-                            $("#failBtn").click();
-                        }
-                        else{
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', 'Failed to save');
-                            $("#failBtn").click();
-                        }
-                    });
-                } 
-                else {
-                    $('#bypassModal').find('#passcode').val("");
-                    $('#bypassModal').find('#reason').val("");
-                    $('#bypassModal').modal('show');
-            
-                    $('#bypassForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }*/
         });
 
         $('#submitBypass').on('click', function(){
@@ -2760,6 +2714,32 @@ else{
                 }
             });
         }, 500);
+
+        if(dstatus === "Enable"){
+            $(document).on('keydown', function(e) {
+                const k = e.key; // 'F1'...'F12', 'Escape'
+                if (!k) return;
+
+                const accepted = new Set(['F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12','Escape']);
+                if (!accepted.has(k)) return;
+
+                // prevent browser defaults (F1 help, F11 fullscreen, etc.)
+                e.preventDefault();
+
+                // map Escape → ESC
+                const action = (k === 'Escape') ? 'ESC' : k;
+
+                // optionally include context
+                const payload = {};
+                payload.focused = document.activeElement
+                    ? (document.activeElement.name || document.activeElement.id || document.activeElement.tagName)
+                    : null;
+
+                // construct message and send
+                const msg = buildMessage(action);
+                if (msg) postMessage(msg);
+            });
+        }
 
         $('#filterSearch').on('click', function(){
             var fromDateI = $('#fromDateSearch').val();
@@ -5165,6 +5145,62 @@ else{
                 $("#failBtn").attr('data-toast-text', "Something wrong when print");
                 $("#failBtn").click();
             }
+        });
+    }
+
+    function buildMessage(action) {
+        // Bootstrap values from PHP
+        const deductions = {
+            F1: <?= (int)$F1 ?>,
+            F2: <?= (int)$F2 ?>,
+            F3: <?= (int)$F3 ?>,
+            F4: <?= (int)$F4 ?>,
+            F5: <?= (int)$F5 ?>,
+            F6: <?= (int)$F6 ?>,
+            F7: <?= (int)$F7 ?>,
+            F8: <?= (int)$F8 ?>,
+            F9: <?= (int)$F9 ?>,
+            F10: <?= (int)$F10 ?>,
+            F11: <?= (int)$F11 ?>,
+            F12: <?= (int)$F12 ?>
+        };
+
+        // Map F key → input name + format
+        const mapping = {
+            F1: { field: 'F1', sign: '-', suffix: '#' },
+            F2: { field: 'F2', sign: '-', suffix: '#' },
+            F3: { field: 'F3', sign: '-', suffix: '#' },
+            F4: { field: 'F4', sign: '+', suffix: '#' },
+            F5: { field: 'F5', sign: '+', suffix: '#' },
+            F6: { field: 'F6', sign: '+', suffix: '#' },
+            F7: { field: 'F7', sign: '-', suffix: '%' },
+            F8: { field: 'F8', sign: '-', suffix: '%' },
+            F9: { field: 'F9', sign: '-', suffix: '%' },
+            F10: { field: 'F10', sign: '+', suffix: '%' },
+            F11: { field: 'F11', sign: '+', suffix: '%' },
+            F12: { field: 'F12', sign: '+', suffix: '%' }
+        };
+
+        const cfg = mapping[action];
+        if (!cfg) return null;
+
+        const val = deductions[action] || 0;
+        const padded = String(val).padStart(5, '0');
+        return "JS" + cfg.sign + padded + cfg.suffix;
+    }
+
+    function postMessage(message) {
+        $.ajax({
+        url: 'http://127.0.0.1:5002/deduction',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ message: message }),
+        success: function (res) {
+            console.log("Sent:", message, "→", res);
+        },
+        error: function (xhr, status, err) {
+            console.warn("Error posting:", message, status, err);
+        }
         });
     }
     </script>

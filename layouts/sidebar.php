@@ -176,7 +176,9 @@
                                         </li> ';
                                     }
                                 ?>
-                                
+                                <li class="nav-item">
+                                    <a href="deductionSetup.php" class="nav-link"><?=$languageArray['deduction_setup_code'][$language]?></a>
+                                </li> 
                                 <li class="nav-item">
                                     <a href="portSetup.php" class="nav-link"><?=$languageArray['port_setup_code'][$language]?></a>
                                 </li> 
