@@ -174,14 +174,21 @@
                             <li class="nav-item">
                                 <?php
                                     if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
-                                        echo '<li class="nav-item">
+                                        echo '
+                                        <li class="nav-item">
                                             <a href="companyProfile.php" class="nav-link">'.$languageArray['company_profile_code'][$language].'</a>
-                                        </li> ';
+                                        </li> 
+                                        ';
+                                    }
+
+                                    if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["allowDeduct"] == 'Y'){
+                                        echo '
+                                        <li class="nav-item">
+                                            <a href="deductionSetup.php" class="nav-link">'.$languageArray['deduction_setup_code'][$language].'</a>
+                                        </li> 
+                                        ';
                                     }
                                 ?>
-                                <li class="nav-item">
-                                    <a href="deductionSetup.php" class="nav-link"><?=$languageArray['deduction_setup_code'][$language]?></a>
-                                </li> 
                                 <li class="nav-item">
                                     <a href="portSetup.php" class="nav-link"><?=$languageArray['port_setup_code'][$language]?></a>
                                 </li> 

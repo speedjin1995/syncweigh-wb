@@ -144,6 +144,31 @@ $result->free();
         </div>
         <!-- END layout-wrapper -->
 
+        <div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title text-white"><?=$languageArray['additional_passwords_code'][$language]?></h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="passwordCheckForm">
+                            <div class="mb-3">
+                                <label for="password2" class="form-label"><?=$languageArray['password_code'][$language]?> 2</label>
+                                <input type="password" class="form-control" id="password2" name="password2" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password3" class="form-label"><?=$languageArray['password_code'][$language]?> 3</label>
+                                <input type="password" class="form-control" id="password3" name="password3" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success"><?=$languageArray['submit_code'][$language]?></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <?php include 'layouts/customizer.php'; ?>
         <?php include 'layouts/vendor-scripts.php'; ?>
 
@@ -159,6 +184,33 @@ $result->free();
         <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
         <script type="text/javascript">
             $(function () {
+                // Check Password Logic
+                $("#passwordModal").modal({
+                    backdrop: 'static', // disable closing by clicking outside
+                    keyboard: false // disable ESC close
+                }).on('shown.bs.modal', function () {
+                    $(".page-content").hide();
+                }).on('hidden.bs.modal', function () {
+                    $(".page-content").show();
+                });
+
+                $("#passwordModal").modal("show");
+
+                $("#passwordCheckForm").on("submit", function (e) {
+                    e.preventDefault();
+
+                    $.post("php/checkPasswords.php", $(this).serialize(), function (data) {
+                        let obj = JSON.parse(data);
+
+                        if (obj.status === "success") {
+                            $("#passwordModal").modal("hide"); // allow access
+                        } else {
+                            alert(obj.message);
+                            window.location.href = "index.php"; // kick out
+                        }
+                    });
+                });
+
                 const switchInput = document.getElementById('statusSwitch');
 
                 // Default: left side = Disable
