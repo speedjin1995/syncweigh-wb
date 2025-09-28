@@ -64,7 +64,7 @@
                                 </div>
 
                                 <?php
-                                    if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["allowDeduct"] == 'Y') {
+                                    if ($_SESSION["allowDeduct"] == 'Y') {
                                         echo '
                                             <div class="card bg-light">
                                                 <div class="card-header bg-primary text-white font-16">'
