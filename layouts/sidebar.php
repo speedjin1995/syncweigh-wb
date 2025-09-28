@@ -72,63 +72,66 @@
                     </div>
                 </li-->
                 <?php
-                    echo '<!--li class="nav-item">
-                            <a href="inventory.php" class="nav-link"><i class="mdi mdi-shipping-pallet"></i></i>'.$lang['t-inventory'].'</a>
-                        </li--> 
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#sidebarMasterdata" data-bs-toggle="collapse" role="button"
-                                aria-expanded="false" aria-controls="sidebarMasterdata">
-                                <i class="ri-pages-line"></i> <span>'.$languageArray['master_data_code'][$language].'</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="sidebarMasterdata">
-                                <ul class="nav nav-sm flex-column">';
-
-                    if($_SESSION["roles"] == 'SADMIN'){
-                        echo '<li class="nav-item">
-                            <a href="message.php" class="nav-link">'.$languageArray['message_resource_code'][$language].'</a>
-                        </li>';
-                    }
-
                     if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
-                        echo '<li class="nav-item">
-                                        <a href="customer.php" class="nav-link">'.$languageArray['customer_code'][$language].'</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="destination.php" class="nav-link">'.$languageArray['destination_code'][$language].'</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="product.php" class="nav-link">'.$languageArray['product_code'][$language].'</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="rawMaterial.php" class="nav-link">'.$languageArray['raw_material_code'][$language].'</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="supplier.php" class="nav-link">'.$languageArray['supplier_code'][$language].'</a>
-                                    </li>       
-                                    <li class="nav-item">
-                                        <a href="vehicle.php" class="nav-link">'.$languageArray['vehicle_code'][$language].'</a>
-                                    </li>             
-                                    <li class="nav-item">
-                                        <a href="transporter.php" class="nav-link">'.$languageArray['transporter_code'][$language].'</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="user.php" class="nav-link">'.$languageArray['staff_code'][$language].'</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="plant.php" class="nav-link">'.$languageArray['plant_code'][$language].'</a>
-                                    </li> 
-                                    <!--li class="nav-item">
-                                        <a href="unit.php" class="nav-link">'.$lang['t-unit'].'</a>
-                                    </li-->                           
-                                    <!--li class="nav-item">
-                                        <a href="agent.php" class="nav-link">'.$lang['t-agent'].'</a>
-                                    </li-->                           
-                                    <!--li class="nav-item">
-                                        <a href="site.php" class="nav-link">'.$lang['t-site'].'</a>
-                                    </li-->    
-                                </ul>
-                            </div>
-                        </li>';
+
+                        echo '<!--li class="nav-item">
+                                <a href="inventory.php" class="nav-link"><i class="mdi mdi-shipping-pallet"></i></i>'.$lang['t-inventory'].'</a>
+                            </li--> 
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarMasterdata" data-bs-toggle="collapse" role="button"
+                                    aria-expanded="false" aria-controls="sidebarMasterdata">
+                                    <i class="ri-pages-line"></i> <span>'.$languageArray['master_data_code'][$language].'</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarMasterdata">
+                                    <ul class="nav nav-sm flex-column">';
+
+                        if($_SESSION["roles"] == 'SADMIN'){
+                            echo '<li class="nav-item">
+                                <a href="message.php" class="nav-link">'.$languageArray['message_resource_code'][$language].'</a>
+                            </li>';
+                        }
+
+                        if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
+                            echo '<li class="nav-item">
+                                            <a href="customer.php" class="nav-link">'.$languageArray['customer_code'][$language].'</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="destination.php" class="nav-link">'.$languageArray['destination_code'][$language].'</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="product.php" class="nav-link">'.$languageArray['product_code'][$language].'</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="rawMaterial.php" class="nav-link">'.$languageArray['raw_material_code'][$language].'</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="supplier.php" class="nav-link">'.$languageArray['supplier_code'][$language].'</a>
+                                        </li>       
+                                        <li class="nav-item">
+                                            <a href="vehicle.php" class="nav-link">'.$languageArray['vehicle_code'][$language].'</a>
+                                        </li>             
+                                        <li class="nav-item">
+                                            <a href="transporter.php" class="nav-link">'.$languageArray['transporter_code'][$language].'</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="user.php" class="nav-link">'.$languageArray['staff_code'][$language].'</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="plant.php" class="nav-link">'.$languageArray['plant_code'][$language].'</a>
+                                        </li> 
+                                        <!--li class="nav-item">
+                                            <a href="unit.php" class="nav-link">'.$lang['t-unit'].'</a>
+                                        </li-->                           
+                                        <!--li class="nav-item">
+                                            <a href="agent.php" class="nav-link">'.$lang['t-agent'].'</a>
+                                        </li-->                           
+                                        <!--li class="nav-item">
+                                            <a href="site.php" class="nav-link">'.$lang['t-site'].'</a>
+                                        </li-->    
+                                    </ul>
+                                </div>
+                            </li>';
+                        }
                     }
                 ?>
 
