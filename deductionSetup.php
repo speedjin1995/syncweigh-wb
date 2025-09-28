@@ -95,25 +95,25 @@ $result->free();
                                         <!-- Grid for F1-F12 -->
                                         <div class="row">
                                             <div class="col-3">
-                                                <label>( - ) kg</label>
+                                                <label>F1 - F3 ( - ) kg</label>
                                                 <input type="number" class="form-control mb-2" name="F1" placeholder="F1" min="0" value="<?= htmlspecialchars($F1) ?>">
                                                 <input type="number" class="form-control mb-2" name="F2" placeholder="F2" min="0" value="<?= htmlspecialchars($F2) ?>">
                                                 <input type="number" class="form-control mb-2" name="F3" placeholder="F3" min="0" value="<?= htmlspecialchars($F3) ?>">
                                             </div>
                                             <div class="col-3">
-                                                <label>( + ) kg</label>
+                                                <label>F4 - F6 ( + ) kg</label>
                                                 <input type="number" class="form-control mb-2" name="F4" placeholder="F4" min="0" value="<?= htmlspecialchars($F4) ?>">
                                                 <input type="number" class="form-control mb-2" name="F5" placeholder="F5" min="0" value="<?= htmlspecialchars($F5) ?>">
                                                 <input type="number" class="form-control mb-2" name="F6" placeholder="F6" min="0" value="<?= htmlspecialchars($F6) ?>">
                                             </div>
                                             <div class="col-3">
-                                                <label>( - ) %</label>
+                                                <label>F7 - F9 ( - ) %</label>
                                                 <input type="number" class="form-control mb-2" name="F7" placeholder="F7" min="0" max="100" value="<?= htmlspecialchars($F7) ?>">
                                                 <input type="number" class="form-control mb-2" name="F8" placeholder="F8" min="0" max="100" value="<?= htmlspecialchars($F8) ?>">
                                                 <input type="number" class="form-control mb-2" name="F9" placeholder="F9" min="0" max="100" value="<?= htmlspecialchars($F9) ?>">
                                             </div>
                                             <div class="col-3">
-                                                <label>( + ) %</label>
+                                                <label>F10 - F12 ( + ) %</label>
                                                 <input type="number" class="form-control mb-2" name="F10" placeholder="F10" min="0" max="100" value="<?= htmlspecialchars($F10) ?>">
                                                 <input type="number" class="form-control mb-2" name="F11" placeholder="F11" min="0" max="100" value="<?= htmlspecialchars($F11) ?>">
                                                 <input type="number" class="form-control mb-2" name="F12" placeholder="F12" min="0" max="100" value="<?= htmlspecialchars($F12) ?>">
