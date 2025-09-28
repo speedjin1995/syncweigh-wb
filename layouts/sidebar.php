@@ -2,24 +2,31 @@
 <div class="app-menu navbar-menu">
     <!-- LOGO -->
     <div class="navbar-brand-box">
-        <!-- Dark Logo-->
-        <a href="index.php" class="logo logo-dark">
-            <span class="logo-sm">
-                <img src="assets/images/logo-sm.jpg" alt="" height="70">
-            </span>
-            <span class="logo-lg">
-                <img src="assets/images/logo-lg.png" alt="" height="60">
-            </span>
-        </a>
-        <!-- Light Logo-->
-        <a href="index.php" class="logo logo-light">
-            <span class="logo-sm">
-                <img src="assets/images/logo-sm.jpg" alt="" height="70">
-            </span>
-            <span class="logo-lg">
-                <img src="assets/images/logo-lg.png" alt="" height="60">
-            </span>
-        </a>
+        <?php 
+            if($_SESSION["allowDeduct"] != 'Y'){
+                echo '
+                    <!-- Dark Logo-->
+                    <a href="index.php" class="logo logo-dark">
+                        <span class="logo-sm">
+                            <img src="assets/images/logo-sm.jpg" alt="" height="70">
+                        </span>
+                        <span class="logo-lg">
+                            <img src="assets/images/logo-lg.png" alt="" height="60">
+                        </span>
+                    </a>
+                    <!-- Light Logo-->
+                    <a href="index.php" class="logo logo-light">
+                        <span class="logo-sm">
+                            <img src="assets/images/logo-sm.jpg" alt="" height="70">
+                        </span>
+                        <span class="logo-lg">
+                            <img src="assets/images/logo-lg.png" alt="" height="60">
+                        </span>
+                    </a>
+                ';
+            }
+        ?>
+        
         <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
             id="vertical-hover">
             <i class="ri-record-circle-line"></i>
@@ -37,8 +44,8 @@
                     <a href="dashboard.php" class="nav-link"><i class="mdi mdi-billboard"></i><?=$lang['t-billboard']?></a>
                 </li-->
                 <li class="nav-item">
-                    <a href="index.php" class="nav-link"><i class="mdi mdi-weight"></i><?=$languageArray['daily_weighing_code'][$language]?></a>
-                </li>                
+                    <a href="index.php" class="nav-link"><i class="mdi mdi-weight"></i> <span><?=$languageArray['daily_weighing_code'][$language]?></span></a>
+                </li>              
                 <!--li class="nav-item">
                     <a href="bitumen.php" class="nav-link"><i class="mdi mdi-domain"></i></i><?=$lang['t-bitumen']?></a>
                 </li-->         
