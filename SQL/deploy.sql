@@ -850,3 +850,6 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW B
 END
 $$
 DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES
+('additional_passwords_code', 'Additional Passwords', 'é™„åŠ å¯†ç ', 'Kata Laluan Tambahan', 'à®•à¯‚à®Ÿà¯à®¤à®²à¯ à®•à®Ÿà®µà¯à®šà¯à®šà¯Šà®²à¯');
