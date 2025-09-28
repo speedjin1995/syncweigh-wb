@@ -64,8 +64,16 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
         }
     }
     else{
-        if ($insert_stmt = $db->prepare("INSERT INTO Users (employee_code, useremail, username, name, password, token, role, plant_id, allow_manual, allow_deduct, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {            
-            $insert_stmt->bind_param("ssssssssssss", $param_code, $param_useremail, $param_username, $param_name, $param_password, $param_token, $param_role, $param_plant, $param_allowmanual, $param_allowdeduct, $param_created_by, $param_modified_by);
+        ### Only default password for new user if allow deduct is enabled ###
+        if ($param_allowdeduct == 'Y'){
+            $param_password2 = password_hash('123456', PASSWORD_DEFAULT); // Creates a password hash
+            $param_token2 = bin2hex(random_bytes(50)); // generate unique token
+            $param_password3 = password_hash('123456', PASSWORD_DEFAULT); // Creates a password hash
+            $param_token3 = bin2hex(random_bytes(50)); // generate unique token
+        }
+
+        if ($insert_stmt = $db->prepare("INSERT INTO Users (employee_code, useremail, username, name, password, token, password2, token2, password3, token3, role, plant_id, allow_manual, allow_deduct, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {            
+            $insert_stmt->bind_param("ssssssssssssssss", $param_code, $param_useremail, $param_username, $param_name, $param_password, $param_token, $param_password2, $param_token2, $param_password3, $param_token3, $param_role, $param_plant, $param_allowmanual, $param_allowdeduct, $param_created_by, $param_modified_by);
             $action = "1";
 
             // Execute the prepared query.

@@ -28,13 +28,16 @@
                 <div class="page-content">
                     <div class="container-fluid">
                         <div class="row col-12">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <form action="php/changepassword.php" method="post">
+                            <form action="php/changepassword.php" method="post">
+                                <div class="card bg-light">
+                                    <div class="card-header bg-primary text-white font-16">
+                                        <?=$languageArray['password_code'][$language]?>
+                                    </div>
+                                    <div class="card-body">
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="transactionId" class="col-sm-4 col-form-label"><?=$languageArray['old_password_code'][$language]?></label>
+                                                    <label for="oldPassword" class="col-sm-4 col-form-label"><?=$languageArray['old_password_code'][$language]?></label>
                                                     <div class="col-sm-8 ">
                                                         <input type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="<?=$languageArray['old_password_code'][$language]?>">
                                                     </div>
@@ -42,7 +45,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['new_password_code'][$language]?></label>
+                                                    <label for="newPassword" class="col-sm-4 col-form-label"><?=$languageArray['new_password_code'][$language]?></label>
                                                     <div class="col-sm-8">
                                                         <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="<?=$languageArray['new_password_code'][$language]?>">
                                                     </div>
@@ -50,19 +53,106 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['confirm_password_code'][$language]?></label>
+                                                    <label for="confirmPassword" class="col-sm-4 col-form-label"><?=$languageArray['confirm_password_code'][$language]?></label>
                                                     <div class="col-sm-8">
                                                         <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="<?=$languageArray['confirm_password_code'][$language]?>">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="mt-4">
-                                                <button class="btn btn-success w-100" type="submit"><?=$languageArray['submit_code'][$language]?></button>
-                                            </div>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
-                            </div>
+
+                                <?php
+                                    if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["allowDeduct"] == 'Y') {
+                                        echo '
+                                            <div class="card bg-light">
+                                                <div class="card-header bg-primary text-white font-16">'
+                                                    . $languageArray['password_code'][$language] . ' 2
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <label for="oldPassword2" class="col-sm-4 col-form-label">'
+                                                                    . $languageArray['old_password_code'][$language] . '
+                                                                </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="password" class="form-control" id="oldPassword2" name="oldPassword2" placeholder="' . $languageArray['old_password_code'][$language] . '">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <label for="newPassword2" class="col-sm-4 col-form-label">'
+                                                                    . $languageArray['new_password_code'][$language] . '
+                                                                </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="password" class="form-control" id="newPassword2" name="newPassword2" placeholder="' . $languageArray['new_password_code'][$language] . '">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <label for="confirmPassword2" class="col-sm-4 col-form-label">'
+                                                                    . $languageArray['confirm_password_code'][$language] . '
+                                                                </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="password" class="form-control" id="confirmPassword2" name="confirmPassword2" placeholder="' . $languageArray['confirm_password_code'][$language] . '">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card bg-light">
+                                                <div class="card-header bg-primary text-white font-16">'
+                                                    . $languageArray['password_code'][$language] . ' 3
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <label for="oldPassword3" class="col-sm-4 col-form-label">'
+                                                                    . $languageArray['old_password_code'][$language] . '
+                                                                </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="password" class="form-control" id="oldPassword3" name="oldPassword3" placeholder="' . $languageArray['old_password_code'][$language] . '">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <label for="newPassword3" class="col-sm-4 col-form-label">'
+                                                                    . $languageArray['new_password_code'][$language] . '
+                                                                </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="password" class="form-control" id="newPassword3" name="newPassword3" placeholder="' . $languageArray['new_password_code'][$language] . '">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <label for="confirmPassword3" class="col-sm-4 col-form-label">'
+                                                                    . $languageArray['confirm_password_code'][$language] . '
+                                                                </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="password" class="form-control" id="confirmPassword3" name="confirmPassword3" placeholder="' . $languageArray['confirm_password_code'][$language] . '">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ';
+                                    }
+                                ?>
+                                    
+                                <div class="mt-4">
+                                    <button class="btn btn-success w-100" type="submit"><?=$languageArray['submit_code'][$language]?></button>
+                                </div>
+                            </form>
                         </div>
                     </div><!-- container-fluid -->
                 </div><!-- End Page-content -->
