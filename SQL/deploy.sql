@@ -803,3 +803,53 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW B
 END
 $$
 DELIMITER ;
+
+DELIMITER ;
+
+-- 28/09/2025 --
+ALTER TABLE `Users` ADD `allow_manual` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `plant_id`;
+
+ALTER TABLE `Users_Log` ADD `allow_manual` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `plant_id`;
+
+ALTER TABLE `Users` ADD `allow_deduct` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `allow_manual`;
+
+ALTER TABLE `Users_Log` ADD `allow_deduct` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `allow_manual`;
+
+ALTER TABLE `Users` ADD `password2` TEXT NULL AFTER `token`, ADD `token2` TEXT NULL AFTER `password2`, ADD `password3` TEXT NULL AFTER `token2`, ADD `token3` TEXT NULL AFTER `password3`;
+
+ALTER TABLE `Users_Log` ADD `password2` TEXT NULL AFTER `password`, ADD `password3` TEXT NULL AFTER `password2`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_USER` AFTER INSERT ON `Users` FOR EACH ROW 
+INSERT INTO Users_Log (
+    user_id, employee_code, username, name, useremail, password, password2, password3, plant_id, allow_manual, allow_deduct, `status`, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Users_Log table
+    INSERT INTO Users_Log (
+        user_id, employee_code, username, name, useremail, password, password2, password3, plant_id, allow_manual, allow_deduct, `status`, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES
+('additional_passwords_code', 'Additional Passwords', 'é™„åŠ å¯†ç ', 'Kata Laluan Tambahan', 'à®•à¯‚à®Ÿà¯à®¤à®²à¯ à®•à®Ÿà®µà¯à®šà¯à®šà¯Šà®²à¯');

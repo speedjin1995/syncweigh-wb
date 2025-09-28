@@ -5,6 +5,7 @@
 $user = $_SESSION['id'];
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
+$allowManual = $_SESSION['allowManual'];
 $stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
 $stmt->bind_param('s', $user);
 $stmt->execute();
@@ -761,7 +762,7 @@ else{
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
-                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN'){
+                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'MANAGER' && $allowManual == 'N'){
                                                                                     echo 'style="display:none;"';
                                                                                 }?>>
                                                                                 <div class="row">
@@ -1802,7 +1803,14 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
+            allowInput: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            clickOpens: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            onReady: function(selectedDates, dateStr, instance) {
+                <?php if (!($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
+                    instance._input.setAttribute('readonly', true);
+                    instance.close();
+                <?php endif; ?>
+            }
         });
 
         tareOutgoingDatePicker = $('#tareOutgoingDate').flatpickr({
@@ -1812,7 +1820,14 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
+            allowInput: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            clickOpens: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            onReady: function(selectedDates, dateStr, instance) {
+                <?php if (!($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
+                    instance._input.setAttribute('readonly', true);
+                    instance.close();
+                <?php endif; ?>
+            }
         });
 
         grossIncomingDatePicker2 = $('#grossIncomingDate2').flatpickr({
@@ -1822,7 +1837,14 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
+            allowInput: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            clickOpens: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            onReady: function(selectedDates, dateStr, instance) {
+                <?php if (!($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
+                    instance._input.setAttribute('readonly', true);
+                    instance.close();
+                <?php endif; ?>
+            }
         });
 
         tareOutgoingDatePicker2 = $('#tareOutgoingDate2').flatpickr({
@@ -1832,7 +1854,14 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
+            allowInput: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            clickOpens: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            onReady: function(selectedDates, dateStr, instance) {
+                <?php if (!($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
+                    instance._input.setAttribute('readonly', true);
+                    instance.close();
+                <?php endif; ?>
+            }
         });
 
         if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
