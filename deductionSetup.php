@@ -22,12 +22,10 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 // Default values
-$mode = 'Manual';
 $status = 'Disable';
 $F1 = $F2 = $F3 = $F4 = $F5 = $F6 = $F7 = $F8 = $F9 = $F10 = $F11 = $F12 = 0;
-
+$autoData = null;
 if ($row = $result->fetch_assoc()) {
-    $mode = $row['mode'] ?? 'Manual';
     $status = $row['status'] ?? 'Disable';
     $F1 = $row['F1'] ?? 0;
     $F2 = $row['F2'] ?? 0;
@@ -41,6 +39,7 @@ if ($row = $result->fetch_assoc()) {
     $F10 = $row['F10'] ?? 0;
     $F11 = $row['F11'] ?? 0;
     $F12 = $row['F12'] ?? 0;
+    $autoData = $row['auto_data'] ?? null;
 }
 
 // Cleanup
@@ -56,9 +55,6 @@ $result->free();
         <!-- swiper css -->
         <link rel="stylesheet" href="assets/libs/swiper/swiper-bundle.min.css">
 
-        <script src="plugins/jquery/jquery.min.js"></script>
-        <!-- Include jQuery Validate plugin -->
-        <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
         <?php include 'layouts/head-css.php'; ?>
 
     </head>
@@ -77,40 +73,26 @@ $result->free();
                 <div class="page-content">
                     <div class="container-fluid">
                         <div class="row col-12">
-                            <div class="row mb-3">
-                                <div class="col-3">
-                                    <label for="mode" class="col-sm-4 col-form-label">Mode</label>
-                                    <div class="col-sm-8">
-                                        <select id="mode" name="mode" class="form-select">
-                                            <option value="Auto" <?= ($mode === 'Auto' ? 'selected' : '') ?>>Auto</option>
-                                            <option value="Manual" <?= ($mode === 'Manual' ? 'selected' : '') ?>>Manual</option>
-                                            <option value="Disable" <?= ($mode === 'Disable' ? 'selected' : '') ?>>Disable</option>
-                                        </select>  
-                                    </div>
-                                </div>
-                            </div>  
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <form id="profileForm" action="php/updateDeduction.php" method="post">
-                                        <input type="hidden" name="modeSelected" value="<?= htmlspecialchars($mode) ?>">
-                                        <!-- Status -->
-                                        <div class="row mb-3">
-                                            <div class="col-4 d-flex align-items-center">
-                                                <span class="me-2 fw-bold">Disable</span>
-                                                <div class="form-check form-switch">
-                                                    <input 
-                                                        class="form-check-input" 
-                                                        type="checkbox" 
-                                                        id="statusSwitch" 
-                                                        name="status" 
-                                                        value="Enable" 
-                                                        <?= ($status === 'Enable' ? 'checked' : '') ?>>
-                                                </div>
-                                                <span class="ms-2 fw-bold">Enable</span>
+                                        <div class="d-flex align-items-center mb-3 justify-content-between">
+                                            <div class="d-flex align-items-center">
+                                                <label for="statusSwitch" class="col-form-label me-2">Mode</label>
+                                                <select id="statusSwitch" name="statusSwitch" class="form-select select2" style="width: 150px;">
+                                                    <option value="Manual" <?php if ($status === 'Manual') echo 'selected'; ?>>Manual</option>
+                                                    <option value="Auto" <?php if ($status === 'Auto') echo 'selected'; ?>>Auto</option>
+                                                    <option value="Disable" <?php if ($status === 'Disable') echo 'selected'; ?>>Disable</option>
+                                                </select>
                                             </div>
+
+                                            <button type="button" id="autoNewBtn" class="btn btn-primary d-none">
+                                                <i class="ri-add-circle-line align-middle me-1"></i>Add New
+                                            </button>
                                         </div>
+
+                                        <!-- Grid for F1-F12 -->
                                         <div id="manualView">
-                                            <!-- Grid for F1-F12 -->
                                             <div class="row">
                                                 <div class="col-3">
                                                     <label>F1 - F3 ( - ) kg</label>
@@ -138,41 +120,35 @@ $result->free();
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="autoView" style="display: none;">
-                                            <!-- Status -->
-                                            <div class="row mb-3">
-                                                <div class="col-8 d-flex justify-content-end">
-                                                    <button type="button" class="btn btn-primary" id="addAutoRow">Add New</button>
-                                                </div>
-                                            </div>
 
-                                            <!-- Grid for Auto Range-->
+                                        <!-- Grid for Auto -->
+                                        <div id="autoView" style="display: none;">
                                             <div class="row">
-                                                <div class="col-12">
-                                                    <table class="table table-bordered nowrap table-striped align-middle bg-white" class="table-light">
+                                                <div class="col-xxl-12 col-lg-12 mb-3">
+                                                    <table class="table table-primary">
                                                         <thead>
                                                             <tr>
-                                                                <th>Range</th>
+                                                                <th width="20%">Ranges</th>
                                                                 <th>(-) kg</th>
                                                                 <th>(+) kg</th>
-                                                                <th>(- %)</th>
-                                                                <th>(+ %)</th>
+                                                                <th>(-%)</th>
+                                                                <th>(+%)</th>
+                                                                <th>Action</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody id="autoTableBody">
-                                                            
-                                                        </tbody>
+                                                        <tbody id="autoTable"></tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                         </div>
+
                                         <!-- Buttons -->
                                         <div class="row mt-4">
                                             <div class="col-4 text-center">
                                                 <input type="text" class="form-control text-center text-danger fw-bold" value="ESC" readonly>
                                             </div>
                                             <div class="col-4">
-                                                <button id="resetZero" type="reset" class="btn btn-warning w-100">Reset to Zero</button>
+                                                <button type="reset" class="btn btn-warning w-100" id="resetZero">Reset to Zero</button>
                                             </div>
                                             <div class="col-4">
                                                 <button type="submit" class="btn btn-success w-100">Update</button>
@@ -215,6 +191,11 @@ $result->free();
             </div>
         </div>
 
+        <!-- Include jQuery library FIRST -->
+        <script src="plugins/jquery/jquery.min.js"></script>
+        <!-- Include jQuery Validate plugin -->
+        <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
+        
         <?php include 'layouts/customizer.php'; ?>
         <?php include 'layouts/vendor-scripts.php'; ?>
 
@@ -225,24 +206,29 @@ $result->free();
         <!-- App js -->
         <script src="assets/js/app.js"></script>
 
-        <script type="text/html" id="autoRowDetail">
+        <script type="text/html" id="autoRowTemplate">
             <tr class="details">
                 <td>
-                    <input type="text" class="form-control" id="no" name="no" readonly>
-                    <input type="text" class="form-control" id="deductionAutoId" name="deductionAutoId" hidden>
+                    <div class="d-flex gap-2 align-items-center">
+                        <input type="number" class="form-control range-from" name="rangeFrom" placeholder="From (kg)" min="0" step="0.01" required>
+                        <span class="text-muted">to</span>
+                        <input type="number" class="form-control range-to" name="rangeTo" placeholder="To (kg)" min="0" step="0.01" required>
+                    </div>
                 </td>
                 <td>
-                    <select class="form-control select2" style="width: 100%; background-color:white;" id="rawMats" name="rawMats">
-                        <?php while($rowRawMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                            <option value="<?=$rowRawMat['raw_mat_code'] ?>" data-name="<?=$rowRawMat['name'] ?>"><?=$rowRawMat['raw_mat_code'] . ' - ' . $rowRawMat['name']?></option>
-                        <?php } ?>
-                    </select>
+                    <input type="number" class="form-control" name="negativeKg" min="0" step="0.01">
                 </td>
                 <td>
-                    <input type="number" class="form-control" id="rawMatWeight" name="rawMatWeight" style="background-color:white;" value="0">
+                    <input type="number" class="form-control" name="positiveKg" min="0" step="0.01">
+                </td>
+                <td>
+                    <input type="number" class="form-control" name="negativePerc" min="0" max="100" step="0.01">
+                </td>
+                <td>
+                    <input type="number" class="form-control" name="positivePerc" min="0" max="100" step="0.01">
                 </td>
                 <td class="d-flex" style="text-align:center">
-                    <button class="btn btn-success" id="remove" style="background-color: #f06548;">
+                    <button type="button" class="btn btn-danger" id="remove">
                         <i class="fa fa-times"></i>
                     </button>
                 </td>
@@ -251,6 +237,10 @@ $result->free();
 
         <script type="text/javascript">
             $(function () {
+                const status = "<?= $status ?>";
+                const autoData = <?= json_encode($autoData ? json_decode($autoData, true) : []) ?>;
+                var rowCount = 0;
+
                 // Check Password Logic when load screen
                 $('#passwordModal').find('#password2Div').val('').show(); // show password2 input
                 $('#passwordModal').find('#password3Div').val('').hide(); // hide password3 input
@@ -279,15 +269,6 @@ $result->free();
                             window.location.href = "index.php"; // kick out
                         }
                     });
-                });
-
-                const switchInput = document.getElementById('statusSwitch');
-
-                // Default: left side = Disable
-                switchInput.value = "Disable";
-
-                switchInput.addEventListener('change', function () {
-                    this.value = this.checked ? "Enable" : "Disable";
                 });
 
                 // ===== VALIDATION & SAVE WITH PASSWORD3 =====
@@ -323,16 +304,18 @@ $result->free();
 
                                     // Proceed with saving form
                                     $.post('php/updateDeduction.php', $('#profileForm').serialize(), function (data) {
-                                        var obj = JSON.parse(data);
+                                        var obj = JSON.parse(data); console.log(obj.status);
 
                                         if (obj.status === 'success') {
-                                            toastr["success"](obj.message, "Success:");
+                                            // toastr["success"](obj.message, "Success:");
                                             window.location.reload();
                                         } else if (obj.status === 'failed') {
-                                            toastr["error"](obj.message, "Failed:");
+                                            // toastr["error"](obj.message, "Failed:");
+                                            alert(obj.message);
                                             $('#spinnerLoading').hide();
                                         } else {
-                                            toastr["error"]("Failed to update ports", "Failed:");
+                                            // toastr["error"]("Failed to update ports", "Failed:");
+                                            alert("Failed to update ports");
                                             $('#spinnerLoading').hide();
                                         }
                                     });
@@ -370,47 +353,135 @@ $result->free();
                     }
                 });
 
-                $('#mode').on('change', function() {
-                    var selectedMode = $(this).val(); console.log(selectedMode);
-                    if (selectedMode === 'Manual') {
+                $('#statusSwitch').on('change', function () {
+                    var selectedValue = $(this).val();
+
+                    if (selectedValue == 'Manual') {
                         $('#manualView').show();
                         $('#autoView').hide();
-                    } else if (selectedMode === 'Auto') {
+                        $('#autoNewBtn').addClass('d-none');
+                        $('#buttonRow').show();
+                    } else if (selectedValue == 'Auto') {
                         $('#manualView').hide();
                         $('#autoView').show();
+                        $('#autoNewBtn').removeClass('d-none');
+                        $('#buttonRow').show();
                     } else {
                         $('#manualView').hide();
                         $('#autoView').hide();
+                        $('#autoNewBtn').addClass('d-none');
+                        $('#buttonRow').hide();
                     }
                 });
 
-                // $("#addAutoRow").click(function(){
-                //     if(rowCount == 0){
-                //         rowCount++;
-                //     }
-
-                //     var $addContents = $("#autoRowDetail").clone();
-                //     $("#rawMaterialTable").append($addContents.html());
-
-                //     $("#rawMaterialTable").find('.details:last').attr("id", "detail" + rowCount);
-                //     $("#rawMaterialTable").find('.details:last').attr("data-index", rowCount);
-                //     $("#rawMaterialTable").find('#remove:last').attr("id", "remove" + rowCount);
-
-                //     $("#rawMaterialTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount);
-                //     $("#rawMaterialTable").find('#productRawMatId:last').attr('name', 'productRawMatId['+rowCount+']').attr("id", "productRawMatId" + rowCount);
-                //     $("#rawMaterialTable").find('#rawMats:last').attr('name', 'rawMats['+rowCount+']').attr("id", "rawMats" + rowCount).select2({
-                //         allowClear: true,
-                //         placeholder: "Please Select",
-                //         dropdownParent: $('#rawMaterialTable') // Prevents dropdown cutoff inside modals/tables
-                //     });
-                //     $("#rawMaterialTable").find('#rawMatWeight:last').attr('name', 'rawMatWeight['+rowCount+']').attr("id", "rawMatWeight" + rowCount);
-
-                //     rowCount++;
-                // });
-
                 $('#resetZero').on('click', function(e) {
                     e.preventDefault();
-                    $('#manualView input[name^="F"]').val(0);
+                    var mode = $('#statusSwitch').val();
+                    if (mode == 'Manual') {
+                        // reset all F1-F12 inputs to 0
+                        $('#manualView input[name^="F"]').val(0);
+                    } else if (mode == 'Auto') {
+                        // Clear the autoTable body
+                        $('#autoTable').empty();
+                    }
+                });
+
+                // Initialize view based on current status
+                $('#statusSwitch').val(status).trigger('change');
+
+                // Function to load existing auto data
+                function loadAutoData() {
+                    if (autoData && autoData.length > 0) {
+                        $('#autoTable').empty(); // Clear existing rows
+                        rowCount = 0;
+                        
+                        autoData.forEach(function(item, index) {
+                            var template = $("#autoRowTemplate").html();
+                            var newRow = $(template);
+                            
+                            // Set unique IDs for the new row
+                            newRow.find('.details:last').attr("id", "detail" + rowCount);
+                            newRow.find('.details:last').attr("data-index", rowCount);
+                            newRow.find('#remove:last').attr("id", "remove" + rowCount);
+
+                            newRow.find('input[name="rangeFrom"]').attr('id', 'rangeFrom' + rowCount);
+                            newRow.find('input[name="rangeTo"]').attr('id', 'rangeTo' + rowCount);
+                            newRow.find('input[name="negativeKg"]').attr('id', 'negativeKg' + rowCount);
+                            newRow.find('input[name="positiveKg"]').attr('id', 'positiveKg' + rowCount);
+                            newRow.find('input[name="negativePerc"]').attr('id', 'negativePerc' + rowCount);
+                            newRow.find('input[name="positivePerc"]').attr('id', 'positivePerc' + rowCount);
+                            
+                            // Set array names for form submission
+                            newRow.find('input[name="rangeFrom"]').attr('name', 'rangeFrom[' + rowCount + ']');
+                            newRow.find('input[name="rangeTo"]').attr('name', 'rangeTo[' + rowCount + ']');
+                            newRow.find('input[name="negativeKg"]').attr('name', 'negativeKg[' + rowCount + ']');
+                            newRow.find('input[name="positiveKg"]').attr('name', 'positiveKg[' + rowCount + ']');
+                            newRow.find('input[name="negativePerc"]').attr('name', 'negativePerc[' + rowCount + ']');
+                            newRow.find('input[name="positivePerc"]').attr('name', 'positivePerc[' + rowCount + ']');
+                            
+                            // Populate with existing data
+                            newRow.find('input[name="rangeFrom[' + rowCount + ']"]').val(item.rangeFrom !== undefined ? item.rangeFrom : '');
+                            newRow.find('input[name="rangeTo[' + rowCount + ']"]').val(item.rangeTo !== undefined ? item.rangeTo : '');
+                            newRow.find('input[name="negativeKg[' + rowCount + ']"]').val(item.negativeKg !== undefined ? item.negativeKg : '');
+                            newRow.find('input[name="positiveKg[' + rowCount + ']"]').val(item.positiveKg !== undefined ? item.positiveKg : '');
+                            newRow.find('input[name="negativePerc[' + rowCount + ']"]').val(item.negativePerc !== undefined ? item.negativePerc : '');
+                            newRow.find('input[name="positivePerc[' + rowCount + ']"]').val(item.positivePerc !== undefined ? item.positivePerc : '');
+                            
+                            $("#autoTable").append(newRow);
+                            rowCount++;
+                        });
+                    }
+                }
+
+                // Load auto data if status is Auto
+                if (status === 'Auto') {
+                    loadAutoData();
+                }
+
+                // Find and remove selected table rows
+                $("#autoTable").on('click', 'button[id^="remove"]', function () {
+                    $(this).parents("tr").remove();
+                });
+
+                // Auto New button functionality
+                $('#autoNewBtn').on('click', function() {
+                    var template = $("#autoRowTemplate").html();
+                    var newRow = $(template);
+                    
+                    // Set unique IDs for the new row
+                    newRow.find('.details:last').attr("id", "detail" + rowCount);
+                    newRow.find('.details:last').attr("data-index", rowCount);
+                    newRow.find('#remove:last').attr("id", "remove" + rowCount);
+
+                    newRow.find('input[name="rangeFrom"]').attr('id', 'rangeFrom' + rowCount);
+                    newRow.find('input[name="rangeTo"]').attr('id', 'rangeTo' + rowCount);
+                    newRow.find('input[name="negativeKg"]').attr('id', 'negativeKg' + rowCount);
+                    newRow.find('input[name="positiveKg"]').attr('id', 'positiveKg' + rowCount);
+                    newRow.find('input[name="negativePerc"]').attr('id', 'negativePerc' + rowCount);
+                    newRow.find('input[name="positivePerc"]').attr('id', 'positivePerc' + rowCount);
+                    
+                    // Set array names for form submission
+                    newRow.find('input[name="rangeFrom"]').attr('name', 'rangeFrom[' + rowCount + ']');
+                    newRow.find('input[name="rangeTo"]').attr('name', 'rangeTo[' + rowCount + ']');
+                    newRow.find('input[name="negativeKg"]').attr('name', 'negativeKg[' + rowCount + ']');
+                    newRow.find('input[name="positiveKg"]').attr('name', 'positiveKg[' + rowCount + ']');
+                    newRow.find('input[name="negativePerc"]').attr('name', 'negativePerc[' + rowCount + ']');
+                    newRow.find('input[name="positivePerc"]').attr('name', 'positivePerc[' + rowCount + ']');
+                    
+                    $("#autoTable").append(newRow);
+                    rowCount++;
+                });
+
+                // Validate that "To" value is greater than "From" value
+                $("#autoTable").on('blur', '.range-from, .range-to', function() {
+                    var row = $(this).closest('tr');
+                    var fromValue = parseFloat(row.find('.range-from').val()) || 0;
+                    var toValue = parseFloat(row.find('.range-to').val()) || 0;
+
+                    if (fromValue > 0 && toValue > 0 && fromValue >= toValue) {
+                        alert('The "To" value must be greater than the "From" value.');
+                        $(this).focus();
+                    }
                 });
             });
         </script>

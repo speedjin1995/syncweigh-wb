@@ -853,3 +853,42 @@ DELIMITER ;
 
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES
 ('additional_passwords_code', 'Additional Passwords', 'é™„åŠ å¯†ç ', 'Kata Laluan Tambahan', 'à®•à¯‚à®Ÿà¯à®¤à®²à¯ à®•à®Ÿà®µà¯à®šà¯à®šà¯Šà®²à¯');
+
+-- 09/10/2025 --
+ALTER TABLE `Deduction` CHANGE `status` `status` ENUM('Manual','Auto','Disable') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Disable';
+
+ALTER TABLE `Deduction` ADD `auto_data` LONGTEXT NULL AFTER `F12`;
+
+ALTER TABLE `Deduction_Log` MODIFY `status` ENUM('Enable', 'Manual', 'Auto', 'Disable') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
+
+UPDATE `Deduction_Log` SET `status` = 'Manual' WHERE `status` = 'Enable';
+
+ALTER TABLE `Deduction_Log` MODIFY `status` ENUM('Manual', 'Auto', 'Disable') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
+
+ALTER TABLE `Deduction_Log` ADD `auto_data` LONGTEXT NULL AFTER `F12`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `after_deduction_update` BEFORE UPDATE ON `Deduction` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Always set action_id = 2 for update
+    SET action_value = 2;
+
+    -- Insert into Deduction_Log table
+    INSERT INTO Deduction_Log (
+        deduction_id,
+        F1, F2, F3, F4, F5, F6,
+        F7, F8, F9, F10, F11, F12, auto_data,
+        status, created_by, modified_by,
+        action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id,
+        NEW.F1, NEW.F2, NEW.F3, NEW.F4, NEW.F5, NEW.F6,
+        NEW.F7, NEW.F8, NEW.F9, NEW.F10, NEW.F11, NEW.F12, NEW.auto_data,
+        NEW.status, NEW.created_by, NEW.modified_by,
+        action_value, NEW.modified_by, NOW()
+    );
+END
+$$
+DELIMITER ;
