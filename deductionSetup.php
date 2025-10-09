@@ -22,10 +22,12 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 // Default values
+$mode = 'Manual';
 $status = 'Disable';
 $F1 = $F2 = $F3 = $F4 = $F5 = $F6 = $F7 = $F8 = $F9 = $F10 = $F11 = $F12 = 0;
 
 if ($row = $result->fetch_assoc()) {
+    $mode = $row['mode'] ?? 'Manual';
     $status = $row['status'] ?? 'Disable';
     $F1 = $row['F1'] ?? 0;
     $F2 = $row['F2'] ?? 0;
@@ -54,6 +56,9 @@ $result->free();
         <!-- swiper css -->
         <link rel="stylesheet" href="assets/libs/swiper/swiper-bundle.min.css">
 
+        <script src="plugins/jquery/jquery.min.js"></script>
+        <!-- Include jQuery Validate plugin -->
+        <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
         <?php include 'layouts/head-css.php'; ?>
 
     </head>
@@ -72,9 +77,22 @@ $result->free();
                 <div class="page-content">
                     <div class="container-fluid">
                         <div class="row col-12">
+                            <div class="row mb-3">
+                                <div class="col-3">
+                                    <label for="mode" class="col-sm-4 col-form-label">Mode</label>
+                                    <div class="col-sm-8">
+                                        <select id="mode" name="mode" class="form-select">
+                                            <option value="Auto" <?= ($mode === 'Auto' ? 'selected' : '') ?>>Auto</option>
+                                            <option value="Manual" <?= ($mode === 'Manual' ? 'selected' : '') ?>>Manual</option>
+                                            <option value="Disable" <?= ($mode === 'Disable' ? 'selected' : '') ?>>Disable</option>
+                                        </select>  
+                                    </div>
+                                </div>
+                            </div>  
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <form id="profileForm" action="php/updateDeduction.php" method="post">
+                                        <input type="hidden" name="modeSelected" value="<?= htmlspecialchars($mode) ?>">
                                         <!-- Status -->
                                         <div class="row mb-3">
                                             <div class="col-4 d-flex align-items-center">
@@ -91,42 +109,70 @@ $result->free();
                                                 <span class="ms-2 fw-bold">Enable</span>
                                             </div>
                                         </div>
-
-                                        <!-- Grid for F1-F12 -->
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <label>F1 - F3 ( - ) kg</label>
-                                                <input type="number" class="form-control mb-2" name="F1" placeholder="F1" min="0" value="<?= htmlspecialchars($F1) ?>">
-                                                <input type="number" class="form-control mb-2" name="F2" placeholder="F2" min="0" value="<?= htmlspecialchars($F2) ?>">
-                                                <input type="number" class="form-control mb-2" name="F3" placeholder="F3" min="0" value="<?= htmlspecialchars($F3) ?>">
-                                            </div>
-                                            <div class="col-3">
-                                                <label>F4 - F6 ( + ) kg</label>
-                                                <input type="number" class="form-control mb-2" name="F4" placeholder="F4" min="0" value="<?= htmlspecialchars($F4) ?>">
-                                                <input type="number" class="form-control mb-2" name="F5" placeholder="F5" min="0" value="<?= htmlspecialchars($F5) ?>">
-                                                <input type="number" class="form-control mb-2" name="F6" placeholder="F6" min="0" value="<?= htmlspecialchars($F6) ?>">
-                                            </div>
-                                            <div class="col-3">
-                                                <label>F7 - F9 ( - ) %</label>
-                                                <input type="number" class="form-control mb-2" name="F7" placeholder="F7" min="0" max="100" value="<?= htmlspecialchars($F7) ?>">
-                                                <input type="number" class="form-control mb-2" name="F8" placeholder="F8" min="0" max="100" value="<?= htmlspecialchars($F8) ?>">
-                                                <input type="number" class="form-control mb-2" name="F9" placeholder="F9" min="0" max="100" value="<?= htmlspecialchars($F9) ?>">
-                                            </div>
-                                            <div class="col-3">
-                                                <label>F10 - F12 ( + ) %</label>
-                                                <input type="number" class="form-control mb-2" name="F10" placeholder="F10" min="0" max="100" value="<?= htmlspecialchars($F10) ?>">
-                                                <input type="number" class="form-control mb-2" name="F11" placeholder="F11" min="0" max="100" value="<?= htmlspecialchars($F11) ?>">
-                                                <input type="number" class="form-control mb-2" name="F12" placeholder="F12" min="0" max="100" value="<?= htmlspecialchars($F12) ?>">
+                                        <div id="manualView">
+                                            <!-- Grid for F1-F12 -->
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <label>F1 - F3 ( - ) kg</label>
+                                                    <input type="number" class="form-control mb-2" name="F1" placeholder="F1" min="0" value="<?= htmlspecialchars($F1) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F2" placeholder="F2" min="0" value="<?= htmlspecialchars($F2) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F3" placeholder="F3" min="0" value="<?= htmlspecialchars($F3) ?>">
+                                                </div>
+                                                <div class="col-3">
+                                                    <label>F4 - F6 ( + ) kg</label>
+                                                    <input type="number" class="form-control mb-2" name="F4" placeholder="F4" min="0" value="<?= htmlspecialchars($F4) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F5" placeholder="F5" min="0" value="<?= htmlspecialchars($F5) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F6" placeholder="F6" min="0" value="<?= htmlspecialchars($F6) ?>">
+                                                </div>
+                                                <div class="col-3">
+                                                    <label>F7 - F9 ( - ) %</label>
+                                                    <input type="number" class="form-control mb-2" name="F7" placeholder="F7" min="0" max="100" value="<?= htmlspecialchars($F7) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F8" placeholder="F8" min="0" max="100" value="<?= htmlspecialchars($F8) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F9" placeholder="F9" min="0" max="100" value="<?= htmlspecialchars($F9) ?>">
+                                                </div>
+                                                <div class="col-3">
+                                                    <label>F10 - F12 ( + ) %</label>
+                                                    <input type="number" class="form-control mb-2" name="F10" placeholder="F10" min="0" max="100" value="<?= htmlspecialchars($F10) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F11" placeholder="F11" min="0" max="100" value="<?= htmlspecialchars($F11) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F12" placeholder="F12" min="0" max="100" value="<?= htmlspecialchars($F12) ?>">
+                                                </div>
                                             </div>
                                         </div>
+                                        <div id="autoView" style="display: none;">
+                                            <!-- Status -->
+                                            <div class="row mb-3">
+                                                <div class="col-8 d-flex justify-content-end">
+                                                    <button type="button" class="btn btn-primary" id="addAutoRow">Add New</button>
+                                                </div>
+                                            </div>
 
+                                            <!-- Grid for Auto Range-->
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <table class="table table-bordered nowrap table-striped align-middle bg-white" class="table-light">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Range</th>
+                                                                <th>(-) kg</th>
+                                                                <th>(+) kg</th>
+                                                                <th>(- %)</th>
+                                                                <th>(+ %)</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="autoTableBody">
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <!-- Buttons -->
                                         <div class="row mt-4">
                                             <div class="col-4 text-center">
                                                 <input type="text" class="form-control text-center text-danger fw-bold" value="ESC" readonly>
                                             </div>
                                             <div class="col-4">
-                                                <button type="reset" class="btn btn-warning w-100">Reset to Zero</button>
+                                                <button id="resetZero" type="reset" class="btn btn-warning w-100">Reset to Zero</button>
                                             </div>
                                             <div class="col-4">
                                                 <button type="submit" class="btn btn-success w-100">Update</button>
@@ -178,10 +224,31 @@ $result->free();
         <script src="assets/js/pages/profile.init.js"></script>
         <!-- App js -->
         <script src="assets/js/app.js"></script>
-        <!-- Include jQuery library -->
-        <script src="plugins/jquery/jquery.min.js"></script>
-        <!-- Include jQuery Validate plugin -->
-        <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
+
+        <script type="text/html" id="autoRowDetail">
+            <tr class="details">
+                <td>
+                    <input type="text" class="form-control" id="no" name="no" readonly>
+                    <input type="text" class="form-control" id="deductionAutoId" name="deductionAutoId" hidden>
+                </td>
+                <td>
+                    <select class="form-control select2" style="width: 100%; background-color:white;" id="rawMats" name="rawMats">
+                        <?php while($rowRawMat=mysqli_fetch_assoc($rawMaterial)){ ?>
+                            <option value="<?=$rowRawMat['raw_mat_code'] ?>" data-name="<?=$rowRawMat['name'] ?>"><?=$rowRawMat['raw_mat_code'] . ' - ' . $rowRawMat['name']?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="form-control" id="rawMatWeight" name="rawMatWeight" style="background-color:white;" value="0">
+                </td>
+                <td class="d-flex" style="text-align:center">
+                    <button class="btn btn-success" id="remove" style="background-color: #f06548;">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </td>
+            </tr>
+        </script>
+
         <script type="text/javascript">
             $(function () {
                 // Check Password Logic when load screen
@@ -303,11 +370,47 @@ $result->free();
                     }
                 });
 
-                $('#resetZero').on('click', function () {
-                    // reset all text/number inputs inside the form to 0
-                    $('#profileForm').find('input[type="text"], input[type="number"]').each(function () {
-                        $(this).val(0);
-                    });
+                $('#mode').on('change', function() {
+                    var selectedMode = $(this).val(); console.log(selectedMode);
+                    if (selectedMode === 'Manual') {
+                        $('#manualView').show();
+                        $('#autoView').hide();
+                    } else if (selectedMode === 'Auto') {
+                        $('#manualView').hide();
+                        $('#autoView').show();
+                    } else {
+                        $('#manualView').hide();
+                        $('#autoView').hide();
+                    }
+                });
+
+                // $("#addAutoRow").click(function(){
+                //     if(rowCount == 0){
+                //         rowCount++;
+                //     }
+
+                //     var $addContents = $("#autoRowDetail").clone();
+                //     $("#rawMaterialTable").append($addContents.html());
+
+                //     $("#rawMaterialTable").find('.details:last').attr("id", "detail" + rowCount);
+                //     $("#rawMaterialTable").find('.details:last').attr("data-index", rowCount);
+                //     $("#rawMaterialTable").find('#remove:last').attr("id", "remove" + rowCount);
+
+                //     $("#rawMaterialTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount);
+                //     $("#rawMaterialTable").find('#productRawMatId:last').attr('name', 'productRawMatId['+rowCount+']').attr("id", "productRawMatId" + rowCount);
+                //     $("#rawMaterialTable").find('#rawMats:last').attr('name', 'rawMats['+rowCount+']').attr("id", "rawMats" + rowCount).select2({
+                //         allowClear: true,
+                //         placeholder: "Please Select",
+                //         dropdownParent: $('#rawMaterialTable') // Prevents dropdown cutoff inside modals/tables
+                //     });
+                //     $("#rawMaterialTable").find('#rawMatWeight:last').attr('name', 'rawMatWeight['+rowCount+']').attr("id", "rawMatWeight" + rowCount);
+
+                //     rowCount++;
+                // });
+
+                $('#resetZero').on('click', function(e) {
+                    e.preventDefault();
+                    $('#manualView input[name^="F"]').val(0);
                 });
             });
         </script>
