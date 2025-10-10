@@ -896,3 +896,57 @@ CREATE OR REPLACE TRIGGER `after_deduction_update` BEFORE UPDATE ON `Deduction` 
 END
 $$
 DELIMITER ;
+
+CREATE TABLE `Customer_Deduction` (
+  `id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `F1` decimal(10,2) DEFAULT NULL,
+  `F2` decimal(10,2) DEFAULT NULL,
+  `F3` decimal(10,2) DEFAULT NULL,
+  `F4` decimal(10,2) DEFAULT NULL,
+  `F5` decimal(10,2) DEFAULT NULL,
+  `F6` decimal(10,2) DEFAULT NULL,
+  `F7` decimal(10,2) DEFAULT NULL,
+  `F8` decimal(10,2) DEFAULT NULL,
+  `F9` decimal(10,2) DEFAULT NULL,
+  `F10` decimal(10,2) DEFAULT NULL,
+  `F11` decimal(10,2) DEFAULT NULL,
+  `F12` decimal(10,2) DEFAULT NULL,
+  `auto_data` longtext DEFAULT NULL,
+  `status` enum('Manual','Auto','Disable') NOT NULL,
+  `created_by` varchar(50) NOT NULL,
+  `modified_by` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE `Customer_Deduction` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Customer_Deduction` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `Supplier_Deduction` (
+  `id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
+  `F1` decimal(10,2) DEFAULT NULL,
+  `F2` decimal(10,2) DEFAULT NULL,
+  `F3` decimal(10,2) DEFAULT NULL,
+  `F4` decimal(10,2) DEFAULT NULL,
+  `F5` decimal(10,2) DEFAULT NULL,
+  `F6` decimal(10,2) DEFAULT NULL,
+  `F7` decimal(10,2) DEFAULT NULL,
+  `F8` decimal(10,2) DEFAULT NULL,
+  `F9` decimal(10,2) DEFAULT NULL,
+  `F10` decimal(10,2) DEFAULT NULL,
+  `F11` decimal(10,2) DEFAULT NULL,
+  `F12` decimal(10,2) DEFAULT NULL,
+  `auto_data` longtext DEFAULT NULL,
+  `status` enum('Manual','Auto','Disable') NOT NULL,
+  `created_by` varchar(50) NOT NULL,
+  `modified_by` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE `Supplier_Deduction` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Supplier_Deduction` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

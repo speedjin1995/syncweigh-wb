@@ -1,6 +1,11 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 
+<?php
+$role = $_SESSION["roles"];
+$allowDeduct = $_SESSION["allowDeduct"];
+?>
+
 <head>
     <title>Weighing | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
@@ -280,7 +285,129 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>     
+                                    </div>
+                                    <!-- Deduction Modal -->
+                                    <div class="modal fade" id="deductionModal" tabindex="-1" aria-hidden="true" style="display:none">
+                                        <div class="modal-dialog modal-xl" style="max-width: 50%;">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-gray-dark color-palette">
+                                                    <h4 class="modal-title">Deduction Setup</h4>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form id="deductionForm" role="form">
+                                                        <input type="hidden" id="type" name="type" value="Customer">
+                                                        <input type="hidden" id="custSuppId" name="custSuppId">
+                                                        <input type="hidden" id="deductionId" name="deductionId">
+                                                        <div class="d-flex align-items-center mb-3 justify-content-between">
+                                                            <div class="d-flex align-items-center">
+                                                                <label for="statusSwitch" class="col-form-label me-2">Mode</label>
+                                                                <select id="statusSwitch" name="statusSwitch" class="form-select select2" style="width: 150px;">
+                                                                    <option value="Manual" selected>Manual</option>
+                                                                    <option value="Auto">Auto</option>
+                                                                    <option value="Disable">Disable</option>
+                                                                </select>
+                                                            </div>
+                                                            <button type="button" id="autoNewBtn" class="btn btn-primary d-none">
+                                                                <i class="ri-add-circle-line align-middle me-1"></i>Add New
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- Manual Mode View -->
+                                                        <div id="manualView">
+                                                            <div class="row">
+                                                                <div class="col-3">
+                                                                    <label>F1 - F3 ( - ) kg</label>
+                                                                    <input type="number" class="form-control mb-2" id="F1" name="F1" placeholder="F1" min="0">
+                                                                    <input type="number" class="form-control mb-2" id="F2" name="F2" placeholder="F2" min="0">
+                                                                    <input type="number" class="form-control mb-2" id="F3" name="F3" placeholder="F3" min="0">
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <label>F4 - F6 ( + ) kg</label>
+                                                                    <input type="number" class="form-control mb-2" id="F4" name="F4" placeholder="F4" min="0">
+                                                                    <input type="number" class="form-control mb-2" id="F5" name="F5" placeholder="F5" min="0">
+                                                                    <input type="number" class="form-control mb-2" id="F6" name="F6" placeholder="F6" min="0">
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <label>F7 - F9 ( - ) %</label>
+                                                                    <input type="number" class="form-control mb-2" id="F7" name="F7" placeholder="F7" min="0" max="100">
+                                                                    <input type="number" class="form-control mb-2" id="F8" name="F8" placeholder="F8" min="0" max="100">
+                                                                    <input type="number" class="form-control mb-2" id="F9" name="F9" placeholder="F9" min="0" max="100">
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <label>F10 - F12 ( + ) %</label>
+                                                                    <input type="number" class="form-control mb-2" id="F10" name="F10" placeholder="F10" min="0" max="100">
+                                                                    <input type="number" class="form-control mb-2" id="F11" name="F11" placeholder="F11" min="0" max="100">
+                                                                    <input type="number" class="form-control mb-2" id="F12" name="F12" placeholder="F12" min="0" max="100">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Auto Mode View -->
+                                                        <div id="autoView" style="display: none;">
+                                                            <div class="row">
+                                                                <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                    <table class="table table-primary">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th width="30%">Ranges</th>
+                                                                                <th>(-) kg</th>
+                                                                                <th>(+) kg</th>
+                                                                                <th>(-%)</th>
+                                                                                <th>(+%)</th>
+                                                                                <th>Action</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="autoTable"></tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Action Buttons -->
+                                                        <div class="row mt-4">
+                                                            <div class="col-4 text-center">
+                                                                <input type="text" class="form-control text-center text-danger fw-bold" value="ESC" readonly>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <button type="button" class="btn btn-warning w-100" id="resetZero">Reset to Zero</button>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <button type="button" class="btn btn-success w-100" id="submitDeduction"><?=$languageArray['submit_code'][$language]?></button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Password Restriction Modal -->
+                                    <div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary text-white">
+                                                    <h5 class="modal-title text-white"><?=$languageArray['additional_passwords_code'][$language]?></h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form id="passwordCheckForm">
+                                                        <div class="mb-3" id="password2Div">
+                                                            <label for="password2" class="form-label"><?=$languageArray['password_code'][$language]?> 2</label>
+                                                            <input type="password" class="form-control" id="password2" name="password2">
+                                                        </div>
+                                                        <div class="mb-3" id="password3Div">
+                                                            <label for="password3" class="form-label"><?=$languageArray['password_code'][$language]?> 3</label>
+                                                            <input type="password" class="form-control" id="password3" name="password3">
+                                                        </div>
+                                                        <div class="d-grid">
+                                                            <button type="submit" class="btn btn-success"><?=$languageArray['submit_code'][$language]?></button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div> <!-- end row-->
 
@@ -391,13 +518,44 @@
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
 
-
+    <script type="text/html" id="autoRowTemplate">
+        <tr class="details">
+            <td>
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="number" class="form-control range-from" name="rangeFrom" placeholder="From (kg)" min="0" step="0.01" required>
+                    <span class="text-muted">to</span>
+                    <input type="number" class="form-control range-to" name="rangeTo" placeholder="To (kg)" min="0" step="0.01" required>
+                </div>
+            </td>
+            <td>
+                <input type="number" class="form-control" name="negativeKg" min="0" step="0.01">
+            </td>
+            <td>
+                <input type="number" class="form-control" name="positiveKg" min="0" step="0.01">
+            </td>
+            <td>
+                <input type="number" class="form-control" name="negativePerc" min="0" max="100" step="0.01">
+            </td>
+            <td>
+                <input type="number" class="form-control" name="positivePerc" min="0" max="100" step="0.01">
+            </td>
+            <td class="d-flex" style="text-align:center">
+                <button type="button" class="btn btn-danger" id="remove">
+                    <i class="fa fa-times"></i>
+                </button>
+            </td>
+        </tr>
+    </script>
 
 <script type="text/javascript">
 
 var table;
+var role = '<?=$role?>';
+var allowDeduct = '<?=$allowDeduct?>';
+var rowCount = 0;
 
 $(function () {
+
     // Initialize all Select2 elements in the modal
     $('#addModal .select2').select2({
         allowClear: true,
@@ -460,12 +618,31 @@ $(function () {
             },
             { 
                 data: 'id',
-                render: function ( data, type, row ) {
-                    // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
-                    return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                    '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
+                render: function (data, type, row) {
+                    let dropdownHtml = '';
+
+                    dropdownHtml += '<div class="dropdown d-inline-block">';
+                    dropdownHtml += '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">';
+                    dropdownHtml += '<i class="ri-more-fill align-middle"></i></button>';
+                    dropdownHtml += '<ul class="dropdown-menu dropdown-menu-end">';
+
+                    // Edit button
+                    dropdownHtml += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')">';
+                    dropdownHtml += '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>';
+
+                    // Conditionally add Deduction Setup button
+                    if (role === 'ADMIN' || role === 'SADMIN' || allowDeduct === 'Y') {
+                        dropdownHtml += '<li><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ')">';
+                        dropdownHtml += '<i class="ri-subtract-fill align-bottom me-2 text-muted"></i> <?=$languageArray['deduction_setup_code'][$language] ?></a></li>';
+                    }
+
+                    // Delete button
+                    dropdownHtml += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')">';
+                    dropdownHtml += '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li>';
+
+                    dropdownHtml += '</ul></div>';
+
+                    return dropdownHtml;
                 }
             }
         ]       
@@ -674,7 +851,244 @@ $(function () {
             $('#spinnerLoading').hide();
         }     
     });
+
+    // Find and remove selected table rows
+    $("#autoTable").on('click', 'button[id^="remove"]', function () {
+        $(this).parents("tr").remove();
+    });
+
+    // Auto New button functionality
+    $('#autoNewBtn').on('click', function() {
+        var template = $("#autoRowTemplate").html();
+        var newRow = $(template); console.log(rowCount);
+        
+        // Set unique IDs for the new row
+        newRow.find('.details:last').attr("id", "detail" + rowCount);
+        newRow.find('.details:last').attr("data-index", rowCount);
+        newRow.find('#remove:last').attr("id", "remove" + rowCount);
+
+        newRow.find('input[name="rangeFrom"]').attr('id', 'rangeFrom' + rowCount);
+        newRow.find('input[name="rangeTo"]').attr('id', 'rangeTo' + rowCount);
+        newRow.find('input[name="negativeKg"]').attr('id', 'negativeKg' + rowCount);
+        newRow.find('input[name="positiveKg"]').attr('id', 'positiveKg' + rowCount);
+        newRow.find('input[name="negativePerc"]').attr('id', 'negativePerc' + rowCount);
+        newRow.find('input[name="positivePerc"]').attr('id', 'positivePerc' + rowCount);
+        
+        // Set array names for form submission
+        newRow.find('input[name="rangeFrom"]').attr('name', 'rangeFrom[' + rowCount + ']');
+        newRow.find('input[name="rangeTo"]').attr('name', 'rangeTo[' + rowCount + ']');
+        newRow.find('input[name="negativeKg"]').attr('name', 'negativeKg[' + rowCount + ']');
+        newRow.find('input[name="positiveKg"]').attr('name', 'positiveKg[' + rowCount + ']');
+        newRow.find('input[name="negativePerc"]').attr('name', 'negativePerc[' + rowCount + ']');
+        newRow.find('input[name="positivePerc"]').attr('name', 'positivePerc[' + rowCount + ']');
+        
+        $("#autoTable").append(newRow);
+        rowCount++;
+    });
+
+    // Validate that "To" value is greater than "From" value
+    $("#autoTable").on('blur', '.range-from, .range-to', function() {
+        var row = $(this).closest('tr');
+        var fromValue = parseFloat(row.find('.range-from').val()) || 0;
+        var toValue = parseFloat(row.find('.range-to').val()) || 0;
+
+        if (fromValue > 0 && toValue > 0 && fromValue >= toValue) {
+            alert('The "To" value must be greater than the "From" value.');
+            $(this).focus();
+        }
+    });
+
+    $("#passwordCheckForm").on("submit", function (e) {
+        e.preventDefault();
+        var custSuppId = $('#deductionModal').find('#custSuppId').val();
+        var password2 = $('#passwordModal').find('#password2').val();
+
+        $.post("php/checkPasswords.php", { type: 'screen', password2: password2 }, function (data) {
+            let obj = JSON.parse(data);
+
+            if (obj.status === "success") {
+                $("#passwordModal").modal("hide");
+
+                $.post("php/getDeduction.php", { userID: custSuppId, type: 'Customer' }, function (data) {
+                    let obj = JSON.parse(data);
+
+                    if (obj.status == "success") {
+                        // Check if message is not empty
+                        if (obj.message && Object.keys(obj.message).length > 0) {
+                            $('#deductionModal').find('#deductionId').val(obj.message.id);
+                            $('#deductionModal').find('#custSuppId').val(obj.message.customer_supplier_id);
+                            $('#deductionModal').find('#statusSwitch').val(obj.message.status).trigger('change');
+                            $('#deductionModal').find('#F1').val(obj.message.F1);
+                            $('#deductionModal').find('#F2').val(obj.message.F2);
+                            $('#deductionModal').find('#F3').val(obj.message.F3);
+                            $('#deductionModal').find('#F4').val(obj.message.F4);
+                            $('#deductionModal').find('#F5').val(obj.message.F5);
+                            $('#deductionModal').find('#F6').val(obj.message.F6);
+                            $('#deductionModal').find('#F7').val(obj.message.F7);
+                            $('#deductionModal').find('#F8').val(obj.message.F8);
+                            $('#deductionModal').find('#F9').val(obj.message.F9);
+                            $('#deductionModal').find('#F10').val(obj.message.F10);
+                            $('#deductionModal').find('#F11').val(obj.message.F11);
+                            $('#deductionModal').find('#F12').val(obj.message.F12);
+                            loadAutoDeductionData(obj.message.auto_data);
+                            $('#deductionModal').modal('show');
+                        } else {
+                            $('#deductionModal').find('#manualView input[name^="F"]').val('');
+                            $('#deductionModal').find('#autoTable').empty();
+                            $('#deductionModal').find('#statusSwitch').val('Disable').trigger('change');
+                            $('#deductionModal').modal('show');
+                        }
+                        
+                        $('#deductionModal').modal('show');
+                    } else {
+                        alert(obj.message);
+                    }
+                });
+            } else {
+                alert(obj.message);
+                $("#passwordModal").modal("hide"); // hide modal
+            }
+        });
+    });
+
+    $('#deductionModal').find('#statusSwitch').on('change', function () {
+        var selectedValue = $(this).val();
+
+        if (selectedValue == 'Manual') {
+            $('#deductionModal').find('#manualView').show();
+            $('#deductionModal').find('#autoView').hide();
+            $('#deductionModal').find('#autoNewBtn').addClass('d-none');
+            $('#deductionModal').find('#buttonRow').show();
+        } else if (selectedValue == 'Auto') {
+            $('#deductionModal').find('#manualView').hide();
+            $('#deductionModal').find('#autoView').show();
+            $('#deductionModal').find('#autoNewBtn').removeClass('d-none');
+            $('#deductionModal').find('#buttonRow').show();
+        } else {
+            $('#deductionModal').find('#manualView').hide();
+            $('#deductionModal').find('#autoView').hide();
+            $('#deductionModal').find('#autoNewBtn').addClass('d-none');
+            $('#deductionModal').find('#buttonRow').hide();
+        }
+    });
+
+    $('#deductionModal').find('#resetZero').on('click', function(e) {
+        e.preventDefault();
+        var mode = $('#deductionModal').find('#statusSwitch').val();
+        if (mode == 'Manual') {
+            // reset all F1-F12 inputs to 0
+            $('#deductionModal').find('#manualView input[name^="F"]').val(0);
+        } else if (mode == 'Auto') {
+            // Clear the autoTable body
+            $('#deductionModal').find('#autoTable').empty();
+            rowCount = 0; // Reset rowCount so "Add New" starts from 0
+        }
+    });
+
+    $('#submitDeduction').on('click', function(){
+        if($('#deductionForm').valid()){
+            $('#deductionModal').modal('hide');
+            // Switch modal to ask for password3
+            $('#passwordModal').find('#password2Div').hide();
+            $('#passwordModal').find('#password3Div').show();
+            $("#passwordModal").modal({
+                backdrop: 'static', // disable closing by clicking outside
+                keyboard: false // disable ESC close
+            }).modal("show");
+
+
+            // Handle password3 submit
+            $("#passwordCheckForm").off("submit").on("submit", function (e) {
+                e.preventDefault();
+                var password3 = $('#password3').val();
+
+                $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
+                    let obj = JSON.parse(data);
+
+                    if (obj.status === "success") {
+                        $("#passwordModal").modal("hide");
+
+                        // Proceed with saving form
+                        $.post('php/deductions.php', $('#deductionForm').serialize(), function (data) {
+                            var obj = JSON.parse(data);
+
+                            if (obj.status === 'success') {
+                                window.location.reload();
+                            } else if (obj.status === 'failed') {
+                                alert(obj.message);
+                            } else {
+                                alert("Failed to update ports");
+                            }
+                        });
+                    } else {
+                        alert(obj.message);
+                    }
+                });
+            });
+        }
+        // }
+    });
 });
+
+function loadAutoDeductionData(dataArray) {
+    $("#autoTable").empty(); // clear existing rows first
+    rowCount = 0;
+
+    if (!dataArray || dataArray.length === 0) {
+        // if no data, start with one blank row
+        $('#autoNewBtn').trigger('click');
+        return;
+    }
+
+    dataArray.forEach((item, index) => {
+        var template = $("#autoRowTemplate").html();
+        var newRow = $(template);
+        
+        // Assign unique IDs
+        newRow.find('.details:last').attr("id", "detail" + rowCount);
+        newRow.find('.details:last').attr("data-index", rowCount);
+        newRow.find('#remove:last').attr("id", "remove" + rowCount);
+
+        newRow.find('input[name="rangeFrom"]').attr({
+            'id': 'rangeFrom' + rowCount,
+            'name': 'rangeFrom[' + rowCount + ']',
+            'value': item.rangeFrom ?? ''
+        });
+
+        newRow.find('input[name="rangeTo"]').attr({
+            'id': 'rangeTo' + rowCount,
+            'name': 'rangeTo[' + rowCount + ']',
+            'value': item.rangeTo ?? ''
+        });
+
+        newRow.find('input[name="negativeKg"]').attr({
+            'id': 'negativeKg' + rowCount,
+            'name': 'negativeKg[' + rowCount + ']',
+            'value': item.negativeKg ?? ''
+        });
+
+        newRow.find('input[name="positiveKg"]').attr({
+            'id': 'positiveKg' + rowCount,
+            'name': 'positiveKg[' + rowCount + ']',
+            'value': item.positiveKg ?? ''
+        });
+
+        newRow.find('input[name="negativePerc"]').attr({
+            'id': 'negativePerc' + rowCount,
+            'name': 'negativePerc[' + rowCount + ']',
+            'value': item.negativePerc ?? ''
+        });
+
+        newRow.find('input[name="positivePerc"]').attr({
+            'id': 'positivePerc' + rowCount,
+            'name': 'positivePerc[' + rowCount + ']',
+            'value': item.positivePerc ?? ''
+        });
+
+        $("#autoTable").append(newRow);
+        rowCount++;
+    });
+}
 
 function edit(id){
     $('#spinnerLoading').show();
@@ -826,6 +1240,19 @@ function reactivate(id) {
   }
 
   $('#spinnerLoading').hide();
+}
+
+function deduction(id) {
+    $('#deductionModal').find('#custSuppId').val(id);
+    $('#deductionModal').find('#deductionId').val('');
+    $('#passwordModal').find('#password2').val('');
+    $('#passwordModal').find('#password3').val('');
+    $('#passwordModal').find('#password2Div').show(); // show password2 input
+    $('#passwordModal').find('#password3Div').hide(); // hide password3 input
+    $("#passwordModal").modal({
+        backdrop: 'static', // disable closing by clicking outside
+        keyboard: false // disable ESC close
+    }).modal("show");
 }
 
 $('#customerForm').validate({
