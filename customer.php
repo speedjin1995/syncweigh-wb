@@ -407,7 +407,6 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div> <!-- end row-->
 
@@ -860,7 +859,7 @@ $(function () {
     // Auto New button functionality
     $('#autoNewBtn').on('click', function() {
         var template = $("#autoRowTemplate").html();
-        var newRow = $(template); console.log(rowCount);
+        var newRow = $(template);
         
         // Set unique IDs for the new row
         newRow.find('.details:last').attr("id", "detail" + rowCount);
