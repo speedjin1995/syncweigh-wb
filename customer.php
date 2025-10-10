@@ -367,7 +367,7 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                         <!-- Action Buttons -->
                                                         <div class="row mt-4">
                                                             <div class="col-4 text-center">
-                                                                <input type="text" class="form-control text-center text-danger fw-bold" value="ESC" readonly>
+                                                                <button type="button" class="btn btn-danger w-100" id="escButton">ESC</button>
                                                             </div>
                                                             <div class="col-4">
                                                                 <button type="button" class="btn btn-warning w-100" id="resetZero">Reset to Zero</button>
@@ -1026,7 +1026,10 @@ $(function () {
                 });
             });
         }
-        // }
+    });
+
+    $('#escButton').on('click', function(){
+        $('#deductionModal').modal('hide');
     });
 });
 
