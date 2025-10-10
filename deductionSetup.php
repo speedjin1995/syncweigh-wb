@@ -304,7 +304,7 @@ $result->free();
 
                                     // Proceed with saving form
                                     $.post('php/updateDeduction.php', $('#profileForm').serialize(), function (data) {
-                                        var obj = JSON.parse(data); console.log(obj.status);
+                                        var obj = JSON.parse(data);
 
                                         if (obj.status === 'success') {
                                             // toastr["success"](obj.message, "Success:");
