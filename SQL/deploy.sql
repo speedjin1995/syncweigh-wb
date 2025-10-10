@@ -855,7 +855,11 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALU
 ('additional_passwords_code', 'Additional Passwords', 'é™„åŠ å¯†ç ', 'Kata Laluan Tambahan', 'à®•à¯‚à®Ÿà¯à®¤à®²à¯ à®•à®Ÿà®µà¯à®šà¯à®šà¯Šà®²à¯');
 
 -- 09/10/2025 --
-ALTER TABLE `Deduction` CHANGE `status` `status` ENUM('Manual','Auto','Disable') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Disable';
+ALTER TABLE `Deduction` MODIFY `status` ENUM('Enable', 'Manual', 'Auto', 'Disable') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
+
+UPDATE `Deduction` SET `status` = 'Manual' WHERE `status` = 'Enable';
+
+ALTER TABLE `Deduction` MODIFY `status` ENUM('Manual', 'Auto', 'Disable') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
 
 ALTER TABLE `Deduction` ADD `auto_data` LONGTEXT NULL AFTER `F12`;
 
