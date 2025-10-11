@@ -8,14 +8,12 @@ if(!isset($_SESSION['id'])){
 }
 
 if (isset($_POST)) {
-    // Helper to handle nullable numeric inputs
-    function parseNullableFloat($key) {
-        if (isset($_POST[$key]) && $_POST[$key] !== '') {
-            return (float) $_POST[$key];
-        }
-        return 0;
-    }
+    $statusSwitch = "";
+    if(isset($_POST['statusSwitch']) && $_POST['statusSwitch']!=null && $_POST['statusSwitch']!=""){
+		$statusSwitch = $_POST['statusSwitch'];
+	}
 
+    // Manual
     $F1  = parseNullableFloat('F1');
     $F2  = parseNullableFloat('F2');
     $F3  = parseNullableFloat('F3');
@@ -29,43 +27,86 @@ if (isset($_POST)) {
     $F11 = parseNullableFloat('F11');
     $F12 = parseNullableFloat('F12');
 
-    $status = isset($_POST['status']) && $_POST['status'] === "Enable" ? "Enable" : "Disable";
+    // Auto
+    $autoData = [];
+    if ($statusSwitch == 'Auto' && isset($_POST['rangeFrom']) && is_array($_POST['rangeFrom'])) {
+        $rangeFrom = $_POST['rangeFrom'];
+        $rangeTo = $_POST['rangeTo'] ?? [];
+        $negativeKg = $_POST['negativeKg'] ?? [];
+        $positiveKg = $_POST['positiveKg'] ?? [];
+        $negativePerc = $_POST['negativePerc'] ?? [];
+        $positivePerc = $_POST['positivePerc'] ?? [];
+        
+        // Build auto data array
+        foreach ($rangeFrom as $key => $value) {
+            if (!empty($value) || !empty($rangeTo[$key])) {
+                $autoData[] = [
+                    'rangeFrom' => (float)($value ?? 0),
+                    'rangeTo' => (float)($rangeTo[$key] ?? 0),
+                    'negativeKg' => (float)($negativeKg[$key] ?? 0),
+                    'positiveKg' => (float)($positiveKg[$key] ?? 0),
+                    'negativePerc' => (float)($negativePerc[$key] ?? 0),
+                    'positivePerc' => (float)($positivePerc[$key] ?? 0)
+                ];
+            }
+        }
+    }
+    
+    // Convert auto data to JSON string
+    $autoDataJson = json_encode($autoData);
+
     $modified_by = $_SESSION['username'];
 
     $sql = "UPDATE Deduction 
             SET F1=?, F2=?, F3=?, F4=?, F5=?, F6=?, 
                 F7=?, F8=?, F9=?, F10=?, F11=?, F12=?, 
-                status=?, modified_by=?, updated_at=NOW() 
+                status=?, auto_data=?, modified_by=?, updated_at=NOW() 
             LIMIT 1";
 
     if ($stmt = $db->prepare($sql)) {
         $stmt->bind_param(
-            "ddddddddddddss",
+            "ddddddddddddsss",
             $F1, $F2, $F3, $F4, $F5, $F6,
             $F7, $F8, $F9, $F10, $F11, $F12,
-            $status, $modified_by
+            $statusSwitch, $autoDataJson, $modified_by
         );
 
         if($stmt->execute()){
             $stmt->close();
             $db->close();
 
-            echo '<script type="text/javascript">alert("Deduction updated successfully!");</script>'; 
-            header("location: ../deductionSetup.php");
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Deduction updated successfully!'
+            ]);
             exit();
         } else {
-            echo '<script type="text/javascript">alert("'.$stmt->error.'");</script>'; 
-            header("location: ../deductionSetup.php");
+            echo json_encode([
+                'status' => 'failed',
+                'message' => 'Database error: ' . $stmt->error
+            ]);
             exit();
         }
     } else {
-        echo '<script type="text/javascript">alert("Something went wrong!");</script>'; 
-        header("location: ../deductionSetup.php");
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Something went wrong!'
+        ]);
         exit();
     }
 } else {
-    echo '<script type="text/javascript">alert("Missing required fields!");</script>'; 
-    header("location: ../deductionSetup.php");
+    echo json_encode([
+        'status' => 'failed',
+        'message' => 'Missing required fields!'
+    ]);
     exit();
+}
+
+// Helper to handle nullable numeric inputs
+function parseNullableFloat($key) {
+    if (isset($_POST[$key]) && $_POST[$key] !== '') {
+        return (float) $_POST[$key];
+    }
+    return 0;
 }
 ?>
