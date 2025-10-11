@@ -79,7 +79,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                         <div class="card-header">
                                             <div class="d-flex justify-content-between">
                                                 <div>
-                                                    <h5 class="card-title mb-0">User Records</h5>
+                                                    <h5 class="card-title mb-0"><?=$languageArray['user_records_code'][$language]?></h5>
                                                 </div>
                                                 <div class="flex-shrink-0">
                                                     <a href="template/User_Template.xlsx" download>
@@ -120,12 +120,12 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                        <th>Employee Code</th>
-                                                        <th>Username</th>
-                                                        <th>Name</th>
-                                                        <th>Email</th>
-                                                        <th>Role</th>
-                                                        <th>Plant Name</th>
+                                                        <th><?=$languageArray['employee_code_code'][$language]?></th>
+                                                        <th><?=$languageArray['username_code'][$language]?></th>
+                                                        <th><?=$languageArray['name_code'][$language]?></th>
+                                                        <th><?=$languageArray['email_code'][$language]?></th>
+                                                        <th><?=$languageArray['role_code'][$language]?></th>
+                                                        <th><?=$languageArray['plant_name_code'][$language]?></th>
                                                         <th><?=$languageArray['status_code'][$language]?></th>
                                                         <th><?=$languageArray['action_code'][$language]?></th>
                                                     </tr>
@@ -165,39 +165,39 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             <input type="hidden" class="form-control" id="id" name="id"> 
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                    <label for="employeeCode" class="col-sm-4 col-form-label">Employee Code </label>
+                                                    <label for="employeeCode" class="col-sm-4 col-form-label"><?=$languageArray['employee_code_code'][$language]?></label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="employeeCode" name="employeeCode" placeholder="Employee Code" required>
+                                                        <input type="text" class="form-control" id="employeeCode" name="employeeCode" placeholder="<?=$languageArray['employee_code_code'][$language]?>" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                <label for="username" class="col-sm-4 col-form-label">Username *</label>
+                                                <label for="username" class="col-sm-4 col-form-label"><?=$languageArray['username_code'][$language]?> *</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                                                        <input type="text" class="form-control" id="username" name="username" placeholder="<?=$languageArray['username_code'][$language]?>" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                <label for="name" class="col-sm-4 col-form-label">User Name *</label>
+                                                <label for="name" class="col-sm-4 col-form-label"><?=$languageArray['name_code'][$language]?> *</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="name" name="name" placeholder="User Name" required>
+                                                        <input type="text" class="form-control" id="name" name="name" placeholder="<?=$languageArray['name_code'][$language]?>" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                <label for="useremail" class="col-sm-4 col-form-label">User Email</label>
+                                                <label for="useremail" class="col-sm-4 col-form-label"><?=$languageArray['email_code'][$language]?></label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="useremail" name="useremail" placeholder="User Email">
+                                                        <input type="text" class="form-control" id="useremail" name="useremail" placeholder="<?=$languageArray['email_code'][$language]?>">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                    <label for="roles" class="col-sm-4 col-form-label">Role *</label>
+                                                    <label for="roles" class="col-sm-4 col-form-label"><?=$languageArray['role_code'][$language]?> *</label>
                                                     <div class="col-sm-8">
                                                         <select id="roles" name="roles" class="select2" required>
                                                             <option select="selected" value="">Please Select</option>
@@ -210,7 +210,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                    <label for="plantId" class="col-sm-4 col-form-label">Plant</label>
+                                                    <label for="plantId" class="col-sm-4 col-form-label"><?=$languageArray['plant_code'][$language]?></label>
                                                     <div class="col-sm-8">
                                                         <select id="plantId" name="plantId[]" class="form-control" multiple="multiple">
                                                             <?php while(mysqli_stmt_fetch($stmt4)){ ?>
