@@ -182,7 +182,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                            <!-- <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="type" class="col-sm-4 col-form-label">Type</label>
                                                                                     <div class="col-sm-8"> 
@@ -193,7 +193,7 @@
                                                                                         </select>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
+                                                                            </div> -->
                                                                             <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
                                                                         </div>
                                                                     </div>

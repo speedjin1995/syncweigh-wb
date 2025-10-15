@@ -209,7 +209,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="row col-12">
+                                                        <!-- <div class="row col-12">
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="card bg-light">
                                                                     <div class="card-header p-2">
@@ -239,7 +239,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> -->
                                                         
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">

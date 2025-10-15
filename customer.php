@@ -176,14 +176,14 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <!-- <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="addressLine4" class="col-sm-4 col-form-label">Address Line 4</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="addressLine4" name="addressLine4" placeholder="Address Line 4">
                                                                                     </div>
                                                                                 </div>
-                                                                            </div> -->
+                                                                            </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="phoneNo" class="col-sm-4 col-form-label">Phone No</label>
