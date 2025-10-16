@@ -880,6 +880,22 @@ else{
                                                                             </div>
                                                                         </div>
                                                                         <div class="row">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="projectCode" class="col-sm-4 col-form-label">Project Code</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="projectCode" name="projectCode">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="otherRemarks" class="col-sm-4 col-form-label">Other Remarks</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" style="display:none">
                                                                                 <div class="row">
                                                                                     <label for="plant" class="col-sm-4 col-form-label">Plant</label>
