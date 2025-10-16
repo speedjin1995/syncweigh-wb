@@ -331,6 +331,7 @@
                                                                     <th>Address Line 1</th>
                                                                     <th>Address Line 2</th>
                                                                     <th>Address Line 3</th>
+                                                                    <th>Address Line 4</th>
                                                                     <th>Phone No</th>
                                                                     <th>Fax No</th>
                                                                     <th>Contact Name</th>
@@ -424,6 +425,7 @@ $(function () {
             { data: 'address_line_1' },
             { data: 'address_line_2' },
             { data: 'address_line_3' },
+            { data: 'address_line_4' },
             { data: 'phone_no' },
             { data: 'fax_no' },
             { data: 'contact_name' },
@@ -550,6 +552,7 @@ $(function () {
         $('#addModal').find('#addressLine1').val("");
         $('#addModal').find('#addressLine2').val("");
         $('#addModal').find('#addressLine3').val("");
+        $('#addModal').find('#addressLine4').val("");
         $('#addModal').find('#phoneNo').val("");
         $('#addModal').find('#faxNo').val("");
         $('#addModal').find('#contactName').val("");
@@ -733,6 +736,7 @@ function edit(id){
             $('#addModal').find('#addressLine1').val(obj.message.address_line_1);
             $('#addModal').find('#addressLine2').val(obj.message.address_line_2);
             $('#addModal').find('#addressLine3').val(obj.message.address_line_3);
+            $('#addModal').find('#addressLine4').val(obj.message.address_line_4);
             $('#addModal').find('#phoneNo').val(obj.message.phone_no);
             $('#addModal').find('#faxNo').val(obj.message.fax_no);
             $('#addModal').find('#contactName').val(obj.message.contact_name);

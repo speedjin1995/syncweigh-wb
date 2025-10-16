@@ -182,7 +182,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <!-- <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
                                                                                 <div class="row">
                                                                                     <label for="type" class="col-sm-4 col-form-label">Type</label>
                                                                                     <div class="col-sm-8"> 
@@ -193,7 +193,7 @@
                                                                                         </select>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div> -->
+                                                                            </div>
                                                                             <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
                                                                         </div>
                                                                     </div>
@@ -555,7 +555,7 @@ $(function () {
         $('#addModal').find('#varianceType').val("").trigger('change');
         $('#addModal').find('#high').val("0");
         $('#addModal').find('#low').val("0");
-        $('#addModal').find('#type').val("").trigger('change');
+        $('#addModal').find('#type').val("Raw Material").trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');

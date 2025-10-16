@@ -1504,7 +1504,7 @@ else{
                                                                     <th>Vehicle</th>
                                                                     <th>Gross <br>Incoming</th>
                                                                     <th>Incoming <br>Date</th>
-                                                                    <th>Tare <br>Outgoing</th>
+                                                                    <!--th>Tare <br>Outgoing</th>
                                                                     <th>Outgoing <br>Date</th>
                                                                     <th>Nett <br>Weight</th>
                                                                     <th>Vehicle 2</th>
@@ -1512,7 +1512,7 @@ else{
                                                                     <th>Incoming <br>Date 2</th>
                                                                     <th>Tare <br>Outgoing 2</th>
                                                                     <th>Outgoing <br>Date 2</th>
-                                                                    <th>Nett <br>Weight 2</th>
+                                                                    <th>Nett <br>Weight 2</th-->
                                                                     <th>Action</th>
                                                                 </tr>
                                                             </thead>
@@ -1964,7 +1964,7 @@ else{
                 { data: 'lorry_plate_no1' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
-                { data: 'tare_weight1' },
+                /*{ data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
                 { data: 'lorry_plate_no2' },
@@ -1972,7 +1972,7 @@ else{
                 { data: 'gross_weight2_date' },
                 { data: 'tare_weight2' },
                 { data: 'tare_weight2_date' },
-                { data: 'nett_weight2' },
+                { data: 'nett_weight2' },*/
                 { 
                     data: 'id',
                     class: 'action-button',
@@ -2882,7 +2882,7 @@ else{
                     { data: 'lorry_plate_no1' },
                     { data: 'gross_weight1' },
                     { data: 'gross_weight1_date' },
-                    { data: 'tare_weight1' },
+                    /*{ data: 'tare_weight1' },
                     { data: 'tare_weight1_date' },
                     { data: 'nett_weight1' },
                     { data: 'lorry_plate_no2' },
@@ -2890,7 +2890,7 @@ else{
                     { data: 'gross_weight2_date' },
                     { data: 'tare_weight2' },
                     { data: 'tare_weight2_date' },
-                    { data: 'nett_weight2' },
+                    { data: 'nett_weight2' },*/
                     { 
                         data: 'id',
                         class: 'action-button',

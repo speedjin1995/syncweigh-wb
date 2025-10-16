@@ -43,6 +43,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
       "address_line_1"=>$row['address_line_1'],
       "address_line_2"=>$row['address_line_2'],
       "address_line_3"=>$row['address_line_3'],
+      "address_line_4"=>$row['address_line_4'],
       "phone_no"=>$row['phone_no'],
       "fax_no"=>$row['fax_no'],
       "contact_name"=>$row['contact_name'],
