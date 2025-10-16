@@ -127,14 +127,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <?php include 'layouts/body.php'; ?>
 
-        <div class="auth-page-wrapper pt-5">
+        <div class="auth-page-wrapper pt-5" style="background: #006A8E; height: 100vh;">
             <!-- auth page bg -->
             <div class="auth-one-bg-position auth-one-bg"  id="auth-particles">
                 <div class="bg-overlay"></div>
                 
                 <div class="shape">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
-                        <path d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
+                        <path fill="#006A8E" d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
                     </svg>
                 </div>
             </div>
@@ -226,12 +226,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <!-- end auth page content -->
 
             <!-- footer -->
-            <footer class="footer">
+            <footer class="footer" style="background: #006A8E;">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="text-center">
-                                <p class="mb-0 text-muted">&copy; <script>document.write(new Date().getFullYear())</script> Weighing System. Crafted by Synctronix</p>
+                                <p class="mb-0 text-muted" style="color: #fff !important;">&copy; <script>document.write(new Date().getFullYear())</script> Weighing System. Crafted by Synctronix</p>
                             </div>
                         </div>
                     </div>

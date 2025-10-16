@@ -11895,7 +11895,7 @@ span.flatpickr-weekday {
 .shape > svg {
   width: 100%;
   height: auto;
-  fill: #006a8e;
+  fill: var(--vz-body-bg);
 }
 
 .auth-pass-inputgroup input[type=text] + .btn .ri-eye-fill:before {
