@@ -880,20 +880,20 @@ else{
                                                                             </div>
                                                                         </div>
                                                                         <div class="row">
-                                                                            <div class="col-xxl-12 col-lg-12 mb-12">
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="projectCode" class="col-sm-1 col-form-label">Project Code</label>
-                                                                                    <div class="col-sm-11">
+                                                                                    <label for="projectCode" class="col-sm-1 col-form-label" style="width: 11%;">Project Code</label>
+                                                                                    <div class="col-sm-11" style="width: 89%;">
                                                                                         <input type="text" class="form-control" id="projectCode" name="projectCode">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="row">
-                                                                            <div class="col-xxl-12 col-lg-12 mb-12">
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="otherRemarks" class="col-sm-1 col-form-label">Other Remarks</label>
-                                                                                    <div class="col-sm-11">
+                                                                                    <label for="otherRemarks" class="col-sm-1 col-form-label" style="width: 11%;">Other Remarks</label>
+                                                                                    <div class="col-sm-11" style="width: 89%;">
                                                                                         <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
                                                                                     </div>
                                                                                 </div>
@@ -915,7 +915,7 @@ else{
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row col-12">
+                                                        <div class="row col-12" style="display:none;">
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="card bg-light">
                                                                     <div class="card-body">
