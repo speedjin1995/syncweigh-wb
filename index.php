@@ -880,18 +880,20 @@ else{
                                                                             </div>
                                                                         </div>
                                                                         <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                            <div class="col-xxl-12 col-lg-12 mb-12">
                                                                                 <div class="row">
-                                                                                    <label for="projectCode" class="col-sm-4 col-form-label">Project Code</label>
-                                                                                    <div class="col-sm-8">
+                                                                                    <label for="projectCode" class="col-sm-1 col-form-label">Project Code</label>
+                                                                                    <div class="col-sm-11">
                                                                                         <input type="text" class="form-control" id="projectCode" name="projectCode">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-xxl-12 col-lg-12 mb-12">
                                                                                 <div class="row">
-                                                                                    <label for="otherRemarks" class="col-sm-4 col-form-label">Other Remarks</label>
-                                                                                    <div class="col-sm-8">
+                                                                                    <label for="otherRemarks" class="col-sm-1 col-form-label">Other Remarks</label>
+                                                                                    <div class="col-sm-11">
                                                                                         <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
                                                                                     </div>
                                                                                 </div>
@@ -3183,6 +3185,7 @@ else{
             $('#addModal').find('#containerNo').val("");
             $('#addModal').find('#containerNo2').val("");
             $('#addModal').find('#sealNo2').val("");
+            $('#addModal').find('#projectCode').val("");
 
             // Show select and hide input readonly
             $('#addModal').find('#salesOrderEdit').val("").hide();
@@ -4818,6 +4821,7 @@ else{
                 $('#addModal').find('#plantCode').val(obj.message.plant_code);
                 
                 $('#addModal').find('#otherRemarks').val(obj.message.remarks);
+                $('#addModal').find('#projectCode').val(obj.message.project_code);
                 $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
                 grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
                 $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);
