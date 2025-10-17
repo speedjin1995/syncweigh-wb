@@ -1120,7 +1120,7 @@ else{
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-xxl-4 col-lg-4">
+                                                            <div class="col-xxl-4 col-lg-4" style="display:none;">
                                                                 <div class="row">
                                                                     <label for="otherRemarks" class="col-sm-2 col-form-label">Other Remarks</label>
                                                                     <div class="col-sm-10">
