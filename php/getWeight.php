@@ -66,7 +66,6 @@ if(isset($_POST['userID'])){
                         if ($format == 'EXPANDABLE'){
                             $message['id'] = $row['id'];
     
-
                             if ($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local'){
                                 if ($customer_stmt = $db->prepare("SELECT * FROM Supplier WHERE supplier_code=? AND status = '0'")) {
                                     $customer_stmt->bind_param('s', $row['supplier_code']);
@@ -198,6 +197,8 @@ if(isset($_POST['userID'])){
                             $message['final_weight'] = $row['final_weight'];
                             $message['load_drum'] = $row['load_drum'];
                             $message['no_of_drum'] = $row['no_of_drum'];
+                            $message['company'] = $row['company'];
+                            $message['project_code'] = $row['project_code'];
 
                             // retrieve products
                             $empQuery = "SELECT * FROM Weight_Product WHERE weight_id = $id AND status = '0' ORDER BY id ASC";
