@@ -64,80 +64,6 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $weightType = trim($_POST["weightType"]);
     }
 
-    if (empty($_POST["transactionId"])) {
-        $status = $_POST['transactionStatus'];
-
-		if($update_stmt2 = $db->prepare("SELECT * FROM status WHERE status=?")){
-			$update_stmt2->bind_param('s', $status);
-
-			if (! $update_stmt2->execute()) {
-                echo json_encode(
-                    array(
-                        "status" => "failed",
-                        "message" => "Something went wrong when pulling status"
-                    )
-                ); 
-            }
-            else{
-                $result2 = $update_stmt2->get_result();
-				$id = '1';
-				$transactionId = $plantCode.'/';
-
-				if ($row2 = $result2->fetch_assoc()) {
-					//$id = $row2['misc_id'];
-
-                    if ($weightType == 'Container'){
-                        $transactionId .= $row2['prefix'].'/C' . '/'.$today . '-';
-                    }else{
-                        $transactionId .= $row2['prefix'].'/N' . '/' .$today . '-';
-                        $diffContainerTransId = $transactionId;
-                    }
-				} 
-
-                $queryPlant = "SELECT sales as curcount FROM Plant WHERE plant_code='$plantCode'";
-
-                if($status == 'Purchase'){
-                    $queryPlant = "SELECT purchase as curcount FROM Plant WHERE plant_code='$plantCode'";
-                }
-                else if($status == 'Local'){
-                    $queryPlant = "SELECT locals as curcount FROM Plant WHERE plant_code='$plantCode'";
-                }
-                else if($status == 'Misc'){
-                    $queryPlant = "SELECT misc as curcount FROM Plant WHERE plant_code='$plantCode'";
-                }
-
-				if ($update_stmt = $db->prepare($queryPlant)) {
-					// Execute the prepared query.
-					if (! $update_stmt->execute()) {
-						echo json_encode(
-							array(
-								"status" => "failed",
-								"message" => "Something went wrong"
-							)); 
-					}
-					else{
-						$result = $update_stmt->get_result();
-						$message = array();
-						
-						if ($row = $result->fetch_assoc()) {
-							$charSize = strlen($row['curcount']);
-							$misValue = $row['curcount'];
-		
-							for($i=0; $i<(4-(int)$charSize); $i++){
-								$transactionId.='0';  // S0000
-							}
-					
-							$transactionId .= $misValue;  //S00009
-                        }
-                    }
-                }
-            }
-		}
-    } 
-    else {
-        $transactionId = trim($_POST["transactionId"]);
-    }
-
     if (empty($_POST["transactionStatus"])) {
         $transactionStatus = null;
     } else {
@@ -273,6 +199,84 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $company = '1';
     } else {
         $company = trim($_POST["company"]);
+    }
+
+    if (empty($_POST["transactionId"])) {
+        $status = $_POST['transactionStatus'];
+
+		if($update_stmt2 = $db->prepare("SELECT * FROM status WHERE status=?")){
+			$update_stmt2->bind_param('s', $status);
+
+			if (! $update_stmt2->execute()) {
+                echo json_encode(
+                    array(
+                        "status" => "failed",
+                        "message" => "Something went wrong when pulling status"
+                    )
+                ); 
+            }
+            else{
+                $result2 = $update_stmt2->get_result();
+				$id = '1';
+				$transactionId = '';
+
+                if ($row2 = $result2->fetch_assoc()) {
+                    $queryPlant = "SELECT * FROM Company WHERE id='$company'";
+
+                    if ($update_stmt = $db->prepare($queryPlant)) {
+                        // Execute the prepared query.
+                        if (! $update_stmt->execute()) {
+                            echo json_encode(
+                                array(
+                                    "status" => "failed",
+                                    "message" => "Something went wrong"
+                                )); 
+                        }
+                        else{
+                            $result = $update_stmt->get_result();
+                            $message = array();
+                            $curcount = '1';
+                            
+                            if ($row = $result->fetch_assoc()) {
+                                $transactionId .= $row['company_code'].'/';
+
+                                if ($weightType == 'Container'){
+                                    $transactionId .= $row2['prefix'].'/C' . '/'.$today;
+                                }else{
+                                    $transactionId .= $row2['prefix'].'/N' . '/' .$today;
+                                    $diffContainerTransId = $transactionId;
+                                }
+
+                                if($status == 'Sales'){
+                                    $curcount = $row['sales'];
+                                }
+                                else if($status == 'Purchase'){
+                                    $curcount = $row['purchase'];
+                                }
+                                else if($status == 'Local'){
+                                    $curcount = $row['locals'];
+                                }
+                                else if($status == 'Misc'){
+                                    $curcount = $row['misc'];
+                                }
+
+                                $charSize = strlen($curcount);
+                                $misValue = $curcount;
+            
+                                for($i=0; $i<(4-(int)$charSize); $i++){
+                                    $transactionId.='0';  // S0000
+                                }
+                        
+                                $transactionId .= $misValue;  //S00009
+                            }
+                        }
+                    }
+                }
+            }
+		}
+    } 
+    else {
+        $transactionId = trim($_POST["transactionId"]);
     }
 
     /*if ($transactionStatus == 'Sales'){
@@ -702,16 +706,16 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                         $misValue++;
                         $id = $insert_stmt->insert_id;
         
-                        $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
+                        $queryPlantU = "UPDATE Company SET sales=? WHERE id='$compane'";
         
                         if($transactionStatus == 'Purchase'){
-                            $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
+                            $queryPlantU = "UPDATE Company SET purchase=? WHERE id='$company'";
                         }
                         else if($transactionStatus == 'Local'){
-                            $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
+                            $queryPlantU = "UPDATE Company SET locals=? WHERE id='$company'";
                         }
                         else if($transactionStatus == 'Misc'){
-                            $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
+                            $queryPlantU = "UPDATE Company SET misc=? WHERE id='$company'";
                         }
                         
                         ///insert miscellaneous

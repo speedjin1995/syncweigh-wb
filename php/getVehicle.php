@@ -97,7 +97,7 @@ if(isset($_POST['userID'])){
                 $result = $update_stmt->get_result();
                 $message = array();
                 
-                while ($row = $result->fetch_assoc()) {
+                if ($row = $result->fetch_assoc()) {
                     $message['id'] = $row['id'];
                     $message['veh_number'] = $row['veh_number'];
                     $message['vehicle_weight'] = $row['vehicle_weight'];

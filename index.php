@@ -271,7 +271,7 @@ else{
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
                                                                     <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['name'] ?></option>
                                                                 <?php } ?>
-                                                            </select>$company2
+                                                            </select>
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3" id="plantSearchDisplay" style="display:none">
@@ -1120,14 +1120,14 @@ else{
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-xxl-4 col-lg-4" style="display:none;">
+                                                            <!--div class="col-xxl-4 col-lg-4" style="display:none;">
                                                                 <div class="row">
                                                                     <label for="otherRemarks" class="col-sm-2 col-form-label">Other Remarks</label>
                                                                     <div class="col-sm-10">
                                                                         <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            </div-->
                                                         </div>
                                                         
                                                         <div class="col-lg-12">
@@ -3671,17 +3671,19 @@ else{
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
+                        if (obj.message && Object.keys(obj.message).length > 0) {
+                            var customerName = obj.message.customer_name;
+                            var customerCode = obj.message.customer_code;
+                            var supplierName = obj.message.supplier_name;
+                            var supplierCode = obj.message.supplier_code;
 
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#addModal').find('#customerName').val(customerName).trigger('change');
-                            $('#addModal').find('#customerCode').val(customerCode);
-                        }else{
-                            $('#addModal').find('#supplierName').val(supplierName).trigger('change');
-                            $('#addModal').find('#supplierCode').val(supplierCode);
+                            if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                                $('#addModal').find('#customerName').val(customerName).trigger('change');
+                                $('#addModal').find('#customerCode').val(customerCode);
+                            }else{
+                                $('#addModal').find('#supplierName').val(supplierName).trigger('change');
+                                $('#addModal').find('#supplierCode').val(supplierCode);
+                            }
                         }
                     }
                     else if(obj.status === 'error'){
@@ -3710,17 +3712,19 @@ else{
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
+                        if (obj.message && Object.keys(obj.message).length > 0) {
+                            var customerName = obj.message.customer_name;   
+                            var customerCode = obj.message.customer_code;
+                            var supplierName = obj.message.supplier_name;
+                            var supplierCode = obj.message.supplier_code;
 
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#addModal').find('#customerName').val(customerName).trigger('change');
-                            $('#addModal').find('#customerCode').val(customerCode);
-                        }else{
-                            $('#addModal').find('#supplierName').val(supplierName).trigger('change');
-                            $('#addModal').find('#supplierCode').val(supplierCode);
+                            if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                                $('#addModal').find('#customerName').val(customerName).trigger('change');
+                                $('#addModal').find('#customerCode').val(customerCode);
+                            }else{
+                                $('#addModal').find('#supplierName').val(supplierName).trigger('change');
+                                $('#addModal').find('#supplierCode').val(supplierCode);
+                            }
                         }
                     }
                     else if(obj.status === 'error'){

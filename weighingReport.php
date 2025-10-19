@@ -17,6 +17,7 @@ $transporter = $db->query("SELECT * FROM Transporter WHERE status = '0'");
 $destination = $db->query("SELECT * FROM Destination WHERE status = '0'");
 $unit = $db->query("SELECT * FROM Unit WHERE status = '0'");
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0'");
+$company2 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
 
 $plantName = '-';
 
@@ -254,6 +255,17 @@ else{
                                                         <div class="mb-3">
                                                             <label for="invDelPoSearch" class="form-label">INV/DO/PO No</label>
                                                             <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
+                                                        </div>
+                                                    </div><!--end col-->
+                                                    <div class="col-3">
+                                                        <div class="mb-3">
+                                                            <label for="companySearch" class="form-label">Company</label>
+                                                            <select id="companySearch" class="form-select select2" >
+                                                                <option selected>-</option>
+                                                                <?php while($rowCompF=mysqli_fetch_assoc($company2)){ ?>
+                                                                    <option value="<?=$rowCompF['id'] ?>"><?=$rowCompF['name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
@@ -582,6 +594,7 @@ else{
         var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
         var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
         var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+        var companyI = $('#companySearch').val() ? $('#companySearch').val() : '';
 
         var table = $("#weightTable").DataTable({
             "responsive": true,
@@ -606,7 +619,8 @@ else{
                     destination: destinationI,
                     plant: plantI,
                     status: statusI,
-                    invDelPo: invDelPoI
+                    invDelPo: invDelPoI,
+                    company: companyI
                 } 
             },
             'columns': [
@@ -670,6 +684,7 @@ else{
             var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
             var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
             var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+            var companyI = $('#companySearch').val() ? $('#companySearch').val() : '';
 
             //Destroy the old Datatable
             $("#weightTable").DataTable().clear().destroy();
@@ -698,7 +713,8 @@ else{
                         destination: destinationI,
                         plant: plantI,
                         status: statusI,
-                        invDelPo: invDelPoI
+                        invDelPo: invDelPoI,
+                        company: companyI
                     } 
                 },
                 'columns': [
