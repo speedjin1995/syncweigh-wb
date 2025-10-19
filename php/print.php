@@ -3,7 +3,7 @@ session_start();
 require_once 'db_connect.php';
 include 'phpqrcode/qrlib.php';
 
-$language = $_SESSION['language'];
+$language = isset($_POST['prePrintStatus']) ? $_POST['prePrintStatus'] : $_SESSION['language'];
 $languageArray = $_SESSION['languageArray'];
 $compids = '1';
 $compname = 'SYNCTRONIX TECHNOLOGY (M) SDN BHD';

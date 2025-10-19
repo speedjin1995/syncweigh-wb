@@ -1325,21 +1325,27 @@ else{
                                             <div class="modal-content">
                                                 <form role="form" id="prePrintForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title">Pre-print Sales Slip</h4>
+                                                        <h4 class="modal-title"><?=$languageArray['language_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="row">
-                                                            <label for="prePrint" class="col-sm-4 col-form-label">Pre-print Sales Slip</label>
-                                                            <div class="col-sm-8">
-                                                                <select id="prePrint" name="prePrint" class="form-select" required>
-                                                                    <option value="Y" selected>Yes</option>
-                                                                    <option value="N">No</option>
-                                                                </select>  
+                                                            <div class="col-4">
+                                                                <div class="form-group">
+                                                                    <label><?=$languageArray['language_code'][$language]?></label>
+                                                                    <select name="prePrint" id="prePrint">
+                                                                        <option value="en">English</option>
+                                                                        <option value="zh">Chinese</option>
+                                                                        <option value="my">Bahasa Malaysia</option>
+                                                                        <option value="ne">नेपाली</option>
+                                                                    </select>
+                                                                </div>
                                                             </div>
-
-                                                            <input type="hidden" class="form-control" id="id" name="id">                                   
                                                         </div>
+
+                                                            
+                                                        <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">
+                                                        <input type="hidden" class="form-control" id="id" name="id">
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
                                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
@@ -1601,7 +1607,7 @@ else{
                     </form>
                 </div>
             </div>
-            <div class="modal fade" id="prePrintModal">
+            <!--div class="modal fade" id="prePrintModal">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                     <form role="form" id="prePrintForm">
@@ -1616,11 +1622,12 @@ else{
                             <div class="row">
                                 <div class="col-4">
                                     <div class="form-group">
-                                        <label>Pre-print Sale Slip</label>
+                                        <label><?=$languageArray['language_code'][$language]?></label>
                                         <select name="prePrint" id="prePrint">
-                                            <option selected>Please Select</option>
-                                            <option value="Y">Yes</option>
-                                            <option value="N">No</option>
+                                            <option value="en">English</option>
+                                            <option value="zh">Chinese</option>
+                                            <option value="my">Bahasa Malaysia</option>
+                                            <option value="ne">नेपाली</option>
                                         </select>
                                     </div>
                                 </div>
@@ -1632,7 +1639,7 @@ else{
                         </div>
                     </form>
                 </div>
-            </div>
+            </div-->
             <?php include 'layouts/footer.php'; ?>
         </div>
         <!-- end main content-->
@@ -1976,7 +1983,7 @@ else{
                                 buttons += `
                                 <div class="col-auto">
                                     <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                        <i class="fa-solid fa-print"></i>
+                                        <i class="fas fa-print"></i>
                                     </button>
                                 </div>`;
                             }
@@ -2106,7 +2113,7 @@ else{
                         buttons += `
                         <div class="col-auto">
                             <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                <i class="fa-solid fa-print"></i>
+                                <i class="fas fa-print"></i>
                             </button>
                         </div>`;
 
@@ -2409,8 +2416,26 @@ else{
                         $('#addModal').modal('hide');
                         $("#successBtn").attr('data-toast-text', obj.message);
                         $("#successBtn").click();
+                        $('#prePrintModal').find('#id').val(obj.id);
+                        $('#prePrintModal').find('#isEmptyContainer').val(isEmptyContainer);
+                        $('#prePrintModal').find('#prePrint').val("<?=$language ?>");
+                        $("#prePrintModal").modal("show");
 
-                        $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+                        $('#prePrintForm').validate({
+                            errorElement: 'span',
+                            errorPlacement: function (error, element) {
+                                error.addClass('invalid-feedback');
+                                element.closest('.form-group').append(error);
+                            },
+                            highlight: function (element, errorClass, validClass) {
+                                $(element).addClass('is-invalid');
+                            },
+                            unhighlight: function (element, errorClass, validClass) {
+                                $(element).removeClass('is-invalid');
+                            }
+                        });
+
+                        /*$.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
                             var obj2 = JSON.parse(data);
 
                             if(obj2.status === 'success'){
@@ -2441,7 +2466,7 @@ else{
                                                 }
                                             });
                                         }
-                                    }, 500);*/
+                                    }, 500);
                                 }, 500);
                             }
                             else if(obj.status === 'failed'){
@@ -2452,7 +2477,7 @@ else{
                                 $("#failBtn").attr('data-toast-text', "Something wrong when print");
                                 $("#failBtn").click();
                             }
-                        });
+                        });*/
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -2637,8 +2662,9 @@ else{
                 $('#spinnerLoading').show();
                 var id = $('#prePrintModal').find('#id').val();
                 var prePrintStatus = $('#prePrintModal').find('#prePrint').val();
+                var isEmptyContainer = $('#prePrintModal').find('#isEmptyContainer').val();
 
-                $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus}, function(data){
+                $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
                     var obj = JSON.parse(data);
 
                     if(obj.status === 'success'){
@@ -2892,7 +2918,7 @@ else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                            <i class="fa-solid fa-print"></i>
+                                            <i class="fas fa-print"></i>
                                         </button>
                                     </div>`;
                                 }
@@ -3022,7 +3048,7 @@ else{
                             buttons += `
                             <div class="col-auto">
                                 <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                    <i class="fa-solid fa-print"></i>
+                                    <i class="fas fa-print"></i>
                                 </button>
                             </div>`;
 
@@ -5114,49 +5140,26 @@ else{
     // }
 
     function print(id, transactionStatus, isEmptyContainer = 'N') {
-        /*if (transactionStatus == "Sales"){
-            $('#prePrintModal').find('#id').val(id);
-            $('#prePrintModal').find('#prePrint').val("");
-            $("#prePrintModal").modal("show");
+        $('#prePrintModal').find('#id').val(id);
+        $('#prePrintModal').find('#isEmptyContainer').val(isEmptyContainer);
+        $('#prePrintModal').find('#prePrint').val("<?=$language ?>");
+        $("#prePrintModal").modal("show");
 
-            $('#prePrintForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
-        }else{
-            $.post('php/print.php', {userID: id, file: 'weight'}, function(data){
-                var obj = JSON.parse(data);
-
-                if(obj.status === 'success'){
-                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                    printWindow.document.write(obj.message);
-                    printWindow.document.close();
-                    setTimeout(function(){
-                        printWindow.print();
-                        printWindow.close();
-                    }, 500);
-                }
-                else if(obj.status === 'failed'){
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-                else{
-                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                    $("#failBtn").click();
-                }
-            });
-        }*/
+        $('#prePrintForm').validate({
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
         //var id = $('#prePrintModal').find('#id').val();
-        var prePrintStatus = 'N';
+        /*var prePrintStatus = 'N';
 
         $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
             var obj = JSON.parse(data);
@@ -5180,7 +5183,7 @@ else{
                 $("#failBtn").attr('data-toast-text', "Something wrong when print");
                 $("#failBtn").click();
             }
-        });
+        });*/
     }
     </script>
 </body>
