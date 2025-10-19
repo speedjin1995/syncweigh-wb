@@ -706,7 +706,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                         $misValue++;
                         $id = $insert_stmt->insert_id;
         
-                        $queryPlantU = "UPDATE Company SET sales=? WHERE id='$compane'";
+                        $queryPlantU = "UPDATE Company SET sales=? WHERE id='$company'";
         
                         if($transactionStatus == 'Purchase'){
                             $queryPlantU = "UPDATE Company SET purchase=? WHERE id='$company'";
