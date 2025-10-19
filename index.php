@@ -804,8 +804,8 @@ else{
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12">
                                                                                 <div class="row">
-                                                                                    <label for="otherRemarks" class="col-sm-1 col-form-label"><?=$languageArray['other_remarks_code'][$language]?></label>
-                                                                                    <div class="col-sm-11">
+                                                                                    <label for="otherRemarks" class="col-sm-1 col-form-label" style="width: 11%;"><?=$languageArray['other_remarks_code'][$language]?></label>
+                                                                                    <div class="col-sm-11" style="width: 89%;">
                                                                                         <textarea class="form-control" id="otherRemarks" name="otherRemarks" placeholder="<?=$languageArray['other_remarks_code'][$language]?>"></textarea>
                                                                                     </div>
                                                                                 </div>
