@@ -343,7 +343,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                         <p style="margin-top: 5px; font-size: 14px;">
                                             <span">'.$languageArray['order_weight_code'][$language].'</span><span style="margin-left: 10px">:&nbsp; <b>'.$row['order_weight'].'</b></span><br>
                                             <span">'.$languageArray['variance_code'][$language].'</span><span style="margin-left: 37px">:&nbsp; '.$row['weight_different'].'</span><br>
-                                            <span">%'.$languageArray['variance_code'][$language].'</span><span style="margin-left: 25px">:&nbsp; '.$row['weight_different_perc'].'</span>
+                                            <span">% '.$languageArray['variance_code'][$language].'</span><span style="margin-left: 22px">:&nbsp; '.$row['weight_different_perc'].'</span>
                                         </p>
                                     </td>
                                 </tr>';
