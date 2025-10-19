@@ -664,6 +664,19 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierName" style="display:none;">
+                                                                                <div class="row">
+                                                                                    <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="supplierName" name="supplierName" required>
+                                                                                            <option selected="-">-</option>
+                                                                                            <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
+                                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>                                                                                        
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row" id="containerDisplay">
                                                                                     <label for="containerNoInput" class="col-sm-4 col-form-label">Container No 1</label>
@@ -724,7 +737,7 @@ else{
                                                                                         <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
                                                                                             <option selected="-">-</option>
                                                                                             <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
+                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] . ' - ' . $rowRowMat['name'] ?></option>
                                                                                             <?php } ?>
                                                                                         </select>           
                                                                                     </div>
@@ -819,19 +832,6 @@ else{
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2ReplaceDisplay">
                                                                                 <div class="row">
                                                                                     
-                                                                                </div>
-                                                                            </div> 
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierName" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="supplierName" name="supplierName" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
-                                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>                                                                                        
-                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
