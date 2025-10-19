@@ -270,7 +270,10 @@
                                                                     <i class="fa-solid fa-ban align-middle me-1"></i>
                                                                     Delete Company
                                                                 </button-->
-                                                                <button type="button" id="addPlant" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                <button type="button" id="addPlant" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal" <?php 
+                                                                    if($_SESSION["roles"] != 'SADMIN'){
+                                                                        echo 'style="display:none;"';
+                                                                    }?>>
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     Add New Company
                                                                 </button>
