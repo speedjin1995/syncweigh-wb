@@ -2677,6 +2677,7 @@ else{
                             printWindow.close();
                         }, 500);
 
+                        $("#prePrintModal").modal("hide");
                         $('#spinnerLoading').hide();
                     }
                     else if(obj.status === 'failed'){
