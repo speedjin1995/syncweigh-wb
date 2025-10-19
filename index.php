@@ -1329,20 +1329,21 @@ else{
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class="col-4">
-                                                                <div class="form-group">
-                                                                    <label><?=$languageArray['language_code'][$language]?></label>
-                                                                    <select name="prePrint" id="prePrint">
-                                                                        <option value="en">English</option>
-                                                                        <option value="zh">Chinese</option>
-                                                                        <option value="my">Bahasa Malaysia</option>
-                                                                        <option value="ne">नेपाली</option>
-                                                                    </select>
+                                                        <div class="row mb-3">
+                                                            <label for="prePrint" class="col-sm-4 col-form-label"><?=$languageArray['language_code'][$language]?></label>
+                                                            <div class="col-sm-8">
+                                                                <div class="input-group">
+                                                                    <div class="col-12">
+                                                                        <select class="form-select select2" id="prePrint" name="prePrint" >
+                                                                            <option value="en">English</option>
+                                                                            <option value="zh">Chinese</option>
+                                                                            <option value="my">Bahasa Malaysia</option>
+                                                                            <option value="ne">नेपाली</option>
+                                                                        </select>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                             
                                                         <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">
                                                         <input type="hidden" class="form-control" id="id" name="id">
