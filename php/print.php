@@ -295,7 +295,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                             <table style="width:100%;">
                                 <tr>
                                     <td style="width: 65%;">
-                                        <p style="font-size: 14px;">
+                                        <p style="font-size: 12px;">
                                             <span style="font-weight: bold;font-size: 16px; display: inline-block;">'.$compname.'</span><br>
                                             <span style="font-weight: bold;font-size: 16px; margin-bottom: 10px; display: inline-block;">'.$compreg.'</span><br>
                                             <span>'.$compaddress.'</span><br>
