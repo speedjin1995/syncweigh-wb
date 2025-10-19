@@ -712,7 +712,7 @@ else{
                                                                                                     data-low="<?=$rowProduct['low'] ?>" 
                                                                                                     data-variance="<?=$rowProduct['variance'] ?>" 
                                                                                                     data-description="<?=$rowProduct['description'] ?>">
-                                                                                                    <?=$rowProduct['product_code'] ?>
+                                                                                                    <?=$rowProduct['product_code'] ?> - <?=$rowProduct['name'] ?>
                                                                                                 </option>
                                                                                             <?php } ?>
                                                                                         </select>                                                                                        
