@@ -127,41 +127,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <?php include 'layouts/body.php'; ?>
 
-        <div class="auth-page-wrapper pt-5" style="background: #006A8E; height: 100vh;">
+        <div class="auth-page-wrapper pt-5" style="height: 100vh;">
             <!-- auth page bg -->
             <div class="auth-one-bg-position auth-one-bg"  id="auth-particles">
                 <div class="bg-overlay"></div>
                 
                 <div class="shape">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
-                        <path fill="#006A8E" d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
+                        <path d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
                     </svg>
                 </div>
             </div>
 
             <!-- auth page content -->
-            <div class="auth-page-content">
+            <div class="auth-page-content" style="padding-bottom: 100px;">
                 <div class="container">
-                    <!--div class="row">
+                    <div class="row">
                         <div class="col-lg-12">
-                            <div class="text-center mt-sm-5 mb-4 text-white-50">
+                            <div class="text-center mt-sm-5 mb-4 text-white-50" style="margin-bottom: 5px !important;">
                                 <div>
                                     <a href="index.php" class="d-inline-block auth-logo">
-                                        <img src="assets/images/logo-lg.png" alt="" height="20">
+                                        <img src="assets/images/logo-lg.png" alt="" height="20" style="width: 50%; height: 100%;">
                                     </a>
                                 </div>
-                                <p class="mt-3 fs-15 fw-medium"> </p>
-                                <p class="mt-3 fs-15 fw-medium">Synctronix Weighing System</p>
+                                <p class="mt-3 fs-15 fw-medium" style="display: none;"> </p>
+                                <p class="mt-3 fs-15 fw-medium" style="display: none;">Synctronix Weighing System</p>
                             </div>
                         </div>
-                    </div-->
+                    </div>
                     <!-- end row -->
 
                     <div class="row justify-content-center">
                         <div class="col-md-8 col-lg-6 col-xl-5">
-                            <div class="card mt-4">
+                            <div class="card mt-4" style="margin-top: 0px !important;">
                             
-                                <div class="card-body p-4"> 
+                                <div class="card-body p-4" style="border: 2.5px solid #000;"> 
                                     <div class="text-center mt-2">
                                         <h5 class="text-primary">Welcome Back !</h5>
                                         <p class="text-muted">Sign in to continue to weighing.</p>
@@ -217,6 +217,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <p class="mb-0">Don't have an account ? <a href="auth-signup-basic.php" class="fw-semibold text-primary text-decoration-underline"> Signup </a> </p>
                             </div-->
 
+                            <div class="mt-4 text-center">
+                                <p class="mb-0 text-muted" style="color: #000 !important;">&copy; <script>document.write(new Date().getFullYear())</script> Weighing System. Crafted by Synctronix</p>
+                                <p class="mb-0 text-muted" style="color: #000 !important;">Ver : 1.1.0</p>
+                                <p class="mb-0 text-muted" style="color: #000 !important;">Year : <script>document.write(new Date().getFullYear())</script></p>
+                            </div>
+
                         </div>
                     </div>
                     <!-- end row -->
@@ -226,12 +232,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <!-- end auth page content -->
 
             <!-- footer -->
-            <footer class="footer" style="background: #006A8E;">
+            <footer class="footer" style="display: none;">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="text-center">
-                                <p class="mb-0 text-muted" style="color: #fff !important;">&copy; <script>document.write(new Date().getFullYear())</script> Weighing System. Crafted by Synctronix</p>
+                                <p class="mb-0 text-muted">&copy; <script>document.write(new Date().getFullYear())</script> Weighing System. Crafted by Synctronix</p>
                             </div>
                         </div>
                     </div>
