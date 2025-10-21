@@ -230,6 +230,19 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                         }
                     }
 
+                    // Weight type reformat
+                    $weightType = '';
+
+                    if ($row['weight_type'] == 'Normal'){
+                        $weightType = 'Normal Weighing';
+                    }elseif ($row['weight_type'] == 'Container'){
+                        $weightType = 'Primer Mover';
+                    }elseif ($row['weight_type'] == 'Empty Container'){
+                        $weightType = 'Primer Mover + Container';
+                    }elseif ($row['weight_type'] == 'Different Container'){
+                        $weightType = 'Primer Mover + Different Bins';
+                    }
+
                     $message = 
                     '<html>
                         <head>
@@ -307,6 +320,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                         <p style="vertical-align: top; margin-left:30px; font-size: 14px;">
                                             <span style="font-size: 24px; font-weight: bold; margin-bottom: 10px; display: inline-block;">'. $transacationStatus .' Slip</span><br>
                                             <span>Ticket No &nbsp;:&nbsp; <b>'.$row['transaction_id'].'</b></span><br>
+                                            <span>Status &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; '.$weightType.'</span><br>
                                             <span>Date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 1.5px;">:&nbsp;&nbsp;'.$transactionDate.'</span><br>
                                             <span>D/O No &nbsp;&nbsp;&nbsp;&nbsp;</span><span>:&nbsp;&nbsp;'.$row['delivery_no'].'</span><br>
                                             <span>P/O No &nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left:2.5px">:&nbsp;&nbsp;'.$row['purchase_order'].'</span><br>
@@ -319,12 +333,17 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 <tr style="border-top: 1px solid black;">
                                     <td style="vertical-align: top; width: 60%;">
                                         <p style="margin-top: 5px; font-size: 14px;">
-                                            <span><b>'.$customer.'</b></span><br>
-                                            <span>Product &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 21px">:&nbsp; '.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $row['product_code'] . ' - ' . $row['product_name'] : $row['raw_mat_code'] . ' - ' . $row['raw_mat_name']) .'</span><br>
-                                            <span>Project Code <span style="margin-left: 13px;"></span>:&nbsp;'.$row['project_code'].'</span><br>
-                                            <span>Transporter &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['transporter'].'</span><br>
-                                            <span>Destination &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['destination_code']. ' - '.$row['destination'].'</span><br>
-                                            <span>Vehicle No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 4px">:&nbsp;</span>'.$row['lorry_plate_no1'].'</span>
+                                            <span><b>'.$customer.'</b></span><br>';
+
+                                            if ($row['weight_type'] != 'Normal'){
+                                                $message .= '<span>Product &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 21px">:&nbsp; '.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $row['product_code'] . ' - ' . $row['product_name'] : $row['raw_mat_code'] . ' - ' . $row['raw_mat_name']) .'</span><br>';
+                                            }
+                                            
+                                            $message .= '
+                                                <span>Project Code <span style="margin-left: 13px;"></span>:&nbsp;'.$row['project_code'].'</span><br>
+                                                <span>Transporter &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['transporter'].'</span><br>
+                                                <span>Destination &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['destination_code']. ' - '.$row['destination'].'</span><br>
+                                                <span>Vehicle No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 4px">:&nbsp;</span>'.$row['lorry_plate_no1'].'</span>
                                             ';
 
                                         $message .= '</p>
@@ -406,7 +425,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <td style="border:1px solid black;">'.$grossWeightTime.'</td>
                                             <td style="border:1px solid black;">'.$tareWeightTime.'</td>
                                             <td style="border:1px solid black;">'.$row['lorry_plate_no1'].'</td>
-                                            <td style="border:1px solid black;">'.formatWeight($row['gross_weight1']).'</td>
+                                            <td style="border:1px solid black;">'.formatWeight($row['gross_weight1']).' kg</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['tare_weight1']).' kg</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['nett_weight1']).' kg</td>
                                         </tr>
@@ -414,7 +433,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <td style="border:1px solid black;">'.$grossWeightTime2.'</td>
                                             <td style="border:1px solid black;">'.$tareWeightTime2.'</td>
                                             <td style="border:1px solid black;">'.$row['lorry_plate_no2'].'</td>
-                                            <td style="border:1px solid black;">'.formatWeight($row['gross_weight2']).'</td>
+                                            <td style="border:1px solid black;">'.formatWeight($row['gross_weight2']).' kg</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['tare_weight2']).' kg</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['nett_weight2']).' kg</td>
                                         </tr>
@@ -474,7 +493,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <td style="border:1px solid black;">'.$grossWeightTime.'</td>
                                             <td style="border:1px solid black;">'.$tareWeightTime.'</td>
                                             <td style="border:1px solid black;">'.$row['lorry_plate_no1'].'</td>
-                                            <td style="border:1px solid black;">'.formatWeight($row['gross_weight1']).'</td>
+                                            <td style="border:1px solid black;">'.formatWeight($row['gross_weight1']).' kg</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['tare_weight1']).' kg</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['nett_weight1']).' kg</td>
                                         </tr>
@@ -482,7 +501,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <td style="border:1px solid black;">'.$grossWeightTime2.'</td>
                                             <td style="border:1px solid black;">'.$tareWeightTime2.'</td>
                                             <td style="border:1px solid black;">'.$row['lorry_plate_no2'].'</td>
-                                            <td style="border:1px solid black;">'.formatWeight($row['gross_weight2']).'</td>
+                                            <td style="border:1px solid black;">'.formatWeight($row['gross_weight2']).' kg</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['tare_weight2']).' kg</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['nett_weight2']).' kg</td>
                                         </tr>
@@ -832,7 +851,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <td style="border:1px solid black;">'.formatWeight($row['gross_weight1']).' kg</td>
                                         </tr>
                                         <tr style="font-size: 16px;text-align: center;">
-                                            <td colspan="2" style="text-align:left; visibility:hidden;">Transporter &nbsp;:&nbsp; <span style="margin-left: 10px">'.$row['transporter'].'</span></td>
+                                            <td colspan="2" style="text-align:left; visibility:hidden;">Transporter &nbsp;:&nbsp; <span style="margin-left: 10px"></span></td>
                                             <td style="border:1px solid black;">'.$tareWeightTime.'</td>
                                             <td style="border:1px solid black; font-weight: bold;">Out</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['tare_weight1']).' kg</td>
