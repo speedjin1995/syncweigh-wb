@@ -239,7 +239,7 @@ else{
                                                                 <option value="Normal">Normal Weighing</option>
                                                                 <option value="Container">Primer Mover</option>
                                                                 <option value="Empty Container">Primer Mover + Container</option>
-                                                                <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                <!-- <option value="Different Container">Primer Mover + Different Bins</option> -->
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -559,7 +559,7 @@ else{
                                                                                             <option value="Normal" selected>Normal Weighing</option>
                                                                                             <option value="Container">Primer Mover</option>
                                                                                             <option value="Empty Container">Primer Mover + Container</option>
-                                                                                            <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                                            <!-- <option value="Different Container">Primer Mover + Different Bins</option> -->
                                                                                         </select>   
                                                                                     </div>
                                                                                 </div>
