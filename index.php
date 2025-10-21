@@ -4312,6 +4312,8 @@ else{
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){ 
+                        $('#addModal').find('#company').val(obj.message.company).trigger('change');
+                        $('#addModal').find('#projectCode').val(obj.message.project_code);
                         $('#addModal').find('#invoiceNo').val(obj.message.invoice_no);
                         $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
                         $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
@@ -4333,7 +4335,7 @@ else{
                         $('#addModal').find('#transporter').val(obj.message.transporter).trigger('change');
                         $('#addModal').find('#destination').val(obj.message.destination).trigger('change');
 
-                        
+            
                         $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
                         $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
                         grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date)); 
