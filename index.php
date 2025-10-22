@@ -148,8 +148,8 @@ else{
         }
 
         .video-container {
-            width: 600px;
-            height: 400px;
+            width: 400px;
+            height: 200px;
             background-color: #000;
         }
     </style>
@@ -471,7 +471,7 @@ else{
                                                 <div class="modal-body">
                                                     <form role="form" id="weightForm" class="needs-validation" novalidate autocomplete="off">
                                                         <div class="row">
-                                                            <div class="col-lg-8">
+                                                            <div class="col-lg-9">
                                                                 <div class="row">
                                                                     <div class="col-lg-6">
                                                                         <div class="hstack gap-2 justify-content-center">
@@ -1117,11 +1117,11 @@ else{
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-4">
-                                                                <div class="video-container" id="video-container1" style="width: 600px"></div>
-                                                                <div class="video-container" id="video-container2" style="width: 600px"></div>
-                                                                <div class="video-container" id="video-container3" style="width: 600px"></div>
-                                                                <div class="video-container" id="video-container4" style="width: 600px"></div>
+                                                            <div class="col-lg-3">
+                                                                <div class="video-container" id="video-container1"></div><br>
+                                                                <div class="video-container" id="video-container2"></div><br>
+                                                                <div class="video-container" id="video-container3"></div><br>
+                                                                <div class="video-container" id="video-container4"></div><br>
                                                             </div>
                                                         
                                                             <div class="col-lg-12">
@@ -2255,7 +2255,7 @@ else{
             }
         });
 
-        $('#submitWeight').on('click', function(){
+        /*$('#submitWeight').on('click', function(){
             // Check weight
             var trueWeight = 0;
             var variance = $('#productVariance').val() || '';
@@ -2414,6 +2414,126 @@ else{
                     });
                 }
             }*/
+        //});*/
+        
+        $('#submitWeight').on('click', function () {
+            // 1️⃣ Capture the picture first
+            var capturePicturePromise = player.capturePicture();
+
+            capturePicturePromise.then((data) => {
+                // Extract the base64 string from your returned object
+                var imageBase64 = data.data && data.data.base64 ? data.data.base64 : null;
+
+                // 2️⃣ Continue your existing logic only *after* capture is complete
+                var trueWeight = 0;
+                var variance = $('#productVariance').val() || '';
+                var high = $('#productHigh').val() || '';
+                var low = $('#productLow').val() || '';
+                var final = $('#finalWeight').val() || '0';
+                var pass = true;
+                var isComplete = 'N';
+
+                if ($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local") {
+                trueWeight = parseFloat($('#addModal').find('#supplierWeight').val());
+                } else {
+                trueWeight = parseFloat($('#addModal').find('#orderWeight').val());
+                }
+
+                if ($('#weightType').val() == 'Normal' && ($('#grossIncoming').val() && $('#tareOutgoing').val())) {
+                isComplete = 'Y';
+                } else if ($('#weightType').val() == 'Container' &&
+                ($('#grossIncoming').val() && $('#tareOutgoing').val() &&
+                    $('#grossIncoming2').val() && $('#tareOutgoing2').val())) {
+                isComplete = 'Y';
+                } else {
+                isComplete = 'N';
+                }
+
+                if (isComplete == 'Y' && variance != '') {
+                final = parseFloat(final);
+                low = low != '' ? parseFloat(low) : null;
+                high = high != '' ? parseFloat(high) : null;
+
+                if (variance == 'W') {
+                    if (low !== null && (final < trueWeight - low)) pass = false;
+                    else if (high !== null && (final > trueWeight + high)) pass = false;
+                } else if (variance == 'P') {
+                    if (low !== null && (final < trueWeight * (1 - low / 100))) pass = false;
+                    else if (high !== null && (final > trueWeight * (1 + high / 100))) pass = false;
+                }
+                }
+
+                // custom validation for select2
+                var isValid = true;
+                $('#addModal .select2[required]').each(function () {
+                var select2Field = $(this);
+                var select2Container = select2Field.next('.select2-container');
+                var errorMsg = "<span class='select2-error text-danger' style='font-size: 11.375px;'>Please fill in the field.</span>";
+
+                if (select2Field.val() === "" || select2Field.val() === null) {
+                    select2Container.find('.select2-selection').css('border', '1px solid red');
+                    if (select2Container.next('.select2-error').length === 0) {
+                    select2Container.after(errorMsg);
+                    }
+                    isValid = false;
+                } else {
+                    select2Container.find('.select2-selection').css('border', '');
+                    select2Container.next('.select2-error').remove();
+                }
+                });
+
+                if (pass && $('#weightForm').valid() && isValid) {
+                $('#spinnerLoading').show();
+
+                // 3️⃣ Build FormData to include form + captured image
+                var formData = new FormData(document.getElementById('weightForm'));
+                debugger;
+                if (imageBase64) {
+                    // Convert base64 -> Blob
+                    var byteString = atob(imageBase64.split(',')[1]);
+                    var mimeString = imageBase64.split(',')[0].split(':')[1].split(';')[0];
+                    var ab = new ArrayBuffer(byteString.length);
+                    var ia = new Uint8Array(ab);
+                    for (var i = 0; i < byteString.length; i++) {
+                      ia[i] = byteString.charCodeAt(i);
+                    }
+                    var blob = new Blob([ab], { type: mimeString });
+            
+                    formData.append('capturedImage', blob, 'capture.jpg');
+                }
+
+                // 4️⃣ Send everything to the server
+                $.ajax({
+                    url: 'php/weight.php',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                    var obj = JSON.parse(data);
+                    $('#spinnerLoading').hide();
+
+                    if (obj.status === 'success') {
+                        table.ajax.reload();
+                        $('#addModal').modal('hide');
+                        $("#successBtn").attr('data-toast-text', obj.message);
+                        $("#successBtn").click();
+                    } else {
+                        alert(obj.message);
+                        $("#failBtn").attr('data-toast-text', obj.message);
+                        $("#failBtn").click();
+                    }
+                    },
+                    error: function (xhr, status, error) {
+                    $('#spinnerLoading').hide();
+                    alert('Error uploading image: ' + error);
+                    }
+                });
+                }
+            }).catch((error) => {
+                console.error("Capture failed:", error);
+                alert("Failed to capture image. Please try again.");
+            });
         });
 
         $('#submitWeightPrint').on('click', function(){
@@ -2699,12 +2819,12 @@ else{
         }
 
         player = new EZUIKit.EZUIKitPlayer({
-            id: "video-container", // 视频容器ID
-            accessToken: "at.boeqc0ur522l91niapwkbww63az6dobv-4joi3lczh5-0ozytz8-okq0x5eay",
+            id: "video-container1", // 视频容器ID
+            accessToken: "at.dfjpxs2b541md3mmbng38uh240mkue0b-3uv8v3j7rg-07txnrv-3ffe0pydp",
             url: "ezopen://open.ezviz.com/BC6848896/1.live",
             template: "pcLive", // simple: 极简版; pcLive: 预览; pcRec: 回放; security: 安防版; voice: 语音版;
-            width: 600,
-            height: 400,
+            width: 400,
+            height: 200,
             language: "en", // zh | en
             // debugDownloadData: true,
             handleError: (error) => {

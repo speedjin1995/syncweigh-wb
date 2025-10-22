@@ -12,6 +12,34 @@ $id = $_SESSION['id'];
 
 $today = date('ym');
 
+if (isset($_FILES['capturedImage']) && $_FILES['capturedImage']['error'] === UPLOAD_ERR_OK) {
+    // Create uploads folder if not exist
+    $targetDir = "../uploads/captured/";
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0777, true);
+    }
+
+    // Generate unique file name
+    $extension = pathinfo($_FILES["capturedImage"]["name"], PATHINFO_EXTENSION);
+    $fileName = 'capture_' . date('Ymd_His') . '_' . uniqid() . '.' . $extension;
+    $targetFile = $targetDir . $fileName;
+
+    // Move uploaded file to destination folder
+    if (move_uploaded_file($_FILES["capturedImage"]["tmp_name"], $targetFile)) {
+        // ✅ Save relative path (to use later in web)
+        $imagePath = "uploads/captured/" . $fileName;
+    } else {
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Failed to move uploaded file.'
+        ]);
+        exit;
+    }
+} else {
+    // Optional: handle case with no image
+    $imagePath = null;
+}
+
 // Processing form data when form is submitted
 if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightType'], $_POST['transactionDate'], $_POST['grossIncoming'], $_POST['grossIncomingDate']
 , $_POST['manualWeight'], $_POST['plantCode'], $_POST['plant'], $_POST['exDel'], $_POST['loadDrum'])) {
