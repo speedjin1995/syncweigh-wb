@@ -1,0 +1,22 @@
+{
+  "name": "vue3-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "ezuikit-js": "8.1.14",
+    "vue": "3.4.37"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "5.1.2",
+    "terser": "^5.36.0",
+    "typescript": "^5.3.3",
+    "vite": "5.4.0",
+    "vue-tsc": "2.0.29"
+  }
+}

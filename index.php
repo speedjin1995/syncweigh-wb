@@ -146,6 +146,12 @@ else{
         .modal-header {
             padding: var(1rem, 1rem) !important;
         }
+
+        .video-container {
+            width: 600px;
+            height: 400px;
+            background-color: #000;
+        }
     </style>
 </head>
 
@@ -465,657 +471,667 @@ else{
                                                 <div class="modal-body">
                                                     <form role="form" id="weightForm" class="needs-validation" novalidate autocomplete="off">
                                                         <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="hstack gap-2 justify-content-center">
-                                                                    <div class="col-xl-12 col-md-12 col-md-12">
-                                                                        <div class="card bg-primary">
-                                                                            <div class="card-body">
-                                                                                <div class="d-flex justify-content-between">
-                                                                                    <div>
-                                                                                        <h3 class="ff-secondary fw-semibold text-white">Indicator Weight</h3>
-                                                                                        <h2 class="mt-4 ff-secondary fw-semibold display-3 text-white"><span class="counter-value" id="indicatorWeight">0</span> Kg</h2>
-                                                                                    </div>
-                                                                                    <div>
-                                                                                        <div class="avatar-sm flex-shrink-0">
-                                                                                            <span class="avatar-title bg-soft-light rounded-circle fs-2">
-                                                                                                <i class="mdi mdi-weight-kilogram"></i>
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div><!-- end card body -->
-                                                                        </div> <!-- end card-->
-                                                                    </div> <!-- end col-->
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="hstack gap-2 justify-content-center">
-                                                                    <div class="col-xl-12 col-md-12 col-md-12">
-                                                                        <div class="card bg-primary">
-                                                                            <div class="card-body">
-                                                                                <div class="d-flex justify-content-between">
-                                                                                    <div>
-                                                                                        <h3 class="ff-secondary fw-semibold text-white">Final Weight</h3>
-                                                                                        <h2 class="mt-4 ff-secondary fw-semibold display-3 text-white"><span class="counter-value" id="currentWeight">0</span> Kg</h2>
-                                                                                    </div>
-                                                                                    <div>
-                                                                                        <div class="avatar-sm flex-shrink-0">
-                                                                                            <span class="avatar-title bg-soft-light rounded-circle fs-2">
-                                                                                                <i class="mdi mdi-weight-kilogram"></i>
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div><!-- end card body -->
-                                                                        </div> <!-- end card-->
-                                                                    </div> <!-- end col-->
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row col-12">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transactionId" class="col-sm-4 col-form-label">Transaction ID</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" placeholder="Transaction ID" readonly>                                                                                  
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="purchaseOrder" class="col-sm-4 col-form-label">P/O No.</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divOrderWeight">
-                                                                                <div class="row">
-                                                                                    <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierWeight" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="supplierWeight" class="col-sm-4 col-form-label">Supplier Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="supplierWeight" name="supplierWeight"  placeholder="Supplier Weight">
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>  
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select id="weightType" name="weightType" class="form-select select2">
-                                                                                            <option value="Normal" selected>Normal Weighing</option>
-                                                                                            <option value="Container">Primer Mover</option>
-                                                                                            <option value="Empty Container">Primer Mover + Container</option>
-                                                                                            <option value="Different Container">Primer Mover + Different Bins</option>
-                                                                                        </select>   
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row" id="containerDisplay">
-                                                                                    <label for="containerNoInput" class="col-sm-4 col-form-label">Container No 1</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="containerNoInput" name="containerNoInput" placeholder="Container No">
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row" id="emptyContainerDisplay" style="display:none" >
-                                                                                    <label for="emptyContainerNo" class="col-sm-4 col-form-label" id="containerNo1Label">Container No 1</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="emptyContainerNo" name="emptyContainerNo">
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php /*while($rowContainer=mysqli_fetch_assoc($container)){ ?>
-                                                                                                <option value="<?=$rowContainer['container_no'] ?>"><?=$rowContainer['container_no'] ?></option>
-                                                                                            <?php }*/ ?>
-                                                                                        </select>                   
-                                                                                    </div>
-                                                                                </div>
-                                                                                <input type="text" class="form-control" id="containerNo" name="containerNo" hidden>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifference">
-                                                                                <div class="row">
-                                                                                    <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div> 
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select id="transactionStatus" name="transactionStatus" class="form-select select2">
-                                                                                            <option value="Sales" selected>Dispatch</option>
-                                                                                            <option value="Purchase">Receiving</option>
-                                                                                            <option value="Local">Internal Transfer</option>
-                                                                                            <option value="Misc">Miscellaneous</option>
-                                                                                        </select>  
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="sealNo" class="col-sm-4 col-form-label">Seal No 1</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="sealNo" name="sealNo" placeholder="Seal No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoReplaceDisplay" style="display:none;">
-                                                                                <div class="row">
-                                                                                    
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transactionDate" class="col-sm-4 col-form-label">Transaction Date</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            Please fill in the field.
-                                                                                        </div>    
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2Display">
-                                                                                <div class="row">
-                                                                                    <label for="containerNo2" class="col-sm-4 col-form-label">Container No 2</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="containerNo2" name="containerNo2" placeholder="Container No 2">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2ReplaceDisplay">
-                                                                                <div class="row">
-                                                                                    
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="unitPriceDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="invoiceNo" class="col-sm-4 col-form-label">Invoice No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Invoice No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2Display">
-                                                                                <div class="row">
-                                                                                    <label for="sealNo2" class="col-sm-4 col-form-label">Seal No 2</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="sealNo2" name="sealNo2" placeholder="Seal No 2">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div> 
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2ReplaceDisplay">
-                                                                                <div class="row">
-                                                                                    
-                                                                                </div>
-                                                                            </div> 
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sstDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="doDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="Delivery No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divCustomerName">
-                                                                                <div class="row">
-                                                                                    <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select js-choice select2" id="customerName" name="customerName" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
-                                                                                                <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierName" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="supplierName" name="supplierName" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
-                                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>                                                                                        
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="subTotalPriceDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
-                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'MANAGER' && $allowManual == 'N'){
-                                                                                    echo 'style="display:none;"';
-                                                                                }?>>
-                                                                                <div class="row">
-                                                                                    <label for="manualWeight" class="col-sm-4 col-form-label">Manual Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="form-check align-radio mr-2">
-                                                                                            <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightYes" value="true">
-                                                                                            <label class="form-check-label" for="manualWeightYes">
-                                                                                               Yes
-                                                                                            </label>
-                                                                                        </div>
-
-                                                                                        <div class="form-check align-radio">
-                                                                                            <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightNo" value="false" checked>
-                                                                                            <label class="form-check-label" for="manualWeightNo">
-                                                                                               No
-                                                                                            </label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row" id="productNameDisplay">
-                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product Code</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="productName" name="productName" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
-                                                                                                <option 
-                                                                                                    value="<?=$rowProduct['name'] ?>" 
-                                                                                                    data-price="<?=$rowProduct['price'] ?>" 
-                                                                                                    data-code="<?=$rowProduct['product_code'] ?>" 
-                                                                                                    data-high="<?=$rowProduct['high'] ?>" 
-                                                                                                    data-low="<?=$rowProduct['low'] ?>" 
-                                                                                                    data-variance="<?=$rowProduct['variance'] ?>" 
-                                                                                                    data-description="<?=$rowProduct['description'] ?>">
-                                                                                                    <?=$rowProduct['product_code'] ?>
-                                                                                                </option>
-                                                                                            <?php } ?>
-                                                                                        </select>                                                                                        
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row" id="rawMaterialDisplay" style="display:none;">
-                                                                                    <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material Code</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>           
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="totalPriceDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="plant" class="col-sm-4 col-form-label">Plant</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="plant" name="plant" required>
-                                                                                            <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
-                                                                                                <option value="<?=$rowPlant['name'] ?>" data-code="<?=$rowPlant['plant_code'] ?>"><?=$rowPlant['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>        
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="transporter" name="transporter" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
-                                                                                                <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>                                                                                          
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="destination" class="col-sm-4 col-form-label">Destination</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="destination" name="destination" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
-                                                                                                <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>            
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="agent" class="col-sm-4 col-form-label">Sales Representative</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="agent" name="agent" >
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowAgent=mysqli_fetch_assoc($agent)){ ?>
-                                                                                                <option value="<?=$rowAgent['name'] ?>" data-code="<?=$rowAgent['agent_code'] ?>"><?=$rowAgent['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>                                                                                         
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="replacementContainerDisplay" style="display:none">
-                                                                                <div class="row">
-                                                                                    <label for="replacementContainer" class="col-sm-4 col-form-label">New Empty Entrance Bin</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row col-12">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <button type="button" class="btn btn-success add-product" id="addProduct">Add Product</button>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <table class="table table-primary" style="text-align: center;">
-                                                                                <thead>
-                                                                                    <tr>
-                                                                                        <th width="5%">No</th>
-                                                                                        <th>Product</th>
-                                                                                        <th>Packing</th>
-                                                                                        <th>Gross Weight (kg)</th>
-                                                                                        <th>Tare Weight (kg)</th>
-                                                                                        <th>Nett Weight (kg)</th>
-                                                                                        <th><?=$languageArray['action_code'][$language]?></th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody id="productTable"></tbody>
-                                                                            </table>                                            
-                                                                        </div><!-- end row -->     
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row col-12">
-                                                            <div class="col-xxl-4 col-lg-4" id="normalCard">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row mb-3">
-                                                                            <label for="vehiclePlateNo1" class="col-sm-4 col-form-label">
-                                                                                Vehicle Plate No.
-                                                                            </label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <div class="input-group-text">
-                                                                                        <input class="form-check-input mt-0" id="manualVehicle" name="manualVehicle" type="checkbox" value="0" aria-label="Checkbox for following text input">
-                                                                                    </div>
-                                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No" style="display:none" >
-                                                                                    <div class="col-10 index-vehicle">
-                                                                                        <select class="form-select select2" id="vehiclePlateNo1" name="vehiclePlateNo1" >
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($row2=mysqli_fetch_assoc($vehicles)){ ?>
-                                                                                                <option value="<?=$row2['veh_number'] ?>" data-weight="<?=$row2['vehicle_weight'] ?>"><?=$row2['veh_number'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>
-                                                                                        <input type="text" class="form-control" id="vehiclePlateNo1Edit" name="vehiclePlateNo1Edit" hidden>
-                                                                                        </div>
-                                                                                    <!--div class="invalid-feedback">
-                                                                                        Please fill in the field.
-                                                                                    </div-->
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3" id="noOfDrumDisplay" style="display:none;">
-                                                                            <label for="noOfDrum" class="col-sm-4 col-form-label">No of Drum</label>
-                                                                            <div class="col-sm-8">
-                                                                                <input type="number" class="form-control" id="noOfDrum" name="noOfDrum">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <label for="grossIncoming" class="col-sm-4 col-form-label">Incoming</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <!-- <div class="input-group-text">
-                                                                                        <input class="form-check-input mt-0" id="manual" name="manual" type="checkbox" value="0" aria-label="Checkbox for following text input">
-                                                                                    </div>                                                                                             -->
-                                                                                    <input type="number" class="form-control input-readonly" id="grossIncoming" name="grossIncoming" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                    <button class="input-group-text btn btn-success fs-5" id="grossCapture" type="button"><i class="mdi mdi-sync"></i></button>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="row mb-3">
-                                                                            <label for="grossIncomingDate" class="col-sm-4 col-form-label">Incoming Date</label>
-                                                                            <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate" name="grossIncomingDate">
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="row mb-3">
-                                                                            <label for="tareOutgoing" class="col-sm-4 col-form-label">Outgoing</label>
-                                                                            <div class="col-sm-8">                                                                                     
-                                                                                <div class="input-group">
-                                                                                    <!-- <div class="input-group-text">
-                                                                                        <input class="form-check-input mt-0" id="manualOutgoing" name="manualOutgoing" type="checkbox" value="0" aria-label="Checkbox for following text input">
-                                                                                    </div>                                                                                                -->
-                                                                                    <input type="number" class="form-control input-readonly" id="tareOutgoing" name="tareOutgoing" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                    <button class="input-group-text btn btn-success fs-5" id="tareCapture" type="button"><i class="mdi mdi-sync"></i></button>
-                                                                                </div>                                                                                       
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <label for="tareOutgoingDate" class="col-sm-4 col-form-label">Outgoing Date</label>
-                                                                            <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" id="tareOutgoingDate" name="tareOutgoingDate">
-                                                                            </div>
-                                                                        </div>                                                                        
-                                                                        <div class="row mb-3">
-                                                                            <label for="nettWeight" class="col-sm-4 col-form-label">Nett Weight</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="nettWeight" name="nettWeight" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>                                                                                                                                  
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-xxl-4 col-lg-4" id="containerCard" style="display:none;">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row mb-3">
-                                                                            <label for="vehiclePlateNo2" class="col-sm-4 col-form-label">Vehicle Plate No 2</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <div class="input-group-text">
-                                                                                        <input class="form-check-input mt-0" id="manualVehicle2" name="manualVehicle2" type="checkbox" value="0" aria-label="Checkbox for following text input">
-                                                                                    </div>
-                                                                                    <input type="text" class="form-control" id="vehicleNoTxt2" name="vehicleNoTxt2" placeholder="Vehicle Plate No" style="display:none">
-                                                                                    <div class="col-10 index-vehicle2">
-                                                                                        <select class="form-select select2" id="vehiclePlateNo2" name="vehiclePlateNo2">
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowv2=mysqli_fetch_assoc($vehicles2)){ ?>
-                                                                                                <option value="<?=$rowv2['veh_number'] ?>" data-weight="<?=$rowv2['vehicle_weight'] ?>"><?=$rowv2['veh_number'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                    <div class="invalid-feedback">
-                                                                                        Please fill in the field.
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3" id="vehicleWeight2Display" style="display:none">
-                                                                            <label for="vehicleWeight2" class="col-sm-4 col-form-label">Vehicle Weight</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="vehicleWeight2" name="vehicleWeight2" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <label for="grossIncoming2" class="col-sm-4 col-form-label">Incoming</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="grossIncoming2" name="grossIncoming2" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                    <button class="input-group-text btn btn-success fs-5" id="grossCapture2"><i class="mdi mdi-sync" type="button"></i></button>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <label for="grossIncomingDate2" class="col-sm-4 col-form-label">Incoming Date</label>
-                                                                            <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate2" name="grossIncomingDate2">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3" id="container2WeightDisplay" style="display:none">
-                                                                            <label for="emptyContainerWeight2" class="col-sm-4 col-form-label">Empty Container Weight</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="emptyContainerWeight2" name="emptyContainerWeight2" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                    <div class="input-group-text">-</div>
-                                                                                    <div class="input-group-text" id="replaceContainerText"></div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <label for="tareOutgoing2" class="col-sm-4 col-form-label">Outgoing</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="tareOutgoing2" name="tareOutgoing2" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                    <button class="input-group-text btn btn-success fs-5" id="tareCapture2" type="button"><i class="mdi mdi-sync"></i></button>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <label for="tareOutgoingDate2" class="col-sm-4 col-form-label">Outgoing Date</label>
-                                                                            <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" placeholder="" id="tareOutgoingDate2" name="tareOutgoingDate2">
-                                                                            </div>
-                                                                        </div>                                                                        
-                                                                        <div class="row mb-3">
-                                                                            <label for="nettWeight2" class="col-sm-4 col-form-label">Nett Weight</label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="nettWeight2" name="nettWeight2" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">Kg</div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>                                                                    
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-xxl-4 col-lg-4">
+                                                            <div class="col-lg-8">
                                                                 <div class="row">
-                                                                    <label for="otherRemarks" class="col-sm-2 col-form-label">Other Remarks</label>
-                                                                    <div class="col-sm-10">
-                                                                        <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
+                                                                    <div class="col-lg-6">
+                                                                        <div class="hstack gap-2 justify-content-center">
+                                                                            <div class="col-xl-12 col-md-12 col-md-12">
+                                                                                <div class="card bg-primary">
+                                                                                    <div class="card-body">
+                                                                                        <div class="d-flex justify-content-between">
+                                                                                            <div>
+                                                                                                <h3 class="ff-secondary fw-semibold text-white">Indicator Weight</h3>
+                                                                                                <h2 class="mt-4 ff-secondary fw-semibold display-3 text-white"><span class="counter-value" id="indicatorWeight">0</span> Kg</h2>
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <div class="avatar-sm flex-shrink-0">
+                                                                                                    <span class="avatar-title bg-soft-light rounded-circle fs-2">
+                                                                                                        <i class="mdi mdi-weight-kilogram"></i>
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div><!-- end card body -->
+                                                                                </div> <!-- end card-->
+                                                                            </div> <!-- end col-->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-6">
+                                                                        <div class="hstack gap-2 justify-content-center">
+                                                                            <div class="col-xl-12 col-md-12 col-md-12">
+                                                                                <div class="card bg-primary">
+                                                                                    <div class="card-body">
+                                                                                        <div class="d-flex justify-content-between">
+                                                                                            <div>
+                                                                                                <h3 class="ff-secondary fw-semibold text-white">Final Weight</h3>
+                                                                                                <h2 class="mt-4 ff-secondary fw-semibold display-3 text-white"><span class="counter-value" id="currentWeight">0</span> Kg</h2>
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <div class="avatar-sm flex-shrink-0">
+                                                                                                    <span class="avatar-title bg-soft-light rounded-circle fs-2">
+                                                                                                        <i class="mdi mdi-weight-kilogram"></i>
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div><!-- end card body -->
+                                                                                </div> <!-- end card-->
+                                                                            </div> <!-- end col-->
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row col-12">
+                                                                    <div class="col-xxl-12 col-lg-12">
+                                                                        <div class="card bg-light">
+                                                                            <div class="card-body">
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="transactionId" class="col-sm-4 col-form-label">Transaction ID</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" placeholder="Transaction ID" readonly>                                                                                  
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="purchaseOrder" class="col-sm-4 col-form-label">P/O No.</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divOrderWeight">
+                                                                                        <div class="row">
+                                                                                            <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
+                                                                                                    <div class="input-group-text">Kg</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierWeight" style="display:none;">
+                                                                                        <div class="row">
+                                                                                            <label for="supplierWeight" class="col-sm-4 col-form-label">Supplier Weight</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="number" class="form-control" id="supplierWeight" name="supplierWeight"  placeholder="Supplier Weight">
+                                                                                                    <div class="input-group-text">Kg</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>  
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select id="weightType" name="weightType" class="form-select select2">
+                                                                                                    <option value="Normal" selected>Normal Weighing</option>
+                                                                                                    <option value="Container">Primer Mover</option>
+                                                                                                    <option value="Empty Container">Primer Mover + Container</option>
+                                                                                                    <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                                                </select>   
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row" id="containerDisplay">
+                                                                                            <label for="containerNoInput" class="col-sm-4 col-form-label">Container No 1</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control" id="containerNoInput" name="containerNoInput" placeholder="Container No">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row" id="emptyContainerDisplay" style="display:none" >
+                                                                                            <label for="emptyContainerNo" class="col-sm-4 col-form-label" id="containerNo1Label">Container No 1</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-select select2" id="emptyContainerNo" name="emptyContainerNo">
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php /*while($rowContainer=mysqli_fetch_assoc($container)){ ?>
+                                                                                                        <option value="<?=$rowContainer['container_no'] ?>"><?=$rowContainer['container_no'] ?></option>
+                                                                                                    <?php }*/ ?>
+                                                                                                </select>                   
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control" id="containerNo" name="containerNo" hidden>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifference">
+                                                                                        <div class="row">
+                                                                                            <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
+                                                                                                    <div class="input-group-text">Kg</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div> 
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select id="transactionStatus" name="transactionStatus" class="form-select select2">
+                                                                                                    <option value="Sales" selected>Dispatch</option>
+                                                                                                    <option value="Purchase">Receiving</option>
+                                                                                                    <option value="Local">Internal Transfer</option>
+                                                                                                    <option value="Misc">Miscellaneous</option>
+                                                                                                </select>  
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoDisplay">
+                                                                                        <div class="row">
+                                                                                            <label for="sealNo" class="col-sm-4 col-form-label">Seal No 1</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control" id="sealNo" name="sealNo" placeholder="Seal No">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoReplaceDisplay" style="display:none;">
+                                                                                        <div class="row">
+                                                                                            
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
+                                                                                                    <div class="input-group-text">Kg</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="transactionDate" class="col-sm-4 col-form-label">Transaction Date</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
+                                                                                                <div class="invalid-feedback">
+                                                                                                    Please fill in the field.
+                                                                                                </div>    
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2Display">
+                                                                                        <div class="row">
+                                                                                            <label for="containerNo2" class="col-sm-4 col-form-label">Container No 2</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control" id="containerNo2" name="containerNo2" placeholder="Container No 2">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2ReplaceDisplay">
+                                                                                        <div class="row">
+                                                                                            
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="unitPriceDisplay">
+                                                                                        <div class="row">
+                                                                                            <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
+                                                                                                    <div class="input-group-text">RM</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="invoiceNo" class="col-sm-4 col-form-label">Invoice No</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Invoice No">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2Display">
+                                                                                        <div class="row">
+                                                                                            <label for="sealNo2" class="col-sm-4 col-form-label">Seal No 2</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control" id="sealNo2" name="sealNo2" placeholder="Seal No 2">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div> 
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2ReplaceDisplay">
+                                                                                        <div class="row">
+                                                                                            
+                                                                                        </div>
+                                                                                    </div> 
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="sstDisplay">
+                                                                                        <div class="row">
+                                                                                            <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
+                                                                                                    <div class="input-group-text">RM</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="doDisplay">
+                                                                                        <div class="row">
+                                                                                            <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="Delivery No">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divCustomerName">
+                                                                                        <div class="row">
+                                                                                            <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-select js-choice select2" id="customerName" name="customerName" required>
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
+                                                                                                        <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierName" style="display:none;">
+                                                                                        <div class="row">
+                                                                                            <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-select select2" id="supplierName" name="supplierName" required>
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
+                                                                                                        <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>                                                                                        
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="subTotalPriceDisplay">
+                                                                                        <div class="row">
+                                                                                            <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
+                                                                                                    <div class="input-group-text">RM</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
+                                                                                        if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'MANAGER' && $allowManual == 'N'){
+                                                                                            echo 'style="display:none;"';
+                                                                                        }?>>
+                                                                                        <div class="row">
+                                                                                            <label for="manualWeight" class="col-sm-4 col-form-label">Manual Weight</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <div class="form-check align-radio mr-2">
+                                                                                                    <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightYes" value="true">
+                                                                                                    <label class="form-check-label" for="manualWeightYes">
+                                                                                                    Yes
+                                                                                                    </label>
+                                                                                                </div>
+
+                                                                                                <div class="form-check align-radio">
+                                                                                                    <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightNo" value="false" checked>
+                                                                                                    <label class="form-check-label" for="manualWeightNo">
+                                                                                                    No
+                                                                                                    </label>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row" id="productNameDisplay">
+                                                                                            <label for="productName" class="col-sm-4 col-form-label">Product Code</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-select select2" id="productName" name="productName" required>
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
+                                                                                                        <option 
+                                                                                                            value="<?=$rowProduct['name'] ?>" 
+                                                                                                            data-price="<?=$rowProduct['price'] ?>" 
+                                                                                                            data-code="<?=$rowProduct['product_code'] ?>" 
+                                                                                                            data-high="<?=$rowProduct['high'] ?>" 
+                                                                                                            data-low="<?=$rowProduct['low'] ?>" 
+                                                                                                            data-variance="<?=$rowProduct['variance'] ?>" 
+                                                                                                            data-description="<?=$rowProduct['description'] ?>">
+                                                                                                            <?=$rowProduct['product_code'] ?>
+                                                                                                        </option>
+                                                                                                    <?php } ?>
+                                                                                                </select>                                                                                        
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row" id="rawMaterialDisplay" style="display:none;">
+                                                                                            <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material Code</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
+                                                                                                        <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>           
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="totalPriceDisplay">
+                                                                                        <div class="row">
+                                                                                            <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
+                                                                                                    <div class="input-group-text">RM</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="plant" class="col-sm-4 col-form-label">Plant</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-select select2" id="plant" name="plant" required>
+                                                                                                    <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
+                                                                                                        <option value="<?=$rowPlant['name'] ?>" data-code="<?=$rowPlant['plant_code'] ?>"><?=$rowPlant['name'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>        
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-select select2" id="transporter" name="transporter" required>
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
+                                                                                                        <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>                                                                                          
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="destination" class="col-sm-4 col-form-label">Destination</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-select select2" id="destination" name="destination" required>
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
+                                                                                                        <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>            
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
+                                                                                        <div class="row">
+                                                                                            <label for="agent" class="col-sm-4 col-form-label">Sales Representative</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-select select2" id="agent" name="agent" >
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($rowAgent=mysqli_fetch_assoc($agent)){ ?>
+                                                                                                        <option value="<?=$rowAgent['name'] ?>" data-code="<?=$rowAgent['agent_code'] ?>"><?=$rowAgent['name'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>                                                                                         
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="replacementContainerDisplay" style="display:none">
+                                                                                        <div class="row">
+                                                                                            <label for="replacementContainer" class="col-sm-4 col-form-label">New Empty Entrance Bin</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row col-12">
+                                                                    <div class="col-xxl-12 col-lg-12">
+                                                                        <div class="card bg-light">
+                                                                            <div class="card-body">
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <button type="button" class="btn btn-success add-product" id="addProduct">Add Product</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <table class="table table-primary" style="text-align: center;">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th width="5%">No</th>
+                                                                                                <th>Product</th>
+                                                                                                <th>Packing</th>
+                                                                                                <th>Gross Weight (kg)</th>
+                                                                                                <th>Tare Weight (kg)</th>
+                                                                                                <th>Nett Weight (kg)</th>
+                                                                                                <th><?=$languageArray['action_code'][$language]?></th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody id="productTable"></tbody>
+                                                                                    </table>                                            
+                                                                                </div><!-- end row -->     
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row col-12">
+                                                                    <div class="col-xxl-4 col-lg-4" id="normalCard">
+                                                                        <div class="card bg-light">
+                                                                            <div class="card-body">
+                                                                                <div class="row mb-3">
+                                                                                    <label for="vehiclePlateNo1" class="col-sm-4 col-form-label">
+                                                                                        Vehicle Plate No.
+                                                                                    </label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <div class="input-group-text">
+                                                                                                <input class="form-check-input mt-0" id="manualVehicle" name="manualVehicle" type="checkbox" value="0" aria-label="Checkbox for following text input">
+                                                                                            </div>
+                                                                                            <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No" style="display:none" >
+                                                                                            <div class="col-10 index-vehicle">
+                                                                                                <select class="form-select select2" id="vehiclePlateNo1" name="vehiclePlateNo1" >
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($row2=mysqli_fetch_assoc($vehicles)){ ?>
+                                                                                                        <option value="<?=$row2['veh_number'] ?>" data-weight="<?=$row2['vehicle_weight'] ?>"><?=$row2['veh_number'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>
+                                                                                                <input type="text" class="form-control" id="vehiclePlateNo1Edit" name="vehiclePlateNo1Edit" hidden>
+                                                                                                </div>
+                                                                                            <!--div class="invalid-feedback">
+                                                                                                Please fill in the field.
+                                                                                            </div-->
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3" id="noOfDrumDisplay" style="display:none;">
+                                                                                    <label for="noOfDrum" class="col-sm-4 col-form-label">No of Drum</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="number" class="form-control" id="noOfDrum" name="noOfDrum">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label for="grossIncoming" class="col-sm-4 col-form-label">Incoming</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <!-- <div class="input-group-text">
+                                                                                                <input class="form-check-input mt-0" id="manual" name="manual" type="checkbox" value="0" aria-label="Checkbox for following text input">
+                                                                                            </div>                                                                                             -->
+                                                                                            <input type="number" class="form-control input-readonly" id="grossIncoming" name="grossIncoming" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                            <button class="input-group-text btn btn-success fs-5" id="grossCapture" type="button"><i class="mdi mdi-sync"></i></button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="row mb-3">
+                                                                                    <label for="grossIncomingDate" class="col-sm-4 col-form-label">Incoming Date</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control input-readonly" id="grossIncomingDate" name="grossIncomingDate">
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="row mb-3">
+                                                                                    <label for="tareOutgoing" class="col-sm-4 col-form-label">Outgoing</label>
+                                                                                    <div class="col-sm-8">                                                                                     
+                                                                                        <div class="input-group">
+                                                                                            <!-- <div class="input-group-text">
+                                                                                                <input class="form-check-input mt-0" id="manualOutgoing" name="manualOutgoing" type="checkbox" value="0" aria-label="Checkbox for following text input">
+                                                                                            </div>                                                                                                -->
+                                                                                            <input type="number" class="form-control input-readonly" id="tareOutgoing" name="tareOutgoing" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                            <button class="input-group-text btn btn-success fs-5" id="tareCapture" type="button"><i class="mdi mdi-sync"></i></button>
+                                                                                        </div>                                                                                       
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label for="tareOutgoingDate" class="col-sm-4 col-form-label">Outgoing Date</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control input-readonly" id="tareOutgoingDate" name="tareOutgoingDate">
+                                                                                    </div>
+                                                                                </div>                                                                        
+                                                                                <div class="row mb-3">
+                                                                                    <label for="nettWeight" class="col-sm-4 col-form-label">Nett Weight</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="nettWeight" name="nettWeight" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>                                                                                                                                  
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4" id="containerCard" style="display:none;">
+                                                                        <div class="card bg-light">
+                                                                            <div class="card-body">
+                                                                                <div class="row mb-3">
+                                                                                    <label for="vehiclePlateNo2" class="col-sm-4 col-form-label">Vehicle Plate No 2</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <div class="input-group-text">
+                                                                                                <input class="form-check-input mt-0" id="manualVehicle2" name="manualVehicle2" type="checkbox" value="0" aria-label="Checkbox for following text input">
+                                                                                            </div>
+                                                                                            <input type="text" class="form-control" id="vehicleNoTxt2" name="vehicleNoTxt2" placeholder="Vehicle Plate No" style="display:none">
+                                                                                            <div class="col-10 index-vehicle2">
+                                                                                                <select class="form-select select2" id="vehiclePlateNo2" name="vehiclePlateNo2">
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($rowv2=mysqli_fetch_assoc($vehicles2)){ ?>
+                                                                                                        <option value="<?=$rowv2['veh_number'] ?>" data-weight="<?=$rowv2['vehicle_weight'] ?>"><?=$rowv2['veh_number'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                            <div class="invalid-feedback">
+                                                                                                Please fill in the field.
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3" id="vehicleWeight2Display" style="display:none">
+                                                                                    <label for="vehicleWeight2" class="col-sm-4 col-form-label">Vehicle Weight</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="vehicleWeight2" name="vehicleWeight2" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label for="grossIncoming2" class="col-sm-4 col-form-label">Incoming</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="grossIncoming2" name="grossIncoming2" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                            <button class="input-group-text btn btn-success fs-5" id="grossCapture2"><i class="mdi mdi-sync" type="button"></i></button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label for="grossIncomingDate2" class="col-sm-4 col-form-label">Incoming Date</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control input-readonly" id="grossIncomingDate2" name="grossIncomingDate2">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3" id="container2WeightDisplay" style="display:none">
+                                                                                    <label for="emptyContainerWeight2" class="col-sm-4 col-form-label">Empty Container Weight</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="emptyContainerWeight2" name="emptyContainerWeight2" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                            <div class="input-group-text">-</div>
+                                                                                            <div class="input-group-text" id="replaceContainerText"></div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label for="tareOutgoing2" class="col-sm-4 col-form-label">Outgoing</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="tareOutgoing2" name="tareOutgoing2" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                            <button class="input-group-text btn btn-success fs-5" id="tareCapture2" type="button"><i class="mdi mdi-sync"></i></button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label for="tareOutgoingDate2" class="col-sm-4 col-form-label">Outgoing Date</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control input-readonly" placeholder="" id="tareOutgoingDate2" name="tareOutgoingDate2">
+                                                                                    </div>
+                                                                                </div>                                                                        
+                                                                                <div class="row mb-3">
+                                                                                    <label for="nettWeight2" class="col-sm-4 col-form-label">Nett Weight</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="nettWeight2" name="nettWeight2" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>                                                                    
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <div class="row">
+                                                                            <label for="otherRemarks" class="col-sm-2 col-form-label">Other Remarks</label>
+                                                                            <div class="col-sm-10">
+                                                                                <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        
-                                                        <div class="col-lg-12">
-                                                            <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitWeightPrint">Submit & Print</button>
-                                                                <button type="button" class="btn btn-primary" id="submitWeight"><?=$languageArray['submit_code'][$language]?></button>
+                                                            <div class="col-lg-4">
+                                                                <div class="video-container" id="video-container1" style="width: 600px"></div>
+                                                                <div class="video-container" id="video-container2" style="width: 600px"></div>
+                                                                <div class="video-container" id="video-container3" style="width: 600px"></div>
+                                                                <div class="video-container" id="video-container4" style="width: 600px"></div>
                                                             </div>
-                                                        </div><!--end col-->   
+                                                        
+                                                            <div class="col-lg-12">
+                                                                <div class="hstack gap-2 justify-content-end">
+                                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                    <button type="button" class="btn btn-success" id="submitWeightPrint">Submit & Print</button>
+                                                                    <button type="button" class="btn btn-primary" id="submitWeight"><?=$languageArray['submit_code'][$language]?></button>
+                                                                </div>
+                                                            </div><!--end col-->   
+                                                        </div>
 
                                                         <!-- All Hidden Fields -->
                                                         <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
@@ -1721,6 +1737,7 @@ else{
     <script src="assets/js/pages/datatables.init.js"></script>
     <!-- Additional js -->
     <script src="assets/js/additional.js"></script>
+    <script src="cctv/demos/base-demo/ezuikit.js"></script>
 
     <script type="text/javascript">
     var table = null;
@@ -1732,6 +1749,7 @@ else{
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
     var rowCount = $("#productTable").find(".details").length;
+    var player = null;
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -2675,6 +2693,62 @@ else{
                 });
             }
         });
+
+        if (player) {
+            destroy();
+        }
+
+        player = new EZUIKit.EZUIKitPlayer({
+            id: "video-container", // 视频容器ID
+            accessToken: "at.boeqc0ur522l91niapwkbww63az6dobv-4joi3lczh5-0ozytz8-okq0x5eay",
+            url: "ezopen://open.ezviz.com/BC6848896/1.live",
+            template: "pcLive", // simple: 极简版; pcLive: 预览; pcRec: 回放; security: 安防版; voice: 语音版;
+            width: 600,
+            height: 400,
+            language: "en", // zh | en
+            // debugDownloadData: true,
+            handleError: (error) => {
+                console.error("handleError", error);
+            },
+            env: {
+                domain: "https://isgpopen.ezvizlife.com",
+            },
+            // 日志打印设置
+            loggerOptions: {
+                // player.setLoggerOptions(options)
+                level: "INFO", // INFO LOG  WARN  ERROR
+                name: "ezuikit",
+                showTime: true,
+            },
+            streamInfoCBType: 1,
+            staticPath: "cctv/ezuikit_static", // 如果想使用本地静态资源，请复制根目录下ezuikit_static 到当前目录下， 然后设置该值
+        });
+
+        player.eventEmitter.on(
+            EZUIKit.EZUIKitPlayer.EVENTS.videoInfo, (info) => {
+              console.log("videoinfo", info);
+            }
+        );
+
+        player.eventEmitter.on(
+            EZUIKit.EZUIKitPlayer.EVENTS.audioInfo, (info) => {
+              console.log("audioInfo", info);
+            }
+        );
+
+          // 首帧渲染成功
+          // first frame display
+        player.eventEmitter.on(
+            EZUIKit.EZUIKitPlayer.EVENTS.firstFrameDisplay, () => {
+              console.log("firstFrameDisplay ");
+            }
+        );
+
+        player.eventEmitter.on(
+            EZUIKit.EZUIKitPlayer.EVENTS.streamInfoCB, (info) => {
+                console.log("streamInfoCB ", info);
+            }
+        );
 
         $.post('http://127.0.0.1:5002/', $('#setupForm').serialize(), function(data){
             if(data == "true"){
@@ -4457,6 +4531,14 @@ else{
             }
         ?>
     });
+
+    function destroy() {
+        if (player) {
+            player.destroy();
+        }
+            
+        player = null;
+    }
 
     function handleWeightType(weightType){
         if (weightType == 'Container'){
