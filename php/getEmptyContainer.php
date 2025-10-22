@@ -53,6 +53,7 @@ if(isset($_POST['userID'])){
                 $message['nett_weight1'] = $row['nett_weight1'];
                 $message['company'] = $row['company'];
                 $message['project_code'] = $row['project_code'];
+                $message['remarks'] = $row['remarks'];
 
                 if ($update_stmt2 = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=?")) {
                     $update_stmt2->bind_param('s', $row['lorry_plate_no1']);

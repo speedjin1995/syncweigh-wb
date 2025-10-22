@@ -4318,6 +4318,7 @@ else{
                         $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
                         $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
                         $('#addModal').find('#sealNo').val(obj.message.seal_no);
+                        $('#addModal').find('#otherRemarks').val(obj.message.remarks);
 
                         if (weightType != 'Different Container'){
                             $('#addModal').find('#containerNo2').val(obj.message.container_no2);
