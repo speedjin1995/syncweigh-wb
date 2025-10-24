@@ -43,6 +43,8 @@ if($plantId != null && count($plantId) > 0){
 }
 
 $role = 'NORMAL';
+$allowManual = 'N';
+$allowEdit = 'N';
 if ($user != null && $user != ''){
     $stmt3 = $db->prepare("SELECT * from Users WHERE id = ?");
     $stmt3->bind_param('s', $user);
@@ -51,9 +53,10 @@ if ($user != null && $user != ''){
         
     if(($row3 = $result3->fetch_assoc()) !== null){
         $role = $row3['role'];
+        $allowManual = $row3['allow_manual'];
+        $allowEdit = $row3['allow_edit'];
     }
 }
-
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
 $vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
@@ -832,7 +835,7 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
-                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN'){
+                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN' && $allowManual == 'N'){
                                                                                     echo 'style="display:none;"';
                                                                                 }?>>
                                                                                 <div class="row">
@@ -1753,6 +1756,7 @@ else{
     $(function () {
         var userRole = '<?=$role ?>';
         var ind = '<?=$indicator ?>';
+        var userAllowEdit = '<?=$allowEdit ?>';
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
@@ -1979,7 +1983,7 @@ else{
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                        if (userRole == 'SADMIN' || userRole == 'ADMIN') {
                             // if (row.is_complete != 'Y' ){
                             if (row.weight_type == 'Primer Mover + Container'){
                                 buttons += `
@@ -1999,22 +2003,23 @@ else{
                             // }
                         }else {
                             if (row.is_complete != 'Y' ){
-                                if (row.weight_type == 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;    
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;  
+                                if(userAllowEdit == 'Y'){
+                                    if (row.weight_type == 'Primer Mover + Container'){
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                                <i class="fa-solid fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;    
+                                    }else{
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                                <i class="fa-solid fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;  
+                                    }
                                 }
-
                             }
                         }
 
@@ -2130,7 +2135,7 @@ else{
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                        if (userRole == 'SADMIN' || userRole == 'ADMIN') {
                             if (row.is_complete != 'Y' ){
                                 buttons += `
                                 <div class="col-auto">
@@ -2141,12 +2146,14 @@ else{
                             }
                         }else {
                             if (row.is_complete != 'Y' ){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fa-solid fa-weight-hanging"></i>
-                                    </button>
-                                </div>`;
+                                if(userAllowEdit == 'Y'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-weight-hanging"></i>
+                                        </button>
+                                    </div>`;
+                                }
                             }
                         }
 
@@ -2897,7 +2904,7 @@ else{
                         render: function (data, type, row) {
                             let buttons = `<div class="row g-1 d-flex">`;
 
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                            if (userRole == 'SADMIN' || userRole == 'ADMIN') {
                                 // if (row.is_complete != 'Y' ){
                                 if (row.weight_type == 'Primer Mover + Container'){
                                     buttons += `
@@ -2917,22 +2924,23 @@ else{
                                 // }
                             }else {
                                 if (row.is_complete != 'Y' ){
-                                    if (row.weight_type == 'Primer Mover + Container'){
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;    
-                                    }else{
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;  
+                                    if(userAllowEdit == 'Y'){
+                                        if (row.weight_type == 'Primer Mover + Container'){
+                                            buttons += `
+                                            <div class="col-auto">
+                                                <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                                    <i class="fa-solid fa-weight-hanging"></i>
+                                                </button>
+                                            </div>`;    
+                                        }else{
+                                            buttons += `
+                                            <div class="col-auto">
+                                                <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                                    <i class="fa-solid fa-weight-hanging"></i>
+                                                </button>
+                                            </div>`;  
+                                        }
                                     }
-
                                 }
                             }
 
@@ -3048,7 +3056,7 @@ else{
                         render: function (data, type, row) {
                             let buttons = `<div class="row g-1 d-flex">`;
 
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                            if (userRole == 'SADMIN' || userRole == 'ADMIN') {
                                 if (row.is_complete != 'Y' ){
                                     buttons += `
                                     <div class="col-auto">
@@ -3059,12 +3067,14 @@ else{
                                 }
                             }else {
                                 if (row.is_complete != 'Y' ){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;
+                                    if(userAllowEdit == 'Y'){
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
+                                                <i class="fa-solid fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;
+                                    }
                                 }
                             }
 

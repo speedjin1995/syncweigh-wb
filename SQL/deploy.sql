@@ -803,3 +803,40 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW B
 END
 $$
 DELIMITER ;
+
+-- 24/10/2025 --
+ALTER TABLE `Users` ADD `allow_manual` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `plant_id`, ADD `allow_edit` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `allow_manual`;
+
+ALTER TABLE `Users_Log` ADD `allow_manual` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `plant_id`, ADD `allow_edit` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `allow_manual`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_USER` AFTER INSERT ON `Users` FOR EACH ROW 
+INSERT INTO Users_Log (
+    user_id, employee_code, username, name, useremail, password, plant_id, allow_manual, allow_edit, status, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.password, NEW.plant_id, NEW.allow_manual, NEW.allow_edit, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Users_Log table
+    INSERT INTO Users_Log (
+        user_id, employee_code, username, name, useremail, password, plant_id, allow_manual, allow_edit, status, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.password, NEW.plant_id, NEW.allow_manual, NEW.allow_edit, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;

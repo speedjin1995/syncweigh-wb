@@ -28,6 +28,8 @@ if(isset($_POST['userID'])){
                 $message['useremail'] = $row['useremail'];
                 $message['role_code'] = $row['role'];
                 $message['plant'] = $row['plant_id'];
+                $message['allow_manual'] = $row['allow_manual'];
+                $message['allow_edit'] = $row['allow_edit'];
             }
             
             echo json_encode(
