@@ -739,6 +739,7 @@ else{
                                                                                             <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
                                                                                                 <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] . ' - ' . $rowRowMat['name'] ?></option>
                                                                                             <?php } ?>
+                                                                                            <option>Other</option>
                                                                                         </select>           
                                                                                     </div>
                                                                                 </div>
