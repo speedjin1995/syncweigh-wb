@@ -416,6 +416,7 @@ else{
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
+                                                                    <th>Companies</th>
                                                                     <th>Transaction <br>Id</th>
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
@@ -633,6 +634,7 @@ else{
                         return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                     }
                 },
+                { data: 'company' },
                 { data: 'transaction_id' },
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
@@ -727,6 +729,7 @@ else{
                             return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                         }
                     },
+                    { data: 'company' },
                     { data: 'transaction_id' },
                     { data: 'weight_type' },
                     { data: 'transaction_status' },

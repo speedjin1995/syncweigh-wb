@@ -2,6 +2,7 @@
 session_start();
 ## Database configuration
 require_once 'db_connect.php';
+require_once 'requires/lookup.php';
 
 ## Read value
 $draw = $_POST['draw'];
@@ -144,6 +145,8 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     $localCount++;
     $transactionStatus = 'Internal Transfer';
   }
+  
+  $company = searchCompanyById($row['company'], $db);
 
   if($row['weight_type'] == 'Container'){
     $weightType = 'Primer Mover';
@@ -157,6 +160,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
 
   $data[] = array( 
     "id"=>$row['id'],
+    "company"=>$company,
     "transaction_id"=>$row['transaction_id'],
     "transaction_status"=>$transactionStatus,
     "weight_type"=>$weightType,
