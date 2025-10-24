@@ -3717,13 +3717,16 @@ else{
                             var customerCode = obj.message.customer_code;
                             var supplierName = obj.message.supplier_name;
                             var supplierCode = obj.message.supplier_code;
+                            var vehicleWeight= obj.message.vehicle_weight ?? '';
 
                             if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
                                 $('#addModal').find('#customerName').val(customerName).trigger('change');
                                 $('#addModal').find('#customerCode').val(customerCode);
+                                $('#addModal').find('#grossIncoming').val(vehicleWeight).trigger('keyup');
                             }else{
                                 $('#addModal').find('#supplierName').val(supplierName).trigger('change');
                                 $('#addModal').find('#supplierCode').val(supplierCode);
+                                $('#addModal').find('#tareOutgoing').val(vehicleWeight).trigger('keyup');
                             }
                         }
                     }
