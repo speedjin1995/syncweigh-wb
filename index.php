@@ -43,6 +43,8 @@ if($plantId != null && count($plantId) > 0){
 }
 
 $role = 'NORMAL';
+$allowManual = 'N';
+$allowEdit = 'N';
 if ($user != null && $user != ''){
     $stmt3 = $db->prepare("SELECT * from Users WHERE id = ?");
     $stmt3->bind_param('s', $user);
@@ -51,9 +53,10 @@ if ($user != null && $user != ''){
         
     if(($row3 = $result3->fetch_assoc()) !== null){
         $role = $row3['role'];
+        $allowManual = $row3['allow_manual'];
+        $allowEdit = $row3['allow_edit'];
     }
 }
-
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
 $vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
@@ -634,7 +637,7 @@ else{
                                                                                 <div class="row">
                                                                                     <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="Delivery No">
+                                                                                        <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="Delivery No" required>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -656,7 +659,6 @@ else{
                                                                                     <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
                                                                                     <div class="col-sm-8">
                                                                                         <select class="form-select js-choice select2" id="customerName" name="customerName" required>
-                                                                                            <option selected="-">-</option>
                                                                                             <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
                                                                                                 <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
                                                                                             <?php } ?>
@@ -669,7 +671,6 @@ else{
                                                                                     <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
                                                                                     <div class="col-sm-8">
                                                                                         <select class="form-select select2" id="supplierName" name="supplierName" required>
-                                                                                            <option selected="-">-</option>
                                                                                             <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
                                                                                                 <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
                                                                                             <?php } ?>
@@ -712,10 +713,9 @@ else{
                                                                         <div class="row">
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row" id="productNameDisplay">
-                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product Code</label>
+                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product Group</label>
                                                                                     <div class="col-sm-8">
                                                                                         <select class="form-select select2" id="productName" name="productName" required>
-                                                                                            <option selected="-">-</option>
                                                                                             <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
                                                                                                 <option 
                                                                                                     value="<?=$rowProduct['name'] ?>" 
@@ -728,6 +728,7 @@ else{
                                                                                                     <?=$rowProduct['product_code'] ?> - <?=$rowProduct['name'] ?>
                                                                                                 </option>
                                                                                             <?php } ?>
+                                                                                            <option>Other</option>
                                                                                         </select>                                                                                        
                                                                                     </div>
                                                                                 </div>
@@ -735,10 +736,10 @@ else{
                                                                                     <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material Code</label>
                                                                                     <div class="col-sm-8">
                                                                                         <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
-                                                                                            <option selected="-">-</option>
                                                                                             <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
                                                                                                 <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] . ' - ' . $rowRowMat['name'] ?></option>
                                                                                             <?php } ?>
+                                                                                            <option>Other</option>
                                                                                         </select>           
                                                                                     </div>
                                                                                 </div>
@@ -835,7 +836,7 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
-                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN'){
+                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN' && $allowManual == 'N'){
                                                                                     echo 'style="display:none;"';
                                                                                 }?>>
                                                                                 <div class="row">
@@ -884,7 +885,7 @@ else{
                                                                                 <div class="row">
                                                                                     <label for="projectCode" class="col-sm-1 col-form-label" style="width: 11%;">Project Code</label>
                                                                                     <div class="col-sm-11" style="width: 89%;">
-                                                                                        <input type="text" class="form-control" id="projectCode" name="projectCode">
+                                                                                        <input type="text" class="form-control" id="projectCode" name="projectCode" required>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -960,7 +961,6 @@ else{
                                                                                     <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No" style="display:none" >
                                                                                     <div class="col-10 index-vehicle">
                                                                                         <select class="form-select select2" id="vehiclePlateNo1" name="vehiclePlateNo1" >
-                                                                                            <option selected="-">-</option>
                                                                                             <?php while($row2=mysqli_fetch_assoc($vehicles)){ ?>
                                                                                                 <option value="<?=$row2['veh_number'] ?>" data-weight="<?=$row2['vehicle_weight'] ?>"><?=$row2['veh_number'] ?></option>
                                                                                             <?php } ?>
@@ -1757,6 +1757,7 @@ else{
     $(function () {
         var userRole = '<?=$role ?>';
         var ind = '<?=$indicator ?>';
+        var userAllowEdit = '<?=$allowEdit ?>';
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
@@ -1813,7 +1814,9 @@ else{
 
         $('#transactionDate').flatpickr({
             dateFormat: "d-m-Y",
-            defaultDate: ''
+            defaultDate: '',
+            clickOpens: false,
+            allowInput: false
         });
 
         grossIncomingDatePicker = $('#grossIncomingDate').flatpickr({
@@ -1981,7 +1984,7 @@ else{
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                        if (userRole == 'SADMIN' || userRole == 'ADMIN') {
                             // if (row.is_complete != 'Y' ){
                             if (row.weight_type == 'Primer Mover + Container'){
                                 buttons += `
@@ -2001,22 +2004,23 @@ else{
                             // }
                         }else {
                             if (row.is_complete != 'Y' ){
-                                if (row.weight_type == 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;    
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;  
+                                if(userAllowEdit == 'Y'){
+                                    if (row.weight_type == 'Primer Mover + Container'){
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                                <i class="fa-solid fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;    
+                                    }else{
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                                <i class="fa-solid fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;  
+                                    }
                                 }
-
                             }
                         }
 
@@ -2132,7 +2136,7 @@ else{
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                        if (userRole == 'SADMIN' || userRole == 'ADMIN') {
                             if (row.is_complete != 'Y' ){
                                 buttons += `
                                 <div class="col-auto">
@@ -2143,12 +2147,14 @@ else{
                             }
                         }else {
                             if (row.is_complete != 'Y' ){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fa-solid fa-weight-hanging"></i>
-                                    </button>
-                                </div>`;
+                                if(userAllowEdit == 'Y'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-weight-hanging"></i>
+                                        </button>
+                                    </div>`;
+                                }
                             }
                         }
 
@@ -2899,7 +2905,7 @@ else{
                         render: function (data, type, row) {
                             let buttons = `<div class="row g-1 d-flex">`;
 
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                            if (userRole == 'SADMIN' || userRole == 'ADMIN') {
                                 // if (row.is_complete != 'Y' ){
                                 if (row.weight_type == 'Primer Mover + Container'){
                                     buttons += `
@@ -2919,22 +2925,23 @@ else{
                                 // }
                             }else {
                                 if (row.is_complete != 'Y' ){
-                                    if (row.weight_type == 'Primer Mover + Container'){
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;    
-                                    }else{
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;  
+                                    if(userAllowEdit == 'Y'){
+                                        if (row.weight_type == 'Primer Mover + Container'){
+                                            buttons += `
+                                            <div class="col-auto">
+                                                <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                                    <i class="fa-solid fa-weight-hanging"></i>
+                                                </button>
+                                            </div>`;    
+                                        }else{
+                                            buttons += `
+                                            <div class="col-auto">
+                                                <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                                    <i class="fa-solid fa-weight-hanging"></i>
+                                                </button>
+                                            </div>`;  
+                                        }
                                     }
-
                                 }
                             }
 
@@ -3050,7 +3057,7 @@ else{
                         render: function (data, type, row) {
                             let buttons = `<div class="row g-1 d-flex">`;
 
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                            if (userRole == 'SADMIN' || userRole == 'ADMIN') {
                                 if (row.is_complete != 'Y' ){
                                     buttons += `
                                     <div class="col-auto">
@@ -3061,12 +3068,14 @@ else{
                                 }
                             }else {
                                 if (row.is_complete != 'Y' ){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;
+                                    if(userAllowEdit == 'Y'){
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
+                                                <i class="fa-solid fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;
+                                    }
                                 }
                             }
 
@@ -3648,15 +3657,15 @@ else{
         $('#manualVehicle').on('change', function(){
             if($(this).is(':checked')){
                 $(this).val(1);
-                $('#vehiclePlateNo1').val('-').trigger('change');
                 $('.index-vehicle').hide();
-                $('#vehicleNoTxt').show();
+                $('#vehiclePlateNo1').val('').prop('required', false).trigger('change');
+                $('#vehicleNoTxt').show().attr('required', true);
             }
             else{
                 $(this).val(0);
-                $('#vehicleNoTxt').hide();
-                $('#vehicleNoTxt').val('');
+                $('#vehicleNoTxt').hide().prop('required', false).val('');
                 $('.index-vehicle').show();
+                $('#vehiclePlateNo1').attr('required', true);
             }
         });
 
