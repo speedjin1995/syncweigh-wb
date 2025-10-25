@@ -26,6 +26,7 @@
     $lang["t-raw-mat"]="Purchase Product";
     $lang["t-site"]="Site";
     $lang["t-plant"]="Plant";
+    $lang["t-project"]="Projects";
 
     $lang["t-report"]="Report";
     $lang["t-weighingReport"]="Weighing Report";

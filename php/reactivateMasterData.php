@@ -626,7 +626,9 @@ if(isset($_POST['userID'])){
 				)
 			);
 		}
-	}
+	}/*elseif(){
+
+	}*/
 } 
 else{
     echo json_encode(

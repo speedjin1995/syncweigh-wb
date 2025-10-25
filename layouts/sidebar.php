@@ -107,6 +107,9 @@
                                     <li class="nav-item">
                                         <a href="user.php" class="nav-link">'.$lang['t-user'].'</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="project.php" class="nav-link">'.$lang['t-project'].'</a>
+                                    </li>
                                     <!--li class="nav-item">
                                         <a href="unit.php" class="nav-link">'.$lang['t-unit'].'</a>
                                     </li-->                           
