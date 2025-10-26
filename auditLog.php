@@ -93,6 +93,7 @@
                                                             <option value="Weight">Weighing</option>
                                                             <option value="Agent">Sales Representative</option>
                                                             <option value="Plant">Plant</option>
+                                                            <option value="Project">Project</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -130,6 +131,12 @@
                                                     <div class="mb-3">
                                                         <label for="vehicleNo" class="form-label">Vehicle No</label>
                                                         <input type="text" class="form-control" placeholder="Vehicle No" name="vehicleNo" id="vehicleNo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-3 inputCode projectInput" style="display:none">
+                                                    <div class="mb-3">
+                                                        <label for="vehicleNo" class="form-label">Project Code</label>
+                                                        <input type="text" class="form-control" placeholder="Project No" name="projectCode" id="projectCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode agentInput" style="display:none">
@@ -439,6 +446,11 @@ $(function () {
             $('.inputCode').hide();
             $('.vehicleInput').show();
         }
+        else if($(this).val() == "Project")
+        {
+            $('.inputCode').hide();
+            $('.projectInput').show();
+        }
         else if($(this).val() == "Agent")
         {
             $('.inputCode').hide();
@@ -619,6 +631,7 @@ $(function () {
                 weight: $('#weight').val(),
                 custPoNo: $('#custPoNo').val(),
                 poNo: $('#poNo').val(),
+                projectCode: $('#projectCode').val()
             },
             dataType: "json",
             success: function (response) {

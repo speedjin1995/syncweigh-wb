@@ -133,6 +133,13 @@ if($_POST['selectedValue'] == "PO")
     }
 }
 
+if($_POST['selectedValue'] == "Project")
+{
+    if($_POST['projectCode'] != null && $_POST['projectCode'] != '' && $_POST['projectCode'] != '-'){
+    $searchQuery .= " and project = '".$_POST['projectCode']."'";
+    }
+}
+
 ## Total number of records without filtering
 // $sel = mysqli_query($db,"select count(*) as allcount from Customer_Log");
 // $records = mysqli_fetch_assoc($sel);
@@ -558,6 +565,26 @@ if($_POST['selectedValue'] == "PO")
     }
 
     $columnNames = ["Company Code", "Company Name", "Supplier Code", "Supplier Name", "Site Code", "Site Name", "Sales Representative Code", "Sales Representative Name", "Destination Code", "Destination Name", "Raw Material Code", "Raw Material Name", "Plant Code", "Plant Name", "Transporter Code", "Transporter Name", "Vehicle No", "EXQ/Del", "P/O No", "Order Date", "Order Quantity", "Balance", "Remarks", "Action", "Action By", "Event Date"];
+}
+
+if($_POST['selectedValue'] == "Project")
+{
+    ## Fetch records
+    $empQuery = "select * from Projects_Log".$searchQuery;
+    $empRecords = mysqli_query($db, $empQuery);
+    $data = array();
+
+    while($row = mysqli_fetch_assoc($empRecords)) {
+        $data[] = array( 
+        "id"=>$row['id'],
+        "Project"=>$row['project'],
+        "Action"=> searchActionNameById($row['action_id'], $db),
+        "Action By"=>$row['action_by'],
+        "Event Date"=>$row['event_date'],
+        );
+    }
+
+    $columnNames = ["Project", "Action", "Action By", "Event Date", ];
 }
 
 ## Response

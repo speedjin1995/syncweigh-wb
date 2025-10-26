@@ -1261,6 +1261,7 @@ else{
                                                         <input type="hidden" id="tareWeightBy1" name="tareWeightBy1">
                                                         <input type="hidden" id="grossWeightBy2" name="grossWeightBy2">
                                                         <input type="hidden" id="tareWeightBy2" name="tareWeightBy2">
+                                                        <input type="hidden" id="indicatorId" name="indicatorId" value="<?=$indicator ?>">
                                                     </form>
                                                 </div>
                                             </div><!-- /.modal-content -->
@@ -1985,7 +1986,6 @@ else{
                         let buttons = `<div class="row g-1 d-flex">`;
 
                         if (userRole == 'SADMIN' || userRole == 'ADMIN') {
-                            // if (row.is_complete != 'Y' ){
                             if (row.weight_type == 'Primer Mover + Container'){
                                 buttons += `
                                 <div class="col-auto">
@@ -2001,25 +2001,22 @@ else{
                                     </button>
                                 </div>`;
                             }
-                            // }
                         }else {
                             if (row.is_complete != 'Y' ){
-                                if(userAllowEdit == 'Y'){
-                                    if (row.weight_type == 'Primer Mover + Container'){
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;    
-                                    }else{
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;  
-                                    }
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-weight-hanging"></i>
+                                        </button>
+                                    </div>`;    
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'N')" class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-weight-hanging"></i>
+                                        </button>
+                                    </div>`;  
                                 }
                             }
                         }
@@ -2147,14 +2144,12 @@ else{
                             }
                         }else {
                             if (row.is_complete != 'Y' ){
-                                if(userAllowEdit == 'Y'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;
-                                }
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data},'Y')" class="btn btn-warning btn-sm">
+                                        <i class="fa-solid fa-weight-hanging"></i>
+                                    </button>
+                                </div>`;
                             }
                         }
 
@@ -2925,22 +2920,20 @@ else{
                                 // }
                             }else {
                                 if (row.is_complete != 'Y' ){
-                                    if(userAllowEdit == 'Y'){
-                                        if (row.weight_type == 'Primer Mover + Container'){
-                                            buttons += `
-                                            <div class="col-auto">
-                                                <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                                    <i class="fa-solid fa-weight-hanging"></i>
-                                                </button>
-                                            </div>`;    
-                                        }else{
-                                            buttons += `
-                                            <div class="col-auto">
-                                                <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                                    <i class="fa-solid fa-weight-hanging"></i>
-                                                </button>
-                                            </div>`;  
-                                        }
+                                    if (row.weight_type == 'Primer Mover + Container'){
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                                <i class="fa-solid fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;    
+                                    }else{
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'N')" class="btn btn-warning btn-sm">
+                                                <i class="fa-solid fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;  
                                     }
                                 }
                             }
@@ -3068,14 +3061,12 @@ else{
                                 }
                             }else {
                                 if (row.is_complete != 'Y' ){
-                                    if(userAllowEdit == 'Y'){
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;
-                                    }
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data},'Y')" class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-weight-hanging"></i>
+                                        </button>
+                                    </div>`;
                                 }
                             }
 
@@ -4729,6 +4720,355 @@ else{
         previewTable.innerHTML = htmlTable;
     }
 
+    // Normal users just weight out
+    function weightOut(id, isContainer){
+        $('#spinnerLoading').show();
+
+        var type = '';
+        if (isContainer == 'Y'){
+            type = 'Container';
+        }else{
+            type = 'Weight'
+        }
+
+        $.post('php/getWeight.php', {userID: id, type: type}, function(data)
+        {
+            var obj = JSON.parse(data);
+            if(obj.status === 'success'){
+                if(obj.message.is_complete == 'Y'){
+                    // Hide Capture Button When Edit
+                    $('#addModal').find('#grossCapture').hide();
+                    $('#addModal').find('#tareCapture').hide();
+                }
+                else{
+                    // Show Capture Button When Edit
+                    $('#addModal').find('#grossCapture').show();
+                    $('#addModal').find('#tareCapture').show();
+                }
+
+                $('#addModal').find('#id').val(obj.message.id);
+                $('#addModal').find('#transactionId').val(obj.message.transaction_id);
+                $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
+                $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
+                $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
+                $('#addModal').find('#company').val(obj.message.company).trigger('change');
+                $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
+
+                if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
+                    $('#divWeightDifference').show();
+                    $('#divSupplierWeight').show();
+                    $('#divSupplierName').show();
+                    $('#divOrderWeight').hide();
+                    $('#divCustomerName').hide();
+                }
+                else{
+                    $('#divOrderWeight').show();
+                    $('#divWeightDifference').show();
+                    $('#divSupplierWeight').hide();
+                    $('#divSupplierName').hide();
+                    $('#divCustomerName').show();
+                }
+
+                if(obj.message.vehicleNoTxt != null){
+                    $('#addModal').find('#vehicleNoTxt').val(obj.message.vehicleNoTxt);
+                    $('#manualVehicle').val(1);
+                    $('#manualVehicle').prop("checked", true);
+                    $('.index-vehicle').hide();
+                    $('#vehicleNoTxt').show();
+                }
+                else{
+                    $('#addModal').find('#vehiclePlateNo1Edit').val('EDIT');
+                    $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).select2('destroy').select2();
+                    $('#manualVehicle').val(0);
+                    $('#manualVehicle').prop("checked", false);
+                    $('.index-vehicle').show();
+                    $('#vehicleNoTxt').hide();
+                }
+
+                if(obj.message.vehicleNoTxt2 != null){
+                    $('#addModal').find('#vehicleNoTxt2').val(obj.message.vehicleNoTxt2);
+                    $('#manualVehicle2').val(1);
+                    $('#manualVehicle2').prop("checked", true);
+                    $('.index-vehicle2').hide();
+                    $('#vehicleNoTxt2').show();
+                }
+                else{
+                    $('#addModal').find('#vehiclePlateNo2').val(obj.message.lorry_plate_no2).select2('destroy').select2();
+                    $('#manualVehicle2').val(0);
+                    $('#manualVehicle2').prop("checked", false);
+                    $('.index-vehicle2').show();
+                    $('#vehicleNoTxt2').hide();
+                }
+                
+                $('#addModal').find('#productCode').val(obj.message.product_code);
+                if (obj.message.ex_del == 'EX'){
+                    $('#addModal').find("input[name='exDel'][value='true']").prop("checked", true);
+                }else{
+                    $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true);
+                }
+                
+                $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
+                $('#addModal').find('#invoiceNo').val(obj.message.invoice_no);
+                $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
+                $('#addModal').find('#transporterCode').val(obj.message.transporter_code);
+                $('#addModal').find('#transporter').val(obj.message.transporter).trigger('change');
+                $('#addModal').find('#customerName').val(obj.message.customer_name).select2('destroy').select2();
+                $('#addModal').find('#customerCode').val(obj.message.customer_code);
+                $('#addModal').find('#supplierName').val(obj.message.supplier_name).select2('destroy').select2();
+                $('#addModal').find('#supplierCode').val(obj.message.supplier_code);
+                $('#addModal').find('#siteCode').val(obj.message.site_code);
+                $('#addModal').find('#siteName').val(obj.message.site_name).trigger('change');
+                $('#addModal').find('#agent').val(obj.message.agent_name).trigger('change');
+                $('#addModal').find('#agentCode').val(obj.message.agent_code);
+                $('#addModal').find('#rawMaterialCode').val(obj.message.raw_mat_code);
+                $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
+                $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
+                $('#addModal').find('#productCode').val(obj.message.product_code);
+                $('#addModal').find('#supplierWeight').val(obj.message.supplier_weight);
+                $('#addModal').find('#orderWeight').val(obj.message.order_weight);
+                $('#addModal').find('#destinationCode').val(obj.message.destination_code);
+                $('#addModal').find('#destination').val(obj.message.destination).trigger('change');
+                $('#addModal').find('#plant').val(obj.message.plant_name).trigger('change');
+                $('#addModal').find('#plantCode').val(obj.message.plant_code);
+                
+                $('#addModal').find('#otherRemarks').val(obj.message.remarks);
+                $('#addModal').find('#projectCode').val(obj.message.project_code);
+                $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
+                grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
+                $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);
+                $('#addModal').find('#tareOutgoing').val(obj.message.tare_weight1);
+                tareOutgoingDatePicker.setDate(obj.message.tare_weight1_date != null ? new Date(obj.message.tare_weight1_date) : null);
+                $('#addModal').find('#tareWeightBy1').val(obj.message.tare_weight_by1);
+                $('#addModal').find('#nettWeight').val(obj.message.nett_weight1);
+                $('#addModal').find('#vehicleWeight2').val(obj.message.lorry_no2_weight);
+                $('#addModal').find('#emptyContainerWeight2').val(obj.message.empty_container2_weight);
+                $('#addModal').find('#replacementContainer').val(obj.message.replacement_container).trigger('keyup');
+                $('#addModal').find('#grossIncoming2').val(obj.message.gross_weight2);
+                grossIncomingDatePicker2.setDate(obj.message.gross_weight2_date != null ? new Date(obj.message.gross_weight2_date) : null);
+                $('#addModal').find('#grossWeightBy2').val(obj.message.gross_weight_by2);
+                $('#addModal').find('#tareOutgoing2').val(obj.message.tare_weight2);
+                tareOutgoingDatePicker2.setDate(obj.message.tare_weight2_date != null ? new Date(obj.message.tare_weight2_date) : null);
+                $('#addModal').find('#tareWeightBy2').val(obj.message.tare_weight_by2);
+                $('#addModal').find('#nettWeight2').val(obj.message.nett_weight2);
+                $('#addModal').find('#reduceWeight').val(obj.message.reduce_weight);
+                $('#addModal').find('#weightDifference').val(obj.message.weight_different);
+                $('#addModal').find('#currentWeight').text(obj.message.final_weight);
+
+                if(obj.message.manual_weight == 'true'){
+                    $("#manualWeightYes").prop("checked", true);
+                    $("#manualWeightNo").prop("checked", false);
+                    $('#manualWeightYes').trigger('click');
+                }
+                else{
+                    $("#manualWeightYes").prop("checked", false);
+                    $("#manualWeightNo").prop("checked", true);
+                    $('#manualWeightNo').trigger('click');
+                }
+
+                $('#addModal').find('#indicatorId').val(obj.message.indicator_id);
+                $('#addModal').find('#weighbridge').val(obj.message.weighbridge_id);
+                $('#addModal').find('#indicatorId2').val(obj.message.indicator_id_2);
+                $('#addModal').find('#productDescription').val(obj.message.product_description);
+                $('#addModal').find('#unitPrice').val(obj.message.unit_price);
+                $('#addModal').find('#subTotalPrice').val(obj.message.sub_total);
+                $('#addModal').find('#sstPrice').val(obj.message.sst);
+                $('#addModal').find('#totalPrice').val(obj.message.total_price);
+                $('#addModal').find('#finalWeight').val(obj.message.final_weight);
+
+                if (obj.message.load_drum == 'LOAD'){
+                    $('#addModal').find("input[name='loadDrum'][value='true']").prop("checked", true).trigger('change');
+                }else{
+                    $('#addModal').find("input[name='loadDrum'][value='false']").prop("checked", true).trigger('change');
+                }
+                
+                $('#addModal').find('#noOfDrum').val(obj.message.no_of_drum);
+                $('#addModal').find('#containerNoInput').val(obj.message.container_no);
+                $('#addModal').find('#containerNo').val(obj.message.container_no);
+                $('#addModal').find('#containerNo2').val(obj.message.container_no2);
+                $('#addModal').find('#sealNo').val(obj.message.seal_no);
+                $('#addModal').find('#sealNo2').val(obj.message.seal_no2);
+
+                // Load container data and update the emptyContainerNo field if it's a container
+                if((obj.message.weight_type == 'Container' || obj.message.weight_type == 'Different Container') && obj.message.container_no){
+                    loadContainerData(function() {
+                        $('#normalCard').show();
+
+                        // Check if container value exist in the select tag
+                        var emptyContainerExists = $('#addModal').find('#emptyContainerNo option').filter(function() {
+                            return $(this).val() === obj.message.container_no;
+                        }).length > 0;
+
+                        if (!emptyContainerExists){
+                            // Append missing empty container no
+                            $('#addModal').find('#emptyContainerNo').append(
+                                '<option value="'+obj.message.container_no+'">'+obj.message.container_no+'</option>'
+                            );
+                        }
+
+                        // Callback to ensure the dropdown is updated before setting the value
+                        $('#addModal').find('#emptyContainerNo').val(obj.message.container_no).select2('destroy').select2();
+
+                        // Initialize all Select2 elements in the modal
+                        $('#addModal .select2').select2({
+                            allowClear: true,
+                            placeholder: "Please Select",
+                            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+                        });
+
+                        // Apply custom styling to Select2 elements in addModal
+                        $('#addModal .select2-container .select2-selection--single').css({
+                            'padding-top': '4px',
+                            'padding-bottom': '4px',
+                            'height': 'auto'
+                        });
+
+                        $('#addModal .select2-container .select2-selection__arrow').css({
+                            'padding-top': '33px',
+                            'height': 'auto'
+                        });
+                    });
+                }
+
+                $('#productTable').html('');
+                rowCount = 0;
+
+                if (obj.message.products.length > 0){
+                    for(var i = 0; i < obj.message.products.length; i++){
+                        var item = obj.message.products[i];
+                        var $addContents = $("#productDetail").clone();
+                        $("#productTable").append($addContents.html());
+
+                        $("#productTable").find('.details:last').attr("id", "detail" + rowCount);
+                        $("#productTable").find('.details:last').attr("data-index", rowCount);
+                        $("#productTable").find('#remove:last').attr("id", "remove" + rowCount);
+
+                        $("#productTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount + 1);
+                        $("#productTable").find('#weightProductId:last').attr('name', 'weightProductId['+rowCount+']').attr("id", "weightProductId" + rowCount).val(item.id);
+                        $("#productTable").find('#product:last').attr('name', 'product['+rowCount+']').attr("id", "product" + rowCount).val(item.product);
+                        $("#productTable").find('#productPacking:last').attr('name', 'productPacking['+rowCount+']').attr("id", "productPacking" + rowCount).val(item.product_packing);
+                        $("#productTable").find('#productGross:last').attr('name', 'productGross['+rowCount+']').attr("id", "productGross" + rowCount).val(item.product_gross);
+                        $("#productTable").find('#productTare:last').attr('name', 'productTare['+rowCount+']').attr("id", "productTare" + rowCount).val(item.product_tare);
+                        $("#productTable").find('#productNett:last').attr('name', 'productNett['+rowCount+']').attr("id", "productNett" + rowCount).val(item.product_nett);
+
+                        rowCount++;
+                    }
+                }
+
+
+                // Load these field after PO/SO is loaded
+                /*$('#addModal').on('orderLoaded', function() {
+                    $('#addModal').find('#customerCode').val(obj.message.customer_code);
+                    $('#addModal').find('#customerName').val(obj.message.customer_name).trigger('change');
+                    $('#addModal').find('#supplierCode').val(obj.message.supplier_code);
+                    $('#addModal').find('#supplierName').val(obj.message.supplier_name).trigger('change')
+                    $('#addModal').find('#siteCode').val(obj.message.site_code);
+                    $('#addModal').find('#siteName').val(obj.message.site_name).trigger('change');
+                    $('#addModal').find('#agent').val(obj.message.agent_name).trigger('change');
+                    $('#addModal').find('#agentCode').val(obj.message.agent_code);
+                    $('#addModal').find('#rawMaterialCode').val(obj.message.raw_mat_code);
+                    $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
+                    $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
+                    $('#addModal').find('#productCode').val(obj.message.product_code);
+                    $('#addModal').find('#supplierWeight').val(obj.message.supplier_weight);
+                    $('#addModal').find('#orderWeight').val(obj.message.order_weight);
+                    $('#addModal').find('#destinationCode').val(obj.message.destination_code);
+                    $('#addModal').find('#destination').val(obj.message.destination).trigger('change');
+                    $('#addModal').find('#plant').val(obj.message.plant_name).trigger('change');
+                    $('#addModal').find('#plantCode').val(obj.message.plant_code);
+
+                    // Hide select and show input readonly
+                    // if (obj.message.transaction_status == 'Purchase'){
+                    //     $('#addModal').find('#purchaseOrder').next('.select2-container').hide();
+                    //     $('#addModal').find('#purchaseOrderEdit').val(obj.message.purchase_order).show();
+                    // }else{
+                    //     $('#addModal').find('#salesOrder').next('.select2-container').hide();
+                    //     $('#addModal').find('#salesOrderEdit').val(obj.message.purchase_order).show();
+                    // }
+                });*/
+
+                // Initialize all Select2 elements in the modal
+                $('#addModal .select2').select2({
+                    allowClear: true,
+                    placeholder: "Please Select",
+                    dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+                });
+
+                // Apply custom styling to Select2 elements in addModal
+                $('#addModal .select2-container .select2-selection--single').css({
+                    'padding-top': '4px',
+                    'padding-bottom': '4px',
+                    'height': 'auto'
+                });
+
+                $('#addModal .select2-container .select2-selection__arrow').css({
+                    'padding-top': '33px',
+                    'height': 'auto'
+                });
+
+                // Remove Validation Error Message
+                $('#addModal .is-invalid').removeClass('is-invalid');
+
+                $('#addModal .select2[required]').each(function () {
+                    var select2Field = $(this);
+                    var select2Container = select2Field.next('.select2-container');
+                    
+                    select2Container.find('.select2-selection').css('border', ''); // Remove red border
+                    select2Container.next('.select2-error').remove(); // Remove error message
+                });
+
+                $('#addModal').modal('show');
+
+                // Make all inputs, selects, and textareas readonly-like except specific ones
+                $('#addModal').find('input, select, textarea').each(function() {
+                    var id = $(this).attr('id');
+
+                    // Skip editable fields
+                    if (id === 'grossIncoming' || id === 'tareOutgoing' || id === 'grossIncoming2' || id === 'tareOutgoing2') {
+                        $(this).prop('readonly', false).prop('disabled', false);
+                    } else {
+                        if ($(this).is('select')) {
+                            // Make select2 look and behave readonly (but still submit value)
+                            $(this).next('.select2-container').css('pointer-events', 'none');  // Prevent click
+                            $(this).next('.select2-container').find('.select2-selection').css({
+                                'background-color': '#f8f9fa',   // light gray look
+                                'opacity': '0.8',
+                                'cursor': 'not-allowed'
+                            });
+                        } else {
+                            $(this).prop('readonly', true);
+                        }
+                    }
+                });
+            
+                $('#weightForm').validate({
+                    errorElement: 'span',
+                    errorPlacement: function (error, element) {
+                        error.addClass('invalid-feedback');
+                        element.closest('.form-group').append(error);
+                    },
+                    highlight: function (element, errorClass, validClass) {
+                        $(element).addClass('is-invalid');
+                    },
+                    unhighlight: function (element, errorClass, validClass) {
+                        $(element).removeClass('is-invalid');
+                    }
+                });
+            }
+            else if(obj.status === 'failed'){
+                $('#spinnerLoading').hide();
+                $("#failBtn").attr('data-toast-text', obj.message );
+                $("#failBtn").click();
+            }
+            else{
+                $('#spinnerLoading').hide();
+                $("#failBtn").attr('data-toast-text', obj.message );
+                $("#failBtn").click();
+            }
+            $('#spinnerLoading').hide();
+        });
+    }
+
+    // Admin can edit
     function edit(id, isContainer){
         $('#spinnerLoading').show();
 
