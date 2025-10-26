@@ -294,14 +294,14 @@ $(function () {
                     return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                 }
             },
-            { data: 'site_code' },
+            { data: 'project' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
                     if (row.status == '1'){
                         return '<button title="Reactivate" type="button" id="reactivate'+data+'" onclick="reactivate('+data+')" class="btn btn-warning btn-sm">Reactivate</button>';
                     }else{
-                        return '';
+                        return 'Active';
                     }
                 }
             },

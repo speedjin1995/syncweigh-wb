@@ -79,6 +79,7 @@ $site = $db->query("SELECT * FROM Site WHERE status = '0' ORDER BY name ASC");
 $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
 $company = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
 $company2 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
+$projects = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
@@ -126,6 +127,11 @@ else{
 
         .modal-header {
             padding: var(1rem, 1rem) !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice,
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #000 !important;
         }
     </style>
 </head>
@@ -674,7 +680,7 @@ else{
                                                                                             <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
                                                                                                 <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
                                                                                             <?php } ?>
-                                                                                        </select>                                                                                        
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -713,9 +719,9 @@ else{
                                                                         <div class="row">
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row" id="productNameDisplay">
-                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product Group</label>
+                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product Code</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="productName" name="productName" required>
+                                                                                        <select class="form-select select2" id="productName" name="productName[]" multiple required>
                                                                                             <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
                                                                                                 <option 
                                                                                                     value="<?=$rowProduct['name'] ?>" 
@@ -728,18 +734,18 @@ else{
                                                                                                     <?=$rowProduct['product_code'] ?> - <?=$rowProduct['name'] ?>
                                                                                                 </option>
                                                                                             <?php } ?>
-                                                                                            <option>Other</option>
-                                                                                        </select>                                                                                        
+                                                                                            <option value="Other" data-code="Other">Other</option>
+                                                                                        </select>      
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row" id="rawMaterialDisplay" style="display:none;">
                                                                                     <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material Code</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
+                                                                                        <select class="form-select select2" id="rawMaterialName" name="rawMaterialName[]" multiple required>
                                                                                             <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
                                                                                                 <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] . ' - ' . $rowRowMat['name'] ?></option>
                                                                                             <?php } ?>
-                                                                                            <option>Other</option>
+                                                                                            <option value="Other" data-code="Other">Other</option>
                                                                                         </select>           
                                                                                     </div>
                                                                                 </div>
@@ -867,7 +873,7 @@ else{
                                                                                             <?php while($rowAgent=mysqli_fetch_assoc($agent)){ ?>
                                                                                                 <option value="<?=$rowAgent['name'] ?>" data-code="<?=$rowAgent['agent_code'] ?>"><?=$rowAgent['name'] ?></option>
                                                                                             <?php } ?>
-                                                                                        </select>                                                                                         
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -885,7 +891,11 @@ else{
                                                                                 <div class="row">
                                                                                     <label for="projectCode" class="col-sm-1 col-form-label" style="width: 11%;">Project Code</label>
                                                                                     <div class="col-sm-11" style="width: 89%;">
-                                                                                        <input type="text" class="form-control" id="projectCode" name="projectCode" required>
+                                                                                        <select class="form-select select2" id="projectCode" name="projectCode[]" multiple required>
+                                                                                            <?php while($rowProject=mysqli_fetch_assoc($projects)){ ?>
+                                                                                                <option value="<?=$rowProject['id'] ?>"><?=$rowProject['project'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -1754,6 +1764,7 @@ else{
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
     var rowCount = $("#productTable").find(".details").length;
+    var productCodes = [];
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -3185,7 +3196,7 @@ else{
             $('#addModal').find('#containerNo').val("");
             $('#addModal').find('#containerNo2').val("");
             $('#addModal').find('#sealNo2').val("");
-            $('#addModal').find('#projectCode').val("");
+            $('#addModal').find('#projectCode').val("").trigger('change');
 
             // Show select and hide input readonly
             $('#addModal').find('#salesOrderEdit').val("").hide();
@@ -4175,7 +4186,15 @@ else{
 
         //productName
         $('#productName').on('change', function(){
-            $('#productCode').val($('#productName :selected').data('code'));
+            var selectedOptions = $('#productName option:selected');
+            var codes = [];
+            selectedOptions.each(function() {
+                var code = $(this).data('code');
+                if (code) codes.push(code);
+            });
+
+            // Store codes as JSON string or comma-separated (both valid)
+            $('#productCode').val(JSON.stringify(codes));
             $('#productDescription').val($('#productName :selected').data('description'));
             $('#productPrice').val($('#productName :selected').data('price'));
             $('#productHigh').val($('#productName :selected').data('high'));
@@ -4276,7 +4295,15 @@ else{
 
         //rawMaterialName
         $('#rawMaterialName').on('change', function(){
-            $('#rawMaterialCode').val($('#rawMaterialName :selected').data('code'));
+            var selectedOptions = $('#productName option:selected');
+            var codes = [];
+            selectedOptions.each(function() {
+                var code = $(this).data('code');
+                if (code) codes.push(code);
+            });
+
+            // Store codes as JSON string or comma-separated (both valid)
+            $('#rawMaterialCode').val(JSON.stringify(codes));
         });
 
         //siteName
@@ -4316,7 +4343,8 @@ else{
 
                     if (obj.status == 'success'){ 
                         $('#addModal').find('#company').val(obj.message.company).trigger('change');
-                        $('#addModal').find('#projectCode').val(obj.message.project_code);
+                        var projectCodes = JSON.parse(obj.message.project_code);
+                        $('#addModal').find('#projectCode').val(projectCodes).trigger('change');
                         $('#addModal').find('#invoiceNo').val(obj.message.invoice_no);
                         $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
                         $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
@@ -4330,10 +4358,12 @@ else{
 
                         if (obj.message.transaction_status == 'Sales' || obj.message.transaction_status == 'Misc'){
                             $('#addModal').find('#customerName').val(obj.message.customer_name).trigger('change');
-                            $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
+                            var products = JSON.parse(obj.message.product_name);
+                            $('#addModal').find('#productName').val(products).trigger('change');
                         }else{
                             $('#addModal').find('#supplierName').val(obj.message.supplier_name).trigger('change');
-                            $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
+                            var rawMaterials = JSON.parse(obj.message.raw_mat_name);
+                            $('#addModal').find('#rawMaterialName').val(rawMaterials).trigger('change');
                         }
                         $('#addModal').find('#plant').val(obj.message.plant_name).trigger('change');
                         $('#addModal').find('#transporter').val(obj.message.transporter).trigger('change');
@@ -5168,9 +5198,11 @@ else{
                 $('#addModal').find('#siteName').val(obj.message.site_name).trigger('change');
                 $('#addModal').find('#agent').val(obj.message.agent_name).trigger('change');
                 $('#addModal').find('#agentCode').val(obj.message.agent_code);
+                var rawMatNames = JSON.parse(obj.message.raw_mat_name);
+                $('#addModal').find('#rawMaterialName').val(rawMatNames).trigger('change');
                 $('#addModal').find('#rawMaterialCode').val(obj.message.raw_mat_code);
-                $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
-                $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
+                var productNames = JSON.parse(obj.message.product_name);
+                $('#addModal').find('#productName').val(productNames).trigger('change');
                 $('#addModal').find('#productCode').val(obj.message.product_code);
                 $('#addModal').find('#supplierWeight').val(obj.message.supplier_weight);
                 $('#addModal').find('#orderWeight').val(obj.message.order_weight);
@@ -5178,9 +5210,9 @@ else{
                 $('#addModal').find('#destination').val(obj.message.destination).trigger('change');
                 $('#addModal').find('#plant').val(obj.message.plant_name).trigger('change');
                 $('#addModal').find('#plantCode').val(obj.message.plant_code);
-                
                 $('#addModal').find('#otherRemarks').val(obj.message.remarks);
-                $('#addModal').find('#projectCode').val(obj.message.project_code);
+                var projectCodes = JSON.parse(obj.message.project_code);
+                $('#addModal').find('#projectCode').val(projectCodes).trigger('change');
                 $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
                 grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
                 $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);

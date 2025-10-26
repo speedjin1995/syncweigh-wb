@@ -19,30 +19,24 @@ if($searchValue != ''){
 }
 
 ## Total number of records without filtering
-$sel = mysqli_query($db,"select count(*) as allcount from Site");
+$sel = mysqli_query($db,"select count(*) as allcount from Projects");
 $records = mysqli_fetch_assoc($sel);
 $totalRecords = $records['allcount'];
 
 ## Total number of record with filtering
-$sel = mysqli_query($db,"select count(*) as allcount from Site WHERE status IN (0,1)".$searchQuery);
+$sel = mysqli_query($db,"select count(*) as allcount from Projects WHERE status IN (0,1)".$searchQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
-$empQuery = "select * from Site WHERE status IN (0,1)".$searchQuery."order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+$empQuery = "select * from Projects WHERE status IN (0,1)".$searchQuery." order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 $empRecords = mysqli_query($db, $empQuery);
 $data = array();
 
 while($row = mysqli_fetch_assoc($empRecords)) {
     $data[] = array( 
       "id"=>$row['id'],
-      "site_code"=>$row['site_code'],
-      "name"=>$row['name'],
-      "address_line_1"=>$row['address_line_1'],
-      "address_line_2"=>$row['address_line_2'],
-      "address_line_3"=>$row['address_line_3'],
-      "phone_no"=>$row['phone_no'],
-      "fax_no"=>$row['fax_no'],
+      "project"=>$row['project'],
       "status"=>$row['status']
     );
 }
