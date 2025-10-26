@@ -28,9 +28,9 @@ if (isset($_POST['siteCode'])) {
     if(!empty($transporterId))
     {
         $action = "2";
-        if ($update_stmt = $db->prepare("UPDATE Projects SET project=? WHERE id=?")) 
+        if ($update_stmt = $db->prepare("UPDATE Projects SET project=?, created_by=?, modified_by=? WHERE id=?")) 
         {
-            $update_stmt->bind_param('ss', $transporterCode, $transporterId);
+            $update_stmt->bind_param('ssss', $transporterCode, $username, $username, $transporterId);
 
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
@@ -57,8 +57,8 @@ if (isset($_POST['siteCode'])) {
     else
     {
         $action = "1";
-        if ($insert_stmt = $db->prepare("INSERT INTO Projects (project) VALUES (?)")) {
-            $insert_stmt->bind_param('s', $transporterCode);
+        if ($insert_stmt = $db->prepare("INSERT INTO Projects (project, created_by, modified_by) VALUES (?, ?, ?)")) {
+            $insert_stmt->bind_param('sss', $transporterCode, $username, $username);
 
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {
