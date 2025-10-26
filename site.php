@@ -242,7 +242,7 @@
                                                                     Upload Excel
                                                                 </button>
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
-                                                                    <i class="fa-solid fa-ban align-middle me-1"></i>
+                                                                    <i class="fas fa-ban align-middle me-1"></i>
                                                                     Delete Site
                                                                 </button>
                                                                 <button type="button" id="addSite" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">

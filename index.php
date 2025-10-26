@@ -2007,14 +2007,14 @@ else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
+                                            <i class="fas fa-weight-hanging"></i>
                                         </button>
                                     </div>`;    
                                 }else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'N')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
+                                            <i class="fas fa-weight-hanging"></i>
                                         </button>
                                     </div>`;  
                                 }
@@ -2026,7 +2026,7 @@ else{
                                 buttons += `
                                 <div class="col-auto">
                                     <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                        <i class="fa-solid fa-print"></i>
+                                        <i class="fas fa-print"></i>
                                     </button>
                                 </div>`;
                             }
@@ -2036,7 +2036,7 @@ else{
                             buttons += `
                             <div class="col-auto">
                                 <button title="Approve" type="button" id="approve${data}" onclick="approve(${data})" class="btn btn-success btn-sm">
-                                    <i class="fa-solid fa-check"></i>
+                                    <i class="fas fa-check"></i>
                                 </button>
                             </div>`;
                         }
@@ -2147,7 +2147,7 @@ else{
                                 buttons += `
                                 <div class="col-auto">
                                     <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data},'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fa-solid fa-weight-hanging"></i>
+                                        <i class="fas fa-weight-hanging"></i>
                                     </button>
                                 </div>`;
                             }
@@ -2156,7 +2156,7 @@ else{
                         buttons += `
                         <div class="col-auto">
                             <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                <i class="fa-solid fa-print"></i>
+                                <i class="fas fa-print"></i>
                             </button>
                         </div>`;
 
@@ -2924,14 +2924,14 @@ else{
                                         buttons += `
                                         <div class="col-auto">
                                             <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
+                                                <i class="fas fa-weight-hanging"></i>
                                             </button>
                                         </div>`;    
                                     }else{
                                         buttons += `
                                         <div class="col-auto">
                                             <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'N')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
+                                                <i class="fas fa-weight-hanging"></i>
                                             </button>
                                         </div>`;  
                                     }
@@ -2943,7 +2943,7 @@ else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                            <i class="fa-solid fa-print"></i>
+                                            <i class="fas fa-print"></i>
                                         </button>
                                     </div>`;
                                 }
@@ -2953,7 +2953,7 @@ else{
                                 buttons += `
                                 <div class="col-auto">
                                     <button title="Approve" type="button" id="approve${data}" onclick="approve(${data})" class="btn btn-success btn-sm">
-                                        <i class="fa-solid fa-check"></i>
+                                        <i class="fas fa-check"></i>
                                     </button>
                                 </div>`;
                             }
@@ -3064,7 +3064,7 @@ else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data},'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
+                                            <i class="fas fa-weight-hanging"></i>
                                         </button>
                                     </div>`;
                                 }
@@ -3073,7 +3073,7 @@ else{
                             buttons += `
                             <div class="col-auto">
                                 <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                    <i class="fa-solid fa-print"></i>
+                                    <i class="fas fa-print"></i>
                                 </button>
                             </div>`;
 

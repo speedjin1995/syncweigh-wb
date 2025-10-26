@@ -1074,7 +1074,7 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
                             <td>
                                 <div class="col-auto">
                                     <button title="Print" type="button" id="print${weights[i].id}" onclick="print('${weights[i].id}')" class="btn btn-info btn-sm">
-                                        <i class="fa-solid fa-print"></i>
+                                        <i class="fas fa-print"></i>
                                     </button>
                                 </div>
                             </td>
