@@ -3196,7 +3196,7 @@ else{
             $('#addModal').find('#containerNo').val("");
             $('#addModal').find('#containerNo2').val("");
             $('#addModal').find('#sealNo2').val("");
-            $('#addModal').find('#projectCode').val("");
+            $('#addModal').find('#projectCode').val("").trigger('change');
 
             // Show select and hide input readonly
             $('#addModal').find('#salesOrderEdit').val("").hide();
