@@ -2818,7 +2818,7 @@ else{
             destroy();
         }
 
-        player = new EZUIKit.EZUIKitPlayer({
+        /*player = new EZUIKit.EZUIKitPlayer({
             id: "video-container1", // 视频容器ID
             accessToken: "at.dfjpxs2b541md3mmbng38uh240mkue0b-3uv8v3j7rg-07txnrv-3ffe0pydp",
             url: "ezopen://open.ezviz.com/BC6848896/1.live",
@@ -2868,7 +2868,7 @@ else{
             EZUIKit.EZUIKitPlayer.EVENTS.streamInfoCB, (info) => {
                 console.log("streamInfoCB ", info);
             }
-        );
+        );*/
 
         $.post('http://127.0.0.1:5002/', $('#setupForm').serialize(), function(data){
             if(data == "true"){
