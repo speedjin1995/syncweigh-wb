@@ -30,13 +30,25 @@ if (isset($_POST['siteCode'])) {
     } else {
         $projectName = trim($_POST["projectName"]);
     }
+
+    if (empty($_POST["company"])) {
+        $company = null;
+    } else {
+        $company = trim($_POST["company"]);
+    }
+
+    if (empty($_POST["plant"])) {
+        $plant = null;
+    } else {
+        $plant = trim($_POST["plant"]);
+    }
     
     if(!empty($transporterId))
     {
         $action = "2";
-        if ($update_stmt = $db->prepare("UPDATE Projects SET project=?, project_name=?, created_by=?, modified_by=? WHERE id=?")) 
+        if ($update_stmt = $db->prepare("UPDATE Projects SET project=?, project_name=?, company_id=?, plant_id=?, created_by=?, modified_by=? WHERE id=?")) 
         {
-            $update_stmt->bind_param('sssss', $transporterCode, $projectName, $username, $username, $transporterId);
+            $update_stmt->bind_param('sssssss', $transporterCode, $projectName, $company, $plant, $username, $username, $transporterId);
 
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
@@ -63,8 +75,8 @@ if (isset($_POST['siteCode'])) {
     else
     {
         $action = "1";
-        if ($insert_stmt = $db->prepare("INSERT INTO Projects (project, project_name, created_by, modified_by) VALUES (?, ?, ?, ?)")) {
-            $insert_stmt->bind_param('ssss', $transporterCode, $projectName, $username, $username);
+        if ($insert_stmt = $db->prepare("INSERT INTO Projects (project, project_name, company_id, plant_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?)")) {
+            $insert_stmt->bind_param('ssssss', $transporterCode, $projectName, $company, $plant, $username, $username);
 
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {

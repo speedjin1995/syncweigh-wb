@@ -893,7 +893,7 @@ else{
                                                                                     <div class="col-sm-11" style="width: 89%;">
                                                                                         <select class="form-select select2" id="projectCode" name="projectCode[]" multiple required>
                                                                                             <?php while($rowProject=mysqli_fetch_assoc($projects)){ ?>
-                                                                                                <option value="<?=$rowProject['id'] ?>"><?=$rowProject['project'] ?></option>
+                                                                                                <option value="<?=$rowProject['id'] ?>"><?=$rowProject['project'] . ' - ' . $rowProject['project_name'] ?></option>
                                                                                             <?php } ?>
                                                                                         </select>
                                                                                     </div>

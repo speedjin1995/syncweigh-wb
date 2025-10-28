@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 session_start();
 require_once 'db_connect.php';
 
@@ -96,14 +98,26 @@ if (isset($_POST['customerCode'])) {
     } else {
         $tinNo = trim($_POST["tinNo"]);
     }
+
+    if (empty($_POST["company"])) {
+        $company = null;
+    } else {
+        $company = trim($_POST["company"]);
+    }
+
+    if (empty($_POST["plant"])) {
+        $plant = null;
+    } else {
+        $plant = trim($_POST["plant"]);
+    }
     
     if(! empty($customerId))
     {
         // $sql = "UPDATE Customer SET company_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, created_by=?, modified_by=? WHERE customer_code=?";
         $action = "2";
-        if ($update_stmt = $db->prepare("UPDATE Customer SET customer_code=?, company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, address_line_4=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, created_by=?, modified_by=? WHERE id=?")) 
+        if ($update_stmt = $db->prepare("UPDATE Customer SET customer_code=?, company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, address_line_4=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, company_id=?, plant_id=?, created_by=?, modified_by=? WHERE id=?")) 
         {
-            $update_stmt->bind_param('ssssssssssssssss', $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $addressLine4, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $username, $username, $customerId);
+            $update_stmt->bind_param('ssssssssssssssssss', $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $addressLine4, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $company, $plant, $username, $username, $customerId);
 
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
@@ -154,8 +168,8 @@ if (isset($_POST['customerCode'])) {
     else
     {
         $action = "1";
-        if ($insert_stmt = $db->prepare("INSERT INTO Customer (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            $insert_stmt->bind_param('sssssssssssssss', $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $addressLine4, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $username, $username);
+        if ($insert_stmt = $db->prepare("INSERT INTO Customer (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, company_id, plant_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            $insert_stmt->bind_param('sssssssssssssssss', $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $addressLine4, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $company, $plant, $username, $username);
 
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {

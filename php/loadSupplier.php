@@ -49,6 +49,8 @@ while($row = mysqli_fetch_assoc($empRecords)) {
       "contact_name"=>$row['contact_name'],
       "ic_no"=>$row['ic_no'],
       "tin_no"=>$row['tin_no'],
+      "company_id"=>$row['company_id'],
+      "plant_id"=>$row['plant_id'],
       "status"=>$row['status']
     );
 }

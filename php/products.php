@@ -60,13 +60,25 @@ if (isset($_POST['productCode'])) {
         $low = trim($_POST["low"]);
     }
 
+    if (empty($_POST["company"])) {
+        $company = null;
+    } else {
+        $company = trim($_POST["company"]);
+    }
+
+    if (empty($_POST["plant"])) {
+        $plant = null;
+    } else {
+        $plant = trim($_POST["plant"]);
+    }
+
     if(! empty($productId))
     {
         // $sql = "UPDATE Customer SET company_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, created_by=?, modified_by=? WHERE customer_code=?";
         $action = "2";
-        if ($update_stmt = $db->prepare("UPDATE Product SET product_code=?, name=?, price=?, description=?, variance=?, high=?, low=?, created_by=?, modified_by=? WHERE id=?")) 
+        if ($update_stmt = $db->prepare("UPDATE Product SET product_code=?, name=?, price=?, description=?, variance=?, high=?, low=?, company_id=?, plant_id=?, created_by=?, modified_by=? WHERE id=?")) 
         {
-            $update_stmt->bind_param('ssssssssss', $productCode, $productName, $productPrice, $description, $varianceType, $high, $low, $username, $username, $productId);
+            $update_stmt->bind_param('ssssssssssss', $productCode, $productName, $productPrice, $description, $varianceType, $high, $low, $company, $plant, $username, $username, $productId);
 
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
@@ -168,8 +180,8 @@ if (isset($_POST['productCode'])) {
     else
     {
         $action = "1";
-        if ($insert_stmt = $db->prepare("INSERT INTO Product (product_code, name, price, description, variance, high, low, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            $insert_stmt->bind_param('sssssssss', $productCode, $productName,  $productPrice, $description, $varianceType, $high, $low, $username, $username);
+        if ($insert_stmt = $db->prepare("INSERT INTO Product (product_code, name, price, description, variance, high, low, company_id, plant_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            $insert_stmt->bind_param('sssssssssss', $productCode, $productName,  $productPrice, $description, $varianceType, $high, $low, $company, $plant, $username, $username);
 
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {
