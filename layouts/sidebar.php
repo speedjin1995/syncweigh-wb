@@ -105,9 +105,6 @@
                                         <a href="transporter.php" class="nav-link">'.$lang['t-transporter'].'</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="user.php" class="nav-link">'.$lang['t-user'].'</a>
-                                    </li>
-                                    <li class="nav-item">
                                         <a href="project.php" class="nav-link">'.$lang['t-project'].'</a>
                                     </li>
                                     <!--li class="nav-item">
@@ -167,9 +164,14 @@
                             <li class="nav-item">
                                 <?php
                                     if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
-                                        echo '<li class="nav-item">
-                                            <a href="companies.php" class="nav-link">'.$lang['t-companyProfile'].'</a>
-                                        </li> ';
+                                        echo '
+                                            <li class="nav-item">
+                                                <a href="companies.php" class="nav-link">'.$lang['t-companyProfile'].'</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="user.php" class="nav-link">'.$lang['t-user'].'</a>
+                                            </li>
+                                        ';
                                     }
                                 ?>
                                 
