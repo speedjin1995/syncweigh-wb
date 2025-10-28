@@ -956,3 +956,40 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Co
 END
 $$
 DELIMITER ;
+
+-- 28/10/2025 --
+ALTER TABLE `Projects` ADD `project_name` VARCHAR(255) NULL AFTER `project`;
+
+ALTER TABLE `Projects_Log` ADD `project_name` VARCHAR(255) NULL AFTER `project`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_PROJECT` AFTER INSERT ON `Projects` FOR EACH ROW 
+INSERT INTO Projects_Log (
+    project_id, project, project_name, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.project, NEW.project_name, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PROJECT` BEFORE UPDATE ON `Projects` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Projects_Log table
+    INSERT INTO Projects_Log (
+        project_id, project, project_name, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.project, NEW.project_name, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;

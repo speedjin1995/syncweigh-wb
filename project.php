@@ -102,7 +102,7 @@
                                         <div class="modal-dialog modal-dialog-scrollable modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Site</h5>
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Project</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                     </button>
                                                 </div>
@@ -117,7 +117,18 @@
                                                                                 <div class="row">
                                                                                     <label for="siteCode" class="col-sm-4 col-form-label">Project Code *</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="siteCode" name="siteCode" placeholder="Site Code" required>
+                                                                                        <input type="text" class="form-control" id="siteCode" name="siteCode" placeholder="Project Code" required>
+                                                                                        <div class="invalid-feedback">
+                                                                                            Please fill in the field.
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>                                                                   
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="projectName" class="col-sm-4 col-form-label">Project Name *</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="projectName" name="projectName" placeholder="Project Name" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div>
@@ -207,6 +218,7 @@
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th>Project Code</th>
+                                                                    <th>Project Name</th>
                                                                     <th>Status</th>
                                                                     <th>Action</th>
                                                                 </tr>
@@ -295,6 +307,7 @@ $(function () {
                 }
             },
             { data: 'project' },
+            { data: 'project_name' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
@@ -351,6 +364,7 @@ $(function () {
     $('#addSite').on('click', function(){
         $('#addModal').find('#id').val("");
         $('#addModal').find('#siteCode').val("");
+        $('#addModal').find('#projectName').val("");
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -500,6 +514,7 @@ function edit(id){
         if(obj.status === 'success'){
             $('#addModal').find('#id').val(obj.message.id);
             $('#addModal').find('#siteCode').val(obj.message.project);
+            $('#addModal').find('#projectName').val(obj.message.project_name);
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');

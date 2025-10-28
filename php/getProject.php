@@ -23,6 +23,7 @@ if(isset($_POST['userID'])){
             while ($row = $result->fetch_assoc()) {
                 $message['id'] = $row['id'];
                 $message['project'] = $row['project'];
+                $message['project_name'] = $row['project_name'];
             }
             
             echo json_encode(
