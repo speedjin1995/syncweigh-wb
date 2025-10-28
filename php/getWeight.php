@@ -256,6 +256,35 @@ if(isset($_POST['userID'])){
                                 // Log error if the statement couldn't be prepared
                                 $message['vehicleNoTxt2'] = $db->error;
                             }
+
+                            // Processing for company related field
+                            $tables = ['Customer', 'Supplier', 'Product', 'Raw_Mat', 'Projects'];
+                            $companyData = [];
+                            foreach ($tables as $table) {
+                                $sql = "SELECT * FROM $table WHERE company_id = ? AND status = 0";
+                                if ($stmt = $db->prepare($sql)) {
+                                    $stmt->bind_param('s', $row['company']);
+
+                                    if ($stmt->execute()) {
+                                        $result = $stmt->get_result();
+                                        $records = [];
+
+                                        while ($row2 = $result->fetch_assoc()) {
+                                            $records[] = $row2;
+                                        }
+
+                                        $companyData[$table] = $records;
+                                    } else {
+                                        $companyData[$table] = [];
+                                    }
+
+                                    $stmt->close();
+                                } else {
+                                    $companyData[$table] = [];
+                                }
+                            }
+
+                            $message['companyData'] = $companyData;
                         }
                     }
                     
@@ -499,6 +528,35 @@ if(isset($_POST['userID'])){
                                 // Log error if the statement couldn't be prepared
                                 $message['vehicleNoTxt2'] = $db->error;
                             }
+
+                            // Processing for company related field
+                            $tables = ['Customer', 'Supplier', 'Product', 'Raw_Mat', 'Projects'];
+                            $companyData = [];
+                            foreach ($tables as $table) {
+                                $sql = "SELECT * FROM $table WHERE company_id = ? AND status = 0";
+                                if ($stmt = $db->prepare($sql)) {
+                                    $stmt->bind_param('s', $row['company']);
+
+                                    if ($stmt->execute()) {
+                                        $result = $stmt->get_result();
+                                        $records = [];
+
+                                        while ($row2 = $result->fetch_assoc()) {
+                                            $records[] = $row2;
+                                        }
+
+                                        $companyData[$table] = $records;
+                                    } else {
+                                        $companyData[$table] = [];
+                                    }
+
+                                    $stmt->close();
+                                } else {
+                                    $companyData[$table] = [];
+                                }
+                            }
+
+                            $message['companyData'] = $companyData;
                         }
                     }
                     

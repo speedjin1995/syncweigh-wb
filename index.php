@@ -4552,38 +4552,7 @@ else{
                     var obj = JSON.parse(data);
                     if(obj.status == 'success'){
                         companyData = obj.message;
-                        // empty customer field and append new options
-                        if (companyData.Customer && companyData.Customer.length > 0){
-                            var customerOptions = buildOptions(companyData.Customer, 'customer_code', 'name', 'name');
-                            $('#customerName').empty().append(customerOptions).val('').trigger('change');
-                        }
-
-                        // empty supplier field and append new options
-                        if (companyData.Supplier && companyData.Supplier.length > 0){
-                            var supplierOptions = buildOptions(companyData.Supplier, 'supplier_code', 'name', 'name');
-                            $('#supplierName').empty().append(supplierOptions).val('').trigger('change');
-                        }
-
-                        // empty raw mat field and append new options
-                        if (companyData.Raw_Mat && companyData.Raw_Mat.length > 0){
-                            var rawMaterialOptions = buildOptions(companyData.Raw_Mat, 'raw_mat_code', 'name', ['raw_mat_code', 'name']);
-                            $('#rawMaterialName').empty().append(rawMaterialOptions).val('').trigger('change');
-                        }
-
-                        // empty project code field and append new options
-                        if (companyData.Projects && companyData.Projects.length > 0){
-                            var projectCodeOptions = buildOptions(companyData.Projects, '', 'id', ['project', 'project_name']);
-                            $('#projectCode').empty().append(projectCodeOptions).val('').trigger('change');
-                        }
-                        
-                        // empty product name field and append new options
-                        if (companyData.Product && companyData.Product.length > 0){
-                            var productOptions = '';
-                            for (var i = 0; i < companyData.Product.length; i++) {
-                                productOptions += '<option value="' + companyData.Product[i]['name'] + '" data-price="' + companyData.Product[i]['price'] + '" data-code="' + companyData.Product[i]['product_code'] + '" data-high="' + companyData.Product[i]['high'] + '" data-low="' + companyData.Product[i]['low'] + '" data-variance="' + companyData.Product[i]['variance'] + '" data-description="' + companyData.Product[i]['description'] + '">' + companyData.Product[i]['product_code'] + ' - ' + companyData.Product[i]['name'] + '</option>';
-                            }
-                            $('#productName').empty().append(productOptions).val('').trigger('change');
-                        }
+                        populateCompanyData(companyData);
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -4616,6 +4585,53 @@ else{
             }
         ?>
     });
+
+    function populateCompanyData(companyData) {
+        if (!companyData) return;
+        
+        // empty customer field and append new options
+        if (companyData.Customer && companyData.Customer.length > 0){
+            var customerOptions = buildOptions(companyData.Customer, 'customer_code', 'name', 'name');
+            $('#customerName').empty().append(customerOptions).val('').trigger('change');
+        }else{
+            $('#customerName').empty().append(clonedCustomerOptions).val('').trigger('change');
+        }
+
+        // empty supplier field and append new options
+        if (companyData.Supplier && companyData.Supplier.length > 0){
+            var supplierOptions = buildOptions(companyData.Supplier, 'supplier_code', 'name', 'name');
+            $('#supplierName').empty().append(supplierOptions).val('').trigger('change');
+        }else{
+            $('#supplierName').empty().append(clonedSupplierOptions).val('').trigger('change');
+        }
+
+        // empty raw mat field and append new options
+        if (companyData.Raw_Mat && companyData.Raw_Mat.length > 0){
+            var rawMaterialOptions = buildOptions(companyData.Raw_Mat, 'raw_mat_code', 'name', ['raw_mat_code', 'name']);
+            $('#rawMaterialName').empty().append(rawMaterialOptions).val('').trigger('change');
+        }else{
+            $('#rawMaterialName').empty().append(clonedRawMatOptions).val('').trigger('change');
+        }
+
+        // empty project code field and append new options
+        if (companyData.Projects && companyData.Projects.length > 0){
+            var projectCodeOptions = buildOptions(companyData.Projects, '', 'id', ['project', 'project_name']);
+            $('#projectCode').empty().append(projectCodeOptions).val('').trigger('change');
+        }else{
+            $('#projectCode').empty().append(clonedProjectOptions).val('').trigger('change');
+        }
+        
+        // empty product name field and append new options
+        if (companyData.Product && companyData.Product.length > 0){
+            var productOptions = '';
+            for (var i = 0; i < companyData.Product.length; i++) {
+                productOptions += '<option value="' + companyData.Product[i]['name'] + '" data-price="' + companyData.Product[i]['price'] + '" data-code="' + companyData.Product[i]['product_code'] + '" data-high="' + companyData.Product[i]['high'] + '" data-low="' + companyData.Product[i]['low'] + '" data-variance="' + companyData.Product[i]['variance'] + '" data-description="' + companyData.Product[i]['description'] + '">' + companyData.Product[i]['product_code'] + ' - ' + companyData.Product[i]['name'] + '</option>';
+            }
+            $('#productName').empty().append(productOptions).val('').trigger('change');
+        }else{
+            $('#productName').empty().append(clonedProductOptions).val('').trigger('change');
+        }
+    }
 
     function buildOptions(items, codeKey, valueKey, textKey, separator = ' - ') {
         var options = '';
@@ -4865,6 +4881,17 @@ else{
         {
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
+                // populate company append first
+                var companyData = obj.message.companyData;
+                populateCompanyData(companyData);
+
+                // hide or show weighing details section
+                if (obj.message.company && obj.message.company != null && obj.message.company != ''){
+                    $('#weighingDetailsSection').show();
+                }else{
+                    $('#weighingDetailsSection').hide();
+                }
+
                 if(obj.message.is_complete == 'Y'){
                     // Hide Capture Button When Edit
                     $('#addModal').find('#grossCapture').hide();
@@ -4881,7 +4908,7 @@ else{
                 $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
                 $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
-                $('#addModal').find('#company').val(obj.message.company).trigger('change');
+                $('#addModal').find('#company').val(obj.message.company).select2('destroy').select2();
                 $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
                 if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
@@ -4950,9 +4977,11 @@ else{
                 $('#addModal').find('#siteName').val(obj.message.site_name).trigger('change');
                 $('#addModal').find('#agent').val(obj.message.agent_name).trigger('change');
                 $('#addModal').find('#agentCode').val(obj.message.agent_code);
+                var rawMatNames = JSON.parse(obj.message.raw_mat_name);
+                $('#addModal').find('#rawMaterialName').val(rawMatNames).trigger('change');
                 $('#addModal').find('#rawMaterialCode').val(obj.message.raw_mat_code);
-                $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
-                $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
+                var productNames = JSON.parse(obj.message.product_name);
+                $('#addModal').find('#productName').val(productNames).trigger('change');
                 $('#addModal').find('#productCode').val(obj.message.product_code);
                 $('#addModal').find('#supplierWeight').val(obj.message.supplier_weight);
                 $('#addModal').find('#orderWeight').val(obj.message.order_weight);
@@ -4962,7 +4991,8 @@ else{
                 $('#addModal').find('#plantCode').val(obj.message.plant_code);
                 
                 $('#addModal').find('#otherRemarks').val(obj.message.remarks);
-                $('#addModal').find('#projectCode').val(obj.message.project_code);
+                var projectCodes = JSON.parse(obj.message.project_code);
+                $('#addModal').find('#projectCode').val(projectCodes).trigger('change');
                 $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
                 grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
                 $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);
@@ -5213,6 +5243,17 @@ else{
         {
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
+                // populate company append first
+                var companyData = obj.message.companyData;
+                populateCompanyData(companyData);
+
+                // hide or show weighing details section
+                if (obj.message.company && obj.message.company != null && obj.message.company != ''){
+                    $('#weighingDetailsSection').show();
+                }else{
+                    $('#weighingDetailsSection').hide();
+                }
+
                 if(obj.message.is_complete == 'Y'){
                     // Hide Capture Button When Edit
                     $('#addModal').find('#grossCapture').hide();
@@ -5229,7 +5270,7 @@ else{
                 $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
                 $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
-                $('#addModal').find('#company').val(obj.message.company).trigger('change');
+                $('#addModal').find('#company').val(obj.message.company).select2('destroy').select2();
                 $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
                 if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
