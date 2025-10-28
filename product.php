@@ -4,6 +4,9 @@
 <?php
     require_once "php/db_connect.php";
     $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0'");
+    $company = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
+    $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
+
 ?>
 
 <head>
@@ -40,6 +43,11 @@
         #rawMaterialTable .select2-container .select2-selection__arrow {
             padding-top: 33px !important;
             height: auto !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice,
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #000 !important;
         }
     </style>
 
@@ -199,6 +207,32 @@
                                                                                     <label for="description" class="col-sm-4 col-form-label">Low (-)</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="low" name="low" placeholder="Low" value="0">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="company" class="col-sm-4 col-form-label">Company</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="company" name="company[]" class="form-select select2" multiple>
+                                                                                            <option selected>-</option>
+                                                                                            <?php while($rowCompany=mysqli_fetch_assoc($company)){ ?>
+                                                                                                <option value="<?=$rowCompany['id'] ?>"><?=$rowCompany['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="plant" class="col-sm-4 col-form-label">Plant</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="plant" name="plant" class="form-select select2" >
+                                                                                            <option selected>-</option>
+                                                                                            <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
+                                                                                                <option value="<?=$rowPlant['id'] ?>"><?=$rowPlant['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -617,6 +651,8 @@ $(function () {
         $('#addModal').find('#varianceType').val("");
         $('#addModal').find('#high').val("0");
         $('#addModal').find('#low').val("0");
+        $('#addModal').find('#company').val("").trigger('change');
+        $('#addModal').find('#plant').val("").trigger('change');
         $('#rawMaterialTable').html('');
         rowCount = 1;
 
@@ -768,6 +804,8 @@ function edit(id){
             $('#addModal').find('#varianceType').val(obj.message.variance);
             $('#addModal').find('#high').val(obj.message.high);
             $('#addModal').find('#low').val(obj.message.low);
+            $('#addModal').find('#company').val(JSON.parse(obj.message.company_id)).trigger('change');
+            $('#addModal').find('#plant').val(obj.message.plant_id).trigger('change');
 
             $('#rawMaterialTable').html('');
             rowCount = 1;

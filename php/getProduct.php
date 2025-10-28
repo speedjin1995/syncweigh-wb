@@ -29,6 +29,8 @@ if(isset($_POST['userID'])){
                 $message['variance'] = $row['variance'];
                 $message['high'] = $row['high'];
                 $message['low'] = $row['low'];
+                $message['company_id'] = $row['company_id'];
+                $message['plant_id'] = $row['plant_id'];
             }
 
             // retrieve products

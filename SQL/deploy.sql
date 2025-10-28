@@ -956,3 +956,221 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Co
 END
 $$
 DELIMITER ;
+
+-- 28/10/2025 --
+ALTER TABLE `Projects` ADD `project_name` VARCHAR(255) NULL AFTER `project`;
+
+ALTER TABLE `Projects_Log` ADD `project_name` VARCHAR(255) NULL AFTER `project`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_PROJECT` AFTER INSERT ON `Projects` FOR EACH ROW 
+INSERT INTO Projects_Log (
+    project_id, project, project_name, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.project, NEW.project_name, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PROJECT` BEFORE UPDATE ON `Projects` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Projects_Log table
+    INSERT INTO Projects_Log (
+        project_id, project, project_name, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.project, NEW.project_name, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Customer` ADD `company_id` INT NULL AFTER `tin_no`, ADD `plant_id` INT NULL AFTER `company_id`;
+ALTER TABLE `Customer_Log` ADD `company_id` INT NULL AFTER `tin_no`, ADD `plant_id` INT NULL AFTER `company_id`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_CUSTOMER` AFTER INSERT ON `Customer` FOR EACH ROW 
+INSERT INTO Customer_Log (
+    customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, company_id, plant_id, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.company_id, NEW.plant_id, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_CUSTOMER` BEFORE UPDATE ON `Customer` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Customer_Log table
+    INSERT INTO Customer_Log (
+        customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, company_id, plant_id, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.company_id, NEW.plant_id, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Supplier` ADD `company_id` INT NULL AFTER `tin_no`, ADD `plant_id` INT NULL AFTER `company_id`;
+ALTER TABLE `Supplier_Log` ADD `company_id` INT NULL AFTER `tin_no`, ADD `plant_id` INT NULL AFTER `company_id`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_SUPPLIER` AFTER INSERT ON `Supplier` FOR EACH ROW 
+INSERT INTO Supplier_Log (
+    supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, company_id, plant_id, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.company_id, NEW.plant_id, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_SUPPLIER` BEFORE UPDATE ON `Supplier` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Supplier_Log table
+    INSERT INTO Supplier_Log (
+        supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, company_id, plant_id, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.company_id, NEW.plant_id, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Product` ADD `company_id` INT NULL AFTER `low`, ADD `plant_id` INT NULL AFTER `company_id`;
+ALTER TABLE `Product_Log` ADD `company_id` INT NULL AFTER `low`, ADD `plant_id` INT NULL AFTER `company_id`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_PRODUCT` AFTER INSERT ON `Product` FOR EACH ROW 
+INSERT INTO Product_Log (
+    product_id, product_code, name, price, description, variance, high, low, company_id, plant_id, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.product_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.company_id, NEW.plant_id, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PRODUCT` BEFORE UPDATE ON `Product` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Product_Log table
+    INSERT INTO Product_Log (
+    product_id, product_code, name, price, description, variance, high, low, company_id, plant_id, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.product_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.company_id, NEW.plant_id, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Raw_Mat` ADD `company_id` INT NULL AFTER `type`, ADD `plant_id` INT NULL AFTER `company_id`;
+ALTER TABLE `Raw_Mat_Log` ADD `company_id` INT NULL AFTER `type`, ADD `plant_id` INT NULL AFTER `company_id`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_RAW_MAT` AFTER INSERT ON `Raw_Mat` FOR EACH ROW 
+INSERT INTO Raw_Mat_Log (
+    raw_mat_id, raw_mat_code, name, price, description, variance, high, low, type, company_id, plant_id, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.raw_mat_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.type, NEW.company_id, NEW.plant_id, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_RAW_MAT` BEFORE UPDATE ON `Raw_Mat` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Raw_Mat_Log table
+    INSERT INTO Raw_Mat_Log (
+        raw_mat_id, raw_mat_code, name, price, description, variance, high, low, type, company_id, plant_id, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.raw_mat_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.type, NEW.company_id, NEW.plant_id, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Projects` ADD `company_id` INT NULL AFTER `project_name`, ADD `plant_id` INT NULL AFTER `company_id`;
+ALTER TABLE `Projects_Log` ADD `company_id` INT NULL AFTER `project_name`, ADD `plant_id` INT NULL AFTER `company_id`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_PROJECT` AFTER INSERT ON `Projects` FOR EACH ROW 
+INSERT INTO Projects_Log (
+    project_id, project, project_name, company_id, plant_id, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.project, NEW.project_name, NEW.company_id, NEW.plant_id, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PROJECT` BEFORE UPDATE ON `Projects` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Projects_Log table
+    INSERT INTO Projects_Log (
+        project_id, project, project_name, company_id, plant_id, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.project, NEW.project_name, NEW.company_id, NEW.plant_id, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+-- change to multi select --
+ALTER TABLE `Product` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;
+ALTER TABLE `Product_Log` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;
+ALTER TABLE `Raw_Mat` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;
+ALTER TABLE `Raw_Mat_Log` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;

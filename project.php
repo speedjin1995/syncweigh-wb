@@ -1,5 +1,11 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
+<?php
+    include 'php/db_connect.php';
+
+    $company = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
+    $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
+?>
 
 <head>
     <title>Projects | Synctronix - Weighing System</title>
@@ -102,7 +108,7 @@
                                         <div class="modal-dialog modal-dialog-scrollable modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Site</h5>
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Project</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                     </button>
                                                 </div>
@@ -117,13 +123,50 @@
                                                                                 <div class="row">
                                                                                     <label for="siteCode" class="col-sm-4 col-form-label">Project Code *</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="siteCode" name="siteCode" placeholder="Site Code" required>
+                                                                                        <input type="text" class="form-control" id="siteCode" name="siteCode" placeholder="Project Code" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>                                                                   
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="projectName" class="col-sm-4 col-form-label">Project Name *</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="projectName" name="projectName" placeholder="Project Name" required>
+                                                                                        <div class="invalid-feedback">
+                                                                                            Please fill in the field.
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>     
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="company" class="col-sm-4 col-form-label">Company</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="company" name="company" class="form-select select2" >
+                                                                                            <option selected>-</option>
+                                                                                            <?php while($rowCompany=mysqli_fetch_assoc($company)){ ?>
+                                                                                                <option value="<?=$rowCompany['id'] ?>"><?=$rowCompany['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="plant" class="col-sm-4 col-form-label">Plant</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="plant" name="plant" class="form-select select2" >
+                                                                                            <option selected>-</option>
+                                                                                            <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
+                                                                                                <option value="<?=$rowPlant['id'] ?>"><?=$rowPlant['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>                                                              
                                                                             <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
                                                                         </div>
                                                                     </div>
@@ -207,6 +250,7 @@
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th>Project Code</th>
+                                                                    <th>Project Name</th>
                                                                     <th>Status</th>
                                                                     <th>Action</th>
                                                                 </tr>
@@ -275,6 +319,25 @@ $(function () {
         checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
     });
 
+    // Initialize all Select2 elements in the modal
+    $('#addModal .select2').select2({
+        allowClear: true,
+        placeholder: "Please Select",
+        dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+    });
+
+    // Apply custom styling to Select2 elements in addModal
+    $('#addModal .select2-container .select2-selection--single').css({
+        'padding-top': '4px',
+        'padding-bottom': '4px',
+        'height': 'auto'
+    });
+
+    $('#addModal .select2-container .select2-selection__arrow').css({
+        'padding-top': '33px',
+        'height': 'auto'
+    });
+
     table = $("#siteTable").DataTable({
         "responsive": true,
         "autoWidth": false,
@@ -295,6 +358,7 @@ $(function () {
                 }
             },
             { data: 'project' },
+            { data: 'project_name' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
@@ -351,6 +415,9 @@ $(function () {
     $('#addSite').on('click', function(){
         $('#addModal').find('#id').val("");
         $('#addModal').find('#siteCode').val("");
+        $('#addModal').find('#projectName').val("");
+        $('#addModal').find('#company').val("").trigger('change');
+        $('#addModal').find('#plant').val("").trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -500,6 +567,9 @@ function edit(id){
         if(obj.status === 'success'){
             $('#addModal').find('#id').val(obj.message.id);
             $('#addModal').find('#siteCode').val(obj.message.project);
+            $('#addModal').find('#projectName').val(obj.message.project_name);
+            $('#addModal').find('#company').val(obj.message.company_id).trigger('change');
+            $('#addModal').find('#plant').val(obj.message.plant_id).trigger('change');
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');

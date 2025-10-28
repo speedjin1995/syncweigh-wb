@@ -256,6 +256,43 @@ if(isset($_POST['userID'])){
                                 // Log error if the statement couldn't be prepared
                                 $message['vehicleNoTxt2'] = $db->error;
                             }
+
+                            // Processing for company related field
+                            $tables = ['Customer', 'Supplier', 'Product', 'Raw_Mat', 'Projects'];
+                            $companyData = [];
+                            foreach ($tables as $table) {
+                                if (in_array($table, ['Product', 'Raw_Mat'])) {
+                                    // json column, use JSON_CONTAINS to check if companyId is in the array
+                                    $sql = "SELECT * FROM $table WHERE status = 0 AND JSON_CONTAINS(company_id, ?, '$')";
+                                    $param = json_encode((string) $row['company']); // JSON_CONTAINS expects a JSON value, e.g. '"9"'
+                                } else {
+                                    $sql = "SELECT * FROM $table WHERE company_id = ? AND status = 0";
+                                    $param = $row['company'];
+                                }
+
+                                if ($stmt = $db->prepare($sql)) {
+                                    $stmt->bind_param('s', $param);
+
+                                    if ($stmt->execute()) {
+                                        $result = $stmt->get_result();
+                                        $records = [];
+
+                                        while ($row2 = $result->fetch_assoc()) {
+                                            $records[] = $row2;
+                                        }
+
+                                        $companyData[$table] = $records;
+                                    } else {
+                                        $companyData[$table] = [];
+                                    }
+
+                                    $stmt->close();
+                                } else {
+                                    $companyData[$table] = [];
+                                }
+                            }
+
+                            $message['companyData'] = $companyData;
                         }
                     }
                     
@@ -499,6 +536,43 @@ if(isset($_POST['userID'])){
                                 // Log error if the statement couldn't be prepared
                                 $message['vehicleNoTxt2'] = $db->error;
                             }
+
+                            // Processing for company related field
+                            $tables = ['Customer', 'Supplier', 'Product', 'Raw_Mat', 'Projects'];
+                            $companyData = [];
+                            foreach ($tables as $table) {
+                                if (in_array($table, ['Product', 'Raw_Mat'])) {
+                                    // json column, use JSON_CONTAINS to check if companyId is in the array
+                                    $sql = "SELECT * FROM $table WHERE status = 0 AND JSON_CONTAINS(company_id, ?, '$')";
+                                    $param = json_encode((string) $row['company']); // JSON_CONTAINS expects a JSON value, e.g. '"9"'
+                                } else {
+                                    $sql = "SELECT * FROM $table WHERE company_id = ? AND status = 0";
+                                    $param = $row['company'];
+                                }
+
+                                if ($stmt = $db->prepare($sql)) {
+                                    $stmt->bind_param('s', $param);
+
+                                    if ($stmt->execute()) {
+                                        $result = $stmt->get_result();
+                                        $records = [];
+
+                                        while ($row2 = $result->fetch_assoc()) {
+                                            $records[] = $row2;
+                                        }
+
+                                        $companyData[$table] = $records;
+                                    } else {
+                                        $companyData[$table] = [];
+                                    }
+
+                                    $stmt->close();
+                                } else {
+                                    $companyData[$table] = [];
+                                }
+                            }
+
+                            $message['companyData'] = $companyData;
                         }
                     }
                     

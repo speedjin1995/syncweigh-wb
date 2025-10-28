@@ -1,6 +1,12 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 
+<?php
+    include 'php/db_connect.php';
+
+    $company = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
+    $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
+?>
 <head>
     <title>Weighing | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
@@ -221,6 +227,32 @@
                                                                                     <label for="tinNo" class="col-sm-4 col-form-label">Tin No</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="Tin No">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="company" class="col-sm-4 col-form-label">Company</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="company" name="company" class="form-select select2" >
+                                                                                            <option selected>-</option>
+                                                                                            <?php while($rowCompany=mysqli_fetch_assoc($company)){ ?>
+                                                                                                <option value="<?=$rowCompany['id'] ?>"><?=$rowCompany['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="plant" class="col-sm-4 col-form-label">Plant</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="plant" name="plant" class="form-select select2" >
+                                                                                            <option selected>-</option>
+                                                                                            <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
+                                                                                                <option value="<?=$rowPlant['id'] ?>"><?=$rowPlant['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -585,6 +617,8 @@ $(function () {
         $('#addModal').find('#contactName').val("");
         $('#addModal').find('#icNo').val("");
         $('#addModal').find('#tinNo').val("");
+        $('#addModal').find('#company').val("").trigger('change');
+        $('#addModal').find('#plant').val("").trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -699,6 +733,8 @@ function edit(id){
             $('#addModal').find('#contactName').val(obj.message.contact_name);
             $('#addModal').find('#icNo').val(obj.message.ic_no);
             $('#addModal').find('#tinNo').val(obj.message.tin_no);
+            $('#addModal').find('#company').val(obj.message.company_id).trigger('change');
+            $('#addModal').find('#plant').val(obj.message.plant_id).trigger('change');
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
