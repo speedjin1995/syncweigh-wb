@@ -526,23 +526,23 @@ else{
                                                                         <div class="card bg-light">
                                                                             <div class="card-body">
                                                                                 <div class="row">
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="transactionId" class="col-sm-4 col-form-label">Transaction ID</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="transactionId" class="col-sm-3 col-form-label">Transaction ID</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" placeholder="Transaction ID" readonly>                                                                                  
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="purchaseOrder" class="col-sm-4 col-form-label">P/O No.</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="purchaseOrder" class="col-sm-3 col-form-label">P/O No.</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divOrderWeight">
+                                                                                    <!--<div class="col-xxl-4 col-lg-4 mb-3" id="divOrderWeight">
                                                                                         <div class="row">
                                                                                             <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
                                                                                             <div class="col-sm-8">
@@ -552,7 +552,7 @@ else{
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div>
+                                                                                    </div>-->
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierWeight" style="display:none;">
                                                                                         <div class="row">
                                                                                             <label for="supplierWeight" class="col-sm-4 col-form-label">Supplier Weight</label>
@@ -566,10 +566,10 @@ else{
                                                                                     </div>  
                                                                                 </div>
                                                                                 <div class="row">
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="weightType" class="col-sm-3 col-form-label">Weight Type</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <select id="weightType" name="weightType" class="form-select select2">
                                                                                                     <option value="Normal" selected>Normal Weighing</option>
                                                                                                     <option value="Container">Primer Mover</option>
@@ -579,10 +579,10 @@ else{
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row" id="containerDisplay">
-                                                                                            <label for="containerNoInput" class="col-sm-4 col-form-label">Container No 1</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="containerNoInput" class="col-sm-3 col-form-label">Container No 1</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <input type="text" class="form-control" id="containerNoInput" name="containerNoInput" placeholder="Container No">
                                                                                             </div>
                                                                                         </div>
@@ -599,7 +599,7 @@ else{
                                                                                         </div>
                                                                                         <input type="text" class="form-control" id="containerNo" name="containerNo" hidden>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifference">
+                                                                                    <!--<div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifference">
                                                                                         <div class="row">
                                                                                             <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
                                                                                             <div class="col-sm-8">
@@ -609,13 +609,13 @@ else{
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div> 
+                                                                                    </div>--> 
                                                                                 </div>
                                                                                 <div class="row">
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="transactionStatus" class="col-sm-3 col-form-label">Transaction Status</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <select id="transactionStatus" name="transactionStatus" class="form-select select2">
                                                                                                     <option value="Sales" selected>Dispatch</option>
                                                                                                     <option value="Purchase">Receiving</option>
@@ -625,10 +625,10 @@ else{
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoDisplay">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3" id="sealNoDisplay">
                                                                                         <div class="row">
-                                                                                            <label for="sealNo" class="col-sm-4 col-form-label">Seal No 1</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="sealNo" class="col-sm-3 col-form-label">Seal No 1</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <input type="text" class="form-control" id="sealNo" name="sealNo" placeholder="Seal No">
                                                                                             </div>
                                                                                         </div>
@@ -638,7 +638,7 @@ else{
                                                                                             
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                                                         <div class="row">
                                                                                             <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
                                                                                             <div class="col-sm-8">
@@ -651,10 +651,10 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row">
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="transactionDate" class="col-sm-4 col-form-label">Transaction Date</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="transactionDate" class="col-sm-3 col-form-label">Transaction Date</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
                                                                                                 <div class="invalid-feedback">
                                                                                                     Please fill in the field.
@@ -662,10 +662,10 @@ else{
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2Display">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3" id="containerNo2Display">
                                                                                         <div class="row">
-                                                                                            <label for="containerNo2" class="col-sm-4 col-form-label">Container No 2</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="containerNo2" class="col-sm-3 col-form-label">Container No 2</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <input type="text" class="form-control" id="containerNo2" name="containerNo2" placeholder="Container No 2">
                                                                                             </div>
                                                                                         </div>
@@ -675,7 +675,7 @@ else{
                                                                                             
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="unitPriceDisplay">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="unitPriceDisplay" style="display:none;">
                                                                                         <div class="row">
                                                                                             <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
                                                                                             <div class="col-sm-8">
@@ -688,18 +688,18 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row">
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="invoiceNo" class="col-sm-4 col-form-label">Invoice No</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="invoiceNo" class="col-sm-3 col-form-label">Invoice No</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Invoice No">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2Display">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3" id="sealNo2Display">
                                                                                         <div class="row">
-                                                                                            <label for="sealNo2" class="col-sm-4 col-form-label">Seal No 2</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="sealNo2" class="col-sm-3 col-form-label">Seal No 2</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <input type="text" class="form-control" id="sealNo2" name="sealNo2" placeholder="Seal No 2">
                                                                                             </div>
                                                                                         </div>
@@ -709,7 +709,7 @@ else{
                                                                                             
                                                                                         </div>
                                                                                     </div> 
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="sstDisplay">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="sstDisplay" style="display:none;">
                                                                                         <div class="row">
                                                                                             <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
                                                                                             <div class="col-sm-8">
@@ -722,18 +722,18 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row">
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="doDisplay">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3" id="doDisplay">
                                                                                         <div class="row">
-                                                                                            <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="deliveryNo" class="col-sm-3 col-form-label">Delivery No</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="Delivery No">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divCustomerName">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3" id="divCustomerName">
                                                                                         <div class="row">
-                                                                                            <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="customerName" class="col-sm-3 col-form-label">Customer Name</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <select class="form-select js-choice select2" id="customerName" name="customerName" required>
                                                                                                     <option selected="-">-</option>
                                                                                                     <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
@@ -756,7 +756,7 @@ else{
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="subTotalPriceDisplay">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="subTotalPriceDisplay" style="display:none;">
                                                                                         <div class="row">
                                                                                             <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
                                                                                             <div class="col-sm-8">
@@ -769,13 +769,13 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row">
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3"  <?php 
                                                                                         if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'MANAGER' && $allowManual == 'N'){
                                                                                             echo 'style="display:none;"';
                                                                                         }?>>
                                                                                         <div class="row">
-                                                                                            <label for="manualWeight" class="col-sm-4 col-form-label">Manual Weight</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="manualWeight" class="col-sm-3 col-form-label">Manual Weight</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <div class="form-check align-radio mr-2">
                                                                                                     <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightYes" value="true">
                                                                                                     <label class="form-check-label" for="manualWeightYes">
@@ -792,10 +792,10 @@ else{
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row" id="productNameDisplay">
-                                                                                            <label for="productName" class="col-sm-4 col-form-label">Product Code</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="productName" class="col-sm-3 col-form-label">Product Code</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <select class="form-select select2" id="productName" name="productName" required>
                                                                                                     <option selected="-">-</option>
                                                                                                     <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
@@ -825,7 +825,7 @@ else{
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="totalPriceDisplay">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="totalPriceDisplay" style="display:none;">
                                                                                         <div class="row">
                                                                                             <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
                                                                                             <div class="col-sm-8">
@@ -838,10 +838,10 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row">
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="plant" class="col-sm-4 col-form-label">Plant</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="plant" class="col-sm-3 col-form-label">Plant</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <select class="form-select select2" id="plant" name="plant" required>
                                                                                                     <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
                                                                                                         <option value="<?=$rowPlant['name'] ?>" data-code="<?=$rowPlant['plant_code'] ?>"><?=$rowPlant['name'] ?></option>
@@ -850,10 +850,10 @@ else{
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="transporter" class="col-sm-3 col-form-label">Transporter</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <select class="form-select select2" id="transporter" name="transporter" required>
                                                                                                     <option selected="-">-</option>
                                                                                                     <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
@@ -863,7 +863,7 @@ else{
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                                                         <div class="row">
                                                                                             <label for="destination" class="col-sm-4 col-form-label">Destination</label>
                                                                                             <div class="col-sm-8">
@@ -897,12 +897,20 @@ else{
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
+                                                                                    <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="otherRemarks" class="col-sm-2 col-form-label" style="width: 12.66666667%;">Other Remarks</label>
+                                                                                            <div class="col-sm-10" style="width: 87.33333333%;">
+                                                                                                <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row col-12">
+                                                                <div class="row col-12" style="display: none;">
                                                                     <div class="col-xxl-12 col-lg-12">
                                                                         <div class="card bg-light">
                                                                             <div class="card-body">
@@ -1107,12 +1115,98 @@ else{
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                    <div class="col-xxl-4 col-lg-4" style="display: none;">
                                                                         <div class="row">
                                                                             <label for="otherRemarks" class="col-sm-2 col-form-label">Other Remarks</label>
                                                                             <div class="col-sm-10">
                                                                                 <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
                                                                             </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4" id="normalCard">
+                                                                        <div class="card bg-light" style="min-height: 385px;">
+                                                                            <div class="card-body">
+                                                                                <div class="row mb-3" id="divOrderWeight">
+                                                                                    <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3" id="divWeightDifference">
+                                                                                    <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3" id="unitPriceDisplay">
+                                                                                    <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">RM</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3" id="sstDisplay">
+                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">RM</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3" id="subTotalPriceDisplay">
+                                                                                    <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">RM</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>                                                                                                                                  
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4" id="normalCard">
+                                                                        <div class="card bg-light" style="min-height: 385px;">
+                                                                            <div class="card-body">
+                                                                                <div class="row mb-3" id="totalPriceDisplay">
+                                                                                    <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">RM</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label for="destination" class="col-sm-4 col-form-label">Destination</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="destination" name="destination" required>
+                                                                                            <option selected="-">-</option>
+                                                                                            <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
+                                                                                                <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>            
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>                                                                                                                                  
                                                                         </div>
                                                                     </div>
                                                                 </div>
