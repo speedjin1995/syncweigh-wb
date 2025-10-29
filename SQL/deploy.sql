@@ -1168,3 +1168,9 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_PROJECT` BEFORE UPDATE ON `Projects` FOR EACH
 END
 $$
 DELIMITER ;
+
+-- change to multi select --
+ALTER TABLE `Product` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;
+ALTER TABLE `Product_Log` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;
+ALTER TABLE `Raw_Mat` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;
+ALTER TABLE `Raw_Mat_Log` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;

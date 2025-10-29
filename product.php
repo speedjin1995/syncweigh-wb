@@ -44,6 +44,11 @@
             padding-top: 33px !important;
             height: auto !important;
         }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice,
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #000 !important;
+        }
     </style>
 
 </head>
@@ -209,7 +214,7 @@
                                                                                 <div class="row">
                                                                                     <label for="company" class="col-sm-4 col-form-label">Company</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <select id="company" name="company" class="form-select select2" >
+                                                                                        <select id="company" name="company[]" class="form-select select2" multiple>
                                                                                             <option selected>-</option>
                                                                                             <?php while($rowCompany=mysqli_fetch_assoc($company)){ ?>
                                                                                                 <option value="<?=$rowCompany['id'] ?>"><?=$rowCompany['name'] ?></option>
@@ -799,7 +804,7 @@ function edit(id){
             $('#addModal').find('#varianceType').val(obj.message.variance);
             $('#addModal').find('#high').val(obj.message.high);
             $('#addModal').find('#low').val(obj.message.low);
-            $('#addModal').find('#company').val(obj.message.company_id).trigger('change');
+            $('#addModal').find('#company').val(JSON.parse(obj.message.company_id)).trigger('change');
             $('#addModal').find('#plant').val(obj.message.plant_id).trigger('change');
 
             $('#rawMaterialTable').html('');

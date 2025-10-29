@@ -63,7 +63,7 @@ if (isset($_POST['productCode'])) {
     if (empty($_POST["company"])) {
         $company = null;
     } else {
-        $company = trim($_POST["company"]);
+        $company = json_encode($_POST["company"]);
     }
 
     if (empty($_POST["plant"])) {
