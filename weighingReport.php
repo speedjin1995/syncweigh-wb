@@ -18,6 +18,7 @@ $destination = $db->query("SELECT * FROM Destination WHERE status = '0'");
 $unit = $db->query("SELECT * FROM Unit WHERE status = '0'");
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0'");
 $company2 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
+$projects = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
 
 $plantName = '-';
 
@@ -142,7 +143,6 @@ else{
                                                         <div class="mb-3">
                                                             <label for="transactionStatusSearch" class="form-label">Transaction Status</label>
                                                             <select id="transactionStatusSearch" class="form-select">
-                                                                <option selected>-</option>
                                                                 <option value="Sales" selected>Dispatch</option>
                                                                 <option value="Purchase">Receiving</option>
                                                                 <option value="Local">Internal Transfer</option>
@@ -216,6 +216,17 @@ else{
                                                                 <option selected>-</option>
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
                                                                     <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div><!--end col-->
+                                                    <div class="col-3">
+                                                        <div class="mb-3">
+                                                            <label for="projectSearch" class="form-label">Project Code</label>
+                                                            <select id="projectSearch" class="form-select">
+                                                                <option selected>-</option>
+                                                                <?php while($rowProjectF=mysqli_fetch_assoc($projects)){ ?>
+                                                                    <option value="<?=$rowProjectF['id'] ?>"><?=$rowProjectF['project'] . ' - ' . $rowProjectF['project_name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -591,6 +602,7 @@ else{
         var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
         var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
         var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+        var projectI = $('#projectSearch').val() ? $('#projectSearch').val() : '';
         var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
         var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
         var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
@@ -617,6 +629,7 @@ else{
                     customerType: customerTypeI,
                     product: productI,
                     rawMaterial: rawMatI,
+                    project: projectI,
                     destination: destinationI,
                     plant: plantI,
                     status: statusI,
@@ -682,6 +695,7 @@ else{
             var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
             var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+            var projectI = $('#projectSearch').val() ? $('#projectSearch').val() : '';
             var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
             var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
             var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
@@ -712,6 +726,7 @@ else{
                         customerType: customerTypeI,
                         product: productI,
                         rawMaterial: rawMatI,
+                        project: projectI,
                         destination: destinationI,
                         plant: plantI,
                         status: statusI,
