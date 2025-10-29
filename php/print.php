@@ -383,8 +383,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <span>Project Code <span style="margin-left: 13px;"></span>:&nbsp;'.$projectCodes.'</span><br>
                                             <span>Transporter &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['transporter'].'</span><br>
                                             <span>Destination &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['destination_code']. ' - '.$row['destination'].'</span><br>
-                                            <span>Vehicle No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 4px">:&nbsp;</span>'.$row['lorry_plate_no1'].'</span><br>
                                         ';
+                                            if ($row['weight_type'] == 'Normal'){
+                                                $message .= '<span>Vehicle No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 4px">:&nbsp;</span>'.$row['lorry_plate_no1'].'</span><br>';
+                                            }
 
                                             if ($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc'){
                                                 $message .= '<span>Product &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 21px">: '.$productRawMats.'</span><br>';
