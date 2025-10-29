@@ -53,11 +53,18 @@ if($_POST['weightType'] != null && $_POST['weightType'] != '' && $_POST['weightT
 }
 
 if($_POST['product'] != null && $_POST['product'] != '' && $_POST['product'] != '-'){
-	$searchQuery .= " and product_code = '".$_POST['product']."'";
+  $product = $_POST['product'];
+  $searchQuery .= " AND JSON_CONTAINS(product_code, '\"{$product}\"', '$')";
 }
 
 if($_POST['rawMaterial'] != null && $_POST['rawMaterial'] != '' && $_POST['rawMaterial'] != '-'){
-	$searchQuery .= " and raw_mat_code = '".$_POST['rawMaterial']."'";
+  $rawMaterial = $_POST['rawMaterial'];
+	$searchQuery .= " and JSON_CONTAINS(raw_mat_code, '\"{$rawMaterial}\"', '$')";
+}
+
+if($_POST['project'] != null && $_POST['project'] != '' && $_POST['project'] != '-'){
+  $project = $_POST['project'];
+	$searchQuery .= " and JSON_CONTAINS(project_code, '\"{$project}\"', '$')";
 }
 
 if($_POST['destination'] != null && $_POST['destination'] != '' && $_POST['destination'] != '-'){

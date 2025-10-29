@@ -80,6 +80,7 @@ $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND i
 $company = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
 $company2 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
 $projects = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
+$projects2 = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
@@ -204,8 +205,7 @@ else{
                                                         <div class="mb-3">
                                                             <label for="statusSearch" class="form-label">Transaction Status</label>
                                                             <select id="statusSearch" class="form-select select2">
-                                                                <option selected>-</option>
-                                                                <option value="Sales">Dispatch</option>
+                                                                <option value="Sales" selected>Dispatch</option>
                                                                 <option value="Purchase">Receiving</option>
                                                                 <option value="Local">Internal Transfer</option>
                                                                 <option value="Misc">Miscellaneous</option>
@@ -214,7 +214,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3" id="customerSearchDisplay">
                                                         <div class="mb-3">
-                                                            <label for="customerNoSearch" class="form-label">Customer No</label>
+                                                            <label for="customerNoSearch" class="form-label">Customer Name</label>
                                                             <select id="customerNoSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowPF = mysqli_fetch_assoc($customer2)){ ?>
@@ -225,7 +225,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                         <div class="mb-3">
-                                                            <label for="supplierSearch" class="form-label">Supplier No</label>
+                                                            <label for="supplierSearch" class="form-label">Supplier Name</label>
                                                             <select id="supplierSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowSF = mysqli_fetch_assoc($supplier2)){ ?>
@@ -263,7 +263,7 @@ else{
                                                     </div><!--end col-->                                                
                                                     <div class="col-3" id="productSearchDisplay">
                                                         <div class="mb-3">
-                                                            <label for="productSearch" class="form-label">Product</label>
+                                                            <label for="productSearch" class="form-label">Product Code</label>
                                                             <select id="productSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowProductF=mysqli_fetch_assoc($product2)){ ?>
@@ -274,11 +274,22 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                         <div class="mb-3">
-                                                            <label for="rawMatSearch" class="form-label">Raw Material</label>
+                                                            <label for="rawMatSearch" class="form-label">Raw Material Code</label>
                                                             <select id="rawMatSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
                                                                     <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div><!--end col-->
+                                                    <div class="col-3">
+                                                        <div class="mb-3">
+                                                            <label for="projectSearch" class="form-label">Project Code</label>
+                                                            <select id="projectSearch" class="form-select select2">
+                                                                <option selected>-</option>
+                                                                <?php while($rowProjectF=mysqli_fetch_assoc($projects2)){ ?>
+                                                                    <option value="<?=$rowProjectF['id'] ?>"><?=$rowProjectF['project'] . ' - ' . $rowProjectF['project_name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -1936,6 +1947,7 @@ else{
         var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
         var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
         var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+        var projectI = $('#projectSearch').val() ? $('#projectSearch').val() : '';
         var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
         var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
         var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
@@ -1963,6 +1975,7 @@ else{
                     batch: batchNoI,
                     product: productSearchI,
                     rawMaterial: rawMaterialI,
+                    project: projectI,
                     plant: plantNoI,
                     transactionId: transactionIdI,
                     containerNo: containerNoI,
@@ -2846,6 +2859,7 @@ else{
             var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
             var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+            var projectI = $('#projectSearch').val() ? $('#projectSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
             var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
             var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
@@ -2878,6 +2892,7 @@ else{
                         batch: batchNoI,
                         product: productSearchI,
                         rawMaterial: rawMaterialI,
+                        project: projectI,
                         plant: plantNoI,
                         transactionId: transactionIdI,
                         containerNo: containerNoI,
