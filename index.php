@@ -79,6 +79,7 @@ $site = $db->query("SELECT * FROM Site WHERE status = '0' ORDER BY name ASC");
 $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
 $company = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
 $company2 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
+$company3 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
 $projects = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
 $projects2 = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
 
@@ -525,9 +526,9 @@ else{
                                                         <div class="row col-12">
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="card bg-light">
-                                                                    <div class="card-body">
+                                                                    <div class="card-body py-2 px-3">
                                                                         <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                            <div class="col-xxl-4 col-lg-4">
                                                                                 <div class="row">
                                                                                     <label for="company" class="col-sm-4 col-form-label">Company</label>
                                                                                     <div class="col-sm-8">
@@ -536,6 +537,29 @@ else{
                                                                                             <option value="<?=$rowComp['id'] ?>"><?=$rowComp['name'] ?></option>
                                                                                         <?php } ?>
                                                                                     </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-4 col-lg-4"  <?php 
+                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN' && $allowManual == 'N'){
+                                                                                    echo 'style="display:none;"';
+                                                                                }?>>
+                                                                                <div class="row">
+                                                                                    <label for="manualWeight" class="col-sm-4 col-form-label">Manual Weight</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="form-check align-radio mr-2">
+                                                                                            <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightYes" value="true">
+                                                                                            <label class="form-check-label" for="manualWeightYes">
+                                                                                                Yes
+                                                                                            </label>
+                                                                                        </div>
+
+                                                                                        <div class="form-check align-radio">
+                                                                                            <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightNo" value="false" checked>
+                                                                                            <label class="form-check-label" for="manualWeightNo">
+                                                                                                No
+                                                                                            </label>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -874,29 +898,6 @@ else{
                                                                                     
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
-                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN' && $allowManual == 'N'){
-                                                                                    echo 'style="display:none;"';
-                                                                                }?>>
-                                                                                <div class="row">
-                                                                                    <label for="manualWeight" class="col-sm-4 col-form-label">Manual Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="form-check align-radio mr-2">
-                                                                                            <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightYes" value="true">
-                                                                                            <label class="form-check-label" for="manualWeightYes">
-                                                                                               Yes
-                                                                                            </label>
-                                                                                        </div>
-
-                                                                                        <div class="form-check align-radio">
-                                                                                            <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightNo" value="false" checked>
-                                                                                            <label class="form-check-label" for="manualWeightNo">
-                                                                                               No
-                                                                                            </label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                                                 <div class="row">
                                                                                     <label for="agent" class="col-sm-4 col-form-label">Sales Representative</label>
@@ -974,7 +975,7 @@ else{
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row col-12">
+                                                        <div class="row col-12" id="vehicle1Section" style="display:none;">
                                                             <div class="col-xxl-4 col-lg-4" id="normalCard">
                                                                 <div class="card bg-light">
                                                                     <div class="card-body">
@@ -1455,6 +1456,52 @@ else{
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="modal fade" id="companyModal">
+                                        <div class="modal-dialog modal-dialog-centered" style="max-width: 40%;">
+                                            <div class="modal-content">
+                                                <!-- Header -->
+                                                <div class="modal-header">
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+
+                                                <!-- Body -->
+                                                <div class="modal-body px-5 py-4">
+                                                    <!-- Icon & Intro -->
+                                                    <div class="text-center mb-5">
+                                                        <div class="avatar-sm mx-auto mb-4">
+                                                            <div class="avatar-title bg-soft-primary text-primary rounded-circle fs-2 shadow-sm">
+                                                                <i class="ri-building-line"></i>
+                                                            </div>
+                                                        </div>
+                                                        <h5 class="mb-3 fw-semibold">Please select your company to proceed</h5>
+                                                        <p class="text-muted mb-0">
+                                                            Your selection determines which data and options are loaded.
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Company Select -->
+                                                    <div class="mb-4 px-5">
+                                                        <select id="companySelect" name="companySelect" class="form-select select2 py-2" required>
+                                                            <option value="" selected disabled>-- Choose a company --</option>
+                                                            <?php while($rowComp = mysqli_fetch_assoc($company3)) { ?>
+                                                                <option value="<?= $rowComp['id'] ?>"><?= htmlspecialchars($rowComp['name']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Footer -->
+                                                <div class="modal-footer">
+                                                    <small class="text-muted me-auto">Need help? Contact your system admin.</small>
+                                                    <button type="button" class="btn btn-success" onclick="confirmCompanySelection()">
+                                                        Confirm
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <!--div class="modal fade" id="uploadModal" role="dialog" aria-labelledby="importModalScrollableTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-scrollable custom-xxl">
                                             <div class="modal-content">
@@ -1515,7 +1562,7 @@ else{
                                                                     <i class="mdi mdi-file-excel align-middle me-1"></i>
                                                                     Import Orders
                                                                 </button-->
-                                                                <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" >
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     Add New Weight
                                                                 </button>
@@ -1837,6 +1884,25 @@ else{
             'height': 'auto'
         });
 
+
+        $('#companyModal .select2').select2({
+            allowClear: true,
+            placeholder: "Please Select a Company",
+            dropdownParent: $('#companyModal') // Ensures dropdown is not cut off
+        });
+
+        // Apply custom styling to Select2 elements in addModal
+        $('#companyModal .select2-container .select2-selection--single').css({
+            'padding-top': '4px',
+            'padding-bottom': '4px',
+            'height': 'auto'
+        });
+
+        $('#companyModal .select2-container .select2-selection__arrow').css({
+            'padding-top': '33px',
+            'height': 'auto'
+        });
+        
         //Date picker
         $('#fromDateSearch').flatpickr({
             dateFormat: "d-m-Y",
@@ -3245,7 +3311,10 @@ else{
                 select2Container.next('.select2-error').remove(); // Remove error message
             });
 
-            $('#addModal').modal('show');
+            $('#companyModal').find('#companySelect').val("").trigger('change');
+            $('#companyModal').modal('show');
+
+            // $('#addModal').modal('show');
             
             $('#weightForm').validate({
                 errorElement: 'span',
@@ -4558,7 +4627,7 @@ else{
         });
 
         $('#company').on('change', function(){
-            var companyId = $(this).val();
+            var companyId = $(this).val(); console.log(companyId);
 
             if (companyId != '' && companyId != null){
                 // Get customers, suppliers, products, raw materials, project codes based on selected company
@@ -4583,8 +4652,14 @@ else{
                 });
 
                 $('#weighingDetailsSection').show();
+                $('#vehicle1Section').show();
+                $('#companyModal').modal('hide');
+                $('#addModal').modal('show');
             }else{
                 $('#weighingDetailsSection').hide();
+                $('#vehicle1Section').hide();
+                $('#companyModal').modal('hide');
+                $('#addModal').modal('hide');
             }
         });
 
@@ -4600,6 +4675,16 @@ else{
             }
         ?>
     });
+    
+    function confirmCompanySelection(){
+        var selectedCompanyId = $('#companySelect').val();
+
+        if (selectedCompanyId != '' && selectedCompanyId != null){
+            $('#company').val(selectedCompanyId).trigger('change');
+        }else{
+            alert('Please select a company to proceed.');
+        }
+    }
 
     function populateCompanyData(companyData) {
         if (!companyData) return;
@@ -4903,8 +4988,10 @@ else{
                 // hide or show weighing details section
                 if (obj.message.company && obj.message.company != null && obj.message.company != ''){
                     $('#weighingDetailsSection').show();
+                    $('#vehicle1Section').show();
                 }else{
                     $('#weighingDetailsSection').hide();
+                    $('#vehicle1Section').hide();
                 }
 
                 if(obj.message.is_complete == 'Y'){
@@ -5265,8 +5352,10 @@ else{
                 // hide or show weighing details section
                 if (obj.message.company && obj.message.company != null && obj.message.company != ''){
                     $('#weighingDetailsSection').show();
+                    $('#vehicle1Section').show();
                 }else{
                     $('#weighingDetailsSection').hide();
+                    $('#vehicle1Section').hide();
                 }
 
                 if(obj.message.is_complete == 'Y'){
