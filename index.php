@@ -974,7 +974,7 @@ else{
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row col-12">
+                                                        <div class="row col-12" id="vehicle1Section" style="display:none;">
                                                             <div class="col-xxl-4 col-lg-4" id="normalCard">
                                                                 <div class="card bg-light">
                                                                     <div class="card-body">
@@ -4583,8 +4583,10 @@ else{
                 });
 
                 $('#weighingDetailsSection').show();
+                $('#vehicle1Section').show();
             }else{
                 $('#weighingDetailsSection').hide();
+                $('#vehicle1Section').hide();
             }
         });
 
@@ -4903,8 +4905,10 @@ else{
                 // hide or show weighing details section
                 if (obj.message.company && obj.message.company != null && obj.message.company != ''){
                     $('#weighingDetailsSection').show();
+                    $('#vehicle1Section').show();
                 }else{
                     $('#weighingDetailsSection').hide();
+                    $('#vehicle1Section').hide();
                 }
 
                 if(obj.message.is_complete == 'Y'){
@@ -5265,8 +5269,10 @@ else{
                 // hide or show weighing details section
                 if (obj.message.company && obj.message.company != null && obj.message.company != ''){
                     $('#weighingDetailsSection').show();
+                    $('#vehicle1Section').show();
                 }else{
                     $('#weighingDetailsSection').hide();
+                    $('#vehicle1Section').hide();
                 }
 
                 if(obj.message.is_complete == 'Y'){
