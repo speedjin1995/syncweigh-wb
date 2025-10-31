@@ -950,3 +950,40 @@ CREATE TABLE `Supplier_Deduction` (
 ALTER TABLE `Supplier_Deduction` ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `Supplier_Deduction` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+-- 31/10/2025 --
+ALTER TABLE `Deduction` CHANGE `status` `status` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+
+ALTER TABLE `Deduction_Log` CHANGE `status` `status` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+
+ALTER TABLE `Deduction` ADD `default_range_min` DECIMAL(10,2) NULL AFTER `auto_data`, ADD `default_range_max` DECIMAL(10,2) NULL AFTER `default_range_min`, ADD `default_range_weight` DECIMAL(10,2) NULL AFTER `default_range_max`;
+
+ALTER TABLE `Deduction_Log` ADD `default_range_min` DECIMAL(10,2) NULL AFTER `auto_data`, ADD `default_range_max` DECIMAL(10,2) NULL AFTER `default_range_min`, ADD `default_range_weight` DECIMAL(10,2) NULL AFTER `default_range_max`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `after_deduction_update` BEFORE UPDATE ON `Deduction` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Always set action_id = 2 for update
+    SET action_value = 2;
+
+    -- Insert into Deduction_Log table
+    INSERT INTO Deduction_Log (
+        deduction_id,
+        F1, F2, F3, F4, F5, F6,
+        F7, F8, F9, F10, F11, F12, auto_data,
+        default_range_min, default_range_max, default_range_weight,
+        status, created_by, modified_by,
+        action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id,
+        NEW.F1, NEW.F2, NEW.F3, NEW.F4, NEW.F5, NEW.F6,
+        NEW.F7, NEW.F8, NEW.F9, NEW.F10, NEW.F11, NEW.F12, NEW.auto_data,
+        NEW.default_range_min, NEW.default_range_max, NEW.default_range_weight,
+        NEW.status, NEW.created_by, NEW.modified_by,
+        action_value, NEW.modified_by, NOW()
+    );
+END
+$$
+DELIMITER ;
