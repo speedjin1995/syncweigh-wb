@@ -9,7 +9,8 @@
 @media (min-width: 1200px) {
     .custom-xxl
     {
-        --vz-modal-width: 1600px;
+        /*--vz-modal-width: 1600px;*/
+        --vz-modal-width: 90%;
     }
   }
 
