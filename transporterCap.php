@@ -132,90 +132,6 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="status" class="col-sm-4 col-form-label">Company Reg No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="row">
-                                                                                            <div class="col-sm-4">
-                                                                                                <input type="text" class="form-control" id="status" name="status">
-                                                                                            </div>
-                                                                                            <div class="col-sm-8">
-                                                                                                <div class="row">
-                                                                                                    <label for="createdBy" class="col-sm-4 col-form-label">New Reg No</label>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <input type="text" class="form-control" id="createdBy" name="createdBy" required>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="createdDate" class="col-sm-4 col-form-label">Address Line 1</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="createdDate" name="createdDate" placeholder="Address Line 1">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="modifiedBy" class="col-sm-4 col-form-label">Address Line 2</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="modifiedBy" name="modifiedBy" placeholder="Address Line 2">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="modifiedDate" class="col-sm-4 col-form-label">Address Line 3</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="modifiedDate" name="modifiedDate" placeholder="Address Line 3">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="phoneNo" class="col-sm-4 col-form-label">Phone No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="Phone No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="faxNo" class="col-sm-4 col-form-label">Fax No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="Fax No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="contactName" class="col-sm-4 col-form-label">Contact Name</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="contactName" name="contactName" placeholder="Contact Name">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="icNo" class="col-sm-4 col-form-label">I/C No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="icNo" name="icNo" placeholder="I/C No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="tinNo" class="col-sm-4 col-form-label">Tin No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="Tin No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
                                                                             <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
                                                                         </div>
                                                                     </div>
@@ -287,7 +203,7 @@
                                                                 <h5 class="card-title mb-0">Previous Records</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <a href="template/Transporter_Template.xlsx" download style="display:none;">
+                                                                <!--a href="template/Transporter_Template.xlsx" download style="display:none;">
                                                                     <button type="button" id="downloadTemplate" class="btn btn-info waves-effect waves-light">
                                                                         <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                         Download Template
@@ -300,10 +216,10 @@
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
                                                                     <i class="fas fa-ban align-middle me-1"></i>
                                                                     Delete Transporter
-                                                                </button>
+                                                                </button-->
                                                                 <button type="button" id="addTransporterCap" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                    Add New Transporter
+                                                                    Add New Transport Cap
                                                                 </button>
                                                             </div> 
                                                         </div> 
@@ -448,7 +364,9 @@ $(function () {
                 }
                 else
                 {
-
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', 'Something went wrong' );
+                    $("#failBtn").click();
                 }
             });
         }
@@ -459,11 +377,6 @@ $(function () {
         $('#addModal').find('#id').val("");
         $('#addModal').find('#transportFit').val("");
         $('#addModal').find('#transportLoad').val("");
-        $('#addModal').find('#status').val("");
-        $('#addModal').find('#createdBy').val("");
-        $('#addModal').find('#createdDate').val("");
-        $('#addModal').find('#modifiedBy').val("");
-        $('#addModal').find('#modifiedDate').val("");
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -628,16 +541,6 @@ function edit(id){
             $('#addModal').find('#id').val(obj.message.id);
             $('#addModal').find('#transportFit').val(obj.message.transporter_code);
             $('#addModal').find('#transportLoad').val(obj.message.name);
-            $('#addModal').find('#status').val(obj.message.company_reg_no);
-            $('#addModal').find('#createdBy').val(obj.message.new_reg_no);
-            $('#addModal').find('#createdDate').val(obj.message.address_line_1);
-            $('#addModal').find('#modifiedBy').val(obj.message.address_line_2);
-            $('#addModal').find('#modifiedDate').val(obj.message.address_line_3);
-            $('#addModal').find('#phoneNo').val(obj.message.phone_no);
-            $('#addModal').find('#faxNo').val(obj.message.fax_no);
-            $('#addModal').find('#contactName').val(obj.message.contact_name);
-            $('#addModal').find('#icNo').val(obj.message.ic_no);
-            $('#addModal').find('#tinNo').val(obj.message.tin_no);
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
