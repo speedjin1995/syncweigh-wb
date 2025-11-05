@@ -18,6 +18,7 @@
     $lang["t-product"]="Sales Product";
     $lang["t-destination"]="Destination";
     $lang["t-transporter"]="Transporter";
+    $lang["t-transporter-cap"]="Transporter Cap";
     $lang["t-user"]="User";
     $lang["t-unit"]="Unit";
     $lang["t-vehicle"]="Vehicle";
