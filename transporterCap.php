@@ -164,7 +164,7 @@
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
                                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-success" id="uploadTransporter">Save changes</button>
+                                                        <button type="button" class="btn btn-success" id="uploadTransporterCap">Save changes</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -212,11 +212,11 @@
                                                                 <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light" style="display:none;">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     Upload Excel
-                                                                </button>
+                                                                </button-->
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
                                                                     <i class="fas fa-ban align-middle me-1"></i>
                                                                     Delete Transporter
-                                                                </button-->
+                                                                </button>
                                                                 <button type="button" id="addTransporterCap" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     Add New Transport Cap
@@ -398,7 +398,7 @@ $(function () {
         });
     });
 
-    $('#uploadTransporter').on('click', function(){
+    $('#uploadTransporterCap').on('click', function(){
         $('#spinnerLoading').show();
         var formData = $('#uploadForm').serializeArray();
         var data = [];
@@ -418,7 +418,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/uploadTransporter.php',
+            url: 'php/uploadTransporterCap.php',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -503,7 +503,7 @@ $(function () {
 
         if (selectedIds.length > 0) {
             if (confirm('Are you sure you want to cancel these items?')) {
-                $.post('php/deleteTransporter.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                $.post('php/deleteTransporterCap.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -526,7 +526,7 @@ $(function () {
         } 
         else {
             // Optionally, you can display a message or take another action if no IDs are selected
-            alert("Please select at least one transporter to delete.");
+            alert("Please select at least one transporter cap to delete.");
             $('#spinnerLoading').hide();
         }     
     });
@@ -539,8 +539,8 @@ function edit(id){
         var obj = JSON.parse(data);
         if(obj.status === 'success'){
             $('#addModal').find('#id').val(obj.message.id);
-            $('#addModal').find('#transportFit').val(obj.message.transporter_code);
-            $('#addModal').find('#transportLoad').val(obj.message.name);
+            $('#addModal').find('#transportFit').val(obj.message.transport_fit);
+            $('#addModal').find('#transportLoad').val(obj.message.transport_load);
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -564,7 +564,7 @@ function edit(id){
 function deactivate(id){
     $('#spinnerLoading').show();
     if (confirm('Are you sure you want to cancel this item?')) {
-        $.post('php/deleteTransporter.php', {userID: id}, function(data){
+        $.post('php/deleteTransporterCap.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
             
             if(obj.status === 'success'){
