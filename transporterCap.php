@@ -203,19 +203,19 @@
                                                                 <h5 class="card-title mb-0">Previous Records</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <!--a href="template/Transporter_Template.xlsx" download style="display:none;">
+                                                                <a href="template/Transporter_Cap_Template.xlsx" download>
                                                                     <button type="button" id="downloadTemplate" class="btn btn-info waves-effect waves-light">
                                                                         <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                         Download Template
                                                                     </button>
                                                                 </a>
-                                                                <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light" style="display:none;">
+                                                                <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     Upload Excel
-                                                                </button-->
+                                                                </button>
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
                                                                     <i class="fas fa-ban align-middle me-1"></i>
-                                                                    Delete Transporter
+                                                                    Delete Transporter Cap
                                                                 </button>
                                                                 <button type="button" id="addTransporterCap" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
@@ -231,6 +231,8 @@
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th>Transporter Fit</th>
                                                                     <th>Transporter Load</th>
+                                                                    <th>Status</th>
+                                                                    <th>Action</th>
                                                                 </tr>
                                                             </thead>
                                                         </table>
@@ -633,9 +635,9 @@ function displayPreview(data) {
     // Get the headers
     var headers = jsonData[0];
 
-    // Ensure we handle cases where there may be less than 8 columns
-    while (headers.length < 12) {
-        headers.push(''); // Adding empty headers to reach 8 columns
+    // Ensure we handle cases where there may be less than 2 columns
+    while (headers.length < 2) {
+        headers.push(''); // Adding empty headers to reach 2 columns
     }
 
     // Create HTML table headers
@@ -650,12 +652,12 @@ function displayPreview(data) {
         htmlTable += '<tr>';
         var rowData = jsonData[i];
 
-        // Ensure we handle cases where there may be less than 8 cells in a row
-        while (rowData.length < 12) {
-            rowData.push(''); // Adding empty cells to reach 8 columns
+        // Ensure we handle cases where there may be less than 2 cells in a row
+        while (rowData.length < 2) {
+            rowData.push(''); // Adding empty cells to reach 2 columns
         }
 
-        for (var j = 0; j < 12; j++) {
+        for (var j = 0; j < 2; j++) {
             var cellData = rowData[j];
             var formattedData = cellData;
 

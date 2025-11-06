@@ -12,9 +12,11 @@ $data = json_decode(file_get_contents('php://input'), true);
 if (!empty($data)) {
     $errorSoProductArray = [];
     foreach ($data as $rows) {
-        $Code = $rows['Item'];
-        $Name = !empty($rows['Description']) ? trim($rows['Description']) : '';
-        $Description = !empty($rows['Description']) ? trim($rows['Description']) : '';
+        $Code = $rows['ProductCode'];
+        $Name = !empty($rows['ProductName']) ? trim($rows['ProductName']) : '';
+        $Description = !empty($rows['ProductName']) ? trim($rows['ProductName']) : '';
+        $Company = !empty($rows['Company']) ? searchCompanyIdByName($rows['Company'], $db) : '';
+        $Plant = !empty($rows['Plant']) ? searchPlantIdByName($rows['Plant'], $db) : '';
         $Price = '0.00';
         $action = "1";
         
@@ -25,17 +27,11 @@ if (!empty($data)) {
             $productRow = mysqli_fetch_assoc($productDetail);
             
             if(empty($productRow)){
-                if ($insert_stmt = $db->prepare("INSERT INTO Product (product_code, name, description, price, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?)")) {
-                    $insert_stmt->bind_param('ssssss', $Code, $Name, $Description, $Price, $uid, $uid);
+                if ($insert_stmt = $db->prepare("INSERT INTO Product (product_code, name, description, price, company_id, plant_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $insert_stmt->bind_param('ssssssss', $Code, $Name, $Description, $Price, $Company, $Plant, $uid, $uid);
                     $insert_stmt->execute();
                     $invid = $insert_stmt->insert_id; // Get the inserted reseller ID
                     $insert_stmt->close();
-
-                    if ($insert_log = $db->prepare("INSERT INTO Product_Log (product_id, product_code, name, description, price, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('sssssss', $invid, $Code, $Name, $Description, $Price, $action, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }            
                 }
             }else{
                 $errMsg = "Product: ". $Name ." already exist in master data.";

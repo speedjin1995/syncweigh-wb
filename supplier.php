@@ -733,7 +733,7 @@ function displayPreview(data) {
     var headers = jsonData[0];
 
     // Ensure we handle cases where there may be less than 15 columns
-    while (headers.length < 12) {
+    while (headers.length < 14) {
         headers.push(''); // Adding empty headers to reach 15 columns
     }
 
@@ -750,11 +750,11 @@ function displayPreview(data) {
         var rowData = jsonData[i];
 
         // Ensure we handle cases where there may be less than 15 cells in a row
-        while (rowData.length < 12) {
+        while (rowData.length < 14) {
             rowData.push(''); // Adding empty cells to reach 15 columns
         }
 
-        for (var j = 0; j < 12; j++) {
+        for (var j = 0; j < 14; j++) {
             var cellData = rowData[j];
             var formattedData = cellData;
 

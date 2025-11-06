@@ -786,9 +786,9 @@ function displayPreview(data) {
     // Get the headers
     var headers = jsonData[0];
 
-    // Ensure we handle cases where there may be less than 15 columns
-    while (headers.length < 2) {
-        headers.push(''); // Adding empty headers to reach 15 columns
+    // Ensure we handle cases where there may be less than 4 columns
+    while (headers.length < 4) {
+        headers.push(''); // Adding empty headers to reach 4 columns
     }
 
     // Create HTML table headers
@@ -803,12 +803,12 @@ function displayPreview(data) {
         htmlTable += '<tr>';
         var rowData = jsonData[i];
 
-        // Ensure we handle cases where there may be less than 15 cells in a row
-        while (rowData.length < 2) {
-            rowData.push(''); // Adding empty cells to reach 15 columns
+        // Ensure we handle cases where there may be less than 4 cells in a row
+        while (rowData.length < 4) {
+            rowData.push(''); // Adding empty cells to reach 4 columns
         }
 
-        for (var j = 0; j < 2; j++) {
+        for (var j = 0; j < 4; j++) {
             var cellData = rowData[j];
             var formattedData = cellData;
 

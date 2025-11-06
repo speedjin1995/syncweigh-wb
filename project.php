@@ -223,7 +223,7 @@
                                                                 <h5 class="card-title mb-0">Previous Records</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <!--<a href="template/Site_Template.xlsx" download>
+                                                                <a href="template/Project_Code_Template.xlsx" download>
                                                                     <button type="button" id="downloadTemplate" class="btn btn-info waves-effect waves-light">
                                                                         <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                         Download Template
@@ -236,7 +236,7 @@
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
                                                                     <i class="fas fa-ban align-middle me-1"></i>
                                                                     Delete Project
-                                                                </button-->
+                                                                </button>
                                                                 <button type="button" id="addSite" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     Add New Project
@@ -459,7 +459,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/uploadSite.php',
+            url: 'php/uploadProject.php',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -661,9 +661,9 @@ function displayPreview(data) {
     // Get the headers
     var headers = jsonData[0];
 
-    // Ensure we handle cases where there may be less than 8 columns
-    while (headers.length < 8) {
-        headers.push(''); // Adding empty headers to reach 8 columns
+    // Ensure we handle cases where there may be less than 4 columns
+    while (headers.length < 4) {
+        headers.push(''); // Adding empty headers to reach 4 columns
     }
 
     // Create HTML table headers
@@ -678,12 +678,12 @@ function displayPreview(data) {
         htmlTable += '<tr>';
         var rowData = jsonData[i];
 
-        // Ensure we handle cases where there may be less than 7 cells in a row
-        while (rowData.length < 7) {
-            rowData.push(''); // Adding empty cells to reach 7 columns
+        // Ensure we handle cases where there may be less than 4 cells in a row
+        while (rowData.length < 4) {
+            rowData.push(''); // Adding empty cells to reach 4 columns
         }
 
-        for (var j = 0; j < 7; j++) {
+        for (var j = 0; j < 4; j++) {
             var cellData = rowData[j];
             var formattedData = cellData;
 
