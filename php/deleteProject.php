@@ -26,17 +26,14 @@ if(isset($_POST['userID'])){
 			$stmt2->bind_param('s', $del);
 			
 			if($stmt2->execute()){
-				foreach($_POST['userID'] as $id){
-					if ($insert_stmt = $db->prepare("INSERT INTO Site_Log (site_id, action_id, action_by) VALUES (?, ?, ?)")) {
-						$insert_stmt->bind_param('sss', $id, $action, $username);
-						// Execute the prepared query.
-						$insert_stmt->execute();
-						$insert_stmt->close();
-					}
-				}
-
-				$stmt2->close();
-				$db->close();
+				// foreach($_POST['userID'] as $id){
+				// 	if ($insert_stmt = $db->prepare("INSERT INTO Site_Log (site_id, action_id, action_by) VALUES (?, ?, ?)")) {
+				// 		$insert_stmt->bind_param('sss', $id, $action, $username);
+				// 		// Execute the prepared query.
+				// 		$insert_stmt->execute();
+				// 		$insert_stmt->close();
+				// 	}
+				// }
 				
 				echo json_encode(
 					array(
@@ -61,6 +58,8 @@ if(isset($_POST['userID'])){
 				)
 			);
 		}
+
+		$stmt2->close();
 	}else{
 		if ($stmt2 = $db->prepare("UPDATE Projects SET status=? WHERE id=?")) {
 			$stmt2->bind_param('ss', $del , $id);
@@ -81,8 +80,6 @@ if(isset($_POST['userID'])){
 					)
 				);
 			}
-
-			$stmt2->close();
 		} 
 		else{
 			echo json_encode(
@@ -92,6 +89,8 @@ if(isset($_POST['userID'])){
 				)
 			);
 		}
+
+		$stmt2->close();
 	}
 } 
 else{

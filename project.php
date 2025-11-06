@@ -233,10 +233,10 @@
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     Upload Excel
                                                                 </button>
-                                                                <!--<button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
+                                                                <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
                                                                     <i class="fas fa-ban align-middle me-1"></i>
                                                                     Delete Project
-                                                                </button-->
+                                                                </button>
                                                                 <button type="button" id="addSite" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     Add New Project
