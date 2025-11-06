@@ -26,6 +26,8 @@ if (!empty($data)) {
         $ContactName = !empty($rows['ContactName']) ? $rows['ContactName'] : '';
         $ICNo = !empty($rows['ICNo']) ? $rows['ICNo'] : '';
         $TinNo = !empty($rows['TinNo']) ? $rows['TinNo'] : '';
+        $Company = !empty($rows['Company']) ? searchCompanyIdByName($rows['Company'], $db) : '';
+        $Plant = !empty($rows['Plant']) ? searchPlantIdByName($rows['Plant'], $db) : '';
         $action = "1";
 
         # Customer Checking & Processing
@@ -35,17 +37,11 @@ if (!empty($data)) {
             $customerRow = mysqli_fetch_assoc($customerDetail);
             
             if(empty($customerRow)){
-                if ($insert_stmt = $db->prepare("INSERT INTO Customer (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                    $insert_stmt->bind_param('ssssssssssssss', $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $uid, $uid);
+                if ($insert_stmt = $db->prepare("INSERT INTO Customer (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, company_id, plant_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $insert_stmt->bind_param('ssssssssssssssss', $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $Company, $Plant, $uid, $uid);
                     $insert_stmt->execute();
                     $invid = $insert_stmt->insert_id; // Get the inserted reseller ID
-                    $insert_stmt->close();
-                
-                    if ($insert_log = $db->prepare("INSERT INTO Customer_Log (customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('sssssssssssssss', $invid, $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $uid, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }            
+                    $insert_stmt->close();   
                 }
             }else{
                 $errMsg = "Customer: ". $Name ." already exist in master data.";

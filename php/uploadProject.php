@@ -3,8 +3,6 @@ session_start();
 require_once 'db_connect.php';
 require_once 'requires/lookup.php';
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 $uid = $_SESSION['username'];
 
@@ -14,29 +12,27 @@ $data = json_decode(file_get_contents('php://input'), true);
 if (!empty($data)) {
     $errorSoProductArray = [];
     foreach ($data as $rows) {
-        $Code = $rows['RawMaterialCode'];
-        $Name = !empty($rows['RawMaterialName']) ? trim($rows['RawMaterialName']) : '';
-        $Description = !empty($rows['RawMaterialName']) ? trim($rows['RawMaterialName']) : '';
+        $Code = $rows['ProjectCode'];
+        $Name = !empty($rows['ProjectName']) ? trim($rows['ProjectName']) : '';
         $Company = !empty($rows['Company']) ? searchCompanyIdByName($rows['Company'], $db) : '';
         $Plant = !empty($rows['Plant']) ? searchPlantIdByName($rows['Plant'], $db) : '';
-        $Price = '0.00';
-        $type = 'Raw Material';
         $action = "1";
         
+        # Checking for existing Project.
         if($Code != null && $Code != ''){
-            $rawMatQuery = "SELECT * FROM Raw_Mat WHERE raw_mat_code = '$Code' AND status='0'";
-            $rawMatDetail = mysqli_query($db, $rawMatQuery);
-            $rawMatRow = mysqli_fetch_assoc($rawMatDetail);
+            $projectQuery = "SELECT * FROM Projects WHERE project = '$Code' AND status='0'";
+            $projectDetail = mysqli_query($db, $projectQuery);
+            $projectRow = mysqli_fetch_assoc($projectDetail);
             
-            if(empty($rawMatRow)){
-                if ($insert_stmt = $db->prepare("INSERT INTO Raw_Mat (raw_mat_code, name, description, price, type, company_id, plant_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                    $insert_stmt->bind_param('sssssssss', $Code, $Name, $Description, $Price, $type, $Company, $Plant, $uid, $uid);
+            if(empty($projectRow)){
+                if ($insert_stmt = $db->prepare("INSERT INTO Projects (project, project_name, company_id, plant_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?)")) {
+                    $insert_stmt->bind_param('ssssss', $Code, $Name, $Company, $Plant, $uid, $uid);
                     $insert_stmt->execute();
                     $invid = $insert_stmt->insert_id; // Get the inserted reseller ID
-                    $insert_stmt->close();    
+                    $insert_stmt->close();
                 }
             }else{
-                $errMsg = "Raw Material: ". $Name ." already exist in master data.";
+                $errMsg = "Project: ". $Name ." already exist in master data.";
                 $errorSoProductArray[] = $errMsg;
                 continue;    
             }
