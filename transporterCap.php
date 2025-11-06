@@ -591,7 +591,7 @@ function deactivate(id){
 function reactivate(id) {
   if (confirm('Do you want to reactivate this item?')) {
     $('#spinnerLoading').show();
-    $.post('php/reactivateMasterData.php', {userID: id, type: "Transporter"}, function(data){
+    $.post('php/reactivateMasterData.php', {userID: id, type: "Transport_Cap"}, function(data){
         var obj = JSON.parse(data);
 
         if(obj.status === 'success'){

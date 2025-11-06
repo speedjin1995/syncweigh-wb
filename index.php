@@ -540,6 +540,19 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
+                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="transactionStatus" name="transactionStatus" class="form-select select2">
+                                                                                            <option value="Sales" selected>Dispatch</option>
+                                                                                            <option value="Purchase">Receiving</option>
+                                                                                            <option value="Local">Internal Transfer</option>
+                                                                                            <option value="Misc">Miscellaneous</option>
+                                                                                        </select>  
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                             <div class="col-xxl-4 col-lg-4"  <?php 
                                                                                 if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN' && $allowManual == 'N'){
                                                                                     echo 'style="display:none;"';
@@ -568,384 +581,11 @@ else{
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row col-12" id="weighingDetailsSection" style="display:none;">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select id="weightType" name="weightType" class="form-select select2">
-                                                                                            <option value="Normal" selected>Normal Weighing</option>
-                                                                                            <option value="Container">Primer Mover</option>
-                                                                                            <option value="Empty Container">Primer Mover + Container</option>
-                                                                                            <!-- <option value="Different Container">Primer Mover + Different Bins</option> -->
-                                                                                        </select>   
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transactionId" class="col-sm-4 col-form-label">Transaction ID</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" placeholder="Transaction ID" readonly>                                                                                  
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divOrderWeight">
-                                                                                <div class="row">
-                                                                                    <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierWeight" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="supplierWeight" class="col-sm-4 col-form-label">Supplier Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="supplierWeight" name="supplierWeight"  placeholder="Supplier Weight">
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>  
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select id="transactionStatus" name="transactionStatus" class="form-select select2">
-                                                                                            <option value="Sales" selected>Dispatch</option>
-                                                                                            <option value="Purchase">Receiving</option>
-                                                                                            <option value="Local">Internal Transfer</option>
-                                                                                            <option value="Misc">Miscellaneous</option>
-                                                                                        </select>  
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="purchaseOrder" class="col-sm-4 col-form-label">P/O No.</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifference">
-                                                                                <div class="row">
-                                                                                    <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div> 
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transactionDate" class="col-sm-4 col-form-label">Transaction Date</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            Please fill in the field.
-                                                                                        </div>    
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="invoiceNo" class="col-sm-4 col-form-label">Internal Doc No.</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Internal Doc No.">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divCustomerName">
-                                                                                <div class="row">
-                                                                                    <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select js-choice select2" id="customerName" name="customerName" required>
-                                                                                            <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
-                                                                                                <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierName" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="supplierName" name="supplierName" required>
-                                                                                            <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
-                                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="doDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="Delivery No" required>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="unitPriceDisplay" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row" id="productNameDisplay">
-                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product Code</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="productName" name="productName[]" multiple required>
-                                                                                            <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
-                                                                                                <option 
-                                                                                                    value="<?=$rowProduct['name'] ?>" 
-                                                                                                    data-price="<?=$rowProduct['price'] ?>" 
-                                                                                                    data-code="<?=$rowProduct['product_code'] ?>" 
-                                                                                                    data-high="<?=$rowProduct['high'] ?>" 
-                                                                                                    data-low="<?=$rowProduct['low'] ?>" 
-                                                                                                    data-variance="<?=$rowProduct['variance'] ?>" 
-                                                                                                    data-description="<?=$rowProduct['description'] ?>">
-                                                                                                    <?=$rowProduct['product_code'] ?> - <?=$rowProduct['name'] ?>
-                                                                                                </option>
-                                                                                            <?php } ?>
-                                                                                            <option value="Other" data-code="Other">Other</option>
-                                                                                        </select>      
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row" id="rawMaterialDisplay" style="display:none;">
-                                                                                    <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material Code</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="rawMaterialName" name="rawMaterialName[]" multiple required>
-                                                                                            <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] . ' - ' . $rowRowMat['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                            <option value="Other" data-code="Other">Other</option>
-                                                                                        </select>           
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row" id="containerDisplay">
-                                                                                    <label for="containerNoInput" class="col-sm-4 col-form-label">Container No 1</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="containerNoInput" name="containerNoInput" placeholder="Container No">
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row" id="emptyContainerDisplay" style="display:none" >
-                                                                                    <label for="emptyContainerNo" class="col-sm-4 col-form-label" id="containerNo1Label">Container No 1</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="emptyContainerNo" name="emptyContainerNo">
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php /*while($rowContainer=mysqli_fetch_assoc($container)){ ?>
-                                                                                                <option value="<?=$rowContainer['container_no'] ?>"><?=$rowContainer['container_no'] ?></option>
-                                                                                            <?php }*/ ?>
-                                                                                        </select>                   
-                                                                                    </div>
-                                                                                </div>
-                                                                                <input type="text" class="form-control" id="containerNo" name="containerNo" hidden>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sstDisplay" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="transporter" name="transporter" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
-                                                                                                <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>                                                                                          
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoDisplay">
-                                                                                <div class="row">
-                                                                                    <label for="sealNo" class="col-sm-4 col-form-label">Seal No 1</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="sealNo" name="sealNo" placeholder="Seal No">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoReplaceDisplay" style="display:none;">
-                                                                                <div class="row">
-                                                                                    
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="subTotalPriceDisplay" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="destination" class="col-sm-4 col-form-label">Destination</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="destination" name="destination" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
-                                                                                                <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>            
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2Display">
-                                                                                <div class="row">
-                                                                                    <label for="containerNo2" class="col-sm-4 col-form-label">Container No 2</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="containerNo2" name="containerNo2" placeholder="Container No 2">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2ReplaceDisplay">
-                                                                                <div class="row">
-                                                                                    
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="totalPriceDisplay" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="projectCode" class="col-sm-4 col-form-label">Project Code</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="projectCode" name="projectCode[]" multiple required>
-                                                                                            <?php while($rowProject=mysqli_fetch_assoc($projects)){ ?>
-                                                                                                <option value="<?=$rowProject['id'] ?>"><?=$rowProject['project'] . ' - ' . $rowProject['project_name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2Display">
-                                                                                <div class="row">
-                                                                                    <label for="sealNo2" class="col-sm-4 col-form-label">Seal No 2</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="sealNo2" name="sealNo2" placeholder="Seal No 2">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div> 
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2ReplaceDisplay">
-                                                                                <div class="row">
-                                                                                    
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
-                                                                                <div class="row">
-                                                                                    <label for="agent" class="col-sm-4 col-form-label">Sales Representative</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="agent" name="agent" >
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowAgent=mysqli_fetch_assoc($agent)){ ?>
-                                                                                                <option value="<?=$rowAgent['name'] ?>" data-code="<?=$rowAgent['agent_code'] ?>"><?=$rowAgent['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="replacementContainerDisplay" style="display:none">
-                                                                                <div class="row">
-                                                                                    <label for="replacementContainer" class="col-sm-4 col-form-label">New Empty Entrance Bin</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="otherRemarks" class="col-sm-1 col-form-label" style="width: 11%;">Other Remarks</label>
-                                                                                    <div class="col-sm-11" style="width: 89%;">
-                                                                                        <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" style="display:none">
-                                                                                <div class="row">
-                                                                                    <label for="plant" class="col-sm-4 col-form-label">Plant</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="plant" name="plant" required>
-                                                                                            <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
-                                                                                                <option value="<?=$rowPlant['name'] ?>" data-code="<?=$rowPlant['plant_code'] ?>"><?=$rowPlant['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>        
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+
+                                                        <div class="row col-12" id="weighingDetailsSection">
+
                                                         </div>
+                                                        
                                                         <div class="row col-12" style="display:none;">
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="card bg-light">
@@ -1398,6 +1038,7 @@ else{
                                         </div>
                                     </div>
 
+                                    <!-- Pre Printed Modal -->
                                     <div class="modal fade" id="prePrintModal">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
                                             <div class="modal-content">
@@ -1501,29 +1142,6 @@ else{
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!--div class="modal fade" id="uploadModal" role="dialog" aria-labelledby="importModalScrollableTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
-                                            <div class="modal-content">
-                                                <form role="form" id="uploadForm" class="needs-validation" novalidate autocomplete="off">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="importModalScrollableTitle">Upload Excel File</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <input type="file" id="fileInput">
-                                                        <button type="button" id="previewButton">Preview Data</button>
-                                                        <div id="previewTable" style="overflow: auto;"></div>
-                                                    </div> 
-
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-success" id="saveButton">Submit</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div-->
                                 </div>
                             </div> <!-- end row-->
 
@@ -1725,43 +1343,379 @@ else{
                     </form>
                 </div>
             </div>
-            <div class="modal fade" id="prePrintModal">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                    <form role="form" id="prePrintForm">
-                        <div class="modal-header bg-gray-dark color-palette">
-                            <h4 class="modal-title"></h4>
-                            <button type="button" class="close bg-gray-dark color-palette" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
 
-                        <div class="modal-body">
+            <?php include 'layouts/footer.php'; ?>
+        </div>
+        <!-- end main content-->
+    </div>
+
+
+    <script type="text/html" id="receivingSection">
+        <div class="col-xxl-12 col-lg-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xxl-4 col-lg-4 mb-3">
                             <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label>Pre-print Sale Slip</label>
-                                        <select name="prePrint" id="prePrint">
-                                            <option selected>Please Select</option>
-                                            <option value="Y">Yes</option>
-                                            <option value="N">No</option>
-                                        </select>
+                                <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
+                                <div class="col-sm-8">
+                                    <select id="weightType" name="weightType" class="form-select select2">
+                                        <option value="Normal" selected>Normal Weighing</option>
+                                        <option value="Container">Primer Mover</option>
+                                        <option value="Empty Container">Primer Mover + Container</option>
+                                        <!-- <option value="Different Container">Primer Mover + Different Bins</option> -->
+                                    </select>   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row">
+                                <label for="transactionId" class="col-sm-4 col-form-label">Transaction ID</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" placeholder="Transaction ID" readonly>                                                                                  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="divOrderWeight">
+                            <div class="row">
+                                <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
+                                        <div class="input-group-text">Kg</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                            <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierWeight" style="display:none;">
+                            <div class="row">
+                                <label for="supplierWeight" class="col-sm-4 col-form-label">Supplier Weight</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="supplierWeight" name="supplierWeight"  placeholder="Supplier Weight">
+                                        <div class="input-group-text">Kg</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="row">
+                        
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row">
+                                <label for="purchaseOrder" class="col-sm-4 col-form-label">P/O No.</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder">
+                                </div>
+                            </div>
                         </div>
-                    </form>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifference">
+                            <div class="row">
+                                <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
+                                        <div class="input-group-text">Kg</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="row">
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row">
+                                <label for="transactionDate" class="col-sm-4 col-form-label">Transaction Date</label>
+                                <div class="col-sm-8">
+                                    <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
+                                    <div class="invalid-feedback">
+                                        Please fill in the field.
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row">
+                                <label for="invoiceNo" class="col-sm-4 col-form-label">Internal Doc No.</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Internal Doc No.">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row">
+                                <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
+                                        <div class="input-group-text">Kg</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="divCustomerName">
+                            <div class="row">
+                                <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select js-choice select2" id="customerName" name="customerName" required>
+                                        <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
+                                            <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierName" style="display:none;">
+                            <div class="row">
+                                <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select select2" id="supplierName" name="supplierName" required>
+                                        <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
+                                            <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="doDisplay">
+                            <div class="row">
+                                <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="Delivery No" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="unitPriceDisplay" style="display:none;">
+                            <div class="row">
+                                <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
+                                        <div class="input-group-text">RM</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row" id="productNameDisplay">
+                                <label for="productName" class="col-sm-4 col-form-label">Product Code</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select select2" id="productName" name="productName[]" multiple required>
+                                        <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
+                                            <option 
+                                                value="<?=$rowProduct['name'] ?>" 
+                                                data-price="<?=$rowProduct['price'] ?>" 
+                                                data-code="<?=$rowProduct['product_code'] ?>" 
+                                                data-high="<?=$rowProduct['high'] ?>" 
+                                                data-low="<?=$rowProduct['low'] ?>" 
+                                                data-variance="<?=$rowProduct['variance'] ?>" 
+                                                data-description="<?=$rowProduct['description'] ?>">
+                                                <?=$rowProduct['product_code'] ?> - <?=$rowProduct['name'] ?>
+                                            </option>
+                                        <?php } ?>
+                                        <option value="Other" data-code="Other">Other</option>
+                                    </select>      
+                                </div>
+                            </div>
+                            <div class="row" id="rawMaterialDisplay" style="display:none;">
+                                <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material Code</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select select2" id="rawMaterialName" name="rawMaterialName[]" multiple required>
+                                        <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
+                                            <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] . ' - ' . $rowRowMat['name'] ?></option>
+                                        <?php } ?>
+                                        <option value="Other" data-code="Other">Other</option>
+                                    </select>           
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row" id="containerDisplay">
+                                <label for="containerNoInput" class="col-sm-4 col-form-label">Container No 1</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="containerNoInput" name="containerNoInput" placeholder="Container No">
+                                </div>
+                            </div>
+                            <div class="row" id="emptyContainerDisplay" style="display:none" >
+                                <label for="emptyContainerNo" class="col-sm-4 col-form-label" id="containerNo1Label">Container No 1</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select select2" id="emptyContainerNo" name="emptyContainerNo">
+                                        <option selected="-">-</option>
+                                        <?php /*while($rowContainer=mysqli_fetch_assoc($container)){ ?>
+                                            <option value="<?=$rowContainer['container_no'] ?>"><?=$rowContainer['container_no'] ?></option>
+                                        <?php }*/ ?>
+                                    </select>                   
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" id="containerNo" name="containerNo" hidden>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="sstDisplay" style="display:none;">
+                            <div class="row">
+                                <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
+                                        <div class="input-group-text">RM</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row">
+                                <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select select2" id="transporter" name="transporter" required>
+                                        <option selected="-">-</option>
+                                        <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
+                                            <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
+                                        <?php } ?>
+                                    </select>                                                                                          
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoDisplay">
+                            <div class="row">
+                                <label for="sealNo" class="col-sm-4 col-form-label">Seal No 1</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="sealNo" name="sealNo" placeholder="Seal No">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoReplaceDisplay" style="display:none;">
+                            <div class="row">
+                                
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="subTotalPriceDisplay" style="display:none;">
+                            <div class="row">
+                                <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
+                                        <div class="input-group-text">RM</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row">
+                                <label for="destination" class="col-sm-4 col-form-label">Destination</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select select2" id="destination" name="destination" required>
+                                        <option selected="-">-</option>
+                                        <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
+                                            <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
+                                        <?php } ?>
+                                    </select>            
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2Display">
+                            <div class="row">
+                                <label for="containerNo2" class="col-sm-4 col-form-label">Container No 2</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="containerNo2" name="containerNo2" placeholder="Container No 2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2ReplaceDisplay">
+                            <div class="row">
+                                
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="totalPriceDisplay" style="display:none;">
+                            <div class="row">
+                                <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
+                                        <div class="input-group-text">RM</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row">
+                                <label for="projectCode" class="col-sm-4 col-form-label">Project Code</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select select2" id="projectCode" name="projectCode[]" multiple required>
+                                        <?php while($rowProject=mysqli_fetch_assoc($projects)){ ?>
+                                            <option value="<?=$rowProject['id'] ?>"><?=$rowProject['project'] . ' - ' . $rowProject['project_name'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2Display">
+                            <div class="row">
+                                <label for="sealNo2" class="col-sm-4 col-form-label">Seal No 2</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="sealNo2" name="sealNo2" placeholder="Seal No 2">
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2ReplaceDisplay">
+                            <div class="row">
+                                
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
+                            <div class="row">
+                                <label for="agent" class="col-sm-4 col-form-label">Sales Representative</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select select2" id="agent" name="agent" >
+                                        <option selected="-">-</option>
+                                        <?php while($rowAgent=mysqli_fetch_assoc($agent)){ ?>
+                                            <option value="<?=$rowAgent['name'] ?>" data-code="<?=$rowAgent['agent_code'] ?>"><?=$rowAgent['name'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" id="replacementContainerDisplay" style="display:none">
+                            <div class="row">
+                                <label for="replacementContainer" class="col-sm-4 col-form-label">New Empty Entrance Bin</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xxl-12 col-lg-12 mb-3">
+                            <div class="row">
+                                <label for="otherRemarks" class="col-sm-1 col-form-label" style="width: 11%;">Other Remarks</label>
+                                <div class="col-sm-11" style="width: 89%;">
+                                    <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 mb-3" style="display:none">
+                            <div class="row">
+                                <label for="plant" class="col-sm-4 col-form-label">Plant</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select select2" id="plant" name="plant" required>
+                                        <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
+                                            <option value="<?=$rowPlant['name'] ?>" data-code="<?=$rowPlant['plant_code'] ?>"><?=$rowPlant['name'] ?></option>
+                                        <?php } ?>
+                                    </select>        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <?php include 'layouts/footer.php'; ?>
         </div>
-        <!-- end main content-->
-
-    </div>
+    </script>
 
     <script type="text/html" id="productDetail">
         <tr class="details">
@@ -1865,26 +1819,6 @@ else{
             'height': 'auto'
         });
 
-        // Initialize all Select2 elements in the modal
-        $('#addModal .select2').select2({
-            allowClear: true,
-            placeholder: "Please Select",
-            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
-        });
-
-        // Apply custom styling to Select2 elements in addModal
-        $('#addModal .select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('#addModal .select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
-        });
-
-
         $('#companyModal .select2').select2({
             allowClear: true,
             placeholder: "Please Select a Company",
@@ -1919,6 +1853,25 @@ else{
             defaultDate: '',
             clickOpens: false,
             allowInput: false
+        });
+
+        // Initialize all Select2 elements in the modal
+        $('#addModal .select2').select2({
+            allowClear: true,
+            placeholder: "Please Select",
+            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+        });
+
+        // Apply custom styling to Select2 elements in addModal
+        $('#addModal .select2-container .select2-selection--single').css({
+            'padding-top': '4px',
+            'padding-bottom': '4px',
+            'height': 'auto'
+        });
+
+        $('#addModal .select2-container .select2-selection__arrow').css({
+            'padding-top': '33px',
+            'height': 'auto'
         });
 
         grossIncomingDatePicker = $('#grossIncomingDate').flatpickr({
@@ -3202,7 +3155,7 @@ else{
 
         $('#addWeight').on('click', function(){
             // Show Capture Buttons When Add New
-            $('#addModal').find('#grossCapture').show();
+            /*$('#addModal').find('#grossCapture').show();
             $('#addModal').find('#tareCapture').show();
             $('#addModal').find('#id').val("");
             $('#addModal').find('#currentWeight').text("0");
@@ -3311,8 +3264,7 @@ else{
                 select2Container.next('.select2-error').remove(); // Remove error message
             });
 
-            $('#companyModal').find('#companySelect').val("").trigger('change');
-            $('#companyModal').modal('show');
+            
 
             // $('#addModal').modal('show');
             
@@ -3328,7 +3280,10 @@ else{
                 unhighlight: function (element, errorClass, validClass) {
                     $(element).removeClass('is-invalid');
                 }
-            });
+            });*/
+
+            $('#companyModal').find('#companySelect').val("");
+            $('#companyModal').modal('show');
         });
 
         $('#uploadExccl').on('click', function(){
@@ -4248,6 +4203,9 @@ else{
             }
 
             if($(this).val() == "Purchase" || $(this).val() == "Local"){
+                $('#weighingDetailsSection').append($('#receivingSection').html());
+                addNewWeight(today);
+                $('#company').trigger('change');
                 $('#divWeightDifference').show();
                 $('#divSupplierWeight').show();
                 $('#addModal').find('#orderWeight').val("");
@@ -4266,6 +4224,9 @@ else{
                 }
             }
             else{
+                //$('#weighingDetailsSection').append($('#receivingSection').html());
+                addNewWeight(today);
+                $('#company').trigger('change');
                 $('#divOrderWeight').show();
                 $('#addModal').find('#orderWeight').val("0");
                 $('#addModal').find('#supplierWeight').val("");
@@ -4335,6 +4296,11 @@ else{
             $('#agentCode').val($('#agent :selected').data('code'));
         });
 
+        //siteName
+        $('#siteName').on('change', function(){
+            $('#siteCode').val($('#siteName :selected').data('code'));
+        });
+
         //customerName
         $('#customerName').on('change', function(){
             $('#customerCode').val($('#customerName :selected').data('code'));
@@ -4401,11 +4367,6 @@ else{
 
             // Store codes as JSON string or comma-separated (both valid)
             $('#rawMaterialCode').val(JSON.stringify(codes));
-        });
-
-        //siteName
-        $('#siteName').on('change', function(){
-            $('#siteCode').val($('#siteName :selected').data('code'));
         });
 
         $('input[name="loadDrum"]').change(function() {
@@ -4651,12 +4612,10 @@ else{
                     $('#spinnerLoading').hide();
                 });
 
-                $('#weighingDetailsSection').show();
                 $('#vehicle1Section').show();
                 $('#companyModal').modal('hide');
                 $('#addModal').modal('show');
             }else{
-                $('#weighingDetailsSection').hide();
                 $('#vehicle1Section').hide();
                 $('#companyModal').modal('hide');
                 $('#addModal').modal('hide');
@@ -4678,9 +4637,12 @@ else{
     
     function confirmCompanySelection(){
         var selectedCompanyId = $('#companySelect').val();
+        //$('#addModal').modal('hide');
 
         if (selectedCompanyId != '' && selectedCompanyId != null){
-            $('#company').val(selectedCompanyId).trigger('change');
+            $('#company').val(selectedCompanyId);
+            $('#companyModal').modal('hide');
+            $('#addModal').modal('show');
         }else{
             alert('Please select a company to proceed.');
         }
@@ -4756,6 +4718,142 @@ else{
             options += '<option value="' + items[i][valueKey] + '"' + dataCodeAttr + '>' + label + '</option>';
         }
         return options;
+    }
+
+    function addNewWeight(today){
+        // Show Capture Buttons When Add New
+        $('#addModal').find('#grossCapture').show();
+        $('#addModal').find('#tareCapture').show();
+        $('#addModal').find('#id').val("");
+        $('#addModal').find('#currentWeight').text("0");
+        $('#addModal').find('#transactionId').val("");
+        $('#addModal').find('#transactionStatus').val("Sales").trigger('change');
+        $('#addModal').find('#emptyContainerNo').val("").trigger('change');
+        $('#addModal').find('#weightType').val("Normal").trigger('change');
+        $('#addModal').find('#customerType').val("Normal").trigger('change');
+        $('#addModal').find('#transactionDate').val(formatDate2(today));
+        $('#addModal').find('#vehiclePlateNo1').val("").trigger('change');
+        $('#addModal').find('#vehiclePlateNo2').val("").trigger('change');
+        $('#addModal').find('#supplierWeight').val("");
+        $('#addModal').find('#bypassReason').val("");
+        $('#addModal').find('#customerCode').val("");
+        $('#addModal').find('#customerName').val("-").trigger('change');
+        $('#addModal').find('#supplierCode').val("");
+        $('#addModal').find('#supplierName').val("-").trigger('change');
+        $('#addModal').find('#productCode').val("");
+        $('#addModal').find('#productName').val("-").trigger('change');
+        $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true).trigger('change');
+        $('#addModal').find('#rawMaterialCode').val("");
+        $('#addModal').find('#rawMaterialName').val("-").trigger('change');
+        $('#addModal').find('#siteCode').val("");
+        $('#addModal').find('#siteName').val("").trigger('change');
+        $('#addModal').find('#plantCode').val("");
+        $('#addModal').find('#sealNo').val("");
+        $('#addModal').find('#invoiceNo').val("");
+        $('#addModal').find('#purchaseOrder').val("").trigger('change');
+        $('#addModal').find('#salesOrder').val("").trigger('change');
+        $('#addModal').find('#deliveryNo').val("");
+        $('#addModal').find('#transporterCode').val("");
+        $('#addModal').find('#transporter').val("-").trigger('change');
+        $('#addModal').find('#destinationCode').val("");
+        $('#addModal').find('#company').val("").trigger('change');
+        $('#addModal').find('#agent').val("").trigger('change');
+        $('#addModal').find('#agentCode').val("");
+        $('#addModal').find('#plantCode').val("");
+        $('#addModal').find('#plant').val("<?=$plantName ?>").trigger('change');
+        $('#addModal').find('#destination').val("-").trigger('change');
+        $('#addModal').find('#replacementContainer').val('').trigger('keyup');
+        $('#addModal').find('#otherRemarks').val("");
+        $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
+        $('#addModal').find('#manualVehicle2').prop('checked', false).trigger('change');
+        $('#addModal').find('#grossIncoming').val("");
+        grossIncomingDatePicker.clear();
+        $('#addModal').find('#tareOutgoing').val("");
+        tareOutgoingDatePicker.clear();
+        $('#addModal').find('#nettWeight').val("");
+        $('#addModal').find('#vehicleWeight2').val("");
+        $('#addModal').find('#emptyContainerWeight2').val("");
+        $('#addModal').find('#grossIncoming2').val("");
+        $('#addModal').find('#status').val("");
+        grossIncomingDatePicker2.clear();
+        $('#addModal').find('#tareOutgoing2').val("");
+        tareOutgoingDatePicker2.clear();
+        $('#addModal').find('#nettWeight2').val("");
+        $('#addModal').find('#reduceWeight').val("");
+        $('#addModal').find('#weightDifference').val("");
+        $('#addModal').find('#manualWeightNo').trigger('click');
+        $('#addModal').find('#weighbridge').val("");
+        $('#addModal').find('#productDescription').val("");
+        $('#addModal').find('#productHigh').val("");
+        $('#addModal').find('#productLow').val("");
+        $('#addModal').find('#productVariance').val("");
+        $('#addModal').find('#orderWeight').val("0");
+        $('#addModal').find('#unitPrice').val("0.00");
+        $('#addModal').find('#subTotalPrice').val("0.00");
+        $('#addModal').find('#sstPrice').val("0.00");
+        $('#addModal').find('#productPrice').val("0.00");
+        $('#addModal').find('#totalPrice').val("0.00");
+        $('#addModal').find('#finalWeight').val("");
+        $('#addModal').find("input[name='loadDrum'][value='true']").prop("checked", true).trigger('change');
+        $('#addModal').find('#noOfDrum').val("");
+        $('#addModal').find('#balance').val("");
+        $('#addModal').find('#insufficientBalDisplay').hide();
+        $('#addModal').find('#containerNoInput').val("");
+        $('#addModal').find('#containerNo').val("");
+        $('#addModal').find('#containerNo2').val("");
+        $('#addModal').find('#sealNo2').val("");
+        $('#addModal').find('#projectCode').val("").trigger('change');
+
+        // Show select and hide input readonly
+        $('#addModal').find('#salesOrderEdit').val("").hide();
+        $('#addModal').find('#purchaseOrderEdit').val("").hide();
+        $('#addModal').find('#salesOrder').next('.select2-container').show();
+
+        $('#addModal').find('#productTable').html('');
+        rowCount = 0;
+
+        // Remove Validation Error Message
+        $('#addModal .is-invalid').removeClass('is-invalid');
+
+        $('#addModal .select2').select2({
+            allowClear: true,
+            placeholder: "Please Select",
+            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+        });
+
+        // Apply custom styling to Select2 elements in addModal
+        $('#addModal .select2-container .select2-selection--single').css({
+            'padding-top': '4px',
+            'padding-bottom': '4px',
+            'height': 'auto'
+        });
+
+        $('#addModal .select2-container .select2-selection__arrow').css({
+            'padding-top': '33px',
+            'height': 'auto'
+        });
+
+        $('#addModal .select2[required]').each(function () {
+            var select2Field = $(this);
+            var select2Container = select2Field.next('.select2-container');
+            
+            select2Container.find('.select2-selection').css('border', ''); // Remove red border
+            select2Container.next('.select2-error').remove(); // Remove error message
+        });
+        
+        $('#weightForm').validate({
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
     }
 
     function handleWeightType(weightType){
@@ -5764,74 +5862,7 @@ else{
         }
     }
 
-    // function deactivate(id){
-        
-    //     $('#spinnerLoading').show();
-    //     $.post('php/deleteWeight.php', {userID: id}, function(data){
-    //         var obj = JSON.parse(data);
-            
-    //         if(obj.status === 'success'){
-    //             table.ajax.reload();
-    //             $('#spinnerLoading').hide();
-    //             $("#successBtn").attr('data-toast-text', obj.message);
-    //             $("#successBtn").click();
-    //         }
-    //         else if(obj.status === 'failed'){
-    //             $('#spinnerLoading').hide();
-    //             $("#failBtn").attr('data-toast-text', obj.message );
-    //             $("#failBtn").click();
-    //         }
-    //         else{
-    //             $('#spinnerLoading').hide();
-    //             $("#failBtn").attr('data-toast-text', obj.message );
-    //             $("#failBtn").click();
-    //         }
-    //     });
-    // }
-
     function print(id, transactionStatus, isEmptyContainer = 'N') {
-        /*if (transactionStatus == "Sales"){
-            $('#prePrintModal').find('#id').val(id);
-            $('#prePrintModal').find('#prePrint').val("");
-            $("#prePrintModal").modal("show");
-
-            $('#prePrintForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
-        }else{
-            $.post('php/print.php', {userID: id, file: 'weight'}, function(data){
-                var obj = JSON.parse(data);
-
-                if(obj.status === 'success'){
-                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                    printWindow.document.write(obj.message);
-                    printWindow.document.close();
-                    setTimeout(function(){
-                        printWindow.print();
-                        printWindow.close();
-                    }, 500);
-                }
-                else if(obj.status === 'failed'){
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-                else{
-                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                    $("#failBtn").click();
-                }
-            });
-        }*/
-        //var id = $('#prePrintModal').find('#id').val();
         var prePrintStatus = 'N';
 
         $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
