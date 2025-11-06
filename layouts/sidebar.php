@@ -105,6 +105,9 @@
                                         <a href="transporter.php" class="nav-link">'.$lang['t-transporter'].'</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a href="transporterCap.php" class="nav-link">'.$lang['t-transporter-cap'].'</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a href="project.php" class="nav-link">'.$lang['t-project'].'</a>
                                     </li>
                                     <!--li class="nav-item">

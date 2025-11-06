@@ -84,8 +84,10 @@ File: Main Css File
   --vz-card-logo-light: none;
   --vz-list-group-hover-bg: #f3f6f9;
   --vz-input-bg: #fff;
-  --vz-input-border: #ced4da;
-  --vz-input-focus-border: #a0a8c4;
+  /*--vz-input-border: #ced4da;
+  --vz-input-focus-border: #a0a8c4;*/
+  --vz-input-border: #777777;
+  --vz-input-focus-border: #0039ff;
   --vz-input-disabled-bg: #eff2f7;
   --vz-input-group-addon-bg: #eff2f7;
   --vz-input-check-border: var(--vz-input-border);
