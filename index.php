@@ -1807,6 +1807,19 @@ else{
             placeholder: "Please Select",
         });
 
+        $('#companyModal .select2').select2({
+            allowClear: true,
+            placeholder: "Please Select a Company",
+            dropdownParent: $('#companyModal') // Ensures dropdown is not cut off
+        });
+
+        // Initialize all Select2 elements in the modal
+        $('#addModal .select2').select2({
+            allowClear: true,
+            placeholder: "Please Select",
+            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+        });
+
         // Apply custom styling to Select2 elements in search bar
         $('.select2-container .select2-selection--single').css({
             'padding-top': '4px',
@@ -1815,24 +1828,6 @@ else{
         });
 
         $('.select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
-        });
-
-        $('#companyModal .select2').select2({
-            allowClear: true,
-            placeholder: "Please Select a Company",
-            dropdownParent: $('#companyModal') // Ensures dropdown is not cut off
-        });
-
-        // Apply custom styling to Select2 elements in addModal
-        $('#companyModal .select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('#companyModal .select2-container .select2-selection__arrow').css({
             'padding-top': '33px',
             'height': 'auto'
         });
@@ -1853,25 +1848,6 @@ else{
             defaultDate: '',
             clickOpens: false,
             allowInput: false
-        });
-
-        // Initialize all Select2 elements in the modal
-        $('#addModal .select2').select2({
-            allowClear: true,
-            placeholder: "Please Select",
-            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
-        });
-
-        // Apply custom styling to Select2 elements in addModal
-        $('#addModal .select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('#addModal .select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
         });
 
         grossIncomingDatePicker = $('#grossIncomingDate').flatpickr({
@@ -3280,7 +3256,7 @@ else{
                 }
             });*/
 
-            $('#companyModal').find('#companySelect').val("");
+            $('#companyModal').find('#companySelect').val("").trigger('change');
             $('#companyModal').modal('show');
         });
 
@@ -4200,58 +4176,75 @@ else{
                 });
             }
 
-            if($(this).val() == "Purchase" || $(this).val() == "Local"){
-                // Instead of .html(), clone DOM nodes to preserve events and data
-                const receivingClone = $($('#receivingSection').html());
-                debugger;
-                $('#weighingDetailsSection').empty().append(receivingClone);
-                
-                // Reinitialize Select2 for all dropdowns inside the modal
+            if($(this).val() == "Purchase" || $(this).val() == "Local" || $(this).val() == "Misc"){
+                // Clear the section first
+                $('#weighingDetailsSection').empty();
+                $('#weighingDetailsSection').html($('#receivingSection').html());
+
                 reinitSelect2($('#addModal'));
+
+                // Reinitialize flatpickr for transaction date
+                $('#transactionDate').flatpickr({
+                    dateFormat: "d-m-Y",
+                    defaultDate: '',
+                    clickOpens: false,
+                    allowInput: false
+                });
 
                 // Run your existing logic
                 addNewWeight(today);
                 $('#company').trigger('change');
-                $('#divWeightDifference').show();
-                $('#divSupplierWeight').show();
-                $('#addModal').find('#orderWeight').val("");
-                $('#addModal').find('#supplierWeight').val("0");
-                $('#divSupplierName').show();
-                $('#divOrderWeight').hide();
-                $('#divCustomerName').hide();
-                $('#rawMaterialDisplay').show();
-                $('#productNameDisplay').hide();
-                $('#addModal').find('#divPoSupplyWeight').show();
 
-                if ($(this).val() == "Purchase") {
+                if ($(this).val() == "Purchase" || $(this).val() == "Local") {
+                    $('#divWeightDifference').show();
+                    $('#divSupplierWeight').show();
+                    $('#addModal').find('#orderWeight').val("");
+                    $('#addModal').find('#supplierWeight').val("0");
+                    $('#divSupplierName').show();
+                    $('#divOrderWeight').hide();
+                    $('#divCustomerName').hide();
+                    $('#rawMaterialDisplay').show();
+                    $('#productNameDisplay').hide();
+                    $('#addModal').find('#divPoSupplyWeight').show();
                     $('#divPurchaseOrder').find('label[for="purchaseOrder"]').text('Purchase Order');
                 } else {
+                    $('#divWeightDifference').show();
+                    $('#divSupplierWeight').hide();
+                    $('#addModal').find('#orderWeight').val("0");
+                    $('#addModal').find('#supplierWeight').val("");
+                    $('#divSupplierName').hide();
+                    $('#divOrderWeight').show();
+                    $('#divCustomerName').show();
+                    $('#rawMaterialDisplay').hide();
+                    $('#productNameDisplay').show();
+                    $('#addModal').find('#divPoSupplyWeight').hide();
                     $('#divPurchaseOrder').find('label[for="purchaseOrder"]').text('Sale Order');
                 }
             }
             else{
+                $('#weighingDetailsSection').empty();
                 //$('#weighingDetailsSection').append($('#receivingSection').html());
                 // Reinitialize Select2 after appending new HTML
-                $('#addModal .select2').select2({
-                    allowClear: true,
-                    placeholder: "Please Select",
-                    dropdownParent: $('#addModal')
-                });
+                // $('#addModal .select2').select2({
+                //     allowClear: true,
+                //     placeholder: "Please Select",
+                //     dropdownParent: $('#addModal')
+                // });
 
-                addNewWeight(today);
-                $('#company').trigger('change');
-                $('#divOrderWeight').show();
-                $('#addModal').find('#orderWeight').val("0");
-                $('#addModal').find('#supplierWeight').val("");
-                $('#divWeightDifference').show();
-                $('#divSupplierWeight').hide();
-                $('#divSupplierName').hide();
-                $('#divCustomerName').show();
-                $('#rawMaterialDisplay').hide();
-                $('#productNameDisplay').show();
-                $('#divPurchaseOrder').find('label[for="purchaseOrder"]').text('Sale Order');
-                // $('#divPurchaseOrder').find('#purchaseOrder').attr('placeholder', 'Sale Order');
-                $('#addModal').find('#divPoSupplyWeight').hide();
+                // addNewWeight(today);
+                // $('#company').trigger('change');
+                // $('#divWeightDifference').show();
+                // $('#divSupplierWeight').hide();
+                // $('#addModal').find('#orderWeight').val("0");
+                // $('#addModal').find('#supplierWeight').val("");
+                // $('#divSupplierName').hide();
+                // $('#divOrderWeight').show();
+                // $('#divCustomerName').show();
+                // $('#rawMaterialDisplay').hide();
+                // $('#productNameDisplay').show();
+                // $('#addModal').find('#divPoSupplyWeight').hide();
+                // $('#divPurchaseOrder').find('label[for="purchaseOrder"]').text('Sale Order');
+                // // $('#divPurchaseOrder').find('#purchaseOrder').attr('placeholder', 'Sale Order');
             }
         });
 
@@ -4653,8 +4646,10 @@ else{
         //$('#addModal').modal('hide');
 
         if (selectedCompanyId != '' && selectedCompanyId != null){
+            $('#addModal').find('#transactionStatus').val("Sales").trigger('change'); // Reset to default sales
             $('#company').val(selectedCompanyId);
             $('#companyModal').modal('hide');
+            $('#vehicle1Section').hide();
             $('#weighingDetailsSection').empty();
             $('#addModal').modal('show');
         }else{

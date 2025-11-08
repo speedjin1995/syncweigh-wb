@@ -37,17 +37,30 @@ function formatDate3(date) {
 }
 
 function reinitSelect2(modal) {
-    modal.find('.select2').each(function () {
-        // Destroy existing Select2 instance if exists
-        if ($(this).data('select2')) {
-            $(this).select2('destroy');
-        }
-
-        // Re-initialize safely
-        $(this).select2({
-            allowClear: true,
-            placeholder: "Please Select",
-            dropdownParent: modal
+    setTimeout(function() {
+        modal.find('.select2').each(function() {
+            if ($(this).data('select2')) {
+                $(this).select2('destroy');
+            }
+            $(this).select2({
+                allowClear: true,
+                placeholder: "Please Select",
+                dropdownParent: modal,
+                dropdownAutoWidth: true,
+                width: '100%'
+            });
         });
-    });
+
+        // Apply custom styling to Select2 elements in search bar
+        $('.select2-container .select2-selection--single').css({
+            'padding-top': '4px',
+            'padding-bottom': '4px',
+            'height': 'auto'
+        });
+
+        $('.select2-container .select2-selection__arrow').css({
+            'padding-top': '33px',
+            'height': 'auto'
+        });
+    }, 100);
 }
