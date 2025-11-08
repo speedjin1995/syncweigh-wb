@@ -1442,7 +1442,7 @@ else{
                             <div class="row">
                                 <label for="purchaseOrder" class="col-sm-4 col-form-label">P/O No.</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder">
+                                    <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder" placeholder="Purchase No">
                                 </div>
                             </div>
                         </div>
@@ -1579,8 +1579,8 @@ else{
                         </div>  
                     </div>
                     <div class="row">
-                        <div class="col-xxl-4 col-lg-4 mb-3" id="mrnDisplay">
-                            <div class="row">
+                        <div class="col-xxl-4 col-lg-4 mb-3">
+                            <div class="row" id="mrnDisplay">
                                 <label for="mrnNo" class="col-sm-4 col-form-label">MRN No.</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control" id="mrnNo" name="mrnNo" placeholder="MRN No">
@@ -4479,7 +4479,7 @@ else{
                     $('#addModal').find('#divPoSupplyWeight').show();
                     $('#divPurchaseOrder').find('label[for="purchaseOrder"]').text('Purchase Order');
                 } else if ($(this).val() == "Local"){
-                    $('#mrnDisplay').show();
+                    $('#mrnDisplay').hide();
                     $('#divWeightDifference').show();
                     $('#divSupplierWeight').show();
                     $('#addModal').find('#orderWeight').val("");
