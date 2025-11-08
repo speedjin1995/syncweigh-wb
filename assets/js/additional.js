@@ -35,3 +35,19 @@ function formatDate3(date) {
 
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds} ${ampm}`;
 }
+
+function reinitSelect2(modal) {
+    modal.find('.select2').each(function () {
+        // Destroy existing Select2 instance if exists
+        if ($(this).data('select2')) {
+            $(this).select2('destroy');
+        }
+
+        // Re-initialize safely
+        $(this).select2({
+            allowClear: true,
+            placeholder: "Please Select",
+            dropdownParent: modal
+        });
+    });
+}

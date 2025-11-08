@@ -1944,8 +1944,6 @@ else{
             }
         });
 
-        // $('#statusSearch').val('Sales').trigger('change');
-
         $('#selectAllCheckbox').on('change', function() {
             var checkboxes = $('#weightTable tbody input[type="checkbox"]');
             checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
@@ -4203,7 +4201,15 @@ else{
             }
 
             if($(this).val() == "Purchase" || $(this).val() == "Local"){
-                $('#weighingDetailsSection').append($('#receivingSection').html());
+                // Instead of .html(), clone DOM nodes to preserve events and data
+                const receivingClone = $($('#receivingSection').html());
+                debugger;
+                $('#weighingDetailsSection').empty().append(receivingClone);
+                
+                // Reinitialize Select2 for all dropdowns inside the modal
+                reinitSelect2($('#addModal'));
+
+                // Run your existing logic
                 addNewWeight(today);
                 $('#company').trigger('change');
                 $('#divWeightDifference').show();
@@ -4216,15 +4222,22 @@ else{
                 $('#rawMaterialDisplay').show();
                 $('#productNameDisplay').hide();
                 $('#addModal').find('#divPoSupplyWeight').show();
-                
-                if ($(this).val() == "Purchase"){
+
+                if ($(this).val() == "Purchase") {
                     $('#divPurchaseOrder').find('label[for="purchaseOrder"]').text('Purchase Order');
-                }else{
+                } else {
                     $('#divPurchaseOrder').find('label[for="purchaseOrder"]').text('Sale Order');
                 }
             }
             else{
                 //$('#weighingDetailsSection').append($('#receivingSection').html());
+                // Reinitialize Select2 after appending new HTML
+                $('#addModal .select2').select2({
+                    allowClear: true,
+                    placeholder: "Please Select",
+                    dropdownParent: $('#addModal')
+                });
+
                 addNewWeight(today);
                 $('#company').trigger('change');
                 $('#divOrderWeight').show();
@@ -4642,6 +4655,7 @@ else{
         if (selectedCompanyId != '' && selectedCompanyId != null){
             $('#company').val(selectedCompanyId);
             $('#companyModal').modal('hide');
+            $('#weighingDetailsSection').empty();
             $('#addModal').modal('show');
         }else{
             alert('Please select a company to proceed.');
@@ -4721,13 +4735,13 @@ else{
     }
 
     function addNewWeight(today){
+        console.log("addNewWeight() called", new Date());
         // Show Capture Buttons When Add New
         $('#addModal').find('#grossCapture').show();
         $('#addModal').find('#tareCapture').show();
         $('#addModal').find('#id').val("");
         $('#addModal').find('#currentWeight').text("0");
         $('#addModal').find('#transactionId').val("");
-        $('#addModal').find('#transactionStatus').val("Sales").trigger('change');
         $('#addModal').find('#emptyContainerNo').val("").trigger('change');
         $('#addModal').find('#weightType').val("Normal").trigger('change');
         $('#addModal').find('#customerType').val("Normal").trigger('change');
@@ -4756,7 +4770,6 @@ else{
         $('#addModal').find('#transporterCode').val("");
         $('#addModal').find('#transporter').val("-").trigger('change');
         $('#addModal').find('#destinationCode').val("");
-        $('#addModal').find('#company').val("").trigger('change');
         $('#addModal').find('#agent').val("").trigger('change');
         $('#addModal').find('#agentCode').val("");
         $('#addModal').find('#plantCode').val("");
@@ -4814,24 +4827,6 @@ else{
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
-
-        $('#addModal .select2').select2({
-            allowClear: true,
-            placeholder: "Please Select",
-            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
-        });
-
-        // Apply custom styling to Select2 elements in addModal
-        $('#addModal .select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('#addModal .select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
-        });
 
         $('#addModal .select2[required]').each(function () {
             var select2Field = $(this);
