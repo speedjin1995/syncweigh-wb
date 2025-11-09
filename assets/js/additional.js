@@ -58,6 +58,12 @@ function reinitSelect2(modal) {
             'height': 'auto'
         });
 
+        $('.select2-container .select2-selection--multiple').css({
+            'padding-top': '4px',
+            'padding-bottom': '4px',
+            'min-height': 'auto'
+        });
+
         $('.select2-container .select2-selection__arrow').css({
             'padding-top': '33px',
             'height': 'auto'

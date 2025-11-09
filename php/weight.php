@@ -1293,6 +1293,53 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                         }
                     }
 
+                    # Weight_Customer 
+                    $customerWeightId = isset($_POST['customerWeightId']) ? $_POST['customerWeightId']: [];
+                    $customerDeliveryNo = isset($_POST['customerDeliveryNo']) ? $_POST['customerDeliveryNo']: [];
+                    $customer = isset($_POST['customer']) ? $_POST['customer']: [];
+                    $customerProduct =  isset($_POST['customerProduct']) ? $_POST['customerProduct']: [];
+                    $customerProjectCode = isset($_POST['customerProjectCode']) ? $_POST['customerProjectCode']: [];
+                    $customerInternalDocNo = isset($_POST['customerInternalDocNo']) ? $_POST['customerInternalDocNo']: [];
+                    $customerRefNo = isset($_POST['customerRefNo']) ? $_POST['customerRefNo']: [];
+
+                    if(isset($customerDeliveryNo) && $customerDeliveryNo != null && count($customerDeliveryNo) > 0){ 
+                        # Set all Weight_Customer records deleted to 1 first
+                        if ($delete_cust_stmt = $db->prepare("UPDATE Weight_Customer SET status = '1' WHERE weight_id=?")){
+                            $delete_cust_stmt->bind_param('s', $weightId);
+
+                            if ($delete_cust_stmt->execute()){
+                                $delete_cust_stmt->close();
+
+                                foreach ($customerDeliveryNo as $i => $deliveryNo) {
+                                    $productJson = json_encode($customerProduct[$i]);
+                                    $projectJson = json_encode($customerProjectCode[$i]);
+                                    
+                                    if(isset($customerWeightId[$i]) && $customerWeightId[$i] > 0){ // Update FE existing customer deleted to 0 but deleted products remain deleted='1'
+                                        if ($customer_stmt = $db->prepare("UPDATE Weight_Customer SET weight_id=?, delivery_no=?, customer_id=?, product_id=?, project_id=?, internal_doc_no=?, ref_no=?, status='0' WHERE id=?")){
+                                            $customer_stmt->bind_param('ssssssss', $weightId, $deliveryNo, $customer[$i], $productJson, $projectJson, $customerInternalDocNo[$i], $customerRefNo[$i], $customerWeightId[$i]);
+                                            $customer_stmt->execute();
+                                        }
+                                    }
+                                    else{ // if got new then insert new record
+                                        if ($customer_stmt = $db->prepare("INSERT INTO Weight_Customer (weight_id, delivery_no, customer_id, product_id, project_id, internal_doc_no, ref_no) VALUES (?, ?, ?, ?, ?, ?, ?)")){
+                                            $customer_stmt->bind_param('sssssss', $weightId, $deliveryNo, $customer[$i], $productJson, $projectJson, $customerInternalDocNo[$i], $customerRefNo[$i]);
+                                            $customer_stmt->execute();
+                                        }
+                                    }
+
+                                    $customer_stmt->close();
+                                }
+                            }
+                        }
+                    }else{
+                        # Added this section to update all weight customer related to the weighing to deleted
+                        if ($update_cust_stmt = $db->prepare("UPDATE Weight_Customer SET status = '1' WHERE weight_id=?")){
+                            $update_cust_stmt->bind_param('s', $weightId);
+                            $update_cust_stmt->execute();
+                            $update_cust_stmt->close();
+                        }
+                    }
+
                     // update empty container status
                     if(!empty($containerNo) && $weightType == 'Container'){
                         if ($update_container = $db->prepare("UPDATE Weight_Container SET is_cancel=? WHERE container_no=? AND status='0'")){
@@ -1438,9 +1485,31 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                                         $product_stmt->bind_param('ssssss', $id, $product[$i], $productPacking[$i], $productGross[$i], $productTare[$i], $productNett[$i]);
                                         $product_stmt->execute();
                                     }
+
+                                    $product_stmt->close();
                                 }
-                                
-                                $product_stmt->close();
+                            }
+
+                            # Weight_Customer
+                            $customerDeliveryNo = isset($_POST['customerDeliveryNo']) ? $_POST['customerDeliveryNo']: [];
+                            $customer = isset($_POST['customer']) ? $_POST['customer']: [];
+                            $customerProduct =  isset($_POST['customerProduct']) ? $_POST['customerProduct']: [];
+                            $customerProjectCode = isset($_POST['customerProjectCode']) ? $_POST['customerProjectCode']: [];
+                            $customerInternalDocNo = isset($_POST['customerInternalDocNo']) ? $_POST['customerInternalDocNo']: [];
+                            $customerRefNo = isset($_POST['customerRefNo']) ? $_POST['customerRefNo']: [];
+
+                            if(isset($customerDeliveryNo) && $customerDeliveryNo != null && count($customerDeliveryNo) > 0){ 
+                                foreach ($customerDeliveryNo as $i => $deliveryNo) {
+                                    $productJson = json_encode($customerProduct[$i]);
+                                    $projectJson = json_encode($customerProjectCode[$i]);
+
+                                    if ($customer_stmt = $db->prepare("INSERT INTO Weight_Customer (weight_id, delivery_no, customer_id, product_id, project_id, internal_doc_no, ref_no) VALUES (?, ?, ?, ?, ?, ?, ?)")){
+                                        $customer_stmt->bind_param('sssssss', $id, $deliveryNo, $customer[$i], $productJson, $projectJson, $customerInternalDocNo[$i], $customerRefNo[$i]);
+                                        $customer_stmt->execute();
+                                    }
+
+                                    $customer_stmt->close();
+                                }
                             }
 
                             // update empty container status

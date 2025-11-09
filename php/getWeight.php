@@ -501,7 +501,30 @@ if(isset($_POST['userID'])){
                             }
             
                             $message['products'] = $products;
-    
+
+                            // retrieve weight_customer
+                            $empQuery = "SELECT * FROM Weight_Customer WHERE weight_id = $id AND status = '0' ORDER BY id ASC";
+                            $empRecords = mysqli_query($db, $empQuery);
+                            $customers = array();
+                            $customerCount = 1;
+
+                            while($row5 = mysqli_fetch_assoc($empRecords)) {
+                                $customers[] = array(
+                                    "no" => $customerCount,
+                                    "id" => $row5['id'],
+                                    "weight_id" => $row5['weight_id'],
+                                    "delivery_no" => $row5['delivery_no'],
+                                    "customer_id" => $row5['customer_id'],
+                                    "product_id" => $row5['product_id'],
+                                    "project_id" => $row5['project_id'],
+                                    "internal_doc_no" => $row5['internal_doc_no'],
+                                    "ref_no" => $row5['ref_no']
+                                );
+                                $customerCount++;
+                            }
+
+                            $message['customers'] = $customers;
+
                             if ($update_stmt2 = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=?")) {
                                 $update_stmt2->bind_param('s', $row['lorry_plate_no1']);
                                 $update_stmt2->execute();

@@ -1174,3 +1174,20 @@ ALTER TABLE `Product` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;
 ALTER TABLE `Product_Log` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;
 ALTER TABLE `Raw_Mat` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;
 ALTER TABLE `Raw_Mat_Log` CHANGE `company_id` `company_id` TEXT NULL DEFAULT NULL;
+
+-- 08/11/2025 --
+CREATE TABLE `Weight_Customer` (
+  `id` int(11) NOT NULL,
+  `weight_id` int(11) NOT NULL,
+  `delivery_no` varchar(100) DEFAULT NULL,
+  `customer_id` int(11) DEFAULT NULL,
+  `product_id` text DEFAULT NULL,
+  `project_id` text DEFAULT NULL,
+  `internal_doc_no` varchar(100) DEFAULT NULL,
+  `ref_no` varchar(100) DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE `Weight_Customer` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Weight_Customer` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
