@@ -63,10 +63,14 @@ $vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_nu
 $vehicles2 = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
 $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $customer2 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
+$customer3 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $product = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
 $product2 = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
+$product3 = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
 $transporter = $db->query("SELECT * FROM Transporter WHERE status = '0' ORDER BY name ASC");
+$transporter2 = $db->query("SELECT * FROM Transporter WHERE status = '0' ORDER BY name ASC");
 $destination = $db->query("SELECT * FROM Destination WHERE status = '0' ORDER BY name ASC");
+$destination2 = $db->query("SELECT * FROM Destination WHERE status = '0' ORDER BY name ASC");
 $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $unit = $db->query("SELECT * FROM Unit WHERE status = '0' ORDER BY unit ASC");
@@ -82,7 +86,9 @@ $company2 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name A
 $company3 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
 $projects = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
 $projects2 = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
+$projects3 = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
 $transportCap = $db->query("SELECT * FROM Transport_Cap WHERE status = '0'");
+$transportCap2 = $db->query("SELECT * FROM Transport_Cap WHERE status = '0'");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
@@ -476,6 +482,36 @@ else{
                                                         </div>
 
                                                         <div class="row col-12" id="weighingDetailsSection"></div>
+
+                                                        <div class="row col-12" id="multiCustomerSection" style="display:none;">
+                                                            <div class="col-xxl-12 col-lg-12">
+                                                                <div class="card bg-light">
+                                                                    <div class="card-body">
+                                                                        <div class="row">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <button type="button" class="btn btn-success" id="addCustomer">Add Customer</button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <table class="table table-primary" style="text-align: center;">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th>Delivery No</th>
+                                                                                        <th>Customer Name</th>
+                                                                                        <th>Product Code</th>
+                                                                                        <th>Project Code</th>
+                                                                                        <th>Internal Doc. No.</th>
+                                                                                        <th>Ref. No.</th>
+                                                                                        <th>Action</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody id="customerTable"></tbody>
+                                                                            </table>                                            
+                                                                        </div><!-- end row -->     
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         
                                                         <div class="row col-12" style="display:none;">
                                                             <div class="col-xxl-12 col-lg-12">
@@ -1850,7 +1886,7 @@ else{
                                 <div class="col-sm-8">
                                     <select class="form-select select2" id="destination" name="destination" required>
                                         <option selected="-">-</option>
-                                        <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
+                                        <?php while($rowDestination=mysqli_fetch_assoc($destination2)){ ?>
                                             <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
                                         <?php } ?>
                                     </select>            
@@ -1889,7 +1925,7 @@ else{
                                 <div class="col-sm-8">
                                     <select class="form-select select2" id="transporter" name="transporter" required>
                                         <option selected="-">-</option>
-                                        <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
+                                        <?php while($rowTransporter=mysqli_fetch_assoc($transporter2)){ ?>
                                             <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
                                         <?php } ?>
                                     </select>                                                                                          
@@ -1901,7 +1937,7 @@ else{
                                 <label for="transportCap" class="col-sm-4 col-form-label">Transport Cap *</label>
                                 <div class="col-sm-8">
                                     <select class="form-select select2" id="transportCap" name="transportCap" required>
-                                        <?php while($rowTransportCap=mysqli_fetch_assoc($transportCap)){ ?>
+                                        <?php while($rowTransportCap=mysqli_fetch_assoc($transportCap2)){ ?>
                                             <option 
                                                 value="<?=$rowTransportCap['id'] ?>">
                                                 <?=$rowTransportCap['transport_fit'] ?> - <?=$rowTransportCap['transport_load'] ?>
@@ -2015,6 +2051,47 @@ else{
             </td>
         </tr>
     </script>
+
+    <script type="text/html" id="customerDetail">
+        <tr class="details">
+            <td style="width: 15%;">
+                <input type="hidden" class="form-control" id="customerWeightId" name="customerWeightId">
+                <input type="text" class="form-control" id="customerDeliveryNo" name="customerDeliveryNo" style="background-color:white;" required>
+            </td>
+            <td> <!-- customer -->
+                <select class="form-control form-select select2" id="customer" name="customer" required>
+                    <?php while($rowCustomer=mysqli_fetch_assoc($customer3)){ ?>
+                        <option value="<?=$rowCustomer['id'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td> <!-- product -->
+                <select class="form-control form-select select2" id="customerProduct" name="customerProduct[]" multiple required>
+                    <?php while($rowProduct=mysqli_fetch_assoc($product3)){ ?>
+                        <option value="<?=$rowProduct['id'] ?>" ><?=$rowProduct['product_code'] ?> - <?=$rowProduct['name'] ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td> <!-- project code -->
+                <select class="form-control form-select select2" style="width: 100%; background-color:white;" id="customerProjectCode" name="customerProjectCode[]" multiple required>
+                    <?php while($rowProject=mysqli_fetch_assoc($projects3)){ ?>
+                        <option value="<?=$rowProject['id'] ?>"><?=$rowProject['project'] . ' - ' . $rowProject['project_name'] ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td style="width: 15%;">
+                <input type="text" class="form-control" id="customerInternalDocNo" name="customerInternalDocNo" style="background-color:white;" required>
+            </td>
+            <td style="width: 15%;">
+                <input type="text" class="form-control" id="customerRefNo" name="customerRefNo" style="background-color:white;" required>
+            </td>
+            <td style="text-align:center; width: 2%;">
+                <button class="btn btn-danger form-control" id="remove" style="background-color: #f06548; height: 38px;">
+                    <i class="fa fa-times"></i>
+                </button>
+            </td>
+        </tr>
+    </script>
     <!-- END layout-wrapper -->
 
     <?php include 'layouts/customizer.php'; ?>
@@ -2048,12 +2125,14 @@ else{
     var table = null;
     var emptyContainerTable = null;
     let clickTimer = null;
+    var companyData = null; // Global variable to store company data
 
     var grossIncomingDatePicker;
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
     var rowCount = $("#productTable").find(".details").length;
+    var customerRowCount = 0;
     var productCodes = [];
     var clonedCustomerOptions = $('#customerName option').clone();
     var clonedSupplierOptions = $('#supplierName option').clone();
@@ -2586,14 +2665,20 @@ else{
 
             var isValid = true;
 
+            // Remove any existing jQuery validation error labels for customer table fields
+            $('#customerTable').find('label.error').remove();
+
             // custom validation for select2
             $('#addModal .select2[required]').each(function () {
                 var select2Field = $(this);
                 var select2Container = select2Field.next('.select2-container'); // Get Select2 UI
                 var errorMsg = "<span class='select2-error text-danger' style='font-size: 11.375px;'>Please fill in the field.</span>";
+                var fieldValue = select2Field.val();
 
-                // Check if the value is empty
-                if (select2Field.val() === "" || select2Field.val() === null) {
+                // Check if the value is empty (for both single and multiple select)
+                var isEmpty = fieldValue === "" || fieldValue === null || (Array.isArray(fieldValue) && fieldValue.length === 0);
+
+                if (isEmpty) {
                     select2Container.find('.select2-selection').css('border', '1px solid red'); // Add red border
 
                     // Add error message if not already present
@@ -4450,6 +4535,7 @@ else{
                 // Clear the section first
                 $('#weighingDetailsSection').empty();
                 $('#weighingDetailsSection').html($('#receivingSection').html());
+                $('#multiCustomerSection').hide();
 
                 reinitSelect2($('#addModal'));
 
@@ -4507,6 +4593,7 @@ else{
                 }
             }
             else if ($(this).val() == "Sales"){
+                $('#multiCustomerSection').show();
                 $('#weighingDetailsSection').empty();
                 $('#weighingDetailsSection').append($('#dispatchSection').html());
                 // Reinitialize Select2 after appending new HTML
@@ -4884,8 +4971,42 @@ else{
             rowCount++;
         });
 
+        // Find and remove selected table rows
+        $("#customerTable").on('click', 'button[id^="remove"]', function () {
+            $(this).parents("tr").remove();
+
+            customerRowCount--;
+        });
+
+        // Add additional customer
+        $("#addCustomer").click(function(){
+            var $addContents = $("#customerDetail").clone();
+            $("#customerTable").append($addContents.html());
+
+            $("#customerTable").find('.details:last').attr("id", "detail" + customerRowCount);
+            $("#customerTable").find('.details:last').attr("data-index", customerRowCount);
+            $("#customerTable").find('#remove:last').attr("id", "remove" + customerRowCount);
+
+            $("#customerTable").find('#customerWeightId:last').attr('name', 'customerWeightId['+customerRowCount+']').attr("id", "customerWeightId" + customerRowCount);
+            $("#customerTable").find('#customerDeliveryNo:last').attr('name', 'customerDeliveryNo['+customerRowCount+']').attr("id", "customerDeliveryNo" + customerRowCount);
+            $("#customerTable").find('#customer:last').attr('name', 'customer['+customerRowCount+']').attr("id", "customer" + customerRowCount).val('');
+            $("#customerTable").find('#customerProduct:last').attr('name', 'customerProduct['+customerRowCount+'][]').attr("id", "customerProduct" + customerRowCount).val('');
+            $("#customerTable").find('#customerProjectCode:last').attr('name', 'customerProjectCode['+customerRowCount+'][]').attr("id", "customerProjectCode" + customerRowCount).val('');
+            $("#customerTable").find('#customerInternalDocNo:last').attr('name', 'customerInternalDocNo['+customerRowCount+']').attr("id", "customerInternalDocNo" + customerRowCount);
+            $("#customerTable").find('#customerRefNo:last').attr('name', 'customerRefNo['+customerRowCount+']').attr("id", "customerRefNo" + customerRowCount);
+
+            customerRowCount++;
+
+            reinitSelect2($('#addModal'));
+            
+            // Populate the new row with current company data if available
+            if (companyData) {
+                populateNewCustomerRow(customerRowCount - 1, companyData);
+            }
+        });
+
         $('#company').on('change', function(){
-            var companyId = $(this).val(); console.log(companyId);
+            var companyId = $(this).val();
 
             if (companyId != '' && companyId != null){
                 // Get customers, suppliers, products, raw materials, project codes based on selected company
@@ -4942,9 +5063,35 @@ else{
             $('#companyModal').modal('hide');
             $('#vehicle1Section').hide();
             $('#weighingDetailsSection').empty();
+            $('#multiCustomerSection').hide();
             $('#addModal').modal('show');
         }else{
             alert('Please select a company to proceed.');
+        }
+    }
+
+    function populateNewCustomerRow(rowIndex, companyData) {
+        if (!companyData) return;
+        
+        // Populate customer dropdown for specific row
+        if (companyData.Customer && companyData.Customer.length > 0){
+            var customerOptions = buildOptions(companyData.Customer, 'customer_code', 'id', 'name');
+            $('#customer' + rowIndex).empty().append(customerOptions).val('').trigger('change');
+        }
+        
+        // Populate product dropdown for specific row
+        if (companyData.Product && companyData.Product.length > 0){
+            var customerProductOptions = '';
+            for (var i = 0; i < companyData.Product.length; i++) {
+                customerProductOptions += '<option value="' + companyData.Product[i]['id'] + '">' + companyData.Product[i]['product_code'] + ' - ' + companyData.Product[i]['name'] + '</option>';
+            }
+            $('#customerProduct' + rowIndex).empty().append(customerProductOptions).val('').trigger('change');
+        }
+        
+        // Populate project dropdown for specific row
+        if (companyData.Projects && companyData.Projects.length > 0){
+            var projectCodeOptions = buildOptions(companyData.Projects, '', 'id', ['project', 'project_name']);
+            $('#customerProjectCode' + rowIndex).empty().append(projectCodeOptions).val('').trigger('change');
         }
     }
 
@@ -4955,6 +5102,12 @@ else{
         if (companyData.Customer && companyData.Customer.length > 0){
             var customerOptions = buildOptions(companyData.Customer, 'customer_code', 'name', 'name');
             $('#customerName').empty().append(customerOptions).val('').trigger('change');
+            
+            // Also populate customer options for all customerDetail script rows
+            var customerOptionsForScript = buildOptions(companyData.Customer, 'customer_code', 'id', 'name');
+            $('#customerTable').find('select[id^="customer"]:not([id*="Product"]):not([id*="ProjectCode"])').each(function() {
+                $(this).empty().append(customerOptionsForScript).val('').trigger('change');
+            });
         }else{
             $('#customerName').empty().append(clonedCustomerOptions).val('').trigger('change');
         }
@@ -4979,6 +5132,11 @@ else{
         if (companyData.Projects && companyData.Projects.length > 0){
             var projectCodeOptions = buildOptions(companyData.Projects, '', 'id', ['project', 'project_name']);
             $('#projectCode').empty().append(projectCodeOptions).val('').trigger('change');
+            
+            // Also populate project options for all customerDetail script rows
+            $('#customerTable').find('select[id^="customerProjectCode"]').each(function() {
+                $(this).empty().append(projectCodeOptions).val('').trigger('change');
+            });
         }else{
             $('#projectCode').empty().append(clonedProjectOptions).val('').trigger('change');
         }
@@ -4986,10 +5144,17 @@ else{
         // empty product name field and append new options
         if (companyData.Product && companyData.Product.length > 0){
             var productOptions = '';
+            var customerProductOptions = '';
             for (var i = 0; i < companyData.Product.length; i++) {
                 productOptions += '<option value="' + companyData.Product[i]['name'] + '" data-price="' + companyData.Product[i]['price'] + '" data-code="' + companyData.Product[i]['product_code'] + '" data-high="' + companyData.Product[i]['high'] + '" data-low="' + companyData.Product[i]['low'] + '" data-variance="' + companyData.Product[i]['variance'] + '" data-description="' + companyData.Product[i]['description'] + '">' + companyData.Product[i]['product_code'] + ' - ' + companyData.Product[i]['name'] + '</option>';
+                customerProductOptions += '<option value="' + companyData.Product[i]['id'] + '">' + companyData.Product[i]['product_code'] + ' - ' + companyData.Product[i]['name'] + '</option>';
             }
             $('#productName').empty().append(productOptions).val('').trigger('change');
+            
+            // Also populate product options for all customerDetail script rows
+            $('#customerTable').find('select[id^="customerProduct"]').each(function() {
+                $(this).empty().append(customerProductOptions).val('').trigger('change');
+            });
         }else{
             $('#productName').empty().append(clonedProductOptions).val('').trigger('change');
         }
@@ -5109,6 +5274,7 @@ else{
         $('#addModal').find('#salesOrder').next('.select2-container').show();
 
         $('#addModal').find('#productTable').html('');
+        $('#addModal').find('#customerTable').html('');
         rowCount = 0;
 
         // Remove Validation Error Message
@@ -5361,7 +5527,7 @@ else{
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
                 // populate company append first
-                var companyData = obj.message.companyData;
+                companyData = obj.message.companyData;
                 populateCompanyData(companyData);
 
                 // hide or show weighing details section
@@ -5384,9 +5550,9 @@ else{
                     $('#addModal').find('#tareCapture').show();
                 }
 
+                $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
                 $('#addModal').find('#id').val(obj.message.id);
                 $('#addModal').find('#transactionId').val(obj.message.transaction_id);
-                $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
                 $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
                 $('#addModal').find('#company').val(obj.message.company).select2('destroy').select2();
@@ -5595,6 +5761,43 @@ else{
                     }
                 }
 
+                $('#customerTable').html('');
+                customerRowCount = 0;
+
+                setTimeout(function() {
+                    if (obj.message.customers.length > 0){
+                        for(var i = 0; i < obj.message.customers.length; i++){
+                            var item = obj.message.customers[i];
+                            var customerProducts = JSON.parse(item.product_id);
+                            var customerProjects = JSON.parse(item.project_id);
+
+                            var $addContents = $("#customerDetail").clone();
+                            $("#customerTable").append($addContents.html()); 
+
+                            // Populate the new row with current company data if available
+                            if (companyData) {
+                                populateNewCustomerRow(customerRowCount, companyData);
+                            }
+
+                            $("#customerTable").find('.details:last').attr("id", "detail" + customerRowCount);
+                            $("#customerTable").find('.details:last').attr("data-index", customerRowCount);
+                            $("#customerTable").find('#remove:last').attr("id", "remove" + customerRowCount);
+
+                            $("#customerTable").find('#customerWeightId:last').attr('name', 'customerWeightId['+customerRowCount+']').attr("id", "customerWeightId" + customerRowCount).val(item.id);
+                            $("#customerTable").find('#customerDeliveryNo:last').attr('name', 'customerDeliveryNo['+customerRowCount+']').attr("id", "customerDeliveryNo" + customerRowCount).val(item.delivery_no);
+                            $("#customerTable").find('#customer:last').attr('name', 'customer['+customerRowCount+']').attr("id", "customer" + customerRowCount).val(item.customer_id);
+                            $("#customerTable").find('#customerProduct:last').attr('name', 'customerProduct['+customerRowCount+'][]').attr("id", "customerProduct" + customerRowCount).val(customerProducts);
+                            $("#customerTable").find('#customerProjectCode:last').attr('name', 'customerProjectCode['+customerRowCount+'][]').attr("id", "customerProjectCode" + customerRowCount).val(customerProjects);
+                            $("#customerTable").find('#customerInternalDocNo:last').attr('name', 'customerInternalDocNo['+customerRowCount+']').attr("id", "customerInternalDocNo" + customerRowCount).val(item.internal_doc_no);
+                            $("#customerTable").find('#customerRefNo:last').attr('name', 'customerRefNo['+customerRowCount+']').attr("id", "customerRefNo" + customerRowCount).val(item.ref_no);
+
+                            customerRowCount++;
+                        }
+                        
+                        // Initialize Select2 once after all rows are added
+                        reinitSelect2($('#addModal'));
+                    }
+                }, 500);
 
                 // Load these field after PO/SO is loaded
                 /*$('#addModal').on('orderLoaded', function() {
@@ -5723,9 +5926,9 @@ else{
         $.post('php/getWeight.php', {userID: id, type: type}, function(data)
         {
             var obj = JSON.parse(data);
-            if(obj.status === 'success'){
+            if(obj.status === 'success'){                
                 // populate company append first
-                var companyData = obj.message.companyData;
+                companyData = obj.message.companyData;
                 populateCompanyData(companyData);
 
                 // hide or show weighing details section
@@ -5748,12 +5951,17 @@ else{
                     $('#addModal').find('#tareCapture').show();
                 }
 
+                $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
                 $('#addModal').find('#id').val(obj.message.id);
                 $('#addModal').find('#transactionId').val(obj.message.transaction_id);
-                $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
-                $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
-                $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
-                $('#addModal').find('#company').val(obj.message.company).select2('destroy').select2();
+                $('#addModal').find('#weightType').val(obj.message.weight_type);
+                $('#addModal').find('#customerType').val(obj.message.customer_type);
+                
+                var companySelect = $('#addModal').find('#company');
+                if (companySelect.data('select2')) {
+                    companySelect.select2('destroy');
+                }
+                companySelect.val(obj.message.company).select2();
                 $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
                 if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
@@ -5958,6 +6166,43 @@ else{
                     }
                 }
 
+                $('#customerTable').html('');
+                customerRowCount = 0;
+
+                setTimeout(function() {
+                    if (obj.message.customers.length > 0){
+                        for(var i = 0; i < obj.message.customers.length; i++){
+                            var item = obj.message.customers[i];
+                            var customerProducts = JSON.parse(item.product_id);
+                            var customerProjects = JSON.parse(item.project_id);
+
+                            var $addContents = $("#customerDetail").clone();
+                            $("#customerTable").append($addContents.html()); 
+
+                            // Populate the new row with current company data if available
+                            if (companyData) {
+                                populateNewCustomerRow(customerRowCount, companyData);
+                            }
+
+                            $("#customerTable").find('.details:last').attr("id", "detail" + customerRowCount);
+                            $("#customerTable").find('.details:last').attr("data-index", customerRowCount);
+                            $("#customerTable").find('#remove:last').attr("id", "remove" + customerRowCount);
+
+                            $("#customerTable").find('#customerWeightId:last').attr('name', 'customerWeightId['+customerRowCount+']').attr("id", "customerWeightId" + customerRowCount).val(item.id);
+                            $("#customerTable").find('#customerDeliveryNo:last').attr('name', 'customerDeliveryNo['+customerRowCount+']').attr("id", "customerDeliveryNo" + customerRowCount).val(item.delivery_no);
+                            $("#customerTable").find('#customer:last').attr('name', 'customer['+customerRowCount+']').attr("id", "customer" + customerRowCount).val(item.customer_id);
+                            $("#customerTable").find('#customerProduct:last').attr('name', 'customerProduct['+customerRowCount+'][]').attr("id", "customerProduct" + customerRowCount).val(customerProducts);
+                            $("#customerTable").find('#customerProjectCode:last').attr('name', 'customerProjectCode['+customerRowCount+'][]').attr("id", "customerProjectCode" + customerRowCount).val(customerProjects);
+                            $("#customerTable").find('#customerInternalDocNo:last').attr('name', 'customerInternalDocNo['+customerRowCount+']').attr("id", "customerInternalDocNo" + customerRowCount).val(item.internal_doc_no);
+                            $("#customerTable").find('#customerRefNo:last').attr('name', 'customerRefNo['+customerRowCount+']').attr("id", "customerRefNo" + customerRowCount).val(item.ref_no);
+
+                            customerRowCount++;
+                        }
+                        
+                        // Initialize Select2 once after all rows are added
+                        reinitSelect2($('#addModal'));
+                    }
+                }, 500);
 
                 // Load these field after PO/SO is loaded
                 /*$('#addModal').on('orderLoaded', function() {
