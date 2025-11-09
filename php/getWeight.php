@@ -199,6 +199,8 @@ if(isset($_POST['userID'])){
                             $message['no_of_drum'] = $row['no_of_drum'];
                             $message['company'] = $row['company'];
                             $message['project_code'] = $row['project_code'];
+                            $message['transport_cap'] = $row['transport_cap'];
+                            $message['mrn_no'] = $row['mrn_no'];
 
                             // retrieve products
                             $empQuery = "SELECT * FROM Weight_Product WHERE weight_id = $id AND status = '0' ORDER BY id ASC";
@@ -409,6 +411,8 @@ if(isset($_POST['userID'])){
                             $message['customer_type'] = $row['customer_type'];
                             $message['company'] = $row['company'];
                             $message['project_code'] = $row['project_code'];
+                            $message['transport_cap'] = $row['transport_cap'];
+                            $message['mrn_no'] = $row['mrn_no'];
                             $message['transaction_date'] = $row['transaction_date'];
                             $message['lorry_plate_no1'] = $row['lorry_plate_no1'];
                             $message['lorry_plate_no2'] = $row['lorry_plate_no2'];
