@@ -5269,9 +5269,10 @@ else{
             <div class="col-4">
                 <p><srtong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
                 <p><srtong>WEIGHT TYPE:</strong> ${weightType}</p>
-                <p><srtong>TRANSACTION TYPE:</strong> ${transactionStatus}</p>
-                <p><srtong>DESTINATION:</strong> ${row.destination}</p>
-                <p><srtong>TANSSPORTER:</strong> ${row.transporter}</p>
+                <p><srtong>TRANSACTION DATE:</strong> ${row.transaction_date}</p>
+                <p><srtong>SUPPLIER NAME:</strong> ${row.supplier_name}</p>
+                <p><srtong>MRN NO:</strong> ${row.mrn_no}</p>
+                <p><srtong>DESTINATION NAME:</strong> ${row.destination}</p>
                 <!--<p><strong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
                 <p><strong>DESTINATION NAME:</strong> ${row.destination}</p>
                 <p><strong>SITE NAME:</strong> ${row.site_name}</p>
@@ -5291,6 +5292,7 @@ else{
                 <p><srtong>SEAL NO:</strong> ${row.seal_no}</p>
                 <p><srtong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
                 <p><srtong>SEAL NO 2:</strong> ${row.seal_no2}</p>
+                <p style="text-wrap: auto;"><srtong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
                 <p><srtong>TRANSPORT CAPACITY:</strong> ${row.transport_cap}</p>
                 <!--<p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
                 <p><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
@@ -5303,11 +5305,14 @@ else{
             <div class="col-4">
                 <p><strong>P/O NO:</strong> ${row.purchase_order}</p>
                 <p><strong>INVOICE NO:</strong> ${row.invoice_no}</p>
-                <p><strong>ORDER WEIGHT:</strong> ${row.order_weight}</p>
-                <p><strong>WEIGHT DIFFERENCE:</strong> ${row.weight_difference}</p>
+                <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p> 
+                <p><strong>SUPPLIER WEIGHT:</strong> ${row.supplier_weight}</p>
+                <p><strong>WEIGHT DISTENCE:</strong> ${row.weight_difference}</p>
                 <p><strong>REDUCE WEIGHT:</strong> ${row.reduce_weight}</p>
             </div>
             <div class="col-12">
+                <p><strong>RAW MATERIAL/PRODUCT DESCRIPTION:</strong> ${row.product_description}</p>
+                <p><strong>PROJECT CODE:</strong> ${row.project_code}</p>
                 <p><strong>OTHER REMARKS:</strong> ${row.other_remarks}</p>
             </div>
         </div>
