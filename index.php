@@ -3873,7 +3873,7 @@ else{
             }
         });
 
-        $('#weightType').on('change', function(){
+        $('#addModal').on('change', '#weightType', function(){
             var weightType = $(this).val();
             var transaType = $('#transactionStatus').val();
 
@@ -4007,7 +4007,7 @@ else{
             }
         });
 
-        $('#replacementContainer').on('keyup', function(){
+        $('#addModal').on('keyup', '#replacementContainer', function(){
             var replacementContainer = $(this).val();
             $('#replaceContainerText').text(replacementContainer);
         });
@@ -4037,7 +4037,7 @@ else{
             }
         });*/
 
-        $('#manualVehicle').on('change', function(){
+        $('#addModal').on('change', '#manualVehicle', function(){
             if($(this).is(':checked')){
                 $(this).val(1);
                 $('.index-vehicle').hide();
@@ -4052,7 +4052,7 @@ else{
             }
         });
 
-        $('#vehicleNoTxt').on('keyup', function(){
+        $('#addModal').on('keyup', '#vehicleNoTxt', function(){
             var x = $('#vehicleNoTxt').val();
             x = x.toUpperCase();
             $('#vehicleNoTxt').val(x);
@@ -4096,7 +4096,7 @@ else{
             }
         });
 
-        $('#vehiclePlateNo1').on('change', function(){
+        $('#addModal').on('change', '#vehiclePlateNo1', function(){
             var vehiclePlateNo1 = $(this).val();
             var transactionStatus = $('#transactionStatus').val();
             if (vehiclePlateNo1){
@@ -4140,7 +4140,7 @@ else{
             }
         });
 
-        $('#manualVehicle2').on('change', function(){
+        $('#addModal').on('change', '#manualVehicle2', function(){
             if($(this).is(':checked')){
                 $(this).val(1);
                 $('#vehiclePlateNo2').val('-');
@@ -4155,7 +4155,7 @@ else{
             }
         });
 
-        $('#vehicleNoTxt2').on('keyup', function(){
+        $('#addModal').on('keyup', '#vehicleNoTxt2', function(){
             var x = $('#vehicleNoTxt2').val();
             x = x.toUpperCase();
             $('#vehicleNoTxt2').val(x);
@@ -4187,7 +4187,7 @@ else{
             }
         });
 
-        $('#vehiclePlateNo2').on('change', function(){
+        $('#addModal').on('change', '#vehiclePlateNo2', function(){
             var vehiclePlateNo2 = $(this).val();
             var weightType = $('#weightType').val();
             if (weightType == 'Different Container' && vehiclePlateNo2){
@@ -4231,7 +4231,7 @@ else{
             }
         });
 
-        $('#grossIncoming').on('keyup', function(){
+        $('#addModal').on('keyup', '#grossIncoming', function(){
             var gross = $(this).val() ? parseFloat($(this).val()) : 0;
             var tare = $('#tareOutgoing').val() ? parseFloat($('#tareOutgoing').val()) : 0;
             var nett = Math.abs(gross - tare);
@@ -4244,14 +4244,14 @@ else{
             $('#grossIncomingDate').trigger('change');
         });
 
-        $('#grossCapture').on('click', function(event){
+        $('#addModal').on('click', '#grossCapture', function(){
             event.preventDefault();
             var text = $('#indicatorWeight').text();
             $('#grossIncoming').val(parseFloat(text).toFixed(0));
             $('#grossIncoming').trigger('keyup');
         });
 
-        $('#tareOutgoing').on('keyup', function(){
+        $('#addModal').on('keyup', '#tareOutgoing', function(){
             var tare = $(this).val() ? parseFloat($(this).val()) : 0;
             var gross = $('#grossIncoming').val() ? parseFloat($('#grossIncoming').val()) : 0;
             var nett = Math.abs(gross - tare);
@@ -4265,14 +4265,14 @@ else{
 
         });
 
-        $('#tareCapture').on('click', function(event){
+        $('#addModal').on('click', '#tareCapture', function(){
             event.preventDefault();
             var text = $('#indicatorWeight').text();
             $('#tareOutgoing').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing').trigger('keyup');
         });
 
-        $('#nettWeight').on('change', function(){
+        $('#addModal').on('change', '#nettWeight', function(){
             var weightType = $('#weightType').val();
 
             if (weightType == 'Different Container'){
@@ -4300,7 +4300,7 @@ else{
             //$('#finalWeight').trigger('change');
         });
         
-        $('#reduceWeight').on('change', function(){
+        $('#addModal').on('change', '#reduceWeight', function(){
             var weightType = $('#weightType').val();
 
             if (weightType == 'Different Container'){
@@ -4331,7 +4331,7 @@ else{
             $('#finalWeight').trigger('change');
         });
 
-        $('#finalWeight').on('change', function(){
+        $('#addModal').on('change', '#finalWeight', function(){
             var nett1 = $(this).val() ? parseFloat($(this).val()) : 0;
             var nett2 = 0;
 
@@ -4346,7 +4346,7 @@ else{
             $('#weightDifference').val(current.toFixed(0));
         });
 
-        $('#orderWeight').on('change', function(){
+        $('#addModal').on('change', '#orderWeight', function(){
             var nett1 = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
             var nett2 = $(this).val() ? parseFloat($(this).val()) : 0;
             var current = nett1 - nett2;
@@ -4364,7 +4364,7 @@ else{
             }
         });
 
-        $('#supplierWeight').on('change', function(){
+        $('#addModal').on('change', '#supplierWeight', function(){
             var nett1 = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
             var nett2 = $(this).val() ? parseFloat($(this).val()) : 0;
             var current = nett1 - nett2;
@@ -4382,7 +4382,7 @@ else{
             }
         });
 
-        $('#grossIncoming2').on('keyup', function(){
+        $('#addModal').on('keyup', '#grossIncoming2', function(){
             var weightType = $('#weightType').val();
 
             if (weightType == 'Different Container'){
@@ -4411,14 +4411,14 @@ else{
             $('#grossIncomingDate2').trigger('change');
         });
 
-        $('#grossCapture2').on('click', function(event){
+        $('#addModal').on('click', '#grossCapture2', function(){
             event.preventDefault();
             var text = $('#indicatorWeight').text();
             $('#grossIncoming2').val(parseFloat(text).toFixed(0));
             $('#grossIncoming2').trigger('keyup');
         });
 
-        $('#tareOutgoing2').on('keyup', function(){
+        $('#addModal').on('keyup', '#tareOutgoing2', function(){
             var weightType = $('#weightType').val();
 
             if (weightType == 'Different Container'){
@@ -4447,14 +4447,14 @@ else{
 
         });
 
-        $('#tareCapture2').on('click', function(event){
+        $('#addModal').on('click', '#tareCapture2', function(){
             event.preventDefault();
             var text = $('#indicatorWeight').text();
             $('#tareOutgoing2').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing2').trigger('keyup');
         });
 
-        $('#nettWeight2').on('change', function(){
+        $('#addModal').on('change', '#nettWeight2', function(){
             var weightType = $('#weightType').val();
 
             if (weightType == 'Different Container'){
@@ -4482,7 +4482,7 @@ else{
             //$('#finalWeight').trigger('change');
         });
 
-        $('#currentWeight').on('change', function(){
+        $('#addModal').on('change', '#currentWeight', function(){
             var price = $('#productPrice').val() ? parseFloat($('#productPrice').val()).toFixed(2) : 0.00;
             var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;
             var subTotalPrice = price * weight;
@@ -4498,7 +4498,7 @@ else{
         });
 
         //productName
-        $('#productName').on('change', function(){
+        $('#addModal').on('change', '#productName', function(){
             var selectedOptions = $('#productName option:selected');
             var codes = [];
             selectedOptions.each(function() {
@@ -4527,37 +4527,37 @@ else{
         });
 
         //supplierName
-        $('#supplierName').on('change', function(){
+        $('#addModal').on('change', '#supplierName', function(){
             $('#supplierCode').val($('#supplierName :selected').data('code'));
         });
 
         //transporter
-        $('#transporter').on('change', function(){
+        $('#addModal').on('change', '#transporter', function(){
             $('#transporterCode').val($('#transporter :selected').data('code'));
         });
 
         //destination
-        $('#destination').on('change', function(){
+        $('#addModal').on('change', '#destination', function(){
             $('#destinationCode').val($('#destination :selected').data('code'));
         });
 
         //plant
-        $('#plant').on('change', function(){
+        $('#addModal').on('change', '#plant', function(){
             $('#plantCode').val($('#plant :selected').data('code'));
         });
 
         // SRP
-        $('#agent').on('change', function(){
+        $('#addModal').on('change', '#agent', function(){
             $('#agentCode').val($('#agent :selected').data('code'));
         });
 
         //siteName
-        $('#siteName').on('change', function(){
+        $('#addModal').on('change', '#siteName', function(){
             $('#siteCode').val($('#siteName :selected').data('code'));
         });
 
         //customerName
-        $('#customerName').on('change', function(){
+        $('#addModal').on('change', '#customerName', function(){
             $('#customerCode').val($('#customerName :selected').data('code'));
         });
 
@@ -4634,7 +4634,7 @@ else{
         });
 
         //Empty Container No
-        $('#emptyContainerNo').on('change', function (){
+        $('#addModal').on('change', '#emptyContainerNo', function(){
             var emptyContainerNo = $(this).val();
             var weightType = $('#weightType').val();
             $('#containerNo').val(emptyContainerNo);
@@ -4741,47 +4741,47 @@ else{
         });
 
         //Container No
-        $('#containerNoInput').on('keyup', function(){
+        $('#addModal').on('keyup', '#containerNoInput', function(){
             var x = $('#containerNoInput').val();
             x = x.toUpperCase();
             $('#containerNoInput').val(x);
             $('#containerNo').val(x);
         });
         
-        $('#containerNoInput').on('change', function () {
+        $('#addModal').on('change', '#containerNoInput', function(){
             $('#containerNo').val($(this).val());
         });
 
         //Seal No
-        $('#sealNo').on('keyup', function(){
+        $('#addModal').on('keyup', '#sealNo', function(){
             var x = $('#sealNo').val();
             x = x.toUpperCase();
             $('#sealNo').val(x);
         });
 
         //Container No 2
-        $('#containerNo2').on('keyup', function(){
+        $('#addModal').on('keyup', '#containerNo2', function(){
             var x = $('#containerNo2').val();
             x = x.toUpperCase();
             $('#containerNo2').val(x);
         });
 
         //Seal No 2
-        $('#sealNo2').on('keyup', function(){
+        $('#addModal').on('keyup', '#sealNo2', function(){
             var x = $('#sealNo2').val();
             x = x.toUpperCase();
             $('#sealNo2').val(x);
         });
 
         //Container No Search
-        $('#containerNoSearch').on('keyup', function(){
+        $('#addModal').on('keyup', '#containerNoSearch', function(){
             var x = $('#containerNoSearch').val();
             x = x.toUpperCase();
             $('#containerNoSearch').val(x);
         });
 
         //Seal No Search
-        $('#sealNoSearch').on('keyup', function(){
+        $('#addModal').on('keyup', '#sealNoSearch', function(){
             var x = $('#sealNoSearch').val();
             x = x.toUpperCase();
             $('#sealNoSearch').val(x);
