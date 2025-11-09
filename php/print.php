@@ -118,31 +118,34 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                             $update_stmt->close();
                         }
 
-                        $pid = $row['raw_mat_code'];
-                    
-                        if ($update_stmt2 = $db->prepare("SELECT * FROM Raw_Mat WHERE raw_mat_code=?")) {
-                            $update_stmt2->bind_param('s', $pid);
-                            
-                            // Execute the prepared query.
-                            if ($update_stmt2->execute()) {
-                                $result3 = $update_stmt2->get_result();
+                        $productRawMats = '';
+                        if ($row['raw_mat_code'] != '' && $row['raw_mat_code'] != null) {
+                            $pid = $row['raw_mat_code'];
+                            if ($update_stmt2 = $db->prepare("SELECT * FROM Raw_Mat WHERE raw_mat_code=?")) {
+                                $update_stmt2->bind_param('s', $pid);
                                 
-                                if ($row3 = $result3->fetch_assoc()) {
-                                    $product = $row3['name'];
-                                    $variance = $row3['variance'] ?? '';
-                                    $high = $row3['high'] ?? '0';
-                                    $low = $row3['low'] ?? '0';
-                                    $price = $row3['price'] ??  '0.00';
+                                // Execute the prepared query.
+                                if ($update_stmt2->execute()) {
+                                    $result3 = $update_stmt2->get_result();
+                                    
+                                    if ($row3 = $result3->fetch_assoc()) {
+                                        $product = $row3['name'];
+                                        $variance = $row3['variance'] ?? '';
+                                        $high = $row3['high'] ?? '0';
+                                        $low = $row3['low'] ?? '0';
+                                        $price = $row3['price'] ??  '0.00';
+                                    }
                                 }
                             }
-                        }
 
-                        $productRawMats = '';
-                        foreach (json_decode($row['raw_mat_name']) as $rawMat) {
-                            if ($productRawMats != ''){
-                                $productRawMats .= ' / ' . $rawMat;
-                            }else{
-                                $productRawMats .= $rawMat;
+                            if ($row['raw_mat_name'] != '' && $row['raw_mat_name'] != null) {
+                                foreach (json_decode($row['raw_mat_name']) as $rawMat) {
+                                    if ($productRawMats != ''){
+                                        $productRawMats .= ' / ' . $rawMat;
+                                    }else{
+                                        $productRawMats .= $rawMat;
+                                    }
+                                }
                             }
                         }
                     }
@@ -169,33 +172,37 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                             }
                         }
 
-                        $pid = $row['product_code'];
-                    
-                        if ($update_stmt2 = $db->prepare("SELECT * FROM Product WHERE product_code=?")) {
-                            $update_stmt2->bind_param('s', $pid);
-                            
-                            // Execute the prepared query.
-                            if ($update_stmt2->execute()) {
-                                $result3 = $update_stmt2->get_result();
+                        $productRawMats = '';
+                        if ($row['product_code'] != '' && $row['product_code'] != null){
+                            $pid = $row['product_code'];
+                        
+                            if ($update_stmt2 = $db->prepare("SELECT * FROM Product WHERE product_code=?")) {
+                                $update_stmt2->bind_param('s', $pid);
                                 
-                                if ($row3 = $result3->fetch_assoc()) {
-                                    $product = $row3['name'];
-                                    $variance = $row3['variance'] ?? '';
-                                    $high = $row3['high'] ?? '0';
-                                    $low = $row3['low'] ?? '0';
-                                    $price = $row3['price'] ??  '0.00';
+                                // Execute the prepared query.
+                                if ($update_stmt2->execute()) {
+                                    $result3 = $update_stmt2->get_result();
+                                    
+                                    if ($row3 = $result3->fetch_assoc()) {
+                                        $product = $row3['name'];
+                                        $variance = $row3['variance'] ?? '';
+                                        $high = $row3['high'] ?? '0';
+                                        $low = $row3['low'] ?? '0';
+                                        $price = $row3['price'] ??  '0.00';
+                                    }
                                 }
+
+                                $update_stmt2->close();
                             }
 
-                            $update_stmt2->close();
-                        }
-
-                        $productRawMats = '';
-                        foreach (json_decode($row['product_name']) as $product) {
-                            if ($productRawMats != ''){
-                                $productRawMats .= ' / ' . $product;
-                            }else{
-                                $productRawMats .= $product;
+                            if ($row['product_name'] != '' && $row['product_name'] != null){
+                                foreach (json_decode($row['product_name']) as $product) {
+                                    if ($productRawMats != ''){
+                                        $productRawMats .= ' / ' . $product;
+                                    }else{
+                                        $productRawMats .= $product;
+                                    }
+                                }
                             }
                         }
                     }
@@ -268,24 +275,27 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
                     // Project Code Mapping
                     $projectCodes = '';
-                    foreach (json_decode($row['project_code']) as $codeId) {
-                        if ($project_stmt = $db->prepare("SELECT project FROM Projects WHERE id=?")) {
-                            $project_stmt->bind_param('s', $codeId);
-                            
-                            // Execute the prepared query.
-                            if ($project_stmt->execute()) {
-                                $projectResult = $project_stmt->get_result();
+
+                    if ($row['project_code'] != '' && $row['project_code'] != null) {
+                        foreach (json_decode($row['project_code']) as $codeId) {
+                            if ($project_stmt = $db->prepare("SELECT project, project_name FROM Projects WHERE id=?")) {
+                                $project_stmt->bind_param('s', $codeId);
                                 
-                                if ($projectRow = $projectResult->fetch_assoc()) {
-                                    if ($projectCodes != ''){
-                                        $projectCodes .= ' / ' . $projectRow['project'];
-                                    }else{
-                                        $projectCodes .= $projectRow['project'];
+                                // Execute the prepared query.
+                                if ($project_stmt->execute()) {
+                                    $projectResult = $project_stmt->get_result();
+                                    
+                                    if ($projectRow = $projectResult->fetch_assoc()) {
+                                        if ($projectCodes != ''){
+                                            $projectCodes .= ' / ' . $projectRow['project'];
+                                        }else{
+                                            $projectCodes .= $projectRow['project'];
+                                        }
                                     }
                                 }
-                            }
 
-                            $project_stmt->close();
+                                $project_stmt->close();
+                            }
                         }
                     }
 
@@ -351,7 +361,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                             </style>
                         </head>
                         <body>
-                            <table style="width:100%;">
+                            <table style="width:100%; margin-bottom: 5px;">
                                 <tr>
                                     <td style="width: 65%;">
                                         <p style="font-size: 12px;">
@@ -364,12 +374,12 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     </td>
                                     <td style="vertical-align: top;">
                                         <p style="vertical-align: top; margin-left:30px; font-size: 14px;">
-                                            <span style="font-size: 24px; font-weight: bold; margin-bottom: 10px; display: inline-block;">'. $transacationStatus .' Slip</span><br>
+                                            <span style="font-size: 24px; font-weight: bold; margin-bottom: 10px; display: inline-block; border-bottom: 1px solid black">'. strtoupper($transacationStatus) .' SLIP</span><br>
                                             <span>Ticket No &nbsp;:&nbsp; <b>'.$row['transaction_id'].'</b></span><br>
                                             <span>Status &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; '.$weightType.'</span><br>
                                             <span>Date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 1.5px;">:&nbsp;&nbsp;'.$transactionDate.'</span><br>
-                                            <span>D/O No &nbsp;&nbsp;&nbsp;&nbsp;</span><span>:&nbsp;&nbsp;'.$row['delivery_no'].'</span><br>
-                                            <span>P/O No &nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left:2.5px">:&nbsp;&nbsp;'.$row['purchase_order'].'</span><br>
+                                            <!--span>D/O No &nbsp;&nbsp;&nbsp;&nbsp;</span><span>:&nbsp;&nbsp;'.$row['delivery_no'].'</span><br>
+                                            <span>P/O No &nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left:2.5px">:&nbsp;&nbsp;'.$row['purchase_order'].'</span><br-->
                                         </p>
                                     </td>
                                 </tr>
@@ -379,24 +389,36 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 <tr style="border-top: 1px solid black;">
                                     <td style="vertical-align: top; width: 60%;">
                                         <p style="margin-top: 5px; font-size: 14px;">
-                                            <span><b>'.$customer.'</b></span><br>
-                                            <span>Project Code <span style="margin-left: 13px;"></span>:&nbsp;'.$projectCodes.'</span><br>
                                             <span>Transporter &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['transporter'].'</span><br>
                                             <span>Destination &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['destination_code']. ' - '.$row['destination'].'</span><br>
+                                            <span>Vehicle No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['lorry_plate_no1'].'</span><br>
                                         ';
-                                            if ($row['weight_type'] == 'Normal'){
-                                                $message .= '<span>Vehicle No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 4px">:&nbsp;</span>'.$row['lorry_plate_no1'].'</span><br>';
-                                            }
-
-                                            if ($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc'){
-                                                $message .= '<span>Product &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 21px">: '.$productRawMats.'</span><br>';
-                                            }else{
-                                                $message .= '<span>Raw Material </span><span style="margin-left: 9px">: '.$productRawMats.'</span><br>';
-                                            }
-
+                                
                                         $message .= '</p>
                                     </td>
                                     <td style="vertical-align: top;">
+                                        <p style="vertical-align: top; margin-top: 5px; margin-left:30px; font-size: 14px;">
+                                            <table style="width:100%; border:0px solid black;">
+                                                <tr style="font-size: 14px;text-align: center;">
+                                                    <th style="border:1px solid black;">'.(($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc') 
+                                                            ? 'Order Weight' 
+                                                            : 'Supply Weight'
+                                                        ) .'</th>
+                                                    <th style="border:1px solid black;">Variance</th>
+                                                </tr>
+                                                <tr style="font-size: 14px; text-align: center;">
+                                                    <td style="border:1px solid black;">' . 
+                                                        ($orderSuppWeight != null ? formatWeight($orderSuppWeight) . ' kg' : '-') . '
+                                                    </td>
+                                                    <td style="border:1px solid black;">' . 
+                                                        ($weightDifference ? formatWeight($weightDifference) . ' kg' : '-') . '
+                                                    </td>    
+                                                </tr>
+                                            </table>
+                                        </p>
+                                    </td>
+                                    
+                                    <!--td style="vertical-align: top;">
                                         <p style="vertical-align: top; margin-top: 5px; margin-left:30px; font-size: 14px;">';
                                             if ($row['weight_type'] == 'Different Container' && $_POST['isEmptyContainer'] == 'N'){
                                                 $message .= '
@@ -454,7 +476,42 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             }
                                         $message .= '
                                         </p>
+                                    </td-->
+                                </tr>
+                            </table>
+
+                            <table>
+                                <tr style="border: 1px solid black;">
+                                    <td style="vertical-align: top; width:25%;">
+                                        <p style="margin-top: 5px; font-size: 14px;">
+                                            <span>Date/Time &nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$grossWeightTime.'</span><br>
+                                            <span>Date/Time &nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$tareWeightTime.'</span>
+                                        </p>
                                     </td>
+
+                                    <td style="vertical-align: top; width:15%;">
+                                        <p style="margin-top: 5px; font-size: 14px;">
+                                            <span>In &nbsp;&nbsp;<span style="margin-left: 12px">:&nbsp;</span>'.formatWeight($row['gross_weight1']).'kg</span><br>
+                                            <span>Out &nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.formatWeight($row['tare_weight1']).'kg</span><br>
+                                        </p>
+                                    </td>
+                                    <td style="vertical-align: top; width:15%;">
+                                        <p style="margin-top: 5px; font-size: 14px;">
+                                            <span>Reduce &nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.formatWeight($row['reduce_weight']).'kg</span><br>
+                                            <span>Nett &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 13px">:&nbsp;</span>'.formatWeight($row['nett_weight1']).'kg</span><br>
+                                        </p>
+                                    </td>';
+
+                                    if ($row['transaction_status'] != 'Sales'){
+                                        $message .= '
+                                        <td style="vertical-align: top; width:20%;">
+                                            <p style="margin-top: 5px; font-size: 14px;">
+                                                <span>MRN No. &nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['mrn_no'].'</span><br>
+                                                <span>Ref No. &nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 11px">:&nbsp;</span>'.$row['transport_cap'].'</span><br>
+                                            </p>
+                                        </td>';
+                                    }
+                                    $message .= '
                                 </tr>
                             </table>
                             ';
@@ -905,36 +962,184 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                         </tr>
                                     </table>';
                                 }else{
-                                    $message .= '<br>
-                                    <table style="width:100%; border:0px solid black; margin-top: -10px;">
-                                        <tr>
-                                            <th style="border:1px solid black;font-size: 18px;text-align: center;" width="25%">Date/Time</th>
-                                            <th style="border:1px solid black;font-size: 18px;text-align: center;" width="25%">Weighbridge No.</th>
-                                            <th colspan="2" style="border:1px solid black;font-size: 18px;text-align: center;" width="20%">Weight (kg)</th>
-                                        </tr>
-                                        <tr style="font-size: 16px;text-align: center;">
-                                            <td style="border:1px solid black;">'.$grossWeightTime.'</td>
-                                            <td style="border:1px solid black;">'.(($row['indicator_id'] == 'EX2001') ? 'WB1' : (($row['indicator_id'] == 'D2008') ? 'WB2' : '')).'</td>
-                                            <td style="border:1px solid black; font-weight: bold;">In</td>
-                                            <td style="border:1px solid black;">'.formatWeight($row['gross_weight1']).' kg</td>
-                                        </tr>
-                                        <tr style="font-size: 16px;text-align: center;">
-                                            <td style="border:1px solid black;">'.$tareWeightTime.'</td>
-                                            <td style="border:1px solid black;">'.(($row['indicator_id_2'] == 'EX2001') ? 'WB1' : (($row['indicator_id_2'] == 'D2008') ? 'WB2' : '')).'</td>
-                                            <td style="border:1px solid black; font-weight: bold;">Out</td>
-                                            <td style="border:1px solid black;">'.formatWeight($row['tare_weight1']).' kg</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" style="visibility:hidden;">Destination &nbsp;:&nbsp; <span style="margin-left: 10px">'.$row['destination'].'</span></td>
-                                            <td style="border:1px solid black;font-size: 16px;text-align: center;">Reduce</td>
-                                            <td style="border:1px solid black;font-size: 16px;text-align: center;">'.formatWeight($row['reduce_weight']).' kg</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Remarks &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; <span style="margin-left: 10px">'.$row['remarks'].'</span></td>
-                                            <td style="border:1px solid black;font-size: 16px;font-weight:bold;text-align: center;">Nett</td>
-                                            <td style="border:1px solid black;font-size: 16px;font-weight:bold;text-align: center;">'.formatWeight($row['final_weight']).' kg</td>
-                                        </tr>
-                                    </table><br>';
+                                    if ($row['transaction_status'] == 'Sales') {
+                                        $weightCustomers = [];
+                                        $sql = "
+                                            SELECT Weight_Customer.*, Customer.name AS customer_name FROM Weight_Customer 
+                                            LEFT JOIN Customer ON Weight_Customer.customer_id = Customer.id 
+                                            WHERE Weight_Customer.weight_id=? AND Weight_Customer.status = 0
+                                        ";
+
+                                        if ($weightCust_stmt = $db->prepare($sql)) {
+                                            $weightCust_stmt->bind_param('s', $row['id']);
+
+                                            // Execute the prepared query.
+                                            if ($weightCust_stmt->execute()) {
+                                                $weightCustResult = $weightCust_stmt->get_result();
+
+                                                while ($weightCustRow = $weightCustResult->fetch_assoc()) {
+                                                    $weightCustomers[] = $weightCustRow;
+                                                }
+                                            }
+
+                                            $weightCust_stmt->close();
+                                        }
+
+                                        $message .= '<table style="width:100%; border:0px solid black; margin-top: 10px;">';
+
+                                        if (!empty($weightCustomers)){
+                                            foreach ($weightCustomers as $weightCustomer) {
+                                                $projectCodes = '';
+                                                if ($weightCustomer['project_id'] != '' && $weightCustomer['project_id'] != null) {
+                                                    foreach (json_decode($weightCustomer['project_id']) as $codeId) {
+                                                        if ($project_stmt = $db->prepare("SELECT project, project_name FROM Projects WHERE id=?")) {
+                                                            $project_stmt->bind_param('s', $codeId);
+                                                            
+                                                            // Execute the prepared query.
+                                                            if ($project_stmt->execute()) {
+                                                                $projectResult = $project_stmt->get_result();
+                                                                
+                                                                if ($projectRow = $projectResult->fetch_assoc()) {
+                                                                    if ($projectCodes != ''){
+                                                                        $projectCodes .= ' / ' . $projectRow['project'];
+                                                                    }else{
+                                                                        $projectCodes .= $projectRow['project'];
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            $project_stmt->close();
+                                                        }
+                                                    }
+                                                }
+
+                                                $productRawMats = '';
+                                                if ($weightCustomer['product_id'] != '' && $weightCustomer['product_id'] != null){
+                                                    foreach (json_decode($weightCustomer['product_id']) as $productId) {
+                                                        if ($product_stmt = $db->prepare("SELECT product_code, name FROM Product WHERE id=?")) {
+                                                            $product_stmt->bind_param('s', $productId);
+
+                                                            // Execute the prepared query.
+                                                            if ($product_stmt->execute()) {
+                                                                $productResult = $product_stmt->get_result();
+
+                                                                if ($productRow = $productResult->fetch_assoc()) {
+                                                                    if ($productRawMats != ''){
+                                                                        $productRawMats .= ' / ' . $productRow['name'];
+                                                                    }else{
+                                                                        $productRawMats .= $productRow['name'];
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            $product_stmt->close();
+                                                        }
+                                                    }
+                                                }
+
+                                                $message .= '
+                                                    <tr style="font-size: 14px; border: 1px solid black">
+                                                        <td style="width: 70%">
+                                                            <p style="padding-left: 5px;">
+                                                                <span><b>Customer</span><span style="margin-left: 23px;">:&nbsp;'.$weightCustomer['customer_name'].'</b></span><br>
+                                                                <span>Project Code</span><span style="margin-left: 9px;">:&nbsp;'.$projectCodes.'</span>
+                                                            </p>
+                                                        </td>
+                                                        <td>
+                                                            <p style="padding-left: 5px;">
+                                                                <span>DO No.</span><span style="margin-left: 5px;">:&nbsp;'.$weightCustomer['delivery_no'].'</span><br>
+                                                                <span>Ref No.</span><span style="margin-left: 5px;">:&nbsp;'.$weightCustomer['ref_no'].'</span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                ';
+                                            }
+                                        }
+
+                                        $message .= '
+                                            <tr style="font-size: 14px;">
+                                                <td>
+                                                    <p style="padding-left: 5px;">
+                                                        <span>Product</span><span style="margin-left: 11px;">:&nbsp;'.$productRawMats.'</span><br>
+                                                        <span>Remarks</span><span style="margin-left: 5px;">:&nbsp;'.$row['remarks'].'</span>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>';
+                                    }else{
+                                        $message .= '
+                                            <table style="width:100%; border:0px solid black; margin-top: 10px;">
+                                                <tr style="font-size: 14px;text-align: center;">
+                                                    <th style="border:1px solid black;">Container No.1</th>
+                                                    <th style="border:1px solid black;">Seal No.1</th>
+                                                    <th style="border:1px solid black;">Container No.2</th>
+                                                    <th style="border:1px solid black;">Seal No.2</th>
+                                                </tr>
+                                                <tr style="font-size: 14px;text-align: center;">
+                                                    <td style="border:1px solid black;">'.(!empty($row["container_no"]) ? $row["container_no"] : '&nbsp;').'</td>
+                                                    <td style="border:1px solid black;">'.$row["seal_no"].'</td>
+                                                    <td style="border:1px solid black;">'.(!empty($row["container_no2"]) ? $row["container_no2"] : '&nbsp;').'</td>
+                                                    <td style="border:1px solid black;">'.$row["seal_no2"].'</td> 
+                                                </tr>
+                                            </table>
+
+                                            <table style="width:100%; margin-top: 10px;">
+                                                <tr style="font-size: 14px; border: 1px solid black">
+                                                    <td style="width: 70%">
+                                                        <p style="padding-left: 5px;">
+                                                            <span><b>'.(($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc') ? 'Customer' : 'Supplier').'</span><span style="margin-left: 30px;">:&nbsp;'.(($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc') ? $row['customer_name'] : $row['supplier_name']).'</b></span><br>
+                                                            <span>Project Code</span><span style="margin-left: 9px;">:&nbsp;'.$projectCodes.'</span>
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <p style="padding-left: 5px;">
+                                                            <span>PO No.</span><span style="margin-left: 7px;">:&nbsp;'.$row['purchase_order'].'</span><br>
+                                                            <span>DO No.</span><span style="margin-left: 5px;">:&nbsp;'.$row['delivery_no'].'</span>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                                <tr style="font-size: 14px;">
+                                                    <td>
+                                                        <p style="padding-left: 5px;">
+                                                            <span>Product</span><span style="margin-left: 11px;">:&nbsp;'.$productRawMats.'</span><br>
+                                                            <span>Remarks</span><span style="margin-left: 5px;">:&nbsp;'.$row['remarks'].'</span>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        ';
+                                    }
+
+                                    // $message .= '<br>
+                                    // <table style="width:100%; border:0px solid black; margin-top: -10px;">
+                                    //     <tr>
+                                    //         <th style="border:1px solid black;font-size: 18px;text-align: center;" width="25%">Date/Time</th>
+                                    //         <th style="border:1px solid black;font-size: 18px;text-align: center;" width="25%">Weighbridge No.</th>
+                                    //         <th colspan="2" style="border:1px solid black;font-size: 18px;text-align: center;" width="20%">Weight (kg)</th>
+                                    //     </tr>
+                                    //     <tr style="font-size: 16px;text-align: center;">
+                                    //         <td style="border:1px solid black;">'.$grossWeightTime.'</td>
+                                    //         <td style="border:1px solid black;">'.(($row['indicator_id'] == 'EX2001') ? 'WB1' : (($row['indicator_id'] == 'D2008') ? 'WB2' : '')).'</td>
+                                    //         <td style="border:1px solid black; font-weight: bold;">In</td>
+                                    //         <td style="border:1px solid black;">'.formatWeight($row['gross_weight1']).' kg</td>
+                                    //     </tr>
+                                    //     <tr style="font-size: 16px;text-align: center;">
+                                    //         <td style="border:1px solid black;">'.$tareWeightTime.'</td>
+                                    //         <td style="border:1px solid black;">'.(($row['indicator_id_2'] == 'EX2001') ? 'WB1' : (($row['indicator_id_2'] == 'D2008') ? 'WB2' : '')).'</td>
+                                    //         <td style="border:1px solid black; font-weight: bold;">Out</td>
+                                    //         <td style="border:1px solid black;">'.formatWeight($row['tare_weight1']).' kg</td>
+                                    //     </tr>
+                                    //     <tr>
+                                    //         <td colspan="2" style="visibility:hidden;">Destination &nbsp;:&nbsp; <span style="margin-left: 10px">'.$row['destination'].'</span></td>
+                                    //         <td style="border:1px solid black;font-size: 16px;text-align: center;">Reduce</td>
+                                    //         <td style="border:1px solid black;font-size: 16px;text-align: center;">'.formatWeight($row['reduce_weight']).' kg</td>
+                                    //     </tr>
+                                    //     <tr>
+                                    //         <td colspan="2">Remarks &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; <span style="margin-left: 10px">'.$row['remarks'].'</span></td>
+                                    //         <td style="border:1px solid black;font-size: 16px;font-weight:bold;text-align: center;">Nett</td>
+                                    //         <td style="border:1px solid black;font-size: 16px;font-weight:bold;text-align: center;">'.formatWeight($row['final_weight']).' kg</td>
+                                    //     </tr>
+                                    // </table><br>';
                                 }                             
                             }
                             
