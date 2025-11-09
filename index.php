@@ -5266,8 +5266,13 @@ else{
         <!-- Delivery Order Section -->
         <div class="row">
             <p><span><strong style="font-size:120%; text-decoration: underline;">Delivery Order Information</strong></span><br>
-            <div class="col-6">
-                <p><strong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
+            <div class="col-4">
+                <p><srtong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
+                <p><srtong>WEIGHT TYPE:</strong> ${weightType}</p>
+                <p><srtong>TRANSACTION TYPE:</strong> ${transactionStatus}</p>
+                <p><srtong>DESTINATION:</strong> ${row.destination}</p>
+                <p><srtong>TANSSPORTER:</strong> ${row.transporter}</p>
+                <!--<p><strong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
                 <p><strong>DESTINATION NAME:</strong> ${row.destination}</p>
                 <p><strong>SITE NAME:</strong> ${row.site_name}</p>
                 <p><strong>PLANT NAME:</strong> ${row.plant_name}</p>`;
@@ -5279,16 +5284,31 @@ else{
         
             returnString += `
                 <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
-                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
+                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>-->
             </div>
-            <div class="col-6">
-                <p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
+            <div class="col-4">
+                <p><srtong>CONTAINER NO:</strong> ${row.container_no}</p>
+                <p><srtong>SEAL NO:</strong> ${row.seal_no}</p>
+                <p><srtong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
+                <p><srtong>SEAL NO 2:</strong> ${row.seal_no2}</p>
+                <p><srtong>TRANSPORT CAPACITY:</strong> ${row.transport_cap}</p>
+                <!--<p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
                 <p><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
                 <p><strong>WEIGHT TYPE:</strong> ${weightType}</p>
                 <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p>
                 <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
                 <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
-                <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>
+                <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>-->
+            </div>
+            <div class="col-4">
+                <p><strong>P/O NO:</strong> ${row.purchase_order}</p>
+                <p><strong>INVOICE NO:</strong> ${row.invoice_no}</p>
+                <p><strong>ORDER WEIGHT:</strong> ${row.order_weight}</p>
+                <p><strong>WEIGHT DIFFERENCE:</strong> ${row.weight_difference}</p>
+                <p><strong>REDUCE WEIGHT:</strong> ${row.reduce_weight}</p>
+            </div>
+            <div class="col-12">
+                <p><strong>OTHER REMARKS:</strong> ${row.other_remarks}</p>
             </div>
         </div>
         <hr>
@@ -5297,28 +5317,36 @@ else{
         <div class="row">
             <p><span><strong style="font-size:120%; text-decoration: underline;">Weighing Information</strong></span><br>
             <!-- Normal -->
-            <div class="col-6">
+            <div class="col-4">
                 <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
-                <p><strong>IN WEIGHT:</strong> ${row.gross_weight1}</p>
-                <p><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
                 <p><strong>IN WEIGH BY:</strong> ${row.gross_weight_by1}</p>
-                <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1}</p>
-                <p><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
                 <p><strong>OUT WEIGH BY:</strong> ${row.tare_weight_by1}</p>
+            </div>
+            <div class="col-4">
+                <p><strong>IN WEIGHT:</strong> ${row.gross_weight1}</p>
+                <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1}</p>
                 <p><strong>NETT WEIGHT:</strong> ${row.nett_weight1}</p>
+            </div>
+            <div class="col-4">
+                <p><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
+                <p><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
                 <p><strong>SUB TOTAL WEIGHT:</strong> ${row.final_weight}</p>
             </div>
             <!-- Container -->
-            <div class="col-6">
+            <div class="col-4">
                 <p><strong>VEHICLE PLATE 2:</strong> ${row.lorry_plate_no2}</p>
-                <p><strong>IN WEIGHT 2:</strong> ${row.gross_weight2}</p>
-                <p><strong>IN DATE / TIME 2:</strong> ${row.gross_weight2_date}</p>
                 <p><strong>IN WEIGH BY 2:</strong> ${row.gross_weight_by2}</p>
-                <p><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2}</p>
-                <p><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
                 <p><strong>OUT WEIGH BY 2:</strong> ${row.tare_weight_by2}</p>
-                <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2}</p>            
-                </div>
+            </div>
+            <div class="col-4">
+                <p><strong>IN WEIGHT 2:</strong> ${row.gross_weight2}</p>
+                <p><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2}</p>
+                <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2}</p>
+            </div>
+            <div class="col-4">
+                <p><strong>IN DATE / TIME 2:</strong> ${row.gross_weight2_date}</p>
+                <p><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
+            </div>
         </div>
         `;
         
