@@ -1844,6 +1844,9 @@ else{
     var tareOutgoingDatePicker2; 
     var rowCount = $("#productTable").find(".details").length;
     var player = null;
+    var player2 = null;
+    var player3 = null;
+    var player4 = null;
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -2907,13 +2910,15 @@ else{
                 });
             }
         });
+        
+        initAllCameras();
 
-        if (player) {
+        /*if (player) {
             destroy();
         }
 
-        /*player = new EZUIKit.EZUIKitPlayer({
-            id: "video-container1", // 视频容器ID
+        player = new EZUIKit.EZUIKitPlayer({
+            id: "video-container1, video-container2", // 视频容器ID
             accessToken: "at.dfjpxs2b541md3mmbng38uh240mkue0b-3uv8v3j7rg-07txnrv-3ffe0pydp",
             url: "ezopen://open.ezviz.com/BC6848896/1.live",
             template: "pcLive", // simple: 极简版; pcLive: 预览; pcRec: 回放; security: 安防版; voice: 语音版;
@@ -4746,7 +4751,7 @@ else{
         ?>
     });
 
-    function destroy() {
+    function destroy(player) {
         if (player) {
             player.destroy();
         }
@@ -5527,6 +5532,92 @@ else{
             console.warn("Error posting:", message, status, err);
         }
         });
+    }
+    
+    // Step 1: Fetch access token
+    async function getAccessToken() {
+      const response = await fetch("https://open.ezvizlife.com/api/lapp/token/get", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          appKey: "8da2d5837e564899a4406255b5729fc1",
+          appSecret: "0158552fa5044a6c93989fbdda5a8783",
+        }),
+      });
+    
+      const data = await response.json();
+      console.log("Token response:", data);
+    
+      if (data.code === "200" && data.data.accessToken) {
+        return data.data.accessToken;
+      } else {
+        throw new Error("Failed to get access token");
+      }
+    }
+    
+    // Step 2: Create player for each camera
+    function createPlayer(containerId, token, cameraUrl) {
+      // ✅ Safely destroy if an EZUIKitPlayer instance already exists
+      if (window[containerId] && typeof window[containerId].destroy === "function") {
+        try {
+          window[containerId].destroy();
+        } catch (err) {
+          console.warn(`Failed to destroy old player for ${containerId}:`, err);
+        }
+      }
+    
+      // ✅ Initialize new player
+      const player = new EZUIKit.EZUIKitPlayer({
+        id: containerId,
+        accessToken: token,
+        url: cameraUrl,
+        template: "pcLive",
+        width: 400,
+        height: 200,
+        language: "en",
+        env: { domain: "https://isgpopen.ezvizlife.com" },
+        streamInfoCBType: 1,
+        staticPath: "cctv/ezuikit_static",
+        loggerOptions: {
+          level: "INFO",
+          name: "ezuikit",
+          showTime: true,
+        },
+        handleError: (error) => {
+          console.error(`${containerId} error:`, error);
+        },
+      });
+    
+      // ✅ Save reference globally
+      window[containerId] = player;
+    
+      // Optional event listeners
+      player.eventEmitter.on(
+        EZUIKit.EZUIKitPlayer.EVENTS.firstFrameDisplay,
+        () => console.log(`${containerId} first frame displayed`)
+      );
+    
+      player.eventEmitter.on(
+        EZUIKit.EZUIKitPlayer.EVENTS.videoInfo,
+        (info) => console.log(`${containerId} video info:`, info)
+      );
+    }
+    
+    // Step 3: Initialize all cameras
+    async function initAllCameras() {
+      try {
+        const token = await getAccessToken();
+    
+        const cameras = [
+          { id: "video-container1", url: "ezopen://open.ezviz.com/BC6848896/1.live" },
+          { id: "video-container2", url: "ezopen://open.ezviz.com/BC6849024/1.live" },
+        ];
+    
+        cameras.forEach((cam) => createPlayer(cam.id, token, cam.url));
+    
+      } catch (error) {
+        console.error("Error initializing cameras:", error);
+      }
     }
     </script>
 </body>
