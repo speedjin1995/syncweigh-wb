@@ -5718,11 +5718,28 @@ else{
                                     $("#customerTable").find('#customerRefNo:last').attr('name', 'customerRefNo['+customerRowCount+']').attr("id", "customerRefNo" + customerRowCount).val(item.ref_no);
 
                                     customerRowCount++;
+
+
+
                                 }
                                 
                                 // Initialize Select2 once after all rows are added
                                 reinitSelect2($('#addModal'));
                             }
+                            
+                            // Make all customerTable fields readonly and disabled
+                            $('#customerTable').find('input, select, textarea, button').each(function() {
+                                if ($(this).is('select')) {
+                                    $(this).next('.select2-container').css('pointer-events', 'none');
+                                    $(this).next('.select2-container').find('.select2-selection').css({
+                                        'background-color': '#f8f9fa',
+                                        'opacity': '0.8',
+                                        'cursor': 'not-allowed'
+                                    });
+                                } else {
+                                    $(this).prop('readonly', true).prop('disabled', true);
+                                }
+                            });
                         }, 500);
                     }, 500);
                 });
@@ -5787,8 +5804,6 @@ else{
                     select2Container.next('.select2-error').remove(); // Remove error message
                 });
 
-                $('#addModal').modal('show');
-
                 // Make all inputs, selects, and textareas readonly-like except specific ones
                 $('#addModal').find('input, select, textarea').each(function() {
                     var id = $(this).attr('id');
@@ -5810,6 +5825,8 @@ else{
                         }
                     }
                 });
+
+                $('#addModal').modal('show');
             
                 $('#weightForm').validate({
                     errorElement: 'span',
