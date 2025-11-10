@@ -5880,6 +5880,7 @@ else{
                     }
 
                     setTimeout(() => {
+                        $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).select2('destroy').select2();
                         $('#addModal').find('#id').val(obj.message.id);
                         $('#addModal').find('#transactionId').val(obj.message.transaction_id);
                         $('#addModal').find('#weightType').val(obj.message.weight_type);
@@ -6128,12 +6129,12 @@ else{
 
                                     customerRowCount++;
                                 }
-                                
-                                // Initialize Select2 once after all rows are added
-                                reinitSelect2($('#addModal'));
                             }
                         }, 500);
                     }, 100);
+
+                    // Initialize Select2 once after all rows are added
+                    reinitSelect2($('#addModal'));
                 });
 
                 // Load these field after PO/SO is loaded
@@ -6166,6 +6167,7 @@ else{
                     //     $('#addModal').find('#salesOrderEdit').val(obj.message.purchase_order).show();
                     // }
                 });*/
+
 
                 // Initialize all Select2 elements in the modal
                 $('#addModal .select2').select2({
