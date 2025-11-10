@@ -1329,7 +1329,7 @@ else{
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Company</th>
+                                                                    <th>Companies</th>
                                                                     <th>Transaction <br>Id</th>
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
@@ -2387,6 +2387,7 @@ else{
                         }
                     }
                 },
+                { data: 'company' },
                 { data: 'transaction_id' },                
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
@@ -3310,6 +3311,7 @@ else{
                             }
                         }
                     },
+                    { data: 'company' },
                     { data: 'transaction_id' }, 
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
@@ -5104,7 +5106,6 @@ else{
     }
 
     function addNewWeight(today){
-        console.log("addNewWeight() called", new Date());
         // Show Capture Buttons When Add New
         $('#addModal').find('#grossCapture').show();
         $('#addModal').find('#tareCapture').show();
@@ -5859,6 +5860,8 @@ else{
                         }
                     }
                 });
+
+                $('#addModal').find('#addCustomer').hide();
 
                 $('#addModal').modal('show');
             
