@@ -1329,6 +1329,7 @@ else{
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
+                                                                    <th>Company</th>
                                                                     <th>Transaction <br>Id</th>
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
