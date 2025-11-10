@@ -138,12 +138,16 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 }
                             }
 
-                            if ($row['raw_mat_name'] != '' && $row['raw_mat_name'] != null) {
-                                foreach (json_decode($row['raw_mat_name']) as $rawMat) {
+                            if ($row['raw_mat_code'] != '' && $row['raw_mat_code'] != null && $row['raw_mat_name'] != '' && $row['raw_mat_name'] != null) {
+                                $codes = json_decode($row['raw_mat_code']);
+                                $names = json_decode($row['raw_mat_name']);
+                                foreach ($codes as $index => $code) {
+                                    $name = isset($names[$index]) ? $names[$index] : '';
+                                    $item = $code . ' - ' . $name;
                                     if ($productRawMats != ''){
-                                        $productRawMats .= ' / ' . $rawMat;
+                                        $productRawMats .= ' / ' . $item;
                                     }else{
-                                        $productRawMats .= $rawMat;
+                                        $productRawMats .= $item;
                                     }
                                 }
                             }
@@ -195,12 +199,16 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 $update_stmt2->close();
                             }
 
-                            if ($row['product_name'] != '' && $row['product_name'] != null){
-                                foreach (json_decode($row['product_name']) as $product) {
+                            if ($row['product_code'] != '' && $row['product_code'] != null && $row['product_name'] != '' && $row['product_name'] != null){
+                                $codes = json_decode($row['product_code']);
+                                $names = json_decode($row['product_name']);
+                                foreach ($codes as $index => $code) {
+                                    $name = isset($names[$index]) ? $names[$index] : '';
+                                    $item = $code . ' - ' . $name;
                                     if ($productRawMats != ''){
-                                        $productRawMats .= ' / ' . $product;
+                                        $productRawMats .= ' / ' . $item;
                                     }else{
-                                        $productRawMats .= $product;
+                                        $productRawMats .= $item;
                                     }
                                 }
                             }
@@ -287,9 +295,9 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     
                                     if ($projectRow = $projectResult->fetch_assoc()) {
                                         if ($projectCodes != ''){
-                                            $projectCodes .= ' / ' . $projectRow['project'];
+                                            $projectCodes .= ' / ' . $projectRow['project'] . ' - ' . $projectRow['project_name'];
                                         }else{
-                                            $projectCodes .= $projectRow['project'];
+                                            $projectCodes .= $projectRow['project'] . ' - ' . $projectRow['project_name'];
                                         }
                                     }
                                 }
@@ -1001,9 +1009,9 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                                                 
                                                                 if ($projectRow = $projectResult->fetch_assoc()) {
                                                                     if ($projectCodes != ''){
-                                                                        $projectCodes .= ' / ' . $projectRow['project'];
+                                                                        $projectCodes .= ' / ' . $projectRow['project'] . ' - ' . $projectRow['project_name'];
                                                                     }else{
-                                                                        $projectCodes .= $projectRow['project'];
+                                                                        $projectCodes .= $projectRow['project'] . ' - ' . $projectRow['project_name'];
                                                                     }
                                                                 }
                                                             }
@@ -1025,9 +1033,9 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
                                                                 if ($productRow = $productResult->fetch_assoc()) {
                                                                     if ($productRawMats != ''){
-                                                                        $productRawMats .= ' / ' . $productRow['name'];
+                                                                        $productRawMats .= ' / ' . $productRow['product_code'] . ' - ' . $productRow['name'];
                                                                     }else{
-                                                                        $productRawMats .= $productRow['name'];
+                                                                        $productRawMats .= $productRow['product_code'] . ' - ' . $productRow['name'];
                                                                     }
                                                                 }
                                                             }
