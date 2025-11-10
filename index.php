@@ -2217,16 +2217,7 @@ else{
         });
 
         // Apply custom styling to Select2 elements in search bar
-        $('.select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('.select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
-        });
+        resetSelect2Css();
         
         //Date picker
         $('#fromDateSearch').flatpickr({
@@ -5684,16 +5675,7 @@ else{
                                 });
 
                                 // Apply custom styling to Select2 elements in addModal
-                                $('#addModal .select2-container .select2-selection--single').css({
-                                    'padding-top': '4px',
-                                    'padding-bottom': '4px',
-                                    'height': 'auto'
-                                });
-
-                                $('#addModal .select2-container .select2-selection__arrow').css({
-                                    'padding-top': '33px',
-                                    'height': 'auto'
-                                });
+                                resetSelect2Css();
                             });
                         }
 
@@ -5754,12 +5736,9 @@ else{
 
                                     customerRowCount++;
 
-
-
+                                    // Initialize Select2 once after all rows are added
+                                    reinitSelect2($('#addModal'));
                                 }
-                                
-                                // Initialize Select2 once after all rows are added
-                                reinitSelect2($('#addModal'));
                             }
                             
                             // Make all customerTable fields readonly and disabled
@@ -5817,16 +5796,7 @@ else{
                 });
 
                 // Apply custom styling to Select2 elements in addModal
-                $('#addModal .select2-container .select2-selection--single').css({
-                    'padding-top': '4px',
-                    'padding-bottom': '4px',
-                    'height': 'auto'
-                });
-
-                $('#addModal .select2-container .select2-selection__arrow').css({
-                    'padding-top': '33px',
-                    'height': 'auto'
-                });
+                resetSelect2Css();
 
                 // Remove Validation Error Message
                 $('#addModal .is-invalid').removeClass('is-invalid');
@@ -6113,16 +6083,7 @@ else{
                                 });
 
                                 // Apply custom styling to Select2 elements in addModal
-                                $('#addModal .select2-container .select2-selection--single').css({
-                                    'padding-top': '4px',
-                                    'padding-bottom': '4px',
-                                    'height': 'auto'
-                                });
-
-                                $('#addModal .select2-container .select2-selection__arrow').css({
-                                    'padding-top': '33px',
-                                    'height': 'auto'
-                                });
+                                resetSelect2Css();
                             });
                         }
 
@@ -6183,6 +6144,18 @@ else{
 
                                     customerRowCount++;
                                 }
+                                
+                                // Initialize Select2 for customerTable elements after all rows are added
+                                $('#customerTable').find('select').each(function() {
+                                    $(this).select2({
+                                        allowClear: true,
+                                        placeholder: "Please Select",
+                                        dropdownParent: $('#addModal')
+                                    });
+                                });
+
+                                // Apply custom styling to Select2 elements in search bar
+                                resetSelect2Css();
                             }
                         }, 500);
                     }, 100);
@@ -6231,16 +6204,7 @@ else{
                 });
 
                 // Apply custom styling to Select2 elements in addModal
-                $('#addModal .select2-container .select2-selection--single').css({
-                    'padding-top': '4px',
-                    'padding-bottom': '4px',
-                    'height': 'auto'
-                });
-
-                $('#addModal .select2-container .select2-selection__arrow').css({
-                    'padding-top': '33px',
-                    'height': 'auto'
-                });
+                resetSelect2Css();
 
                 // Remove Validation Error Message
                 $('#addModal .is-invalid').removeClass('is-invalid');
