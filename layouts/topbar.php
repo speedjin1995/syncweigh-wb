@@ -719,11 +719,11 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
                                             <div class="d-flex">
                                                 <div class="flex-1">
-                                                    <a href="index.php?weight=<?=$salesList[$i]['id'] ?>" class="stretched-link">
+                                                    <!-- <a href="index.php?weight=<?=$salesList[$i]['id'] ?>" class="stretched-link"> -->
                                                         <h6 class="mt-0 mb-2 lh-base">There is a <?=$salesList[$i]['weight_type'] ?> weighing with <b><?=$salesList[$i]['transaction_id'] ?></b>
                                                             is <span class="text-secondary">Pending</span>
                                                         </h6>
-                                                    </a>
+                                                    <!-- </a> -->
                                                 </div>
                                             </div>
                                         </div>
@@ -737,11 +737,11 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
                                             <div class="d-flex">
                                                 <div class="flex-1">
-                                                    <a href="index.php?weight=<?=$purchaseList[$i]['id'] ?>" class="stretched-link">
+                                                    <!-- <a href="index.php?weight=<?=$purchaseList[$i]['id'] ?>" class="stretched-link"> -->
                                                         <h6 class="mt-0 mb-2 lh-base">There is a <?=$purchaseList[$i]['weight_type'] ?> weighing with <b><?=$purchaseList[$i]['transaction_id'] ?></b>
                                                             is <span class="text-secondary">Pending</span>
                                                         </h6>
-                                                    </a>
+                                                    <!-- </a> -->
                                                 </div>
                                             </div>
                                         </div>
@@ -755,11 +755,11 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
                                             <div class="d-flex">
                                                 <div class="flex-1">
-                                                    <a href="index.php?weight=<?=$localList[$i]['id'] ?>" class="stretched-link">
+                                                    <!-- <a href="index.php?weight=<?=$localList[$i]['id'] ?>" class="stretched-link"> -->
                                                         <h6 class="mt-0 mb-2 lh-base">There is a <?=$localList[$i]['weight_type'] ?> weighing with <b><?=$localList[$i]['transaction_id'] ?></b>
                                                             is <span class="text-secondary">Pending</span>
                                                         </h6>
-                                                    </a>
+                                                    <!-- </a> -->
                                                 </div>
                                             </div>
                                         </div>
@@ -773,11 +773,11 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
                                             <div class="d-flex">
                                                 <div class="flex-1">
-                                                    <a href="index.php?weight=<?=$miscList[$i]['id'] ?>" class="stretched-link">
+                                                    <!-- <a href="index.php?weight=<?=$miscList[$i]['id'] ?>" class="stretched-link"> -->
                                                         <h6 class="mt-0 mb-2 lh-base">There is a <?=$miscList[$i]['weight_type'] ?> weighing with <b><?=$miscList[$i]['transaction_id'] ?></b>
                                                             is <span class="text-secondary">Pending</span>
                                                         </h6>
-                                                    </a>
+                                                    <!-- </a> -->
                                                 </div>
                                             </div>
                                         </div>
