@@ -966,22 +966,22 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                                                 else{
                                                     $misValue++;
                                                     $id = $insert_stmt->insert_id;
-                                    
-                                                    $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
-                                    
+
+                                                    $queryPlantU = "UPDATE Company SET sales=? WHERE id='$company'";
+        
                                                     if($transactionStatus == 'Purchase'){
-                                                        $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
+                                                        $queryPlantU = "UPDATE Company SET purchase=? WHERE id='$company'";
                                                     }
                                                     else if($transactionStatus == 'Local'){
-                                                        $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
+                                                        $queryPlantU = "UPDATE Company SET locals=? WHERE id='$company'";
                                                     }
                                                     else if($transactionStatus == 'Misc'){
-                                                        $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
+                                                        $queryPlantU = "UPDATE Company SET misc=? WHERE id='$company'";
                                                     }
                                                     
                                                     ///insert miscellaneous
-                                                    if ($update_stmt2 = $db->prepare($queryPlantU)){
-                                                        $update_stmt2->bind_param('s', $misValue);
+                                                    if ($update_stmt = $db->prepare($queryPlantU)){
+                                                        $update_stmt->bind_param('s', $misValue);
                                                         
                                                         // Execute the prepared query.
                                                         if (! $update_stmt2->execute()){
@@ -1011,12 +1011,11 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                                                                 "message"=> $update_stmt2->error
                                                             )
                                                         );
-                                                    }
+                                                    }  
                                                 }
                                             }
                                         }
                                     }
-
                                 }else{
                                     echo json_encode(
                                         array(
@@ -1072,17 +1071,17 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                 else{
                     $misValue++;
                     $id = $insert_stmt->insert_id;
-    
-                    $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
-    
+
+                    $queryPlantU = "UPDATE Company SET sales=? WHERE id='$company'";
+        
                     if($transactionStatus == 'Purchase'){
-                        $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
+                        $queryPlantU = "UPDATE Company SET purchase=? WHERE id='$company'";
                     }
                     else if($transactionStatus == 'Local'){
-                        $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
+                        $queryPlantU = "UPDATE Company SET locals=? WHERE id='$company'";
                     }
                     else if($transactionStatus == 'Misc'){
-                        $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
+                        $queryPlantU = "UPDATE Company SET misc=? WHERE id='$company'";
                     }
                     
                     ///insert miscellaneous
@@ -1134,17 +1133,16 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                                     else{
                                         $misValue++;
                                         // $id2 = $insert_stmt2->insert_id;
-                        
-                                        $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
-                        
+                                        $queryPlantU = "UPDATE Company SET sales=? WHERE id='$company'";
+        
                                         if($transactionStatus == 'Purchase'){
-                                            $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
+                                            $queryPlantU = "UPDATE Company SET purchase=? WHERE id='$company'";
                                         }
                                         else if($transactionStatus == 'Local'){
-                                            $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
+                                            $queryPlantU = "UPDATE Company SET locals=? WHERE id='$company'";
                                         }
                                         else if($transactionStatus == 'Misc'){
-                                            $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
+                                            $queryPlantU = "UPDATE Company SET misc=? WHERE id='$company'";
                                         }
                                         
                                         ///insert miscellaneous
@@ -1418,17 +1416,17 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                 else{
                     $misValue++;
                     $id = $insert_stmt->insert_id;
-    
-                    $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
-    
+
+                    $queryPlantU = "UPDATE Company SET sales=? WHERE id='$company'";
+        
                     if($transactionStatus == 'Purchase'){
-                        $queryPlantU = "UPDATE Plant SET purchase=? WHERE plant_code='$plantCode'";
+                        $queryPlantU = "UPDATE Company SET purchase=? WHERE id='$company'";
                     }
                     else if($transactionStatus == 'Local'){
-                        $queryPlantU = "UPDATE Plant SET locals=? WHERE plant_code='$plantCode'";
+                        $queryPlantU = "UPDATE Company SET locals=? WHERE id='$company'";
                     }
                     else if($transactionStatus == 'Misc'){
-                        $queryPlantU = "UPDATE Plant SET misc=? WHERE plant_code='$plantCode'";
+                        $queryPlantU = "UPDATE Company SET misc=? WHERE id='$company'";
                     }
                     
                     ///insert miscellaneous
