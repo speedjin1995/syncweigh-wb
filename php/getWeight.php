@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "db_connect.php";
+require_once 'requires/lookup.php';
 
 if(isset($_POST['userID'])){
 	$id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
@@ -347,35 +348,140 @@ if(isset($_POST['userID'])){
                                         $message['fax_no'] = $row2['fax_no'] ?? '';
                                     } 
                                 }
-    
-                                $message['product_rawmat_name'] = $row['raw_mat_code'] ?? '';
-    
-                            }else{
-                                if ($customer_stmt = $db->prepare("SELECT * FROM Customer WHERE customer_code=? AND status = '0'")) {
-                                    $customer_stmt->bind_param('s', $row['customer_code']);
-                                    $customer_stmt->execute();
-                                    $customer_result = $customer_stmt->get_result();
-                                    
-                                    if ($row2 = $customer_result->fetch_assoc()) {
-                                        $message['name'] = $row2['name'];
-                                        $message['address_line_1'] = $row2['address_line_1'] ?? '';
-                                        $message['address_line_2'] = $row2['address_line_2'] ?? '';
-                                        $message['address_line_3'] = $row2['address_line_3'] ?? '';
-                                        $message['phone_no'] = $row2['phone_no'] ?? '';
-                                        $message['fax_no'] = $row2['fax_no'] ?? '';
+
+                                $customer_stmt->close();
+
+                                $productRawMats = '';
+                                if ($row['raw_mat_code'] != '' && $row['raw_mat_code'] != null && $row['raw_mat_name'] != '' && $row['raw_mat_name'] != null) {
+                                    $codes = json_decode($row['raw_mat_code']);
+                                    $names = json_decode($row['raw_mat_name']);
+                                    foreach ($codes as $index => $code) {
+                                        $name = isset($names[$index]) ? $names[$index] : '';
+                                        $item = $code . ' - ' . $name;
+                                        if ($productRawMats != ''){
+                                            $productRawMats .= ' / ' . $item;
+                                        }else{
+                                            $productRawMats .= $item;
+                                        }
                                     }
-                                } 
-    
-                                $message['product_rawmat_name'] = $row['product_code'] ?? '';
-    
+                                }
+
+                                $message['product_rawmat_name'] = $productRawMats;
+
+                            }else{
+                                if ($row['transaction_status'] == 'Sales'){
+                                    $customerTable = [];
+                                    if ($customer_stmt = $db->prepare("SELECT * FROM Weight_Customer WHERE weight_id=? AND status = '0'")) {
+                                        $customer_stmt->bind_param('s', $row['id']);
+                                        $customer_stmt->execute();
+                                        $customer_result = $customer_stmt->get_result();
+
+                                        while ($row2 = $customer_result->fetch_assoc()) {
+                                            $projectCodes = '';
+                                            if ($row2['project_id'] != '' && $row2['project_id'] != null){
+                                                foreach (json_decode($row2['project_id']) as $codeId) {
+                                                    if ($project_stmt = $db->prepare("SELECT project, project_name FROM Projects WHERE id=?")) {
+                                                        $project_stmt->bind_param('s', $codeId);
+                                                        
+                                                        // Execute the prepared query.
+                                                        if ($project_stmt->execute()) {
+                                                            $projectResult = $project_stmt->get_result();
+                                                            
+                                                            if ($projectRow = $projectResult->fetch_assoc()) {
+                                                                if ($projectCodes != ''){
+                                                                    $projectCodes .= ' / ' . $projectRow['project'] . ' - ' . $projectRow['project_name'];
+                                                                }else{
+                                                                    $projectCodes .= $projectRow['project'] . ' - ' . $projectRow['project_name'];
+                                                                }
+                                                            }
+                                                        }
+
+                                                        $project_stmt->close();
+                                                    }
+                                                }
+                                            }
+
+                                            $products = '';
+                                            if ($row2['product_id'] != '' && $row2['product_id'] != null){
+                                                foreach (json_decode($row2['product_id']) as $productId) {
+                                                    if ($product_stmt = $db->prepare("SELECT product_code, name FROM Product WHERE id=?")) {
+                                                        $product_stmt->bind_param('s', $productId);
+
+                                                        // Execute the prepared query.
+                                                        if ($product_stmt->execute()) {
+                                                            $productResult = $product_stmt->get_result();
+
+                                                            if ($productRow = $productResult->fetch_assoc()) {
+                                                                if ($products != ''){
+                                                                    $products .= ' / ' . $productRow['product_code'] . ' - ' . $productRow['name'];
+                                                                }else{
+                                                                    $products .= $productRow['product_code'] . ' - ' . $productRow['name'];
+                                                                }
+                                                            }
+                                                        }
+
+                                                        $product_stmt->close();
+                                                    }
+                                                }
+                                            }
+
+                                            $customerTable[] = [
+                                                'customer_name' => searchCustomerNameById($row2['customer_id'], $db),
+                                                'delivery_no' => $row2['delivery_no'],
+                                                'internal_doc_no' => $row2['internal_doc_no'],
+                                                'ref_no' => $row2['ref_no'],
+                                                'products' => $products,
+                                                'projects' => $projectCodes
+                                            ];
+                                        }                                        
+                                    } 
+
+                                    $customer_stmt->close();
+
+                                    $message['customer_table'] = $customerTable;
+                                }else{
+                                    if ($customer_stmt = $db->prepare("SELECT * FROM Customer WHERE customer_code=? AND status = '0'")) {
+                                        $customer_stmt->bind_param('s', $row['customer_code']);
+                                        $customer_stmt->execute();
+                                        $customer_result = $customer_stmt->get_result();
+                                        
+                                        if ($row2 = $customer_result->fetch_assoc()) {
+                                            $message['name'] = $row2['name'];
+                                            $message['address_line_1'] = $row2['address_line_1'] ?? '';
+                                            $message['address_line_2'] = $row2['address_line_2'] ?? '';
+                                            $message['address_line_3'] = $row2['address_line_3'] ?? '';
+                                            $message['phone_no'] = $row2['phone_no'] ?? '';
+                                            $message['fax_no'] = $row2['fax_no'] ?? '';
+                                        }
+                                    } 
+
+                                    $customer_stmt->close();
+
+                                    $productRawMats = '';
+                                    if ($row['product_code'] != '' && $row['product_code'] != null && $row['product_name'] != '' && $row['product_name'] != null){
+                                        $codes = json_decode($row['product_code']);
+                                        $names = json_decode($row['product_name']);
+                                        foreach ($codes as $index => $code) {
+                                            $name = isset($names[$index]) ? $names[$index] : '';
+                                            $item = $code . ' - ' . $name;
+                                            if ($productRawMats != ''){
+                                                $productRawMats .= ' / ' . $item;
+                                            }else{
+                                                $productRawMats .= $item;
+                                            }
+                                        }
+                                    }
+
+                                    $message['product_rawmat_name'] = $productRawMats;
+                                }
                             }
+                            $message['transaction_date'] = $row['transaction_date'] ? date("d/m/Y", strtotime($row['transaction_date'])) : '';
                             $message['transporter'] = $row['transporter'] ?? '';
                             $message['site_name'] = $row['site_name'] ?? '';
                             $message['destination'] = $row['destination'] ?? '';
                             $message['plant_name'] = $row['plant_name'] ?? '';
                             $message['transaction_id'] = $row['transaction_id'] ?? '';
                             $message['transaction_status'] = $row['transaction_status'] ?? '';
-                            $message['project_code'] = $row['project_code'] ?? '';
                             $message['weight_type'] = $row['weight_type'] ?? '';
                             $message['invoice_no'] = $row['invoice_no'] ?? '';
                             $message['delivery_no'] = $row['delivery_no'] ?? '';
@@ -403,6 +509,42 @@ if(isset($_POST['userID'])){
                             $message['nett_weight2'] = $row['nett_weight2'] ?? '';
                             $message['reduce_weight'] = $row['reduce_weight'] ?? '';
                             $message['final_weight'] = $row['final_weight'] ?? '';
+                            $message['weight_different'] = $row['weight_different'] ?? '';
+                            $message['mrn_no'] = $row['mrn_no'] ?? '';
+                            $message['order_weight'] = $row['order_weight'] ?? '';
+                            $message['supplier_weight'] = $row['supplier_weight'] ?? '';
+                            $message['supplier_name'] = $row['supplier_name'] ?? '';
+                            $message['remarks'] = $row['remarks'] ?? '';
+                            $message['transport_cap'] = searchTransportCapById($row['transport_cap'], $db) ?? '';
+
+                            // Project Code Mapping
+                            $projectCodes = '';
+                            if ($row['project_code'] != '' && $row['project_code'] != null) {
+                                foreach (json_decode($row['project_code']) as $codeId) {
+                                    if ($project_stmt = $db->prepare("SELECT project, project_name FROM Projects WHERE id=?")) {
+                                        $project_stmt->bind_param('s', $codeId);
+                                        
+                                        // Execute the prepared query.
+                                        if ($project_stmt->execute()) {
+                                            $projectResult = $project_stmt->get_result();
+                                            
+                                            if ($projectRow = $projectResult->fetch_assoc()) {
+                                                if ($projectCodes != ''){
+                                                    $projectCodes .= ' / ' . $projectRow['project'] . ' - ' . $projectRow['project_name'];
+                                                }else{
+                                                    $projectCodes .= $projectRow['project'] . ' - ' . $projectRow['project_name'];
+                                                }
+                                            }
+                                        }
+
+                                        $project_stmt->close();
+                                    }
+                                }
+                            }
+
+                            $message['project_code'] = $projectCodes;
+
+
                         }else{
                             $message['id'] = $row['id'];
                             $message['transaction_id'] = $row['transaction_id'];
