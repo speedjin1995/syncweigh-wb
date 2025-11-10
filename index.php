@@ -64,21 +64,25 @@ $vehicles2 = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_n
 $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $customer2 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $customer3 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
+$customer4 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $product = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
 $product2 = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
 $product3 = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
+$product4 = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
 $transporter = $db->query("SELECT * FROM Transporter WHERE status = '0' ORDER BY name ASC");
 $transporter2 = $db->query("SELECT * FROM Transporter WHERE status = '0' ORDER BY name ASC");
 $destination = $db->query("SELECT * FROM Destination WHERE status = '0' ORDER BY name ASC");
 $destination2 = $db->query("SELECT * FROM Destination WHERE status = '0' ORDER BY name ASC");
 $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
+$supplier3 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $unit = $db->query("SELECT * FROM Unit WHERE status = '0' ORDER BY unit ASC");
 $purchaseOrder = $db->query("SELECT * FROM Purchase_Order WHERE status = 'Open' AND deleted = '0' ORDER BY po_no ASC");
 $salesOrder = $db->query("SELECT * FROM Sales_Order WHERE status = 'Open' AND deleted = '0' ORDER BY order_no ASC");
 $agent = $db->query("SELECT * FROM Agents WHERE status = '0' ORDER BY name ASC");
 $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
+$rawMaterial3 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $site = $db->query("SELECT * FROM Site WHERE status = '0' ORDER BY name ASC");
 $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
 $company = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
@@ -87,6 +91,7 @@ $company3 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name A
 $projects = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
 $projects2 = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
 $projects3 = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
+$projects4 = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
 $transportCap = $db->query("SELECT * FROM Transport_Cap WHERE status = '0'");
 $transportCap2 = $db->query("SELECT * FROM Transport_Cap WHERE status = '0'");
 
@@ -1023,6 +1028,47 @@ else{
                                                         <input type="hidden" id="grossWeightBy2" name="grossWeightBy2">
                                                         <input type="hidden" id="tareWeightBy2" name="tareWeightBy2">
                                                         <input type="hidden" id="indicatorId" name="indicatorId" value="<?=$indicator ?>">
+
+                                                        <div style="display:none;">
+                                                            <select class="form-select js-choice select2" id="clonedCustomer" name="clonedCustomer">
+                                                                <?php while($rowCustomer=mysqli_fetch_assoc($customer4)){ ?>
+                                                                    <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                            <select class="form-select select2" id="clonedSupplier" name="clonedSupplier">
+                                                                <?php while($rowSupplier=mysqli_fetch_assoc($supplier3)){ ?>
+                                                                    <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                            <select class="form-select select2" id="clonedProduct" name="clonedProduct" multiple>
+                                                                <?php while($rowProduct=mysqli_fetch_assoc($product4)){ ?>
+                                                                    <option 
+                                                                        value="<?=$rowProduct['name'] ?>" 
+                                                                        data-price="<?=$rowProduct['price'] ?>" 
+                                                                        data-code="<?=$rowProduct['product_code'] ?>" 
+                                                                        data-high="<?=$rowProduct['high'] ?>" 
+                                                                        data-low="<?=$rowProduct['low'] ?>" 
+                                                                        data-variance="<?=$rowProduct['variance'] ?>" 
+                                                                        data-description="<?=$rowProduct['description'] ?>">
+                                                                        <?=$rowProduct['product_code'] ?> - <?=$rowProduct['name'] ?>
+                                                                    </option>
+                                                                <?php } ?>
+                                                                <option value="Other" data-code="Other">Other</option>
+                                                            </select>      
+
+                                                            <select class="form-select select2" id="clonedRawMaterial" name="clonedRawMaterial" multiple>
+                                                                <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial3)){ ?>
+                                                                    <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] . ' - ' . $rowRowMat['name'] ?></option>
+                                                                <?php } ?>
+                                                                <option value="Other" data-code="Other">Other</option>
+                                                            </select>    
+
+                                                            <select class="form-select select2" id="clonedProjects" name="clonedProjects[]" multiple>
+                                                                <?php while($rowProject=mysqli_fetch_assoc($projects4)){ ?>
+                                                                    <option value="<?=$rowProject['id'] ?>"><?=$rowProject['project'] . ' - ' . $rowProject['project_name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
                                                     </form>
                                                 </div>
                                             </div><!-- /.modal-content -->
@@ -2134,11 +2180,11 @@ else{
     var rowCount = $("#productTable").find(".details").length;
     var customerRowCount = 0;
     var productCodes = [];
-    var clonedCustomerOptions = $('#customerName option').clone();
-    var clonedSupplierOptions = $('#supplierName option').clone();
-    var clonedProductOptions = $('#productName option').clone();
-    var clonedRawMatOptions = $('#rawMaterialName option').clone();
-    var clonedProjectOptions = $('#projectCode option').clone();
+    var clonedCustomerOptions = $('#clonedCustomer option').clone();
+    var clonedSupplierOptions = $('#clonedSupplier option').clone();
+    var clonedProductOptions = $('#clonedProduct option').clone();
+    var clonedRawMatOptions = $('#clonedRawMaterial option').clone();
+    var clonedProjectOptions = $('#clonedProjects option').clone();
 
     $(function () {
         var userRole = '<?=$role ?>';
