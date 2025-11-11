@@ -1243,7 +1243,7 @@ if (isset($_POST['transactionId'], $_POST['transactionDate'], $_POST['grossIncom
             }
         }  
     }else{
-                if ($isWeightOut == 'true'){
+        if ($isWeightOut == 'true'){
             if(! empty($weightId)){        
                 if ($update_stmt = $db->prepare("UPDATE Weight SET gross_weight1=?, gross_weight1_date=?, gross_weight_by1=?, tare_weight1=?, tare_weight1_date=?, tare_weight_by1=?, nett_weight1=?,
                 gross_weight2=?, gross_weight2_date=?, gross_weight_by2=?, tare_weight2=?, tare_weight2_date=?, tare_weight_by2=?, nett_weight2=?, reduce_weight=?, final_weight=?, weight_different=?, is_complete=?, is_cancel=?, weighbridge_id=?, created_by=?, modified_by=?, indicator_id_2=? WHERE id=?"))
