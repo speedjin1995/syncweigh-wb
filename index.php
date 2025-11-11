@@ -587,7 +587,7 @@ else{
                                                                                 <div class="input-group">
                                                                                     <!-- <div class="input-group-text">
                                                                                         <input class="form-check-input mt-0" id="manual" name="manual" type="checkbox" value="0" aria-label="Checkbox for following text input">
-                                                                                    </div>                                                                                             -->
+                                                                                    </div>-->
                                                                                     <input type="number" class="form-control input-readonly" id="grossIncoming" name="grossIncoming" placeholder="0" readonly>
                                                                                     <div class="input-group-text">Kg</div>
                                                                                     <button class="input-group-text btn btn-success fs-5" id="grossCapture" type="button"><i class="mdi mdi-sync"></i></button>
@@ -604,7 +604,7 @@ else{
 
                                                                         <div class="row mb-3">
                                                                             <label for="tareOutgoing" class="col-sm-4 col-form-label">Outgoing</label>
-                                                                            <div class="col-sm-8">                                                                                     
+                                                                            <div class="col-sm-8">
                                                                                 <div class="input-group">
                                                                                     <!-- <div class="input-group-text">
                                                                                         <input class="form-check-input mt-0" id="manualOutgoing" name="manualOutgoing" type="checkbox" value="0" aria-label="Checkbox for following text input">
@@ -612,7 +612,7 @@ else{
                                                                                     <input type="number" class="form-control input-readonly" id="tareOutgoing" name="tareOutgoing" placeholder="0" readonly>
                                                                                     <div class="input-group-text">Kg</div>
                                                                                     <button class="input-group-text btn btn-success fs-5" id="tareCapture" type="button"><i class="mdi mdi-sync"></i></button>
-                                                                                </div>                                                                                       
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="row mb-3">
@@ -630,7 +630,7 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>                                                                                                                                  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-xxl-4 col-lg-4" id="containerCard" style="display:none;">
@@ -769,7 +769,7 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>                                                                                                                                  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1028,6 +1028,7 @@ else{
                                                         <input type="hidden" id="grossWeightBy2" name="grossWeightBy2">
                                                         <input type="hidden" id="tareWeightBy2" name="tareWeightBy2">
                                                         <input type="hidden" id="indicatorId" name="indicatorId" value="<?=$indicator ?>">
+                                                        <input type="hidden" id="isWeightOut" name="isWeightOut">
 
                                                         <div style="display:none;">
                                                             <select class="form-select js-choice select2" id="clonedCustomer" name="clonedCustomer">
@@ -3651,6 +3652,7 @@ else{
                 }
             });*/
 
+            $('#isWeightOut').val(false);
             $('#companyModal').find('#companySelect').val("").trigger('change');
             $('#companyModal').modal('show');
         });
@@ -5514,6 +5516,7 @@ else{
     // Normal users just weight out
     function weightOut(id, isContainer){
         $('#spinnerLoading').show();
+        $('#isWeightOut').val(true);
 
         var type = '';
         if (isContainer == 'Y'){
@@ -5799,12 +5802,7 @@ else{
                             // Make all customerTable fields readonly and disabled
                             $('#customerTable').find('input, select, textarea, button').each(function() {
                                 if ($(this).is('select')) {
-                                    $(this).next('.select2-container').css('pointer-events', 'none');
-                                    $(this).next('.select2-container').find('.select2-selection').css({
-                                        'background-color': '#f8f9fa',
-                                        'opacity': '0.8',
-                                        'cursor': 'not-allowed'
-                                    });
+                                    $(this).prop('disabled', true).trigger('change');
                                 } else {
                                     $(this).prop('readonly', true).prop('disabled', true);
                                 }
@@ -5871,15 +5869,14 @@ else{
                     // Skip editable fields
                     if (id === 'grossIncoming' || id === 'tareOutgoing' || id === 'grossIncoming2' || id === 'tareOutgoing2') {
                         $(this).prop('readonly', false).prop('disabled', false);
+                        if ($(this).hasClass('select2')) {
+                            $(this).select2('enable', true);
+                        }
                     } else {
-                        if ($(this).is('select')) {
-                            // Make select2 look and behave readonly (but still submit value)
-                            $(this).next('.select2-container').css('pointer-events', 'none');  // Prevent click
-                            $(this).next('.select2-container').find('.select2-selection').css({
-                                'background-color': '#f8f9fa',   // light gray look
-                                'opacity': '0.8',
-                                'cursor': 'not-allowed'
-                            });
+                        if ($(this).is('select') && $(this).hasClass('select2')) {
+                            $(this).select2('enable', false);
+                        } else if ($(this).is('select')) {
+                            $(this).prop('disabled', true);
                         } else {
                             $(this).prop('readonly', true);
                         }
@@ -5921,6 +5918,7 @@ else{
     // Admin can edit
     function edit(id, isContainer){
         $('#spinnerLoading').show();
+        $('#isWeightOut').val(false);
 
         var type = '';
         if (isContainer == 'Y'){
