@@ -21,8 +21,8 @@ if (!empty($data)) {
         $action = "1";
         
         # Checking for existing Product.
-        if($Code != null && $Code != ''){
-            $productQuery = "SELECT * FROM Product WHERE product_code = '$Code' AND status='0'";
+        if($Code != null && $Code != '' && $Company != null && $Company != ''){
+            $productQuery = "SELECT * FROM Product WHERE product_code = '$Code' AND company_id = '$Company' AND status='0'";
             $productDetail = mysqli_query($db, $productQuery);
             $productRow = mysqli_fetch_assoc($productDetail);
             
