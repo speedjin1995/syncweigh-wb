@@ -95,6 +95,18 @@ if($searchValue != ''){
   $searchQuery = " and (transaction_id like '%".$searchValue."%' or lorry_plate_no1 like '%".$searchValue."%')";
 }
 
+$salesPendingCount = 0;
+$salesCompleteCount = 0;
+$salesCancelCount = 0;
+$purchasePendingCount = 0;
+$purchaseCompleteCount = 0;
+$purchaseCancelCount = 0;
+$localPendingCount = 0;
+$localCompleteCount = 0;
+$localCancelCount = 0;
+$miscPendingCount = 0;
+$miscCompleteCount = 0;
+$miscCancelCount = 0;
 
 if ($_POST['batch'] == 'N') { //if pending
   ## Total number of records without filtering
@@ -111,14 +123,53 @@ if ($_POST['batch'] == 'N') { //if pending
 
   ## Total number of record with filtering
   $filteredQuery = "select count(*) as allcount from (SELECT * FROM Weight where status = '0'".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0'".$searchQuery.") AS combined"; 
+  $filteredQuery2 = "select * from (SELECT * FROM Weight where status = '0'".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0'".$searchQuery.") AS combined"; 
   if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
     $filteredQuery = "select count(*) as allcount from (SELECT * FROM Weight where status = '0' and plant_code IN ('$username')".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0' and plant_code IN ('$username')".$searchQuery.") AS combined";
+    $filteredQuery2 = "select * from (SELECT * FROM Weight where status = '0' and plant_code IN ('$username')".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0' and plant_code IN ('$username')".$searchQuery.") AS combined";
   }
 
   $sel = mysqli_query($db, $filteredQuery);
   $records = mysqli_fetch_assoc($sel);
   $totalRecordwithFilter = $records['allcount'];
+
+  $countQuery = mysqli_query($db, $filteredQuery2);
+  while($countRow = mysqli_fetch_assoc($countQuery)) {
+    if ($countRow['transaction_status'] == 'Sales') {
+      if ($countRow['is_complete'] == 'N' && $countRow['is_cancel'] == 'N') {
+        $salesPendingCount++;
+      } elseif ($countRow['is_complete'] == 'Y' && $countRow['is_cancel'] == 'N') {
+        $salesCompleteCount++;
+      } elseif ($countRow['is_cancel'] == 'Y') {
+        $salesCancelCount++;
+      }
+    } elseif ($countRow['transaction_status'] == 'Purchase') {
+      if ($countRow['is_complete'] == 'N' && $countRow['is_cancel'] == 'N') {
+        $purchasePendingCount++;
+      } elseif ($countRow['is_complete'] == 'Y' && $countRow['is_cancel'] == 'N') {
+        $purchaseCompleteCount++;
+      } elseif ($countRow['is_cancel'] == 'Y') {
+        $purchaseCancelCount++;
+      }
+    } elseif ($countRow['transaction_status'] == 'Local') {
+      if ($countRow['is_complete'] == 'N' && $countRow['is_cancel'] == 'N') {
+        $localPendingCount++;
+      } elseif ($countRow['is_complete'] == 'Y' && $countRow['is_cancel'] == 'N') {
+        $localCompleteCount++;
+      } elseif ($countRow['is_cancel'] == 'Y') {
+        $localCancelCount++;
+      }
+    } elseif ($countRow['transaction_status'] == 'Misc') {
+      if ($countRow['is_complete'] == 'N' && $countRow['is_cancel'] == 'N') {
+        $miscPendingCount++;
+      } elseif ($countRow['is_complete'] == 'Y' && $countRow['is_cancel'] == 'N') {
+        $miscCompleteCount++;
+      } elseif ($countRow['is_cancel'] == 'Y') {
+        $miscCancelCount++;
+      }
+    }
+  }
 
   ## Fetch records
   $empQuery = "(select * from Weight where status = '0'".$searchQuery.") UNION ALL (select * from Weight_Container where status = '0'".$searchQuery.") order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
@@ -141,14 +192,53 @@ if ($_POST['batch'] == 'N') { //if pending
 
   ## Total number of record with filtering
   $filteredQuery = "select count(*) as allcount from Weight where status = '0'".$searchQuery;
+  $filteredQuery2 = "select * from Weight where status = '0'".$searchQuery;
   if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
     $filteredQuery = "select count(*) as allcount from Weight where status = '0' and plant_code IN ('$username')".$searchQuery;
+    $filteredQuery2 = "select * from Weight where status = '0' and plant_code IN ('$username')".$searchQuery;
   }
 
   $sel = mysqli_query($db, $filteredQuery);
   $records = mysqli_fetch_assoc($sel);
   $totalRecordwithFilter = $records['allcount'];
+
+  $countQuery = mysqli_query($db, $filteredQuery2);
+  while($countRow = mysqli_fetch_assoc($countQuery)) {
+    if ($countRow['transaction_status'] == 'Sales') {
+      if ($countRow['is_complete'] == 'N' && $countRow['is_cancel'] == 'N') {
+        $salesPendingCount++;
+      } elseif ($countRow['is_complete'] == 'Y' && $countRow['is_cancel'] == 'N') {
+        $salesCompleteCount++;
+      } elseif ($countRow['is_cancel'] == 'Y') {
+        $salesCancelCount++;
+      }
+    } elseif ($countRow['transaction_status'] == 'Purchase') {
+      if ($countRow['is_complete'] == 'N' && $countRow['is_cancel'] == 'N') {
+        $purchasePendingCount++;
+      } elseif ($countRow['is_complete'] == 'Y' && $countRow['is_cancel'] == 'N') {
+        $purchaseCompleteCount++;
+      } elseif ($countRow['is_cancel'] == 'Y') {
+        $purchaseCancelCount++;
+      }
+    } elseif ($countRow['transaction_status'] == 'Local') {
+      if ($countRow['is_complete'] == 'N' && $countRow['is_cancel'] == 'N') {
+        $localPendingCount++;
+      } elseif ($countRow['is_complete'] == 'Y' && $countRow['is_cancel'] == 'N') {
+        $localCompleteCount++;
+      } elseif ($countRow['is_cancel'] == 'Y') {
+        $localCancelCount++;
+      }
+    } elseif ($countRow['transaction_status'] == 'Misc') {
+      if ($countRow['is_complete'] == 'N' && $countRow['is_cancel'] == 'N') {
+        $miscPendingCount++;
+      } elseif ($countRow['is_complete'] == 'Y' && $countRow['is_cancel'] == 'N') {
+        $miscCompleteCount++;
+      } elseif ($countRow['is_cancel'] == 'Y') {
+        $miscCancelCount++;
+      }
+    }
+  }
 
   ## Fetch records
   $empQuery = "select * from Weight where status = '0'".$searchQuery."order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
@@ -161,27 +251,23 @@ if ($_POST['batch'] == 'N') { //if pending
 // var_dump($empQuery);
 $empRecords = mysqli_query($db, $empQuery);
 $data = array();
-$salesCount = 0;
-$purchaseCount = 0;
-$localCount = 0;
-$miscCount = 0;
 
 while($row = mysqli_fetch_assoc($empRecords)) {
   $transactionStatus = '';
   if($row['transaction_status'] == 'Sales'){
-    $salesCount++;
+    // $salesCount++;
     $transactionStatus = 'Dispatch';
   }
   else if($row['transaction_status'] == 'Purchase'){
-    $purchaseCount++;
+    // $purchaseCount++;
     $transactionStatus = 'Receiving';
   }
   else if($row['transaction_status'] == 'Misc'){
-    $miscCount++;
+    // $miscCount++;
     $transactionStatus = 'Miscellaneous';
   }
   else{
-    $localCount++;
+    // $localCount++;
     $transactionStatus = 'Internal Transfer';
   }
 
@@ -261,10 +347,18 @@ $response = array(
   "iTotalRecords" => $totalRecords,
   "iTotalDisplayRecords" => $totalRecordwithFilter,
   "aaData" => $data,
-  "salesTotal" => $salesCount,
-  "purchaseTotal" => $purchaseCount,
-  "localTotal" => $localCount,
-  "miscTotal" => $miscCount
+  "salesTotalPending" => $salesPendingCount,
+  "salesTotalComplete" => $salesCompleteCount,
+  "salesTotalCancel" => $salesCancelCount,
+  "purchaseTotalPending" => $purchasePendingCount,
+  "purchaseTotalComplete" => $purchaseCompleteCount,
+  "purchaseTotalCancel" => $purchaseCancelCount,
+  "localTotalPending" => $localPendingCount,
+  "localTotalComplete" => $localCompleteCount,
+  "localTotalCancel" => $localCancelCount,
+  "miscTotalPending" => $miscPendingCount,
+  "miscTotalComplete" => $miscCompleteCount,
+  "miscTotalCancel" => $miscCancelCount
 );
 
 echo json_encode($response);
