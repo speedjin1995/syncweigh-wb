@@ -19,8 +19,8 @@ if (!empty($data)) {
         $action = "1";
         
         # Checking for existing Project.
-        if($Code != null && $Code != ''){
-            $projectQuery = "SELECT * FROM Projects WHERE project = '$Code' AND status='0'";
+        if($Code != null && $Code != '' && $Company != null && $Company != ''){
+            $projectQuery = "SELECT * FROM Projects WHERE project = '$Code' AND company_id = '$Company' AND status='0'";
             $projectDetail = mysqli_query($db, $projectQuery);
             $projectRow = mysqli_fetch_assoc($projectDetail);
             

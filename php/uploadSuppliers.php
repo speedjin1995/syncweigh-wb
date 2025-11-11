@@ -30,8 +30,8 @@ if (!empty($data)) {
         $action = "1";
         
         # Customer Checking & Processing
-        if($Code != null && $Code != ''){
-            $supplierQuery = "SELECT * FROM Supplier WHERE supplier_code = '$Code' AND status = '0'";
+        if($Code != null && $Code != '' && $Company != null && $Company != ''){
+            $supplierQuery = "SELECT * FROM Supplier WHERE supplier_code = '$Code' AND company_id = '$Company' AND status = '0'";
             $supplierDetail = mysqli_query($db, $supplierQuery);
             $supplierRow = mysqli_fetch_assoc($supplierDetail);
             
