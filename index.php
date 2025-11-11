@@ -1850,8 +1850,8 @@ else{
                                 <div class="col-sm-8">
                                     <select id="weightType" name="weightType" class="form-select select2">
                                         <option value="Normal" selected>Normal Weighing</option>
-                                        <option value="Container">Primer Mover</option>
                                         <option value="Empty Container">Primer Mover + Container</option>
+                                        <option value="Container">Primer Mover</option>
                                         <!-- <option value="Different Container">Primer Mover + Different Bins</option> -->
                                     </select>   
                                 </div>
