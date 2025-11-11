@@ -31,8 +31,8 @@ if (!empty($data)) {
         $action = "1";
 
         # Customer Checking & Processing
-        if($Code != null && $Code != ''){
-            $customerQuery = "SELECT * FROM Customer WHERE customer_code = '$Code' AND status = '0'";
+        if($Code != null && $Code != '' && $Company != null && $Company != ''){
+            $customerQuery = "SELECT * FROM Customer WHERE customer_code = '$Code' AND company_id = '$Company' AND status = '0'";
             $customerDetail = mysqli_query($db, $customerQuery);
             $customerRow = mysqli_fetch_assoc($customerDetail);
             

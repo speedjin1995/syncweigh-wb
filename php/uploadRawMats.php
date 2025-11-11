@@ -23,8 +23,8 @@ if (!empty($data)) {
         $type = 'Raw Material';
         $action = "1";
         
-        if($Code != null && $Code != ''){
-            $rawMatQuery = "SELECT * FROM Raw_Mat WHERE raw_mat_code = '$Code' AND status='0'";
+        if($Code != null && $Code != '' && $Company != null && $Company != ''){
+            $rawMatQuery = "SELECT * FROM Raw_Mat WHERE raw_mat_code = '$Code' AND company_id = '$Company' AND status='0'";
             $rawMatDetail = mysqli_query($db, $rawMatQuery);
             $rawMatRow = mysqli_fetch_assoc($rawMatDetail);
             
