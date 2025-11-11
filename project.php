@@ -251,6 +251,8 @@
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th>Project Code</th>
                                                                     <th>Project Name</th>
+                                                                    <th>Company</th>
+                                                                    <th>Plant</th>
                                                                     <th>Status</th>
                                                                     <th>Action</th>
                                                                 </tr>
@@ -359,6 +361,8 @@ $(function () {
             },
             { data: 'project' },
             { data: 'project_name' },
+            { data: 'company' },
+            { data: 'plant' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {

@@ -6,7 +6,7 @@ function convertDatetimeToDate($datetime){
 }
 
 function searchCompanyById($value, $db) {
-    $id = '0';
+    $id = '';
 
     if(isset($value)){
         if ($select_stmt = $db->prepare("SELECT * FROM Company WHERE id=?")) {
@@ -17,6 +17,44 @@ function searchCompanyById($value, $db) {
                 $id = $row['name'];
             }
             $select_stmt->close();
+        }
+    }
+
+    return $id;
+}
+
+function searchCompanyById2($value, $db) {
+    $id = '';
+
+    if(isset($value)){
+        $decoded = json_decode($value, true);
+        $searchValue = is_array($decoded) ? $decoded : $value;
+
+        if (is_array($searchValue) && count($searchValue) > 0) {
+            $placeholders = implode(',', array_fill(0, count($searchValue), '?'));
+            $types = str_repeat('s', count($searchValue));
+
+            if ($select_stmt = $db->prepare("SELECT * FROM Company WHERE id IN ($placeholders)")) {
+                $select_stmt->bind_param($types, ...$searchValue);
+                $select_stmt->execute();
+                $result = $select_stmt->get_result();
+                $names = [];
+                while ($row = $result->fetch_assoc()) {
+                    $names[] = $row['name'];
+                }
+                $id = implode('<br>', $names);
+                $select_stmt->close();
+            }
+        } else {
+            if ($select_stmt = $db->prepare("SELECT * FROM Company WHERE id=?")) {
+                $select_stmt->bind_param('s', $searchValue);
+                $select_stmt->execute();
+                $result = $select_stmt->get_result();
+                if ($row = $result->fetch_assoc()) {
+                    $id = $row['name'];
+                }
+                $select_stmt->close();
+            }
         }
     }
 
@@ -96,7 +134,7 @@ function searchPlantCodeById($value, $db) {
 }
 
 function searchPlantNameById($value, $db) {
-    $id = '0';
+    $id = '';
 
     if(isset($value)){
         if ($select_stmt = $db->prepare("SELECT * FROM Plant WHERE id=?")) {

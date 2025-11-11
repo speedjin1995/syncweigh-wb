@@ -369,7 +369,7 @@
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th>Product Code</th>
                                                                     <th>Product Name</th>
-                                                                    <th>Product Price</th>
+                                                                    <th>Company</th>
                                                                     <th>Description</th>
                                                                     <th>Status</th>
                                                                     <th>Action</th>
@@ -504,7 +504,7 @@ $(function () {
             },
             { data: 'product_code' },
             { data: 'name' },
-            { data: 'price' },
+            { data: 'company' },
             { data: 'description' },
             { 
                 data: 'id',
