@@ -335,7 +335,7 @@
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th>Raw Material Code</th>
                                                                     <th>Raw Material Name</th>
-                                                                    <th>Raw Material Price</th>
+                                                                    <th>Company</th>
                                                                     <th>Description</th>
                                                                     <th>Type</th>
                                                                     <th>Status</th>
@@ -444,7 +444,7 @@ $(function () {
             },
             { data: 'raw_mat_code' },
             { data: 'name' },
-            { data: 'price' },
+            { data: 'company' },
             { data: 'description' },
             { data: 'type' },
             { 

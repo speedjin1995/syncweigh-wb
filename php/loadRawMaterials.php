@@ -2,6 +2,7 @@
 session_start();
 ## Database configuration
 require_once 'db_connect.php';
+require_once 'requires/lookup.php';
 
 ## Read value
 $draw = $_POST['draw'];
@@ -41,7 +42,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
       "price"=>$row['price'],
       "description"=>$row['description'],
       "type"=>$row['type'],
-      "company_id"=>$row['company_id'],
+      "company"=>searchCompanyById2($row['company_id'], $db),
       "plant_id"=>$row['plant_id'],
       "status"=>$row['status']
     );
