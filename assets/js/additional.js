@@ -51,22 +51,26 @@ function reinitSelect2(modal) {
             });
         });
 
-        // Apply custom styling to Select2 elements in search bar
-        $('.select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('.select2-container .select2-selection--multiple').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'min-height': 'auto'
-        });
-
-        $('.select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
-        });
+        resetSelect2Css();
     }, 100);
+}
+
+function resetSelect2Css(){
+    // Apply custom styling to Select2 elements in search bar
+    $('.select2-container .select2-selection--single').css({
+        'padding-top': '4px',
+        'padding-bottom': '4px',
+        'height': 'auto'
+    });
+
+    $('.select2-container .select2-selection--multiple').css({
+        'padding-top': '4px',
+        'padding-bottom': '4px',
+        'min-height': 'auto'
+    });
+
+    $('.select2-container .select2-selection__arrow').css({
+        'padding-top': '33px',
+        'height': 'auto'
+    });
 }

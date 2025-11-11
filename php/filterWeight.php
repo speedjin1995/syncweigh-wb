@@ -2,6 +2,7 @@
 session_start();
 ## Database configuration
 require_once 'db_connect.php';
+require_once 'requires/lookup.php';
 
 ## Read value
 $draw = $_POST['draw'];
@@ -196,6 +197,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
 
   $data[] = array( 
     "id"=>$row['id'],
+    "company"=>searchCompanyById($row['company'], $db),
     "transaction_id"=>$row['transaction_id'],
     "transaction_status"=>$transactionStatus,
     "weight_type"=>$weightType,
@@ -211,7 +213,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     "agent_name"=>$row['agent_name'],
     "supplier_code"=>$row['supplier_code'],
     "supplier_name"=>$row['supplier_name'],
-    "customer"=>($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local' ? $row['supplier_name'] : $row['customer_name']),
+    "customer"=>($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local' ? $row['supplier_name'] : $row['customer_name']) ?? '-',
     "product_code"=>($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local' ? $row['raw_mat_code'] : $row['product_code']), 
     "product_name"=>($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local' ? $row['raw_mat_name'] : $row['product_name']), 
     "container_no"=>$row['container_no'],

@@ -259,8 +259,8 @@ else{
                                                             <select id="invoiceNoSearch" class="form-select select2"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal">Normal Weighing</option>
-                                                                <option value="Container">Primer Mover</option>
                                                                 <option value="Empty Container">Primer Mover + Container</option>
+                                                                <option value="Container">Primer Mover</option>
                                                                 <!-- <option value="Different Container">Primer Mover + Different Bins</option> -->
                                                             </select>
                                                         </div>
@@ -1329,6 +1329,7 @@ else{
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
+                                                                    <th>Companies</th>
                                                                     <th>Transaction <br>Id</th>
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
@@ -1536,8 +1537,8 @@ else{
                                 <div class="col-sm-8">
                                     <select id="weightType" name="weightType" class="form-select select2">
                                         <option value="Normal" selected>Normal Weighing</option>
-                                        <option value="Container">Primer Mover</option>
                                         <option value="Empty Container">Primer Mover + Container</option>
+                                        <option value="Container">Primer Mover</option>
                                         <!-- <option value="Different Container">Primer Mover + Different Bins</option> -->
                                     </select>   
                                 </div>
@@ -2216,16 +2217,7 @@ else{
         });
 
         // Apply custom styling to Select2 elements in search bar
-        $('.select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('.select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
-        });
+        resetSelect2Css();
         
         //Date picker
         $('#fromDateSearch').flatpickr({
@@ -2386,6 +2378,7 @@ else{
                         }
                     }
                 },
+                { data: 'company' },
                 { data: 'transaction_id' },                
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
@@ -3309,6 +3302,7 @@ else{
                             }
                         }
                     },
+                    { data: 'company' },
                     { data: 'transaction_id' }, 
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
@@ -5103,7 +5097,6 @@ else{
     }
 
     function addNewWeight(today){
-        console.log("addNewWeight() called", new Date());
         // Show Capture Buttons When Add New
         $('#addModal').find('#grossCapture').show();
         $('#addModal').find('#tareCapture').show();
@@ -5296,50 +5289,104 @@ else{
             weightType = row.weight_type;
         }
 
-        var returnString = `
-        <!-- Customer Section -->
-        <div class="row">
-            <div class="col-6">
-                <p><span><strong style="font-size:120%; text-decoration: underline;">Customer/Supplier</strong></span><br>
-                <p><strong>${row.name}</strong></p>
-                <p>${row.address_line_1}</p>
-                <p>${row.address_line_2}</p>
-                <p>${row.address_line_3}</p>
-                <p>TEL: ${row.phone_no} FAX: ${row.fax_no}</p>
-            </div>
-        </div>
+        var returnString = '';
+
+        if (row.transaction_status != 'Sales') {
+            returnString += `
+                <!-- Customer/Supplier Section -->
+                <div class="row">
+                    <div class="col-6">
+                        <p><span><strong style="font-size:120%; text-decoration: underline;">Customer/Supplier</strong></span><br>
+                        <p><strong>${row.name}</strong></p>
+                        <p>${row.address_line_1}</p>
+                        <p>${row.address_line_2}</p>
+                        <p>${row.address_line_3}</p>
+                        <p>TEL: ${row.phone_no} FAX: ${row.fax_no}</p>
+                    </div>
+                </div>
+            `;
+        }else{
+            var custTable = row.customer_table;
+
+            returnString += `
+                <p><span><strong style="font-size:120%; text-decoration: underline;">Customer</strong></span><br>
+                <table class="table table-bordered" style="text-align: center;">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Delivery No</th>
+                            <th>Customer Name</th>
+                            <th>Product Code</th>
+                            <th>Project Code</th>
+                            <th>Internal Doc. No.</th>
+                            <th>Ref. No.</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: #fff;">`;
+
+                    custTable.forEach(function(item, index) {
+                        returnString += `
+                            <tr>
+                                <td>
+                                    ${item.delivery_no}
+                                </td>
+                                <td>
+                                    ${item.customer_name}
+                                </td>
+                                <td>
+                                    ${item.products}
+                                </td>
+                                <td> 
+                                    ${item.projects}
+                                </td>
+                                <td>
+                                    ${item.internal_doc_no}
+                                </td>
+                                <td>
+                                    ${item.ref_no}
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    returnString += `
+                    </tbody>
+                </table>
+            `;
+        }
+        
+        returnString += `
         <hr>
         <!-- Delivery Order Section -->
         <div class="row">
             <p><span><strong style="font-size:120%; text-decoration: underline;">Delivery Order Information</strong></span><br>
             <div class="col-4">
-                <p><srtong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
-                <p><srtong>WEIGHT TYPE:</strong> ${weightType}</p>
-                <p><srtong>TRANSACTION DATE:</strong> ${row.transaction_date}</p>
-                <p><srtong>SUPPLIER NAME:</strong> ${row.supplier_name}</p>
-                <p><srtong>MRN NO:</strong> ${row.mrn_no}</p>
-                <p><srtong>DESTINATION NAME:</strong> ${row.destination}</p>
-                <!--<p><strong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
+                <p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
+                <p><strong>WEIGHT TYPE:</strong> ${weightType}</p>
+                <p><strong>TRANSACTION DATE:</strong> ${row.transaction_date}</p>
+                <p><strong>MRN NO:</strong> ${row.mrn_no}</p>
                 <p><strong>DESTINATION NAME:</strong> ${row.destination}</p>
-                <p><strong>SITE NAME:</strong> ${row.site_name}</p>
                 <p><strong>PLANT NAME:</strong> ${row.plant_name}</p>`;
-                if (row.transaction_status == 'Purchase' || row.transaction_status == 'Local'){
-                    returnString += `<p><strong>PURCHASE PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
-                }else{
-                    returnString += `<p><strong>SALES PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
+                if (row.transaction_status != 'Sales'){
+                    if (row.transaction_status == 'Purchase' || row.transaction_status == 'Local'){
+                        returnString += `<p><strong>PURCHASE PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
+                    }else{
+                        returnString += `<p><strong>SALES PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
+                    }
+
+                    returnString += `<p><strong>PROJECT CODE:</strong> ${row.project_code}</p>`;
                 }
+                
         
             returnString += `
-                <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
-                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>-->
+                <p><strong>OTHER REMARKS:</strong> ${row.remarks}</p>
             </div>
             <div class="col-4">
-                <p><srtong>CONTAINER NO:</strong> ${row.container_no}</p>
-                <p><srtong>SEAL NO:</strong> ${row.seal_no}</p>
-                <p><srtong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
-                <p><srtong>SEAL NO 2:</strong> ${row.seal_no2}</p>
-                <p style="text-wrap: auto;"><srtong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
-                <p><srtong>TRANSPORT CAPACITY:</strong> ${row.transport_cap}</p>
+                <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
+                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
+                <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
+                <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>
+                <p style="text-wrap: auto;"><strong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
+                <p><strong>TRANSPORT CAPACITY:</strong> ${row.transport_cap}</p>
                 <!--<p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
                 <p><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
                 <p><strong>WEIGHT TYPE:</strong> ${weightType}</p>
@@ -5351,15 +5398,12 @@ else{
             <div class="col-4">
                 <p><strong>P/O NO:</strong> ${row.purchase_order}</p>
                 <p><strong>INVOICE NO:</strong> ${row.invoice_no}</p>
-                <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p> 
-                <p><strong>SUPPLIER WEIGHT:</strong> ${row.supplier_weight}</p>
-                <p><strong>WEIGHT DISTENCE:</strong> ${row.weight_difference}</p>
-                <p><strong>REDUCE WEIGHT:</strong> ${row.reduce_weight}</p>
+                ${row.transaction_status !== 'Sales' ? `<p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p>` : ''}
+                <p><strong>${row.transaction_status == 'Sales' || row.transaction_status == 'Misc' ? 'ORDER WEIGHT' : 'SUPPLIER WEIGHT'}:</strong>${row.transaction_status == 'Sales' || row.transaction_status == 'Misc' ? row.order_weight : row.supplier_weight}</p>
+                <p><strong>WEIGHT DIFFERENCE:</strong> ${row.weight_different} kg</p>
+                <p><strong>REDUCE WEIGHT:</strong> ${row.reduce_weight} kg</p>
             </div>
             <div class="col-12">
-                <p><strong>RAW MATERIAL/PRODUCT DESCRIPTION:</strong> ${row.product_description}</p>
-                <p><strong>PROJECT CODE:</strong> ${row.project_code}</p>
-                <p><strong>OTHER REMARKS:</strong> ${row.other_remarks}</p>
             </div>
         </div>
         <hr>
@@ -5400,6 +5444,10 @@ else{
             </div>
         </div>
         `;
+
+        if (row.transaction_status == 'Sales'){
+
+        }
         
         return returnString;
     }
@@ -5682,16 +5730,7 @@ else{
                                 });
 
                                 // Apply custom styling to Select2 elements in addModal
-                                $('#addModal .select2-container .select2-selection--single').css({
-                                    'padding-top': '4px',
-                                    'padding-bottom': '4px',
-                                    'height': 'auto'
-                                });
-
-                                $('#addModal .select2-container .select2-selection__arrow').css({
-                                    'padding-top': '33px',
-                                    'height': 'auto'
-                                });
+                                resetSelect2Css();
                             });
                         }
 
@@ -5752,12 +5791,9 @@ else{
 
                                     customerRowCount++;
 
-
-
+                                    // Initialize Select2 once after all rows are added
+                                    reinitSelect2($('#addModal'));
                                 }
-                                
-                                // Initialize Select2 once after all rows are added
-                                reinitSelect2($('#addModal'));
                             }
                             
                             // Make all customerTable fields readonly and disabled
@@ -5815,16 +5851,7 @@ else{
                 });
 
                 // Apply custom styling to Select2 elements in addModal
-                $('#addModal .select2-container .select2-selection--single').css({
-                    'padding-top': '4px',
-                    'padding-bottom': '4px',
-                    'height': 'auto'
-                });
-
-                $('#addModal .select2-container .select2-selection__arrow').css({
-                    'padding-top': '33px',
-                    'height': 'auto'
-                });
+                resetSelect2Css();
 
                 // Remove Validation Error Message
                 $('#addModal .is-invalid').removeClass('is-invalid');
@@ -5858,6 +5885,8 @@ else{
                         }
                     }
                 });
+
+                $('#addModal').find('#addCustomer').hide();
 
                 $('#addModal').modal('show');
             
@@ -6109,16 +6138,7 @@ else{
                                 });
 
                                 // Apply custom styling to Select2 elements in addModal
-                                $('#addModal .select2-container .select2-selection--single').css({
-                                    'padding-top': '4px',
-                                    'padding-bottom': '4px',
-                                    'height': 'auto'
-                                });
-
-                                $('#addModal .select2-container .select2-selection__arrow').css({
-                                    'padding-top': '33px',
-                                    'height': 'auto'
-                                });
+                                resetSelect2Css();
                             });
                         }
 
@@ -6179,6 +6199,18 @@ else{
 
                                     customerRowCount++;
                                 }
+                                
+                                // Initialize Select2 for customerTable elements after all rows are added
+                                $('#customerTable').find('select').each(function() {
+                                    $(this).select2({
+                                        allowClear: true,
+                                        placeholder: "Please Select",
+                                        dropdownParent: $('#addModal')
+                                    });
+                                });
+
+                                // Apply custom styling to Select2 elements in search bar
+                                resetSelect2Css();
                             }
                         }, 500);
                     }, 100);
@@ -6227,16 +6259,7 @@ else{
                 });
 
                 // Apply custom styling to Select2 elements in addModal
-                $('#addModal .select2-container .select2-selection--single').css({
-                    'padding-top': '4px',
-                    'padding-bottom': '4px',
-                    'height': 'auto'
-                });
-
-                $('#addModal .select2-container .select2-selection__arrow').css({
-                    'padding-top': '33px',
-                    'height': 'auto'
-                });
+                resetSelect2Css();
 
                 // Remove Validation Error Message
                 $('#addModal .is-invalid').removeClass('is-invalid');
