@@ -656,7 +656,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                     </div>
                 </div-->
 
-                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
+                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown" style="display:none">
                     <span class="fw-bold">LW</span>
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
                         id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
@@ -796,7 +796,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                     </div>
                 </div>
 
-                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="cwNotificationDropdown">
+                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="cwNotificationDropdown" style="display:none">
                     <span class="fw-bold">CW</span>
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
                         id="page-header-cw-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
