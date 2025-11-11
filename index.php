@@ -1284,6 +1284,144 @@ else{
                             </div> <!-- end row-->
 
                             <div class="row">
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="card card-animate">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Dispatch</p>
+                                                </div>
+                                                <div class="avatar-sm flex-shrink-0">
+                                                    <span class="avatar-title bg-soft-success rounded fs-3">
+                                                        <i class="bx bx-export text-success"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <hr>
+
+                                            <!-- Status breakdown -->
+                                            <div class="mt-4">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Pending</span>
+                                                    <span class="fw-semibold" id="salesPending">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Complete</span>
+                                                    <span class="fw-semibold text-success" id="salesComplete">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="text-muted">Cancel</span>
+                                                    <span class="fw-semibold text-danger" id="salesCancel">0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="card card-animate">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Receiving</p>
+                                                </div>
+                                                <div class="avatar-sm flex-shrink-0">
+                                                    <span class="avatar-title bg-soft-info rounded fs-3">
+                                                        <i class="bx bx-import text-info"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <hr>
+
+                                            <!-- Status breakdown -->
+                                            <div class="mt-4">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Pending</span>
+                                                    <span class="fw-semibold" id="purchasePending">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Complete</span>
+                                                    <span class="fw-semibold text-success" id="purchaseComplete">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="text-muted">Cancel</span>
+                                                    <span class="fw-semibold text-danger" id="purchaseCancel">0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="card card-animate">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Internal Transfer</p>
+                                                </div>
+                                                <div class="avatar-sm flex-shrink-0">
+                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
+                                                        <i class="bx bx-transfer text-warning"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <hr>
+
+                                            <!-- Status breakdown -->
+                                            <div class="mt-4">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Pending</span>
+                                                    <span class="fw-semibold" id="localPending">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Complete</span>
+                                                    <span class="fw-semibold text-success" id="localComplete">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="text-muted">Cancel</span>
+                                                    <span class="fw-semibold text-danger" id="localCancel">0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="card card-animate">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Miscellaneous</p>
+                                                </div>
+                                                <div class="avatar-sm flex-shrink-0">
+                                                    <span class="avatar-title bg-soft-secondary rounded fs-3">
+                                                        <i class="bx bx-cog text-secondary"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <hr>
+
+                                            <!-- Status breakdown -->
+                                            <div class="mt-4">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Pending</span>
+                                                    <span class="fw-semibold" id="miscPending">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Complete</span>
+                                                    <span class="fw-semibold text-success" id="miscComplete">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="text-muted">Cancel</span>
+                                                    <span class="fw-semibold text-danger" id="miscCancel">0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col">
                                     <div class="h-100">
                                         <!--datatable--> 
@@ -1487,7 +1625,6 @@ else{
         </div>
         <!-- end main content-->
     </div>
-
 
     <script type="text/html" id="receivingSection">
         <div class="col-xxl-12 col-lg-12">
@@ -2506,11 +2643,19 @@ else{
                 }
             ],
             "drawCallback": function(settings) {
-                $('#salesInfo').text(settings.json.salesTotal);
-                $('#purchaseInfo').text(settings.json.purchaseTotal);
-                $('#localInfo').text(settings.json.localTotal);
-                $('#miscInfo').text(settings.json.miscTotal);
-            }   
+                $('#salesPending').text(settings.json.salesTotalPending);
+                $('#salesComplete').text(settings.json.salesTotalComplete);
+                $('#salesCancel').text(settings.json.salesTotalCancel);
+                $('#purchasePending').text(settings.json.purchaseTotalPending);
+                $('#purchaseComplete').text(settings.json.purchaseTotalComplete);
+                $('#purchaseCancel').text(settings.json.purchaseTotalCancel);
+                $('#localPending').text(settings.json.localTotalPending);
+                $('#localComplete').text(settings.json.localTotalComplete);
+                $('#localCancel').text(settings.json.localTotalCancel);
+                $('#miscPending').text(settings.json.miscTotalPending);
+                $('#miscComplete').text(settings.json.miscTotalComplete);
+                $('#miscCancel').text(settings.json.miscTotalCancel);
+            }
         });
 
         emptyContainerTable = $("#emptyContainerTable").DataTable({
@@ -3431,11 +3576,19 @@ else{
                     }
                 ],
                 "drawCallback": function(settings) {
-                    $('#salesInfo').text(settings.json.salesTotal);
-                    $('#purchaseInfo').text(settings.json.purchaseTotal);
-                    $('#localInfo').text(settings.json.localTotal);
-                    $('#miscInfo').text(settings.json.miscTotal);
-                }   
+                    $('#salesPending').text(settings.json.salesTotalPending);
+                    $('#salesComplete').text(settings.json.salesTotalComplete);
+                    $('#salesCancel').text(settings.json.salesTotalCancel);
+                    $('#purchasePending').text(settings.json.purchaseTotalPending);
+                    $('#purchaseComplete').text(settings.json.purchaseTotalComplete);
+                    $('#purchaseCancel').text(settings.json.purchaseTotalCancel);
+                    $('#localPending').text(settings.json.localTotalPending);
+                    $('#localComplete').text(settings.json.localTotalComplete);
+                    $('#localCancel').text(settings.json.localTotalCancel);
+                    $('#miscPending').text(settings.json.miscTotalPending);
+                    $('#miscComplete').text(settings.json.miscTotalComplete);
+                    $('#miscCancel').text(settings.json.miscTotalCancel);
+                } 
             });
 
             //Create new Datatable for empty container
