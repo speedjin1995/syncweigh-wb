@@ -22,7 +22,7 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
     $param_allow_manual = filter_input(INPUT_POST, 'allowManual', FILTER_SANITIZE_STRING);
     $param_allow_edit = filter_input(INPUT_POST, 'allowEdit', FILTER_SANITIZE_STRING);
     
-    if(isset($_POST['plantId']) && $_POST['plantId'] != null){
+    if(isset($_POST['employeeCode']) && $_POST['employeeCode'] != null){
         $param_code = filter_input(INPUT_POST, 'employeeCode', FILTER_SANITIZE_STRING);
     }
 
@@ -64,7 +64,7 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
         }
     }
     else{
-        if ($insert_stmt = $db->prepare("INSERT INTO Users (employee_code, useremail, username, name, password, token, role, plant_id, allow_manual, allow_edit, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+        if ($insert_stmt = $db->prepare("INSERT INTO Users (employee_code, useremail, username, name, password, token, role, plant_id, allow_manual, allow_edit, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             $insert_stmt->bind_param("ssssssssssss", $param_code, $param_useremail, $param_username, $param_name, $param_password, $param_token, $param_role, $param_plant, $param_allow_manual, $param_allow_edit, $param_created_by, $param_modified_by);
             $action = "1";
 
