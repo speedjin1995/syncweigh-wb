@@ -5143,6 +5143,8 @@ else{
         if (companyData.Customer && companyData.Customer.length > 0){
             var customerOptions = buildOptions(companyData.Customer, 'customer_code', 'id', 'name');
             $('#customer' + rowIndex).empty().append(customerOptions).val('').trigger('change');
+        }else{
+            $('#customer' + rowIndex).empty().val('').trigger('change');
         }
         
         // Populate product dropdown for specific row
@@ -5152,12 +5154,16 @@ else{
                 customerProductOptions += '<option value="' + companyData.Product[i]['id'] + '">' + companyData.Product[i]['product_code'] + ' - ' + companyData.Product[i]['name'] + '</option>';
             }
             $('#customerProduct' + rowIndex).empty().append(customerProductOptions).val('').trigger('change');
+        }else{
+            $('#customerProduct' + rowIndex).empty().val('').trigger('change');
         }
         
         // Populate project dropdown for specific row
         if (companyData.Projects && companyData.Projects.length > 0){
             var projectCodeOptions = buildOptions(companyData.Projects, '', 'id', ['project', 'project_name']);
             $('#customerProjectCode' + rowIndex).empty().append(projectCodeOptions).val('').trigger('change');
+        }else{
+            $('#customerProjectCode' + rowIndex).empty().val('').trigger('change');
         }
     }
 
@@ -5174,24 +5180,27 @@ else{
             $('#customerTable').find('select[id^="customer"]:not([id*="Product"]):not([id*="ProjectCode"])').each(function() {
                 $(this).empty().append(customerOptionsForScript).val('').trigger('change');
             });
-        }else{
-            $('#customerName').empty().append(clonedCustomerOptions).val('').trigger('change');
+        }
+        else{
+            $('#customerName').empty().val('').trigger('change');
         }
 
         // empty supplier field and append new options
         if (companyData.Supplier && companyData.Supplier.length > 0){
             var supplierOptions = buildOptions(companyData.Supplier, 'supplier_code', 'name', 'name');
             $('#supplierName').empty().append(supplierOptions).val('').trigger('change');
-        }else{
-            $('#supplierName').empty().append(clonedSupplierOptions).val('').trigger('change');
+        }
+        else{
+            $('#supplierName').empty().val('').trigger('change');
         }
 
         // empty raw mat field and append new options
         if (companyData.Raw_Mat && companyData.Raw_Mat.length > 0){
             var rawMaterialOptions = buildOptions(companyData.Raw_Mat, 'raw_mat_code', 'name', ['raw_mat_code', 'name']);
             $('#rawMaterialName').empty().append(rawMaterialOptions).val('').trigger('change');
-        }else{
-            $('#rawMaterialName').empty().append(clonedRawMatOptions).val('').trigger('change');
+        }
+        else{
+            $('#rawMaterialName').empty().val('').trigger('change');
         }
 
         // empty project code field and append new options
@@ -5203,8 +5212,9 @@ else{
             $('#customerTable').find('select[id^="customerProjectCode"]').each(function() {
                 $(this).empty().append(projectCodeOptions).val('').trigger('change');
             });
-        }else{
-            $('#projectCode').empty().append(clonedProjectOptions).val('').trigger('change');
+        }
+        else{
+            $('#projectCode').empty().val('').trigger('change');
         }
         
         // empty product name field and append new options
@@ -5221,8 +5231,9 @@ else{
             $('#customerTable').find('select[id^="customerProduct"]').each(function() {
                 $(this).empty().append(customerProductOptions).val('').trigger('change');
             });
-        }else{
-            $('#productName').empty().append(clonedProductOptions).val('').trigger('change');
+        }
+        else{
+            $('#productName').empty().val('').trigger('change');
         }
     }
 

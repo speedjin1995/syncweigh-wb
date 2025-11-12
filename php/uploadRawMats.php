@@ -29,6 +29,7 @@ if (!empty($data)) {
             $rawMatRow = mysqli_fetch_assoc($rawMatDetail);
             
             if(empty($rawMatRow)){
+                $Company = json_encode([(string)$Company]);
                 if ($insert_stmt = $db->prepare("INSERT INTO Raw_Mat (raw_mat_code, name, description, price, type, company_id, plant_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                     $insert_stmt->bind_param('sssssssss', $Code, $Name, $Description, $Price, $type, $Company, $Plant, $uid, $uid);
                     $insert_stmt->execute();

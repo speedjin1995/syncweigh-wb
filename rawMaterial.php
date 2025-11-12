@@ -444,7 +444,7 @@ $(function () {
             },
             { data: 'raw_mat_code' },
             { data: 'name' },
-            { data: 'company' },
+            { data: 'company', orderable: false },
             { data: 'description' },
             { data: 'type' },
             { 
