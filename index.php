@@ -5174,25 +5174,28 @@ else{
             $('#customerTable').find('select[id^="customer"]:not([id*="Product"]):not([id*="ProjectCode"])').each(function() {
                 $(this).empty().append(customerOptionsForScript).val('').trigger('change');
             });
-        }else{
-            $('#customerName').empty().append(clonedCustomerOptions).val('').trigger('change');
         }
+        // else{
+        //     $('#customerName').empty().append(clonedCustomerOptions).val('').trigger('change');
+        // }
 
         // empty supplier field and append new options
         if (companyData.Supplier && companyData.Supplier.length > 0){
             var supplierOptions = buildOptions(companyData.Supplier, 'supplier_code', 'name', 'name');
             $('#supplierName').empty().append(supplierOptions).val('').trigger('change');
-        }else{
-            $('#supplierName').empty().append(clonedSupplierOptions).val('').trigger('change');
         }
+        // else{
+        //     $('#supplierName').empty().append(clonedSupplierOptions).val('').trigger('change');
+        // }
 
         // empty raw mat field and append new options
         if (companyData.Raw_Mat && companyData.Raw_Mat.length > 0){
             var rawMaterialOptions = buildOptions(companyData.Raw_Mat, 'raw_mat_code', 'name', ['raw_mat_code', 'name']);
             $('#rawMaterialName').empty().append(rawMaterialOptions).val('').trigger('change');
-        }else{
-            $('#rawMaterialName').empty().append(clonedRawMatOptions).val('').trigger('change');
         }
+        // else{
+        //     $('#rawMaterialName').empty().append(clonedRawMatOptions).val('').trigger('change');
+        // }
 
         // empty project code field and append new options
         if (companyData.Projects && companyData.Projects.length > 0){
@@ -5203,9 +5206,10 @@ else{
             $('#customerTable').find('select[id^="customerProjectCode"]').each(function() {
                 $(this).empty().append(projectCodeOptions).val('').trigger('change');
             });
-        }else{
-            $('#projectCode').empty().append(clonedProjectOptions).val('').trigger('change');
         }
+        // else{
+        //     $('#projectCode').empty().append(clonedProjectOptions).val('').trigger('change');
+        // }
         
         // empty product name field and append new options
         if (companyData.Product && companyData.Product.length > 0){
@@ -5221,9 +5225,10 @@ else{
             $('#customerTable').find('select[id^="customerProduct"]').each(function() {
                 $(this).empty().append(customerProductOptions).val('').trigger('change');
             });
-        }else{
-            $('#productName').empty().append(clonedProductOptions).val('').trigger('change');
         }
+        // else{
+        //     $('#productName').empty().append(clonedProductOptions).val('').trigger('change');
+        // }
     }
 
     function buildOptions(items, codeKey, valueKey, textKey, separator = ' - ') {
