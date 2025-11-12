@@ -5124,8 +5124,8 @@ else{
         //$('#addModal').modal('hide');
 
         if (selectedCompanyId != '' && selectedCompanyId != null){
-            $('#addModal').find('#transactionStatus').val("Sales").trigger('change'); // Reset to default sales
             $('#company').val(selectedCompanyId);
+            $('#addModal').find('#transactionStatus').val("Sales").trigger('change'); // Reset to default sales
             $('#companyModal').modal('hide');
             // $('#vehicle1Section').hide();
             // $('#weighingDetailsSection').empty();
