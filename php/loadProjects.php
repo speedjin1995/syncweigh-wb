@@ -14,9 +14,10 @@ $columnSortOrder = $_POST['order'][0]['dir']; // asc or desc
 $searchValue = mysqli_real_escape_string($db,$_POST['search']['value']); // Search value
 
 ## Search 
-$searchQuery = " ";
-if($searchValue != ''){
-  $searchQuery = " and (p.project like '%".$searchValue."%' or p.project_name like '%".$searchValue."%')";
+$searchQuery = '';
+if ($searchValue != '') {
+    $searchQuery = " AND (p.project LIKE '%" . $searchValue . "%' 
+                    OR p.project_name LIKE '%" . $searchValue . "%')";
 }
 
 ## Total number of records without filtering
@@ -25,19 +26,19 @@ $records = mysqli_fetch_assoc($sel);
 $totalRecords = $records['allcount'];
 
 ## Total number of record with filtering
-$sel = mysqli_query($db,"select count(*) as allcount from Projects WHERE status IN (0,1)".$searchQuery);
+$sel = mysqli_query($db,"select count(*) as allcount from Projects p WHERE status IN (0,1)".$searchQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
-$empQuery = "SELECT p.*, c.name as company, pl.name as plant FROM Projects p LEFT JOIN Company c ON JSON_EXTRACT(p.company_id, '$[0]') = c.id LEFT JOIN Plant pl ON p.plant_id = pl.id WHERE p.status IN (0,1)".$searchQuery." ORDER BY p.status ASC, ";
+$empQuery = "SELECT p.*, c.name as company, pl.name as plant FROM Projects p LEFT JOIN Company c ON JSON_EXTRACT(p.company_id, '$[0]') = c.id LEFT JOIN Plant pl ON p.plant_id = pl.id WHERE p.status IN (0,1)".$searchQuery." ORDER BY p.status ".$columnSortOrder;
 
 if($columnName == 'company'){
-    $empQuery .= "c.name ".$columnSortOrder;
+    $empQuery .= ", c.name ".$columnSortOrder;
 } elseif($columnName == 'plant'){
-    $empQuery .= "pl.name ".$columnSortOrder;
+    $empQuery .= ", pl.name ".$columnSortOrder;
 } else {
-    $empQuery .= "p.".$columnName." ".$columnSortOrder;
+    $empQuery .= ", p.".$columnName." ".$columnSortOrder;
 }
 
 $empQuery .= " LIMIT ".$row.",".$rowperpage;
