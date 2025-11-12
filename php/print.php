@@ -989,6 +989,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
                                         $message .= '<table style="width:100%; border:0px solid black; margin-top: 10px;">';
 
+                                        $productRawMats = '';
                                         if (!empty($weightCustomers)){
                                             foreach ($weightCustomers as $weightCustomer) {
                                                 $projectCodes = '';
@@ -1015,7 +1016,6 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                                     }
                                                 }
 
-                                                $productRawMats = '';
                                                 if ($weightCustomer['product_id'] != '' && $weightCustomer['product_id'] != null){
                                                     foreach (json_decode($weightCustomer['product_id']) as $productId) {
                                                         if ($product_stmt = $db->prepare("SELECT product_code, name FROM Product WHERE id=?")) {
@@ -1045,7 +1045,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                                             <p style="padding-left: 5px;">
                                                                 <span><b>Customer</span><span style="margin-left: 23px;">:&nbsp;'.$weightCustomer['customer_name'].'</b></span><br>
                                                                 <span>Project Code</span><span style="margin-left: 9px;">:&nbsp;'.$projectCodes.'</span><br>
-                                                                <span>Product Code</span><span style="margin-left: 5px;">:&nbsp;'.$productRawMats.'</span>
+                                                                <!--<span>Product Code</span><span style="margin-left: 5px;">:&nbsp;'.$productRawMats.'</span-->
                                                             </p>
                                                         </td>
                                                         <td>
@@ -1063,7 +1063,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <tr style="font-size: 14px;">
                                                 <td>
                                                     <p style="padding-left: 5px;">
-                                                        <!--span>Product</span><span style="margin-left: 11px;">:&nbsp;'.$productRawMats.'</span><br-->
+                                                        <span>Product</span><span style="margin-left: 11px;">:&nbsp;'.$productRawMats.'</span><br>
                                                         <span>Remarks</span><span style="margin-left: 5px;">:&nbsp;'.$row['remarks'].'</span>
                                                     </p>
                                                 </td>
