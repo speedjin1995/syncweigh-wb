@@ -504,7 +504,7 @@ $(function () {
             },
             { data: 'product_code' },
             { data: 'name' },
-            { data: 'company' },
+            { data: 'company', orderable: false },
             { data: 'description' },
             { 
                 data: 'id',

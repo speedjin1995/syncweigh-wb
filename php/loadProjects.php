@@ -30,7 +30,17 @@ $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
-$empQuery = "select * from Projects WHERE status IN (0,1)".$searchQuery." order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+$empQuery = "SELECT p.*, c.name as company, pl.name as plant FROM Projects p LEFT JOIN Company c ON JSON_EXTRACT(p.company_id, '$[0]') = c.id LEFT JOIN Plant pl ON p.plant_id = pl.id WHERE p.status IN (0,1)".$searchQuery." ORDER BY p.status ASC, ";
+
+if($columnName == 'company'){
+    $empQuery .= "c.name ".$columnSortOrder;
+} elseif($columnName == 'plant'){
+    $empQuery .= "pl.name ".$columnSortOrder;
+} else {
+    $empQuery .= "p.".$columnName." ".$columnSortOrder;
+}
+
+$empQuery .= " LIMIT ".$row.",".$rowperpage;
 $empRecords = mysqli_query($db, $empQuery);
 $data = array();
 
@@ -39,8 +49,8 @@ while($row = mysqli_fetch_assoc($empRecords)) {
       "id"=>$row['id'],
       "project"=>$row['project'],
       "project_name"=>$row['project_name'],
-      "company"=>searchCompanyById2($row['company_id'], $db),
-      "plant"=>searchPlantNameById($row['plant_id'], $db),
+      "company"=>$row['company'] ?? '',
+      "plant"=>$row['name'] ?? '',
       "status"=>$row['status']
     );
 }
