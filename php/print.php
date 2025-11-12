@@ -138,16 +138,13 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 }
                             }
 
-                            if ($row['raw_mat_code'] != '' && $row['raw_mat_code'] != null && $row['raw_mat_name'] != '' && $row['raw_mat_name'] != null) {
+                            if ($row['raw_mat_code'] != '' && $row['raw_mat_code'] != null){
                                 $codes = json_decode($row['raw_mat_code']);
-                                $names = json_decode($row['raw_mat_name']);
-                                foreach ($codes as $index => $code) {
-                                    $name = isset($names[$index]) ? $names[$index] : '';
-                                    $item = $code . ' - ' . $name;
+                                foreach ($codes as $code) {
                                     if ($productRawMats != ''){
-                                        $productRawMats .= ' / ' . $item;
+                                        $productRawMats .= ' / ' . $code;
                                     }else{
-                                        $productRawMats .= $item;
+                                        $productRawMats .= $code;
                                     }
                                 }
                             }
@@ -199,16 +196,13 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 $update_stmt2->close();
                             }
 
-                            if ($row['product_code'] != '' && $row['product_code'] != null && $row['product_name'] != '' && $row['product_name'] != null){
+                            if ($row['product_code'] != '' && $row['product_code'] != null){
                                 $codes = json_decode($row['product_code']);
-                                $names = json_decode($row['product_name']);
-                                foreach ($codes as $index => $code) {
-                                    $name = isset($names[$index]) ? $names[$index] : '';
-                                    $item = $code . ' - ' . $name;
+                                foreach ($codes as $code) {
                                     if ($productRawMats != ''){
-                                        $productRawMats .= ' / ' . $item;
+                                        $productRawMats .= ' / ' . $code;
                                     }else{
-                                        $productRawMats .= $item;
+                                        $productRawMats .= $code;
                                     }
                                 }
                             }
@@ -1033,9 +1027,9 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
                                                                 if ($productRow = $productResult->fetch_assoc()) {
                                                                     if ($productRawMats != ''){
-                                                                        $productRawMats .= ' / ' . $productRow['product_code'] . ' - ' . $productRow['name'];
+                                                                        $productRawMats .= ' / ' . $productRow['product_code'];
                                                                     }else{
-                                                                        $productRawMats .= $productRow['product_code'] . ' - ' . $productRow['name'];
+                                                                        $productRawMats .= $productRow['product_code'];
                                                                     }
                                                                 }
                                                             }
@@ -1050,7 +1044,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                                         <td style="width: 70%">
                                                             <p style="padding-left: 5px;">
                                                                 <span><b>Customer</span><span style="margin-left: 23px;">:&nbsp;'.$weightCustomer['customer_name'].'</b></span><br>
-                                                                <span>Project Code</span><span style="margin-left: 9px;">:&nbsp;'.$projectCodes.'</span>
+                                                                <span>Project Code</span><span style="margin-left: 9px;">:&nbsp;'.$projectCodes.'</span><br>
+                                                                <span>Product Code</span><span style="margin-left: 5px;">:&nbsp;'.$productRawMats.'</span>
                                                             </p>
                                                         </td>
                                                         <td>
@@ -1068,7 +1063,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                             <tr style="font-size: 14px;">
                                                 <td>
                                                     <p style="padding-left: 5px;">
-                                                        <span>Product</span><span style="margin-left: 11px;">:&nbsp;'.$productRawMats.'</span><br>
+                                                        <!--span>Product</span><span style="margin-left: 11px;">:&nbsp;'.$productRawMats.'</span><br-->
                                                         <span>Remarks</span><span style="margin-left: 5px;">:&nbsp;'.$row['remarks'].'</span>
                                                     </p>
                                                 </td>
