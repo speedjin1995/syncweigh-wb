@@ -27,6 +27,7 @@ if (!empty($data)) {
             $productRow = mysqli_fetch_assoc($productDetail);
             
             if(empty($productRow)){
+                $Company = json_encode([(string)$Company]);
                 if ($insert_stmt = $db->prepare("INSERT INTO Product (product_code, name, description, price, company_id, plant_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
                     $insert_stmt->bind_param('ssssssss', $Code, $Name, $Description, $Price, $Company, $Plant, $uid, $uid);
                     $insert_stmt->execute();
