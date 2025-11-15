@@ -892,11 +892,13 @@ else{
                     }
                     else{
                         $('#spinnerLoading').hide();
-                        alert(obj.message);
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
+                        $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
                         $("#failBtn").click();
                     }
                 });
+            } 
+            else{
+                alert('Please filled in all the mandatory fields!!!');
             }
             /*else{
                 let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
@@ -1075,6 +1077,9 @@ else{
                     }
                 });
             }
+            else{
+                alert('Please filled in all the mandatory fields!!!');
+            }
             /*else{
                 let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
                 if (userChoice) {
@@ -1198,7 +1203,7 @@ else{
                     }
                     else{
                         $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
                         $("#failBtn").click();
                     }
                 });

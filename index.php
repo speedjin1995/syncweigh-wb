@@ -1431,7 +1431,7 @@ else{
                                                     <div class="card-header" style="background-color: #405189;">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title mb-0 text-white">Previous Records (Lorry)</h5>
+                                                                <h5 class="card-title mb-0 text-white" id="lorryTableLabel">Pending Records (Lorry)</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
                                                                 <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light">
@@ -2655,6 +2655,13 @@ else{
                 $('#miscPending').text(settings.json.miscTotalPending);
                 $('#miscComplete').text(settings.json.miscTotalComplete);
                 $('#miscCancel').text(settings.json.miscTotalCancel);
+
+                if(batchNoI == 'Y'){
+                    $('#lorryTableLabel').text('Completed Records (Lorry)');
+                }
+                else{
+                    $('#lorryTableLabel').text('Pending Records (Lorry)');
+                }
             }
         });
 
@@ -2903,11 +2910,13 @@ else{
                     }
                     else{
                         $('#spinnerLoading').hide();
-                        alert(obj.message);
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
+                        $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
                         $("#failBtn").click();
                     }
                 });
+            }
+            else{
+                alert('Please filled in all the mandatory fields!!!');
             }
             /*else{
                 let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
@@ -3086,6 +3095,9 @@ else{
                     }
                 });
             }
+            else{
+                alert('Please filled in all the mandatory fields!!!');
+            }
             /*else{
                 let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
                 if (userChoice) {
@@ -3198,7 +3210,7 @@ else{
                     }
                     else{
                         $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
+                        $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
                         $("#failBtn").click();
                     }
                 });
@@ -3277,7 +3289,8 @@ else{
                         $("#failBtn").click();
                     }
                     else{
-                        $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
                         $("#failBtn").click();
                     }
                 });
@@ -3306,7 +3319,7 @@ else{
                     }
                     else{
                         $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
                         $("#failBtn").click();
                     }
                 });
@@ -3588,6 +3601,13 @@ else{
                     $('#miscPending').text(settings.json.miscTotalPending);
                     $('#miscComplete').text(settings.json.miscTotalComplete);
                     $('#miscCancel').text(settings.json.miscTotalCancel);
+
+                    if(batchNoI == 'Y'){
+                        $('#lorryTableLabel').text('Completed Records (Lorry)');
+                    }
+                    else{
+                        $('#lorryTableLabel').text('Pending Records (Lorry)');
+                    }
                 } 
             });
 

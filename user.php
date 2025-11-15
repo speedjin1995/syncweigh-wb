@@ -470,10 +470,13 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                     }
                     else{
                         $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Something wrong when edit');
+                        $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
                         $("#failBtn").click();
                     }
                 });
+            }
+            else{
+                alert('Please filled in all the mandatory fields!!!');
             }
         });
 

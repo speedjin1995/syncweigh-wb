@@ -837,10 +837,13 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
                     else
                     {
                         $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message);
+                        $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
                         $("#failBtn").click();
                     }
                 });
+            }
+            else{
+                alert('Please filled in all the mandatory fields!!!');
             }
         });
 

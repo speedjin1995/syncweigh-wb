@@ -422,6 +422,9 @@ $(function () {
                 }
             });
         }
+        else{
+            alert('Please filled in all the mandatory fields!!!');
+        }
         // }
     });
 

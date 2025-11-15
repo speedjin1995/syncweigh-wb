@@ -364,9 +364,14 @@ $(function () {
                 }
                 else
                 {
-
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
+                    $("#failBtn").click();
                 }
             });
+        }
+        else{
+            alert('Please filled in all the mandatory fields!!!');
         }
         // }
     });
