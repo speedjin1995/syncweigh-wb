@@ -484,7 +484,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
                             <table>
                                 <tr style="border: 1px solid black;">
-                                    <td style="vertical-align: top; width:25%;">
+                                    <td style="vertical-align: top; width:20%;">
                                         <p style="margin-top: 5px; font-size: 14px;">
                                             <span>Date/Time &nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$grossWeightTime.'</span><br>
                                             <span>Date/Time &nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$tareWeightTime.'</span>
@@ -493,7 +493,9 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
                                     <td style="vertical-align: top; width:15%;">
                                         <p style="margin-top: 5px; font-size: 14px;">
+                                            <span style="margin-right: 10px">Gate : '.(($row['indicator_id'] == 'EX2001') ? '1' : (($row['indicator_id'] == 'D2008') ? '2' : '')).'</span>
                                             <span>In &nbsp;&nbsp;<span style="margin-left: 12px">:&nbsp;</span>'.formatWeight($row['gross_weight1']).'kg</span><br>
+                                            <span style="margin-right: 10px">Gate : '.(($row['indicator_id_2'] == 'EX2001') ? '1' : (($row['indicator_id_2'] == 'D2008') ? '2' : '')).'</span>
                                             <span>Out &nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.formatWeight($row['tare_weight1']).'kg</span><br>
                                         </p>
                                     </td>
@@ -506,7 +508,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
                                     if ($row['transaction_status'] != 'Sales'){
                                         $message .= '
-                                        <td style="vertical-align: top; width:20%;">
+                                        <td style="vertical-align: top; width:15%;">
                                             <p style="margin-top: 5px; font-size: 14px;">
                                                 <span>MRN No. &nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['mrn_no'].'</span><br>
                                                 <span>Ref No. &nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 11px">:&nbsp;</span>'.$row['transport_cap'].'</span><br>
