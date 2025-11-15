@@ -2814,6 +2814,11 @@ else{
             var pass = true;
             var grossIncoming = $('#grossIncoming').val() || 0;
 
+            if($('#transactionStatus').val() == 'Sales' && ($('#customerTable').find('.details').length == 0)){
+                alert('Please add at least one customer record.');
+                return;
+            }
+
             if($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local"){
                 trueWeight = parseFloat($('#addModal').find('#supplierWeight').val());
             }
@@ -2874,7 +2879,10 @@ else{
                 var isEmpty = fieldValue === "" || fieldValue === null || (Array.isArray(fieldValue) && fieldValue.length === 0);
 
                 if (isEmpty) {
-                    select2Container.find('.select2-selection').css('border', '1px solid red'); // Add red border
+                    // Handle both single and multiple select2 elements
+                    select2Container.find('.select2-selection--single, .select2-selection--multiple').each(function() {
+                        this.style.setProperty('border', '1px solid red', 'important');
+                    });
 
                     // Add error message if not already present
                     if (select2Container.next('.select2-error').length === 0) {
@@ -2883,7 +2891,9 @@ else{
 
                     isValid = false;
                 } else {
-                    select2Container.find('.select2-selection').css('border', ''); // Remove red border
+                    select2Container.find('.select2-selection--single, .select2-selection--multiple').each(function() {
+                        this.style.removeProperty('border');
+                    });
                     select2Container.next('.select2-error').remove(); // Remove error message
                 }
             });
@@ -2934,6 +2944,11 @@ else{
             var pass = true;
             var grossIncoming = $('#grossIncoming').val() || "0";
 
+            if($('#transactionStatus').val() == 'Sales' && ($('#customerTable').find('.details').length == 0)){
+                alert('Please add at least one customer record.');
+                return;
+            }
+
             if($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local"){
                 trueWeight = parseFloat($('#addModal').find('#supplierWeight').val());
             }
@@ -2982,6 +2997,36 @@ else{
             if ($('#weightType').val() == 'Empty Container'){
                 isEmptyContainer = 'Y';
             }
+
+            // custom validation for select2
+            $('#addModal .select2[required]').each(function () {
+                var select2Field = $(this);
+                var select2Container = select2Field.next('.select2-container'); // Get Select2 UI
+                var errorMsg = "<span class='select2-error text-danger' style='font-size: 11.375px;'>Please fill in the field.</span>";
+                var fieldValue = select2Field.val();
+
+                // Check if the value is empty (for both single and multiple select)
+                var isEmpty = fieldValue === "" || fieldValue === null || (Array.isArray(fieldValue) && fieldValue.length === 0);
+
+                if (isEmpty) {
+                    // Handle both single and multiple select2 elements
+                    select2Container.find('.select2-selection--single, .select2-selection--multiple').each(function() {
+                        this.style.setProperty('border', '1px solid red', 'important');
+                    });
+
+                    // Add error message if not already present
+                    if (select2Container.next('.select2-error').length === 0) {
+                        select2Container.after(errorMsg);
+                    }
+
+                    isValid = false;
+                } else {
+                    select2Container.find('.select2-selection--single, .select2-selection--multiple').each(function() {
+                        this.style.removeProperty('border');
+                    });
+                    select2Container.next('.select2-error').remove(); // Remove error message
+                }
+            });
 
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
