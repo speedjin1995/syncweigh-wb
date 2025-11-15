@@ -2874,7 +2874,10 @@ else{
                 var isEmpty = fieldValue === "" || fieldValue === null || (Array.isArray(fieldValue) && fieldValue.length === 0);
 
                 if (isEmpty) {
-                    select2Container.find('.select2-selection').css('border', '1px solid red'); // Add red border
+                    // Handle both single and multiple select2 elements
+                    select2Container.find('.select2-selection--single, .select2-selection--multiple').each(function() {
+                        this.style.setProperty('border', '1px solid red', 'important');
+                    });
 
                     // Add error message if not already present
                     if (select2Container.next('.select2-error').length === 0) {
@@ -2883,7 +2886,9 @@ else{
 
                     isValid = false;
                 } else {
-                    select2Container.find('.select2-selection').css('border', ''); // Remove red border
+                    select2Container.find('.select2-selection--single, .select2-selection--multiple').each(function() {
+                        this.style.removeProperty('border');
+                    });
                     select2Container.next('.select2-error').remove(); // Remove error message
                 }
             });
