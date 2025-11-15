@@ -2812,6 +2812,7 @@ else{
             var final = $('#finalWeight').val() || '0';
             var completed = 'N';
             var pass = true;
+            var grossIncoming = $('#grossIncoming').val() || 0;
 
             if($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local"){
                 trueWeight = parseFloat($('#addModal').find('#supplierWeight').val());
@@ -2830,7 +2831,7 @@ else{
                 isComplete = 'N';
             }
 
-            if (isComplete == 'Y' && variance != '') {
+            /*if (isComplete == 'Y' && variance != '') {
                 final = parseFloat(final);
                 low = low != '' ? parseFloat(low) : null;
                 high = high != '' ? parseFloat(high) : null;
@@ -2851,10 +2852,12 @@ else{
                         pass = false;
                     }
                 }
+            }*/
+
+            if(!grossIncoming || grossIncoming == 0){
+                pass = false;
             }
-
-            pass = true;
-
+            
             var isValid = true;
 
             // Remove any existing jQuery validation error labels for customer table fields
@@ -2905,7 +2908,7 @@ else{
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
                         alert(obj.message);
-                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").attr('data-toast-text', obj.message);
                         $("#failBtn").click();
                     }
                     else{
@@ -2916,60 +2919,8 @@ else{
                 });
             }
             else{
-                alert('Please filled in all the mandatory fields!!!');
+                alert('Please filled in all the mandatory fields or make sure gross incoming weight is not "0"!!!');
             }
-            /*else{
-                let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
-                if (userChoice) {
-                    $('#addModal').find('#status').val("pending");
-                    $('#spinnerLoading').show();
-                    $.post('php/weight.php', $('#weightForm').serialize(), function(data){
-                        var obj = JSON.parse(data); 
-                        if(obj.status === 'success'){
-                            <?php
-                                if(isset($_GET['weight'])){
-                                    echo "window.location = 'index.php';";
-                                }
-                            ?>
-                            table.ajax.reload();
-                            window.location = 'index.php';
-                            $('#spinnerLoading').hide();
-                            $('#addModal').modal('hide');
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-                        }
-                        else if(obj.status === 'failed'){
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', obj.message );
-                            $("#failBtn").click();
-                        }
-                        else{
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', 'Failed to save');
-                            $("#failBtn").click();
-                        }
-                    });
-                } 
-                else {
-                    $('#bypassModal').find('#passcode').val("");
-                    $('#bypassModal').find('#reason').val("");
-                    $('#bypassModal').modal('show');
-            
-                    $('#bypassForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }*/
         });
 
         $('#submitWeightPrint').on('click', function(){
@@ -2981,6 +2932,7 @@ else{
             var final = $('#finalWeight').val() || '0';
             var completed = 'N';
             var pass = true;
+            var grossIncoming = $('#grossIncoming').val() || "0";
 
             if($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local"){
                 trueWeight = parseFloat($('#addModal').find('#supplierWeight').val());
@@ -2999,7 +2951,7 @@ else{
                 isComplete = 'N';
             }
 
-            if (isComplete == 'Y' && variance != '') {
+            /*if (isComplete == 'Y' && variance != '') {
                 final = parseFloat(final);
                 low = low != '' ? parseFloat(low) : null;
                 high = high != '' ? parseFloat(high) : null;
@@ -3020,9 +2972,11 @@ else{
                         pass = false;
                     }
                 }
-            }
+            }*/
 
-            pass = true;
+            if(!grossIncoming || grossIncoming == "0"){
+                pass = false;
+            }
 
             var isEmptyContainer = 'N';
             if ($('#weightType').val() == 'Empty Container'){
@@ -3051,26 +3005,6 @@ else{
                                     printWindow.close();
                                     table.ajax.reload();
                                     window.location = 'index.php';
-                                    
-                                    /*setTimeout(function () {
-                                        if (confirm("Do you need to reprint?")) {
-                                            $.post('php/print.php', { userID: obj.id, file: 'weight' }, function (data) {
-                                                var obj = JSON.parse(data);
-                                                if (obj.status === 'success') {
-                                                    var reprintWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                                    reprintWindow.document.write(obj.message);
-                                                    reprintWindow.document.close();
-                                                    setTimeout(function () {
-                                                        reprintWindow.print();
-                                                        reprintWindow.close();
-                                                    }, 500);
-                                                } 
-                                                else {
-                                                    window.location = 'index.php';
-                                                }
-                                            });
-                                        }
-                                    }, 500);*/
                                 }, 500);
                             }
                             else if(obj.status === 'failed'){
@@ -3096,60 +3030,8 @@ else{
                 });
             }
             else{
-                alert('Please filled in all the mandatory fields!!!');
+                alert('Please filled in all the mandatory fields or make sure gross incoming weight is not "0"!!!');
             }
-            /*else{
-                let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
-                if (userChoice) {
-                    $('#addModal').find('#status').val("pending");
-                    $('#spinnerLoading').show();
-                    $.post('php/weight.php', $('#weightForm').serialize(), function(data){
-                        var obj = JSON.parse(data); 
-                        if(obj.status === 'success'){
-                            <?php
-                                if(isset($_GET['weight'])){
-                                    echo "window.location = 'index.php';";
-                                }
-                            ?>
-                            table.ajax.reload();
-                            window.location = 'index.php';
-                            $('#spinnerLoading').hide();
-                            $('#addModal').modal('hide');
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-                        }
-                        else if(obj.status === 'failed'){
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', obj.message );
-                            $("#failBtn").click();
-                        }
-                        else{
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', 'Failed to save');
-                            $("#failBtn").click();
-                        }
-                    });
-                } 
-                else {
-                    $('#bypassModal').find('#passcode').val("");
-                    $('#bypassModal').find('#reason').val("");
-                    $('#bypassModal').modal('show');
-            
-                    $('#bypassForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }*/
         });
 
         $('#submitBypass').on('click', function(){
