@@ -1087,7 +1087,7 @@ else{
     }
 
     function print(id) {
-        $.post('php/print.php', {userID: id, file: 'weight'}, function(data){
+        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N'}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

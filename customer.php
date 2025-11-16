@@ -356,6 +356,7 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
+                                                                    <th>Company</th>
                                                                     <th>Customer Code</th>
                                                                     <th>Company Reg No</th>
                                                                     <th>New Reg No</th>
@@ -470,6 +471,7 @@ $(function () {
                     return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                 }
             },
+            { data: 'company' },
             { data: 'customer_code' },
             { data: 'company_reg_no' },
             { data: 'new_reg_no' },
