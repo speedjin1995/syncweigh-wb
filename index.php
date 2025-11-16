@@ -1468,16 +1468,15 @@ else{
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Companies</th>
+                                                                    <th>From <br> Companies</th>
                                                                     <th>Transaction <br>Id</th>
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
-                                                                    <th>Customer/ <br> Supplier</th>
-                                                                    <th>Container No</th>
-                                                                    <th>Seal No</th>
+                                                                    <th>Gate</th>
                                                                     <th>Vehicle</th>
-                                                                    <th>Gross <br>Incoming</th>
+                                                                    <th>Incoming <br>Gross</th>
                                                                     <th>Incoming <br>Date</th>
+                                                                    <th>Weigh <br>By</th>
                                                                     <!--th>Tare <br>Outgoing</th>
                                                                     <th>Outgoing <br>Date</th>
                                                                     <th>Nett <br>Weight</th>
@@ -2520,12 +2519,11 @@ else{
                 { data: 'transaction_id' },                
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
-                { data: 'customer' },
-                { data: 'container_no' },
-                { data: 'seal_no' },
+                { data: 'gate', sortable: false },
                 { data: 'lorry_plate_no1' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
+                { data: 'gross_weight_by1' },
                 /*{ data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
