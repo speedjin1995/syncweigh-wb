@@ -431,6 +431,7 @@ else{
                                                                     <th>Transaction <br>Id</th>
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
+                                                                    <th>Vehicle</th>
                                                                     <th>In <br> Gate</th>
                                                                     <th>Gross <br>Incoming</th>
                                                                     <th>Incoming <br>Date</th>
