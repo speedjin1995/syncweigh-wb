@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 ## Database configuration
 require_once 'db_connect.php';
@@ -15,7 +18,11 @@ $searchValue = mysqli_real_escape_string($db,$_POST['search']['value']); // Sear
 ## Search 
 $searchQuery = " ";
 if($searchValue != ''){
-  $searchQuery = " and (customer_code like '%".$searchValue."%' OR name like '%".$searchValue."%')";
+  $searchQuery = " and (
+    cust.customer_code like '%".$searchValue."%' OR 
+    cust.name like '%".$searchValue."%' OR
+    c.name like '%".$searchValue."%'
+  )";
 }
 
 ## Total number of records without filtering
@@ -24,12 +31,21 @@ $records = mysqli_fetch_assoc($sel);
 $totalRecords = $records['allcount'];
 
 ## Total number of record with filtering
-$sel = mysqli_query($db,"select count(*) as allcount from Customer WHERE status IN (0)".$searchQuery);
+$sel = mysqli_query($db,"select count(*) as allcount, c.name as company, pl.name as plant from Customer cust LEFT JOIN Company c ON cust.company_id = c.id LEFT JOIN Plant pl ON cust.plant_id = pl.id WHERE cust.status IN (0)".$searchQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
-$empQuery = "select * from Customer WHERE status IN (0)".$searchQuery."order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+$empQuery = "SELECT cust.*, c.name as company, pl.name as plant FROM Customer cust LEFT JOIN Company c ON cust.company_id = c.id LEFT JOIN Plant pl ON cust.plant_id = pl.id WHERE cust.status IN (0)".$searchQuery." ORDER BY cust.status ".$columnSortOrder;
+
+if($columnName == 'company'){
+  $empQuery .= ", c.name ".$columnSortOrder;
+} elseif($columnName == 'plant'){
+  $empQuery .= ", pl.name ".$columnSortOrder;
+} else {
+  $empQuery .= ", cust.".$columnName." ".$columnSortOrder;
+}
+$empQuery .= " LIMIT ".$row.",".$rowperpage;
 $empRecords = mysqli_query($db, $empQuery);
 $data = array();
 
@@ -49,7 +65,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
       "contact_name"=>$row['contact_name'],
       "ic_no"=>$row['ic_no'],
       "tin_no"=>$row['tin_no'],
-      "company_id"=>$row['company_id'],
+      "company"=>$row['company'] ?? '',
       "plant_id"=>$row['plant_id'],
       "status"=>$row['status']
     );

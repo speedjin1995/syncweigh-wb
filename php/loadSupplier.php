@@ -15,7 +15,12 @@ $searchValue = mysqli_real_escape_string($db,$_POST['search']['value']); // Sear
 ## Search 
 $searchQuery = " ";
 if($searchValue != ''){
-  $searchQuery = " and (name like '%".$searchValue."%' or company_reg_no like '%".$searchValue."%' or supplier_code like '%".$searchValue."%')";
+  $searchQuery = " and (
+    sup.name like '%".$searchValue."%' or 
+    sup.company_reg_no like '%".$searchValue."%' or 
+    sup.supplier_code like '%".$searchValue."%' or
+    c.name like '%".$searchValue."%'
+  )";
 }
 
 ## Total number of records without filtering
@@ -24,12 +29,22 @@ $records = mysqli_fetch_assoc($sel);
 $totalRecords = $records['allcount'];
 
 ## Total number of record with filtering
-$sel = mysqli_query($db,"select count(*) as allcount from Supplier WHERE status IN (0)".$searchQuery);
+$sel = mysqli_query($db,"select count(*) as allcount, c.name as company, pl.name as plant from Supplier sup LEFT JOIN Company c ON sup.company_id = c.id LEFT JOIN Plant pl ON sup.plant_id = pl.id WHERE sup.status IN (0)".$searchQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
-$empQuery = "select * from Supplier WHERE status IN (0)".$searchQuery."order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+## Fetch records
+$empQuery = "SELECT sup.*, c.name as company, pl.name as plant FROM Supplier sup LEFT JOIN Company c ON sup.company_id = c.id LEFT JOIN Plant pl ON sup.plant_id = pl.id WHERE sup.status IN (0)".$searchQuery." ORDER BY sup.status ".$columnSortOrder;
+
+if($columnName == 'company'){
+  $empQuery .= ", c.name ".$columnSortOrder;
+} elseif($columnName == 'plant'){
+  $empQuery .= ", pl.name ".$columnSortOrder;
+} else {
+  $empQuery .= ", sup.".$columnName." ".$columnSortOrder;
+}
+$empQuery .= " LIMIT ".$row.",".$rowperpage;
 $empRecords = mysqli_query($db, $empQuery);
 $data = array();
 
@@ -49,7 +64,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
       "contact_name"=>$row['contact_name'],
       "ic_no"=>$row['ic_no'],
       "tin_no"=>$row['tin_no'],
-      "company_id"=>$row['company_id'],
+      "company"=>$row['company'] ?? '',
       "plant_id"=>$row['plant_id'],
       "status"=>$row['status']
     );
