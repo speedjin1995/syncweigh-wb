@@ -431,21 +431,13 @@ else{
                                                                     <th>Transaction <br>Id</th>
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
-                                                                    <th>Customer/ <br> Supplier</th>
-                                                                    <th>Container No</th>
-                                                                    <th>Seal No</th>
-                                                                    <th>Vehicle</th>
+                                                                    <th>In <br> Gate</th>
                                                                     <th>Gross <br>Incoming</th>
                                                                     <th>Incoming <br>Date</th>
+                                                                    <th>Out <br> Gate</th>
                                                                     <th>Tare <br>Outgoing</th>
                                                                     <th>Outgoing <br>Date</th>
                                                                     <th>Nett <br>Weight</th>
-                                                                    <th>Vehicle 2</th>
-                                                                    <th>Gross <br>Incoming 2</th>
-                                                                    <th>Incoming <br>Date 2</th>
-                                                                    <th>Tare <br>Outgoing 2</th>
-                                                                    <th>Outgoing <br>Date 2</th>
-                                                                    <th>Nett <br>Weight 2</th>
                                                                     <th>Action</th>
                                                                 </tr>
                                                             </thead>
@@ -651,21 +643,14 @@ else{
                 { data: 'transaction_id' },
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
-                { data: 'customer' },
-                { data: 'container_no' },
-                { data: 'seal_no' },
                 { data: 'lorry_plate_no1' },
+                { data: 'in_gate' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
+                { data: 'out_gate' },
                 { data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
-                { data: 'lorry_plate_no2' },
-                { data: 'gross_weight2' },
-                { data: 'gross_weight2_date' },
-                { data: 'tare_weight2' },
-                { data: 'tare_weight2_date' },
-                { data: 'nett_weight2' },
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -748,21 +733,14 @@ else{
                     { data: 'transaction_id' },
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
-                    { data: 'customer' },
-                    { data: 'container_no' },
-                    { data: 'seal_no' },
                     { data: 'lorry_plate_no1' },
+                    { data: 'in_gate', sortable: false },
                     { data: 'gross_weight1' },
                     { data: 'gross_weight1_date' },
+                    { data: 'out_gate', sortable: false },
                     { data: 'tare_weight1' },
                     { data: 'tare_weight1_date' },
                     { data: 'nett_weight1' },
-                    { data: 'lorry_plate_no2' },
-                    { data: 'gross_weight2' },
-                    { data: 'gross_weight2_date' },
-                    { data: 'tare_weight2' },
-                    { data: 'tare_weight2_date' },
-                    { data: 'nett_weight2' },
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {
