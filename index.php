@@ -980,7 +980,7 @@ else{
                                                                 <label class="col-sm-8 text-danger">Insufficient Balance</label>
                                                             </div>
                                                         </div>   
-                                                        <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
+                                                        <!--<div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                             <div class="row">
                                                                 <label for="indicatorId" class="col-sm-4 col-form-label">Indicator ID</label>
                                                                 <div class="col-sm-8">
@@ -989,7 +989,7 @@ else{
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div>-->
                                                         <div class="col-xxl-4 col-lg-4 mb-3" style="display:none">
                                                             <div class="row">
                                                                 <label for="plant" class="col-sm-4 col-form-label">Plant</label>
@@ -3387,15 +3387,14 @@ else{
                         }
                     },
                     { data: 'company' },
-                    { data: 'transaction_id' }, 
+                    { data: 'transaction_id' },                
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
-                    { data: 'customer' },
-                    { data: 'container_no' },
-                    { data: 'seal_no' },
+                    { data: 'gate', sortable: false },
                     { data: 'lorry_plate_no1' },
                     { data: 'gross_weight1' },
                     { data: 'gross_weight1_date' },
+                    { data: 'gross_weight_by1' },
                     /*{ data: 'tare_weight1' },
                     { data: 'tare_weight1_date' },
                     { data: 'nett_weight1' },
@@ -5639,8 +5638,7 @@ else{
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
                 // populate company append first
-                companyData = obj.message.companyData;
-                populateCompanyData(companyData);
+                $('#addModal').find('#company').val(obj.message.company);
 
                 if(obj.message.is_complete == 'Y'){
                     // Hide Capture Button When Edit
@@ -5664,15 +5662,11 @@ else{
                     }
 
                     setTimeout(() => {
+                        $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).select2('destroy').select2();
                         $('#addModal').find('#id').val(obj.message.id);
                         $('#addModal').find('#transactionId').val(obj.message.transaction_id);
                         $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                         $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
-                        var companySelect = $('#addModal').find('#company');
-                        if (companySelect.data('select2')) {
-                            companySelect.select2('destroy');
-                        }
-                        companySelect.val(obj.message.company).select2();
                         $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
                         if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
@@ -5917,6 +5911,9 @@ else{
                                 }
                             });
                         }, 500);
+                        
+                        // Initialize Select2 once after all rows are added
+                        reinitSelect2($('#addModal'));
                     }, 500);
                 });
                 // Load these field after PO/SO is loaded
@@ -6041,8 +6038,7 @@ else{
             var obj = JSON.parse(data);
             if(obj.status === 'success'){                
                 // populate company append first
-                companyData = obj.message.companyData;
-                populateCompanyData(companyData);
+                $('#addModal').find('#company').val(obj.message.company);
 
                 if(obj.message.is_complete == 'Y'){
                     // Hide Capture Button When Edit
@@ -6071,12 +6067,6 @@ else{
                         $('#addModal').find('#transactionId').val(obj.message.transaction_id);
                         $('#addModal').find('#weightType').val(obj.message.weight_type);
                         $('#addModal').find('#customerType').val(obj.message.customer_type);
-                        
-                        var companySelect = $('#addModal').find('#company');
-                        if (companySelect.data('select2')) {
-                            companySelect.select2('destroy');
-                        }
-                        companySelect.val(obj.message.company).select2();
                         $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
                         if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
@@ -6320,10 +6310,12 @@ else{
                                 resetSelect2Css();
                             }
                         }, 500);
-                    }, 100);
+                        
+                        // Initialize Select2 once after all rows are added
+                        reinitSelect2($('#addModal'));
+                    }, 500);
 
-                    // Initialize Select2 once after all rows are added
-                    reinitSelect2($('#addModal'));
+                    
                 });
 
                 // Load these field after PO/SO is loaded
