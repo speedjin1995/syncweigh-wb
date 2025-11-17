@@ -980,7 +980,7 @@ else{
                                                                 <label class="col-sm-8 text-danger">Insufficient Balance</label>
                                                             </div>
                                                         </div>   
-                                                        <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
+                                                        <!--<div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                             <div class="row">
                                                                 <label for="indicatorId" class="col-sm-4 col-form-label">Indicator ID</label>
                                                                 <div class="col-sm-8">
@@ -989,7 +989,7 @@ else{
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div>-->
                                                         <div class="col-xxl-4 col-lg-4 mb-3" style="display:none">
                                                             <div class="row">
                                                                 <label for="plant" class="col-sm-4 col-form-label">Plant</label>
@@ -5640,6 +5640,7 @@ else{
             if(obj.status === 'success'){
                 // populate company append first
                 $('#addModal').find('#company').val(obj.message.company);
+
                 if(obj.message.is_complete == 'Y'){
                     // Hide Capture Button When Edit
                     $('#addModal').find('#grossCapture').hide();
@@ -5911,6 +5912,9 @@ else{
                                 }
                             });
                         }, 500);
+                        
+                        // Initialize Select2 once after all rows are added
+                        reinitSelect2($('#addModal'));
                     }, 500);
                 });
                 // Load these field after PO/SO is loaded
@@ -6307,10 +6311,12 @@ else{
                                 resetSelect2Css();
                             }
                         }, 500);
-                    }, 100);
+                        
+                        // Initialize Select2 once after all rows are added
+                        reinitSelect2($('#addModal'));
+                    }, 500);
 
-                    // Initialize Select2 once after all rows are added
-                    reinitSelect2($('#addModal'));
+                    
                 });
 
                 // Load these field after PO/SO is loaded
