@@ -5639,9 +5639,7 @@ else{
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
                 // populate company append first
-                companyData = obj.message.companyData;
-                populateCompanyData(companyData);
-
+                $('#addModal').find('#company').val(obj.message.company);
                 if(obj.message.is_complete == 'Y'){
                     // Hide Capture Button When Edit
                     $('#addModal').find('#grossCapture').hide();
@@ -5664,15 +5662,11 @@ else{
                     }
 
                     setTimeout(() => {
+                        $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).select2('destroy').select2();
                         $('#addModal').find('#id').val(obj.message.id);
                         $('#addModal').find('#transactionId').val(obj.message.transaction_id);
                         $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                         $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
-                        var companySelect = $('#addModal').find('#company');
-                        if (companySelect.data('select2')) {
-                            companySelect.select2('destroy');
-                        }
-                        companySelect.val(obj.message.company).select2();
                         $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
                         if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
@@ -6041,8 +6035,7 @@ else{
             var obj = JSON.parse(data);
             if(obj.status === 'success'){                
                 // populate company append first
-                companyData = obj.message.companyData;
-                populateCompanyData(companyData);
+                $('#addModal').find('#company').val(obj.message.company);
 
                 if(obj.message.is_complete == 'Y'){
                     // Hide Capture Button When Edit
@@ -6071,12 +6064,6 @@ else{
                         $('#addModal').find('#transactionId').val(obj.message.transaction_id);
                         $('#addModal').find('#weightType').val(obj.message.weight_type);
                         $('#addModal').find('#customerType').val(obj.message.customer_type);
-                        
-                        var companySelect = $('#addModal').find('#company');
-                        if (companySelect.data('select2')) {
-                            companySelect.select2('destroy');
-                        }
-                        companySelect.val(obj.message.company).select2();
                         $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
                         if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
