@@ -2334,7 +2334,7 @@ else{
         const last30 = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         yesterday.setDate(yesterday.getDate() - 1);
-l       last30.setDate(today.getDate() - 30);
+        last30.setDate(today.getDate() - 30);
 
         // Initialize all Select2 elements in the search bar
         $('#collapseSearch .select2').select2({
