@@ -2331,8 +2331,10 @@ else{
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
+        const last30 = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         yesterday.setDate(yesterday.getDate() - 1);
+l       last30.setDate(today.getDate() - 30);
 
         // Initialize all Select2 elements in the search bar
         $('#collapseSearch .select2').select2({
@@ -2359,12 +2361,12 @@ else{
         //Date picker
         $('#fromDateSearch').flatpickr({
             dateFormat: "d-m-Y",
-            defaultDate: ''
+            defaultDate: last30
         });
 
         $('#toDateSearch').flatpickr({
             dateFormat: "d-m-Y",
-            defaultDate: ''
+            defaultDate: today
         });
 
         $('#transactionDate').flatpickr({

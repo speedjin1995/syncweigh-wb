@@ -15,17 +15,20 @@ $searchValue = mysqli_real_escape_string($db,$_POST['search']['value']); // Sear
 
 ## Search 
 $searchQuery = " ";
+$searchQuery2 = " ";
 
 if($_POST['fromDate'] != null && $_POST['fromDate'] != ''){
   $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['fromDate']);
   $fromDateTime = $dateTime->format('Y-m-d 00:00:00');
-  $searchQuery = " and transaction_date >= '".$fromDateTime."'";
+  $searchQuery .= " and transaction_date >= '".$fromDateTime."'";
+  $searchQuery2 .= " and transaction_date >= '".$fromDateTime."'";
 }
 
 if($_POST['toDate'] != null && $_POST['toDate'] != ''){
   $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['toDate']);
   $toDateTime = $dateTime->format('Y-m-d 23:59:59');
 	$searchQuery .= " and transaction_date <= '".$toDateTime."'";
+  $searchQuery2 .= " and transaction_date <= '".$toDateTime."'";
 }
 
 if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
@@ -123,11 +126,11 @@ if ($_POST['batch'] == 'N') { //if pending
 
   ## Total number of record with filtering
   $filteredQuery = "select count(*) as allcount from (SELECT * FROM Weight where status = '0'".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0'".$searchQuery.") AS combined"; 
-  $filteredQuery2 = "select * from (SELECT * FROM Weight where status = '0'".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0'".$searchQuery.") AS combined"; 
+  $filteredQuery2 = "select * from (SELECT * FROM Weight where status = '0'".$searchQuery2." UNION ALL SELECT * FROM Weight_Container where status = '0'".$searchQuery2.") AS combined"; 
   if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
     $filteredQuery = "select count(*) as allcount from (SELECT * FROM Weight where status = '0' and plant_code IN ('$username')".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0' and plant_code IN ('$username')".$searchQuery.") AS combined";
-    $filteredQuery2 = "select * from (SELECT * FROM Weight where status = '0' and plant_code IN ('$username')".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0' and plant_code IN ('$username')".$searchQuery.") AS combined";
+    $filteredQuery2 = "select * from (SELECT * FROM Weight where status = '0' and plant_code IN ('$username')".$searchQuery2." UNION ALL SELECT * FROM Weight_Container where status = '0' and plant_code IN ('$username')".$searchQuery2.") AS combined";
   }
 
   $sel = mysqli_query($db, $filteredQuery);
@@ -192,11 +195,11 @@ if ($_POST['batch'] == 'N') { //if pending
 
   ## Total number of record with filtering
   $filteredQuery = "select count(*) as allcount from Weight where status = '0'".$searchQuery;
-  $filteredQuery2 = "select * from Weight where status = '0'".$searchQuery;
+  $filteredQuery2 = "select * from Weight where status = '0'".$searchQuery2;
   if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
     $filteredQuery = "select count(*) as allcount from Weight where status = '0' and plant_code IN ('$username')".$searchQuery;
-    $filteredQuery2 = "select * from Weight where status = '0' and plant_code IN ('$username')".$searchQuery;
+    $filteredQuery2 = "select * from Weight where status = '0' and plant_code IN ('$username')".$searchQuery2;
   }
 
   $sel = mysqli_query($db, $filteredQuery);
