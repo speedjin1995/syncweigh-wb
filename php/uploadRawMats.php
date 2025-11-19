@@ -24,7 +24,7 @@ if (!empty($data)) {
         $action = "1";
         
         if($Code != null && $Code != '' && $Company != null && $Company != ''){
-            $rawMatQuery = "SELECT * FROM Raw_Mat WHERE raw_mat_code = '$Code' AND company_id = '$Company' AND status='0'";
+            $rawMatQuery = "SELECT * FROM Raw_Mat WHERE raw_mat_code = '$Code' AND status='0'";
             $rawMatDetail = mysqli_query($db, $rawMatQuery);
             $rawMatRow = mysqli_fetch_assoc($rawMatDetail);
             
@@ -37,9 +37,16 @@ if (!empty($data)) {
                     $insert_stmt->close();    
                 }
             }else{
-                $errMsg = "Raw Material: ". $Name ." already exist in master data.";
-                $errorSoProductArray[] = $errMsg;
-                continue;    
+                $existingCompanies = json_decode($rawMatRow['company_id'], true);
+                if(!in_array((string)$Company, $existingCompanies)){
+                    $existingCompanies[] = (string)$Company;
+                    $updatedCompanies = json_encode($existingCompanies);
+                    if ($update_stmt = $db->prepare("UPDATE Raw_Mat SET company_id = ?, modified_by = ? WHERE raw_mat_code = ? AND status='0'")) {
+                        $update_stmt->bind_param('sss', $updatedCompanies, $uid, $Code);
+                        $update_stmt->execute();
+                        $update_stmt->close();
+                    }
+                }
             }
         }
     }
