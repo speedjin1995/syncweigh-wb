@@ -22,7 +22,7 @@ if (!empty($data)) {
         
         # Checking for existing Product.
         if($Code != null && $Code != '' && $Company != null && $Company != ''){
-            $productQuery = "SELECT * FROM Product WHERE product_code = '$Code' AND company_id = '$Company' AND status='0'";
+            $productQuery = "SELECT * FROM Product WHERE product_code = '$Code' AND status='0'";
             $productDetail = mysqli_query($db, $productQuery);
             $productRow = mysqli_fetch_assoc($productDetail);
             
@@ -35,9 +35,16 @@ if (!empty($data)) {
                     $insert_stmt->close();
                 }
             }else{
-                $errMsg = "Product: ". $Name ." already exist in master data.";
-                $errorSoProductArray[] = $errMsg;
-                continue;    
+                $existingCompanies = json_decode($productRow['company_id'], true);
+                if(!in_array((string)$Company, $existingCompanies)){
+                    $existingCompanies[] = (string)$Company;
+                    $updatedCompanies = json_encode($existingCompanies);
+                    if ($update_stmt = $db->prepare("UPDATE Product SET company_id = ?, modified_by = ? WHERE product_code = ? AND status='0'")) {
+                        $update_stmt->bind_param('sss', $updatedCompanies, $uid, $Code);
+                        $update_stmt->execute();
+                        $update_stmt->close();
+                    }
+                }
             }
         }
     }
