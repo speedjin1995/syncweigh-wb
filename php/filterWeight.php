@@ -52,7 +52,12 @@ if($_POST['invoice'] != null && $_POST['invoice'] != '' && $_POST['invoice'] != 
 }
 
 if($_POST['batch'] != null && $_POST['batch'] != '' && $_POST['batch'] != '-'){
-	$searchQuery .= " and is_complete = '".$_POST['batch']."'";
+  if($_POST['batch'] == 'C'){
+    $searchQuery .= " and is_cancel = 'Y'";
+  }
+  else{
+    $searchQuery .= " and is_complete = '".$_POST['batch']."'";
+  }
 }
 
 if($_POST['product'] != null && $_POST['product'] != '' && $_POST['product'] != '-'){

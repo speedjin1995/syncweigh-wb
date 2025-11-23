@@ -142,7 +142,7 @@ else{
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="transactionStatusSearch" class="form-label">Transaction Status</label>
-                                                            <select id="transactionStatusSearch" class="form-select">
+                                                            <select id="transactionStatusSearch" class="form-select select2">
                                                                 <option value="Sales" selected>Dispatch</option>
                                                                 <option value="Purchase">Receiving</option>
                                                                 <option value="Local">Internal Transfer</option>
@@ -153,7 +153,7 @@ else{
                                                     <div class="col-3" id="customerSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="customerNoSearch" class="form-label">Customer Name</label>
-                                                            <select id="customerNoSearch" class="form-select" >
+                                                            <select id="customerNoSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowPF = mysqli_fetch_assoc($customer2)){ ?>
                                                                     <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['name'] ?></option>
@@ -164,7 +164,7 @@ else{
                                                     <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="supplierSearch" class="form-label">Supplier Name</label>
-                                                            <select id="supplierSearch" class="form-select" >
+                                                            <select id="supplierSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowSF=mysqli_fetch_assoc($supplier2)){ ?>
                                                                     <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['name'] ?></option>
@@ -181,7 +181,7 @@ else{
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="invoiceNoSearch" class="form-label">Weighing Type</label>
-                                                            <select id="invoiceNoSearch" class="form-select"  >
+                                                            <select id="invoiceNoSearch" class="form-select">
                                                                 <option selected>-</option>
                                                                 <option value="Normal">Normal Weighing</option>
                                                                 <option value="Container">Primer Mover</option>
@@ -201,7 +201,7 @@ else{
                                                     <div class="col-3" id="productSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="ForminputState" class="form-label">Product Code</label>
-                                                            <select id="productSearch" class="form-select" >
+                                                            <select id="productSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowProductF=mysqli_fetch_assoc($product2)){ ?>
                                                                     <option value="<?=$rowProductF['product_code'] ?>"><?=$rowProductF['name'] ?></option>
@@ -212,7 +212,7 @@ else{
                                                     <div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="ForminputState" class="form-label">Raw Material Code</label>
-                                                            <select id="rawMatSearch" class="form-select" >
+                                                            <select id="rawMatSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
                                                                     <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['name'] ?></option>
@@ -223,7 +223,7 @@ else{
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="projectSearch" class="form-label">Project Code</label>
-                                                            <select id="projectSearch" class="form-select">
+                                                            <select id="projectSearch" class="form-select select2">
                                                                 <option selected>-</option>
                                                                 <?php while($rowProjectF=mysqli_fetch_assoc($projects)){ ?>
                                                                     <option value="<?=$rowProjectF['id'] ?>"><?=$rowProjectF['project'] . ' - ' . $rowProjectF['project_name'] ?></option>
@@ -563,6 +563,11 @@ else{
         const yesterday = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
         yesterday.setDate(yesterday.getDate() - 1);
+
+        $('#collapseSearch .select2').select2({
+            allowClear: true,
+            placeholder: "Please Select",
+        });
 
         //Date picker
         $('#fromDateSearch').flatpickr({

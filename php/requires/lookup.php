@@ -79,6 +79,24 @@ function searchCompanyIdByName($value, $db) {
     return $id;
 }
 
+function searchCustomerCodeById($value, $db) {
+    $id = null;
+
+    if(isset($value)){
+        if ($select_stmt = $db->prepare("SELECT * FROM Customer WHERE id=?")) {
+            $select_stmt->bind_param('s', $value);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $id = $row['customer_code'];
+            }
+            $select_stmt->close();
+        }
+    }
+
+    return $id;
+}
+
 function searchCustomerNameById($value, $db) {
     $id = null;
 
@@ -174,6 +192,60 @@ function searchProjectByCode($value, $db) {
 
     if(isset($value)){
         if ($select_stmt = $db->prepare("SELECT * FROM Site WHERE site_code=?")) {
+            $select_stmt->bind_param('s', $value);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $id = $row['name'];
+            }
+            $select_stmt->close();
+        }
+    }
+
+    return $id;
+}
+
+function searchProjectById($value, $db) {
+    $id = '';
+
+    if(isset($value)){
+        if ($select_stmt = $db->prepare("SELECT * FROM Projects WHERE id=?")) {
+            $select_stmt->bind_param('s', $value);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $id = $row['project'];
+            }
+            $select_stmt->close();
+        }
+    }
+
+    return $id;
+}
+
+function searchProductCodeById($value, $db) {
+    $id = '';
+
+    if(isset($value)){
+        if ($select_stmt = $db->prepare("SELECT * FROM Product WHERE id=?")) {
+            $select_stmt->bind_param('s', $value);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $id = $row['product_code'];
+            }
+            $select_stmt->close();
+        }
+    }
+
+    return $id;
+}
+
+function searchProductNameById($value, $db) {
+    $id = '';
+
+    if(isset($value)){
+        if ($select_stmt = $db->prepare("SELECT * FROM Product WHERE id=?")) {
             $select_stmt->bind_param('s', $value);
             $select_stmt->execute();
             $result = $select_stmt->get_result();

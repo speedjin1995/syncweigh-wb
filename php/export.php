@@ -2,6 +2,7 @@
 session_start();
 // Load the database configuration file 
 require_once 'db_connect.php';
+require_once 'requires/lookup.php';
  
 // Filter the excel data 
 function filterData(&$str){ 
@@ -162,26 +163,51 @@ if($_GET['isMulti'] != null && $_GET['isMulti'] != '' && $_GET['isMulti'] != '-'
     }
 }
 
-
-// Column names 
-$fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'CUSTOMER CODE', 'CUSTOMER NAME', 
-    'SUPPLIER CODE', 'SUPPLIER NAME', 'PRODUCT CODE', 'PRODUCT NAME', 'PRODUCT DESCRIPTION', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 
-    'DELIVERED BY', 'PO NO.', 'DO NO.', 'CONTAINER NO', 'SEAL NO', 'CONTAINER NO 2', 'SEAL NO 2', 'ORDER WEIGHT', 'SUPPLIER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME',
-    'GROSS WEIGHT 2', 'TARE WEIGHT 2', 'NET WEIGHT 2', 'IN TIME2', 'OUT TIME2', 'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT',  'MANUAL', 'CANCELLED', 'PLANT CODE', 
-    'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
+if($_GET['transactionStatus'] == 'Sales'){
+    // Column names 
+    $fields = array('TRANSACTION ID', 'COMPANY', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'LORRY NO. 2', 'CUSTOMER CODE', 'CUSTOMER NAME', 
+        'PRODUCT CODE', 'PRODUCT NAME', 'PROJECT CODE', 'INTERNAL DOCS NO.', 'REF NO.', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 'DELIVERED BY', 
+        'TRANSPORT CAP.', 'PO NO.', 'DO NO.', 'CONTAINER NO', 'SEAL NO', 'CONTAINER NO 2', 'SEAL NO 2', 'ORDER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 
+        'IN TIME', 'OUT TIME', 'GROSS WEIGHT 2', 'TARE WEIGHT 2', 'NET WEIGHT 2', 'IN TIME2', 'OUT TIME2', 'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT', 'MANUAL', 
+        'CANCELLED', 'PLANT CODE', 'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
+}
+else if($_GET['transactionStatus'] == 'Purchase'){
+    // Column names 
+    $fields = array('TRANSACTION ID', 'COMPANY', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'LORRY NO. 2', 'SUPPLIER CODE', 'SUPPLIER NAME', 
+        'RAW MAT CODE', 'RAW MAT NAME', 'PROJECT CODE', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 'DELIVERED BY', 'TRANSPORT CAP.', 'PO NO.', 'DO NO.', 
+        'MRN NO.', 'CONTAINER NO', 'SEAL NO', 'CONTAINER NO 2', 'SEAL NO 2', 'SUPPLIER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME', 
+        'GROSS WEIGHT 2', 'TARE WEIGHT 2', 'NET WEIGHT 2', 'IN TIME2', 'OUT TIME2', 'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT', 'MANUAL', 'CANCELLED', 'PLANT CODE', 
+        'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
+}
+else if($_GET['transactionStatus'] == 'Local'){
+    // Column names 
+    $fields = array('TRANSACTION ID', 'COMPANY', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'LORRY NO. 2', 'SUPPLIER CODE', 'SUPPLIER NAME', 
+        'RAW MAT CODE', 'RAW MAT NAME', 'PROJECT CODE', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 'DELIVERED BY', 'TRANSPORT CAP.', 'PO NO.', 'DO NO.', 
+        'CONTAINER NO', 'SEAL NO', 'CONTAINER NO 2', 'SEAL NO 2', 'SUPPLIER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME', 
+        'GROSS WEIGHT 2', 'TARE WEIGHT 2', 'NET WEIGHT 2', 'IN TIME2', 'OUT TIME2', 'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT', 'MANUAL', 'CANCELLED', 'PLANT CODE', 
+        'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
+}
+else{
+    // Column names 
+    $fields = array('TRANSACTION ID', 'COMPANY', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'LORRY NO. 2', 'CUSTOMER CODE', 'CUSTOMER NAME', 
+        'PRODUCT CODE', 'PRODUCT NAME', 'PROJECT CODE', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 'DELIVERED BY', 'TRANSPORT CAP.', 'PO NO.', 'DO NO.', 
+        'CONTAINER NO', 'SEAL NO', 'CONTAINER NO 2', 'SEAL NO 2', 'ORDER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME', 
+        'GROSS WEIGHT 2', 'TARE WEIGHT 2', 'NET WEIGHT 2', 'IN TIME2', 'OUT TIME2', 'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT', 'MANUAL', 'CANCELLED', 'PLANT CODE', 
+        'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
+}
 
 // Display column names as first row 
 $excelData = implode("\t", array_values($fields)) . "\n";
 
 // Fetch records from database
 if($_GET["file"] == 'weight'){
-    // $query = $db->query("select * from Weight WHERE status='0'".$searchQuery);
-    $query = $db->query("
+    $query = $db->query("select * from Weight WHERE status='0'".$searchQuery);
+    /*$query = $db->query("
         SELECT * FROM Weight WHERE Weight.status = '0'".$searchQuery."
         UNION ALL
         SELECT * FROM Weight_Container WHERE Weight_Container.status = '0'".$searchContainerQuery."
         ORDER BY created_date ASC
-    ");
+    ");*/
 }
 else{
     $query = $db->query("select count.id, count.serialNo, vehicles.veh_number, lots.lots_no, count.batchNo, count.invoiceNo, count.deliveryNo, 
@@ -198,24 +224,29 @@ if($query->num_rows > 0){
         $lineData = []; // Ensure it starts as an empty array each iteration
 
         if($_GET["file"] == 'weight'){
-            $productCode = $row['product_code'];
-            $productName = $row['product_name'];
+            $productCode = [];
+            $productName = [];
+            $company = searchCompanyById($row['company'], $db);
+            $projectCode = $row['project_code'];
+            $projectArray = [];
 
             if($row['transaction_status'] == 'Sales'){
                 $transactionStatus = 'Dispatch';
             }
             else if($row['transaction_status'] == 'Purchase'){
                 $transactionStatus = 'Receiving';
-                $productCode = $row['raw_mat_code'];
-                $productName = $row['raw_mat_name'];
+                $productCode = json_decode($row['raw_mat_code'], true);
+                $productName = json_decode($row['raw_mat_name'], true);
             }
             else if($row['transaction_status'] == 'Misc'){
                 $transactionStatus = 'Miscellaneous';
+                $productCode = json_decode($row['product_code'], true);
+                $productName = json_decode($row['product_name'], true);
             }
             else{
                 $transactionStatus = 'Internal Transfer';
-                $productCode = $row['raw_mat_code'];
-                $productName = $row['raw_mat_name'];
+                $productCode = json_decode($row['raw_mat_code'], true);
+                $productName = json_decode($row['raw_mat_name'], true);
             }
 
             if($row['weight_type'] == 'Container'){
@@ -228,27 +259,109 @@ if($query->num_rows > 0){
                 $weightType = $row['weight_type'];
             }
 
-            $lineData = array($row['transaction_id'], $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['customer_code'],
-            $row['customer_name'], $row['supplier_code'], $row['supplier_name'], $productCode, $productName, $row['product_description'], $row['destination_code'], 
-            $row['destination'], $row['transporter_code'], $row['transporter'], $row['purchase_order'], $row['delivery_no'], $row['container_no'], $row['seal_no'], 
-            $row['container_no2'], $row['seal_no2'], $row['order_weight'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], $row['nett_weight1'], $row['gross_weight1_date'], 
-            $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], $row['tare_weight2_date'],
-            $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], 
-            $row['created_by'], $row['remarks']);
+            if($projectCode != null){
+                $projectCodes = json_decode($projectCode, true);
+
+                for($i=0; $i<count($projectCodes); $i++){
+                    $projectArray[] = searchProjectById($projectCodes[$i], $db);
+                }
+            }
+
+            if($_GET['transactionStatus'] == 'Sales'){
+                $query2 = $db->query("select * from Weight_Customer WHERE weight_id='".$row['id']."'");
+
+                if($query2->num_rows > 0){ 
+                    // Output each row of the data 
+                    while($row2 = $query2->fetch_assoc()){
+                        if($row2['product_id'] != null){
+                            $productIds = json_decode($row2['product_id'], true);
+
+                            for($i=0; $i<count($productIds); $i++){
+                                $productCode[] = searchProductCodeById($productIds[$i], $db);
+                                $productName[] = searchProductNameById($productIds[$i], $db);
+                            }
+                        }
+
+                        if($row2['project_id'] != null){
+                            $projectCodes = json_decode($row2['project_id'], true);
+
+                            for($i=0; $i<count($projectCodes); $i++){
+                                $projectArray[] = searchProjectById($projectCodes[$i], $db);
+                            }
+                        }
+
+                        // Column names 
+                        $lineData = array($row['transaction_id'], $company, $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['lorry_plate_no2'], searchCustomerCodeById($row2['customer_id'], $db), searchCustomerNameById($row2['customer_id'], $db), 
+                            implode("\\", $productCode), implode("\\", $productName), implode("\\", $projectArray), $row2['internal_doc_no'], $row2['ref_no'], $row['destination_code'], $row['destination'], $row['transporter_code'], $row['transporter'], searchTransportCapById($row['transport_cap'], $db), 
+                            $row['purchase_order'], $row2['delivery_no'], $row['container_no'], $row['seal_no'], $row['container_no2'], $row['seal_no2'], $row['order_weight'], $row['gross_weight1'], $row['tare_weight1'], 
+                            $row['nett_weight1'], $row['gross_weight1_date'], $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], $row['tare_weight2_date'],
+                            $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], $row['created_by'], $row['remarks']);
+
+                        # Added checking to fix duplicated issue
+                        if (!empty($lineData)) {
+                            array_walk($lineData, 'filterData'); 
+                            $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+                        }
+                    }
+                }
+            }
+            else if($_GET['transactionStatus'] == 'Purchase'){
+                // Column names 
+                $lineData = array($row['transaction_id'], $company, $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['lorry_plate_no2'], $row['supplier_code'], $row['supplier_name'], 
+                    implode("\\", $productCode), implode("\\", $productName), implode("\\", $projectArray), $row['destination_code'], $row['destination'], $row['transporter_code'], $row['transporter'], searchTransportCapById($row['transport_cap'], $db), 
+                    $row['purchase_order'], $row['delivery_no'], $row['mrn_no'], $row['container_no'], $row['seal_no'], $row['container_no2'], $row['seal_no2'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], 
+                    $row['nett_weight1'], $row['gross_weight1_date'], $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], $row['tare_weight2_date'],
+                    $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], $row['created_by'], $row['remarks']);
+            
+                #Added checking to fix duplicated issue
+                if (!empty($lineData)) {
+                    array_walk($lineData, 'filterData'); 
+                    $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+                }
+            }
+            else if($_GET['transactionStatus'] == 'Local'){
+                // Column names 
+                $lineData = array($row['transaction_id'], $company, $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['lorry_plate_no2'], $row['supplier_code'], $row['supplier_name'], 
+                    implode("\\", $productCode), implode("\\", $productName), implode("\\", $projectArray), $row['destination_code'], $row['destination'], $row['transporter_code'], $row['transporter'], searchTransportCapById($row['transport_cap'], $db), 
+                    $row['purchase_order'], $row['delivery_no'], $row['container_no'], $row['seal_no'], $row['container_no2'], $row['seal_no2'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], 
+                    $row['nett_weight1'], $row['gross_weight1_date'], $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], $row['tare_weight2_date'],
+                    $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], $row['created_by'], $row['remarks']);
+            
+                #Added checking to fix duplicated issue
+                if (!empty($lineData)) {
+                    array_walk($lineData, 'filterData'); 
+                    $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+                }
+            }
+            else{
+                // Column names 
+                $lineData = array($row['transaction_id'], $company, $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['lorry_plate_no2'], $row['customer_code'], $row['customer_name'], 
+                    implode("\\", $productCode), implode("\\", $productName), implode("\\", $projectArray), $row['destination_code'], $row['destination'], $row['transporter_code'], $row['transporter'], searchTransportCapById($row['transport_cap'], $db), 
+                    $row['purchase_order'], $row['delivery_no'], $row['container_no'], $row['seal_no'], $row['container_no2'], $row['seal_no2'], $row['order_weight'], $row['gross_weight1'], $row['tare_weight1'], 
+                    $row['nett_weight1'], $row['gross_weight1_date'], $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], $row['tare_weight2_date'],
+                    $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], $row['created_by'], $row['remarks']);
+            
+                # Added checking to fix duplicated issue
+                if (!empty($lineData)) {
+                    array_walk($lineData, 'filterData'); 
+                    $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+                }
+            }
         }
         else{
             $lineData = array($row['serialNo'], $row['product_name'], $row['units'], $row['unitWeight'], $row['tare'], $row['currentWeight'], $row['actualWeight'],
             $row['totalPCS'], $row['moq'], $row['unitPrice'], $row['totalPrice'], $row['veh_number'], $row['lots_no'], $row['batchNo'], $row['invoiceNo']
             , $row['deliveryNo'], $row['purchaseNo'], $row['customer_name'], $row['packages'], $row['dateTime'], $row['remark'], $row['status'], $deleted);
-        }
-
-        # Added checking to fix duplicated issue
-        if (!empty($lineData)) {
-            array_walk($lineData, 'filterData'); 
-            $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+            
+            # Added checking to fix duplicated issue
+            if (!empty($lineData)) {
+                array_walk($lineData, 'filterData'); 
+                $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+            }
         }
     } 
-}else{ 
+}
+else{ 
     $excelData .= 'No records found...'. "\n"; 
 } 
  

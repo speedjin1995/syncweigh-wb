@@ -271,6 +271,7 @@ else{
                                                             <select id="batchNoSearch" class="form-select select2">
                                                                 <option value="N" selected>Pending</option>
                                                                 <option value="Y">Complete</option>
+                                                                <option value="C">Cancelled</option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->                                                
@@ -1285,7 +1286,7 @@ else{
 
                             <div class="row">
                                 <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate">
+                                    <div class="card card-animate" id="dispatchCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
@@ -1319,7 +1320,7 @@ else{
                                 </div>
 
                                 <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate">
+                                    <div class="card card-animate" id="receivingCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
@@ -1353,7 +1354,7 @@ else{
                                 </div>
 
                                 <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate">
+                                    <div class="card card-animate"  id="intTransCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
@@ -1387,7 +1388,7 @@ else{
                                 </div>
 
                                 <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate">
+                                    <div class="card card-animate" id="miscCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
@@ -2577,6 +2578,13 @@ else{
                             }
                         }
 
+                        buttons += `
+                        <div class="col-auto">
+                            <button title="Complete" type="button" id="complete${data}" onclick="complete('${data}')" class="btn btn-success btn-sm">
+                                <i class="ri-task-fill"></i>
+                            </button>
+                        </div>`;
+
                         if (row.is_approved == 'Y') {
                             if (row.weight_type != 'Primer Mover + Container'){
                                 buttons += `
@@ -3450,6 +3458,13 @@ else{
                                 }
                             }
 
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Complete" type="button" id="complete${data}" onclick="complete('${data}')" class="btn btn-success btn-sm">
+                                    <i class="ri-task-fill"></i>
+                                </button>
+                            </div>`;
+
                             if (row.is_approved == 'Y') {
                                 if (row.weight_type != 'Primer Mover + Container'){
                                     buttons += `
@@ -3619,6 +3634,862 @@ else{
                         }
                     }
                 ]
+            });
+        });
+
+        $('#dispatchCard').on('click',function(){
+            var fromDateI = $('#fromDateSearch').val();
+            var toDateI = $('#toDateSearch').val();
+            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+            var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+            var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
+            var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
+            var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
+            var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+            var projectI = $('#projectSearch').val() ? $('#projectSearch').val() : '';
+            var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var transactionIdI = 'Sales';
+            var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
+            var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
+            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+            var companyI = $('#companySearch').val() ? $('#companySearch').val() : '';
+
+            //Destroy the old Datatable
+            $("#weightTable").DataTable().clear().destroy();
+
+            //Create new Datatable
+            table = $("#weightTable").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                'processing': true,
+                'serverSide': true,
+                'searching': true,
+                'serverMethod': 'post',
+                'ajax': {
+                    'url':'php/filterWeight.php',
+                    'data': {
+                        fromDate: fromDateI,
+                        toDate: toDateI,
+                        status: statusI,
+                        customer: customerNoI,
+                        supplier: supplierI,
+                        vehicle: vehicleNoI,
+                        invoice: invoiceNoI,
+                        batch: batchNoI,
+                        product: productSearchI,
+                        rawMaterial: rawMaterialI,
+                        project: projectI,
+                        plant: plantNoI,
+                        transactionId: transactionIdI,
+                        containerNo: containerNoI,
+                        sealNo: sealNoI,
+                        invDelPo: invDelPoI,
+                        company: companyI
+                    } 
+                },
+                'columns': [
+                    {
+                        // Add a checkbox with a unique ID for each row
+                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
+                        className: 'select-checkbox',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if (row.weight_type == 'Primer Mover + Container'){
+                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
+                            }else{
+                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
+                            }
+                        }
+                    },
+                    { data: 'company' },
+                    { data: 'transaction_id' },                
+                    { data: 'weight_type' },
+                    { data: 'transaction_status' },
+                    { data: 'gate', sortable: false },
+                    { data: 'lorry_plate_no1' },
+                    { data: 'gross_weight1' },
+                    { data: 'gross_weight1_date' },
+                    { data: 'gross_weight_by1' },
+                    { 
+                        data: 'id',
+                        class: 'action-button',
+                        render: function (data, type, row) {
+                            let buttons = `<div class="row g-1 d-flex">`;
+
+                            if (userRole == 'SADMIN' || userRole == 'ADMIN') {
+                                // if (row.is_complete != 'Y' ){
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                    </div>`;
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                                // }
+                            }else {
+                                if (row.is_complete != 'Y' ){
+                                    if (row.weight_type == 'Primer Mover + Container'){
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;    
+                                    }else{
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'N')" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;  
+                                    }
+                                }
+                            }
+
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Complete" type="button" id="complete${data}" onclick="complete('${data}')" class="btn btn-success btn-sm">
+                                    <i class="ri-task-fill"></i>
+                                </button>
+                            </div>`;
+
+                            if (row.is_approved == 'Y') {
+                                if (row.weight_type != 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                            }
+
+                            if (row.is_approved == 'N') {
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Approve" type="button" id="approve${data}" onclick="approve(${data})" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </div>`;
+                            }
+
+                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>`;
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                            }
+                                
+                            buttons += `</div>`;
+
+                            return buttons;
+                            // let dropdownMenu = '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">';
+
+                            // if (row.is_complete != 'Y' || userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') {
+                            //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>'; 
+                            // }
+
+                            // if (row.is_approved == 'Y') {
+                            //     dropdownMenu += '<li><a class="dropdown-item print-item-btn" id="print' + data + '" onclick="print(' + data + ')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li>';
+                            // }
+
+                            // if (row.is_approved == 'N') {
+                            //     dropdownMenu += '<li><a class="dropdown-item approval-item-btn" id="approve' + data + '" onclick="approve(' + data + ')"><i class="ri-check-fill align-bottom me-2 text-muted"></i> Approval</a></li>';
+                            // }
+
+                            // if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                            //     dropdownMenu += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>';
+                            // }
+
+                            // dropdownMenu += '</ul></div>';
+                            // return dropdownMenu;
+                        }
+                    }
+                ],
+                "drawCallback": function(settings) {
+                    $('#salesPending').text(settings.json.salesTotalPending);
+                    $('#salesComplete').text(settings.json.salesTotalComplete);
+                    $('#salesCancel').text(settings.json.salesTotalCancel);
+                    $('#purchasePending').text(settings.json.purchaseTotalPending);
+                    $('#purchaseComplete').text(settings.json.purchaseTotalComplete);
+                    $('#purchaseCancel').text(settings.json.purchaseTotalCancel);
+                    $('#localPending').text(settings.json.localTotalPending);
+                    $('#localComplete').text(settings.json.localTotalComplete);
+                    $('#localCancel').text(settings.json.localTotalCancel);
+                    $('#miscPending').text(settings.json.miscTotalPending);
+                    $('#miscComplete').text(settings.json.miscTotalComplete);
+                    $('#miscCancel').text(settings.json.miscTotalCancel);
+
+                    if(batchNoI == 'Y'){
+                        $('#lorryTableLabel').text('Completed Records (Lorry)');
+                    }
+                    else{
+                        $('#lorryTableLabel').text('Pending Records (Lorry)');
+                    }
+                } 
+            });
+        });
+
+        $('#receivingCard').on('click',function(){
+            var fromDateI = $('#fromDateSearch').val();
+            var toDateI = $('#toDateSearch').val();
+            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+            var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+            var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
+            var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
+            var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
+            var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+            var projectI = $('#projectSearch').val() ? $('#projectSearch').val() : '';
+            var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var transactionIdI = 'Purchase';
+            var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
+            var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
+            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+            var companyI = $('#companySearch').val() ? $('#companySearch').val() : '';
+
+            //Destroy the old Datatable
+            $("#weightTable").DataTable().clear().destroy();
+
+            //Create new Datatable
+            table = $("#weightTable").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                'processing': true,
+                'serverSide': true,
+                'searching': true,
+                'serverMethod': 'post',
+                'ajax': {
+                    'url':'php/filterWeight.php',
+                    'data': {
+                        fromDate: fromDateI,
+                        toDate: toDateI,
+                        status: statusI,
+                        customer: customerNoI,
+                        supplier: supplierI,
+                        vehicle: vehicleNoI,
+                        invoice: invoiceNoI,
+                        batch: batchNoI,
+                        product: productSearchI,
+                        rawMaterial: rawMaterialI,
+                        project: projectI,
+                        plant: plantNoI,
+                        transactionId: transactionIdI,
+                        containerNo: containerNoI,
+                        sealNo: sealNoI,
+                        invDelPo: invDelPoI,
+                        company: companyI
+                    } 
+                },
+                'columns': [
+                    {
+                        // Add a checkbox with a unique ID for each row
+                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
+                        className: 'select-checkbox',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if (row.weight_type == 'Primer Mover + Container'){
+                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
+                            }else{
+                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
+                            }
+                        }
+                    },
+                    { data: 'company' },
+                    { data: 'transaction_id' },                
+                    { data: 'weight_type' },
+                    { data: 'transaction_status' },
+                    { data: 'gate', sortable: false },
+                    { data: 'lorry_plate_no1' },
+                    { data: 'gross_weight1' },
+                    { data: 'gross_weight1_date' },
+                    { data: 'gross_weight_by1' },
+                    { 
+                        data: 'id',
+                        class: 'action-button',
+                        render: function (data, type, row) {
+                            let buttons = `<div class="row g-1 d-flex">`;
+
+                            if (userRole == 'SADMIN' || userRole == 'ADMIN') {
+                                // if (row.is_complete != 'Y' ){
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                    </div>`;
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                                // }
+                            }else {
+                                if (row.is_complete != 'Y' ){
+                                    if (row.weight_type == 'Primer Mover + Container'){
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;    
+                                    }else{
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'N')" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;  
+                                    }
+                                }
+                            }
+
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Complete" type="button" id="complete${data}" onclick="complete('${data}')" class="btn btn-success btn-sm">
+                                    <i class="ri-task-fill"></i>
+                                </button>
+                            </div>`;
+
+                            if (row.is_approved == 'Y') {
+                                if (row.weight_type != 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                            }
+
+                            if (row.is_approved == 'N') {
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Approve" type="button" id="approve${data}" onclick="approve(${data})" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </div>`;
+                            }
+
+                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>`;
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                            }
+                                
+                            buttons += `</div>`;
+
+                            return buttons;
+                            // let dropdownMenu = '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">';
+
+                            // if (row.is_complete != 'Y' || userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') {
+                            //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>'; 
+                            // }
+
+                            // if (row.is_approved == 'Y') {
+                            //     dropdownMenu += '<li><a class="dropdown-item print-item-btn" id="print' + data + '" onclick="print(' + data + ')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li>';
+                            // }
+
+                            // if (row.is_approved == 'N') {
+                            //     dropdownMenu += '<li><a class="dropdown-item approval-item-btn" id="approve' + data + '" onclick="approve(' + data + ')"><i class="ri-check-fill align-bottom me-2 text-muted"></i> Approval</a></li>';
+                            // }
+
+                            // if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                            //     dropdownMenu += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>';
+                            // }
+
+                            // dropdownMenu += '</ul></div>';
+                            // return dropdownMenu;
+                        }
+                    }
+                ],
+                "drawCallback": function(settings) {
+                    $('#salesPending').text(settings.json.salesTotalPending);
+                    $('#salesComplete').text(settings.json.salesTotalComplete);
+                    $('#salesCancel').text(settings.json.salesTotalCancel);
+                    $('#purchasePending').text(settings.json.purchaseTotalPending);
+                    $('#purchaseComplete').text(settings.json.purchaseTotalComplete);
+                    $('#purchaseCancel').text(settings.json.purchaseTotalCancel);
+                    $('#localPending').text(settings.json.localTotalPending);
+                    $('#localComplete').text(settings.json.localTotalComplete);
+                    $('#localCancel').text(settings.json.localTotalCancel);
+                    $('#miscPending').text(settings.json.miscTotalPending);
+                    $('#miscComplete').text(settings.json.miscTotalComplete);
+                    $('#miscCancel').text(settings.json.miscTotalCancel);
+
+                    if(batchNoI == 'Y'){
+                        $('#lorryTableLabel').text('Completed Records (Lorry)');
+                    }
+                    else{
+                        $('#lorryTableLabel').text('Pending Records (Lorry)');
+                    }
+                } 
+            });
+        });
+
+        $('#intTransCard').on('click',function(){
+            var fromDateI = $('#fromDateSearch').val();
+            var toDateI = $('#toDateSearch').val();
+            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+            var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+            var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
+            var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
+            var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
+            var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+            var projectI = $('#projectSearch').val() ? $('#projectSearch').val() : '';
+            var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var transactionIdI = 'Local';
+            var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
+            var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
+            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+            var companyI = $('#companySearch').val() ? $('#companySearch').val() : '';
+
+            //Destroy the old Datatable
+            $("#weightTable").DataTable().clear().destroy();
+
+            //Create new Datatable
+            table = $("#weightTable").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                'processing': true,
+                'serverSide': true,
+                'searching': true,
+                'serverMethod': 'post',
+                'ajax': {
+                    'url':'php/filterWeight.php',
+                    'data': {
+                        fromDate: fromDateI,
+                        toDate: toDateI,
+                        status: statusI,
+                        customer: customerNoI,
+                        supplier: supplierI,
+                        vehicle: vehicleNoI,
+                        invoice: invoiceNoI,
+                        batch: batchNoI,
+                        product: productSearchI,
+                        rawMaterial: rawMaterialI,
+                        project: projectI,
+                        plant: plantNoI,
+                        transactionId: transactionIdI,
+                        containerNo: containerNoI,
+                        sealNo: sealNoI,
+                        invDelPo: invDelPoI,
+                        company: companyI
+                    } 
+                },
+                'columns': [
+                    {
+                        // Add a checkbox with a unique ID for each row
+                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
+                        className: 'select-checkbox',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if (row.weight_type == 'Primer Mover + Container'){
+                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
+                            }else{
+                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
+                            }
+                        }
+                    },
+                    { data: 'company' },
+                    { data: 'transaction_id' },                
+                    { data: 'weight_type' },
+                    { data: 'transaction_status' },
+                    { data: 'gate', sortable: false },
+                    { data: 'lorry_plate_no1' },
+                    { data: 'gross_weight1' },
+                    { data: 'gross_weight1_date' },
+                    { data: 'gross_weight_by1' },
+                    { 
+                        data: 'id',
+                        class: 'action-button',
+                        render: function (data, type, row) {
+                            let buttons = `<div class="row g-1 d-flex">`;
+
+                            if (userRole == 'SADMIN' || userRole == 'ADMIN') {
+                                // if (row.is_complete != 'Y' ){
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                    </div>`;
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                                // }
+                            }else {
+                                if (row.is_complete != 'Y' ){
+                                    if (row.weight_type == 'Primer Mover + Container'){
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;    
+                                    }else{
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'N')" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;  
+                                    }
+                                }
+                            }
+
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Complete" type="button" id="complete${data}" onclick="complete('${data}')" class="btn btn-success btn-sm">
+                                    <i class="ri-task-fill"></i>
+                                </button>
+                            </div>`;
+
+                            if (row.is_approved == 'Y') {
+                                if (row.weight_type != 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                            }
+
+                            if (row.is_approved == 'N') {
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Approve" type="button" id="approve${data}" onclick="approve(${data})" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </div>`;
+                            }
+
+                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>`;
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                            }
+                                
+                            buttons += `</div>`;
+
+                            return buttons;
+                            // let dropdownMenu = '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">';
+
+                            // if (row.is_complete != 'Y' || userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') {
+                            //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>'; 
+                            // }
+
+                            // if (row.is_approved == 'Y') {
+                            //     dropdownMenu += '<li><a class="dropdown-item print-item-btn" id="print' + data + '" onclick="print(' + data + ')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li>';
+                            // }
+
+                            // if (row.is_approved == 'N') {
+                            //     dropdownMenu += '<li><a class="dropdown-item approval-item-btn" id="approve' + data + '" onclick="approve(' + data + ')"><i class="ri-check-fill align-bottom me-2 text-muted"></i> Approval</a></li>';
+                            // }
+
+                            // if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                            //     dropdownMenu += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>';
+                            // }
+
+                            // dropdownMenu += '</ul></div>';
+                            // return dropdownMenu;
+                        }
+                    }
+                ],
+                "drawCallback": function(settings) {
+                    $('#salesPending').text(settings.json.salesTotalPending);
+                    $('#salesComplete').text(settings.json.salesTotalComplete);
+                    $('#salesCancel').text(settings.json.salesTotalCancel);
+                    $('#purchasePending').text(settings.json.purchaseTotalPending);
+                    $('#purchaseComplete').text(settings.json.purchaseTotalComplete);
+                    $('#purchaseCancel').text(settings.json.purchaseTotalCancel);
+                    $('#localPending').text(settings.json.localTotalPending);
+                    $('#localComplete').text(settings.json.localTotalComplete);
+                    $('#localCancel').text(settings.json.localTotalCancel);
+                    $('#miscPending').text(settings.json.miscTotalPending);
+                    $('#miscComplete').text(settings.json.miscTotalComplete);
+                    $('#miscCancel').text(settings.json.miscTotalCancel);
+
+                    if(batchNoI == 'Y'){
+                        $('#lorryTableLabel').text('Completed Records (Lorry)');
+                    }
+                    else{
+                        $('#lorryTableLabel').text('Pending Records (Lorry)');
+                    }
+                } 
+            });
+        });
+
+        $('#miscCard').on('click',function(){
+            var fromDateI = $('#fromDateSearch').val();
+            var toDateI = $('#toDateSearch').val();
+            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+            var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+            var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
+            var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
+            var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
+            var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+            var projectI = $('#projectSearch').val() ? $('#projectSearch').val() : '';
+            var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var transactionIdI = 'Misc';
+            var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
+            var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
+            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+            var companyI = $('#companySearch').val() ? $('#companySearch').val() : '';
+
+            //Destroy the old Datatable
+            $("#weightTable").DataTable().clear().destroy();
+
+            //Create new Datatable
+            table = $("#weightTable").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                'processing': true,
+                'serverSide': true,
+                'searching': true,
+                'serverMethod': 'post',
+                'ajax': {
+                    'url':'php/filterWeight.php',
+                    'data': {
+                        fromDate: fromDateI,
+                        toDate: toDateI,
+                        status: statusI,
+                        customer: customerNoI,
+                        supplier: supplierI,
+                        vehicle: vehicleNoI,
+                        invoice: invoiceNoI,
+                        batch: batchNoI,
+                        product: productSearchI,
+                        rawMaterial: rawMaterialI,
+                        project: projectI,
+                        plant: plantNoI,
+                        transactionId: transactionIdI,
+                        containerNo: containerNoI,
+                        sealNo: sealNoI,
+                        invDelPo: invDelPoI,
+                        company: companyI
+                    } 
+                },
+                'columns': [
+                    {
+                        // Add a checkbox with a unique ID for each row
+                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
+                        className: 'select-checkbox',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if (row.weight_type == 'Primer Mover + Container'){
+                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
+                            }else{
+                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
+                            }
+                        }
+                    },
+                    { data: 'company' },
+                    { data: 'transaction_id' },                
+                    { data: 'weight_type' },
+                    { data: 'transaction_status' },
+                    { data: 'gate', sortable: false },
+                    { data: 'lorry_plate_no1' },
+                    { data: 'gross_weight1' },
+                    { data: 'gross_weight1_date' },
+                    { data: 'gross_weight_by1' },
+                    { 
+                        data: 'id',
+                        class: 'action-button',
+                        render: function (data, type, row) {
+                            let buttons = `<div class="row g-1 d-flex">`;
+
+                            if (userRole == 'SADMIN' || userRole == 'ADMIN') {
+                                // if (row.is_complete != 'Y' ){
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                    </div>`;
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                                // }
+                            }else {
+                                if (row.is_complete != 'Y' ){
+                                    if (row.weight_type == 'Primer Mover + Container'){
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;    
+                                    }else{
+                                        buttons += `
+                                        <div class="col-auto">
+                                            <button title="Weight Out" type="button" id="weightOut${data}" onclick="weightOut(${data}, 'N')" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-weight-hanging"></i>
+                                            </button>
+                                        </div>`;  
+                                    }
+                                }
+                            }
+
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Complete" type="button" id="complete${data}" onclick="complete('${data}')" class="btn btn-success btn-sm">
+                                    <i class="ri-task-fill"></i>
+                                </button>
+                            </div>`;
+
+                            if (row.is_approved == 'Y') {
+                                if (row.weight_type != 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                            }
+
+                            if (row.is_approved == 'N') {
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Approve" type="button" id="approve${data}" onclick="approve(${data})" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </div>`;
+                            }
+
+                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>`;
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                            }
+                                
+                            buttons += `</div>`;
+
+                            return buttons;
+                            // let dropdownMenu = '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">';
+
+                            // if (row.is_complete != 'Y' || userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') {
+                            //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>'; 
+                            // }
+
+                            // if (row.is_approved == 'Y') {
+                            //     dropdownMenu += '<li><a class="dropdown-item print-item-btn" id="print' + data + '" onclick="print(' + data + ')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li>';
+                            // }
+
+                            // if (row.is_approved == 'N') {
+                            //     dropdownMenu += '<li><a class="dropdown-item approval-item-btn" id="approve' + data + '" onclick="approve(' + data + ')"><i class="ri-check-fill align-bottom me-2 text-muted"></i> Approval</a></li>';
+                            // }
+
+                            // if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                            //     dropdownMenu += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>';
+                            // }
+
+                            // dropdownMenu += '</ul></div>';
+                            // return dropdownMenu;
+                        }
+                    }
+                ],
+                "drawCallback": function(settings) {
+                    $('#salesPending').text(settings.json.salesTotalPending);
+                    $('#salesComplete').text(settings.json.salesTotalComplete);
+                    $('#salesCancel').text(settings.json.salesTotalCancel);
+                    $('#purchasePending').text(settings.json.purchaseTotalPending);
+                    $('#purchaseComplete').text(settings.json.purchaseTotalComplete);
+                    $('#purchaseCancel').text(settings.json.purchaseTotalCancel);
+                    $('#localPending').text(settings.json.localTotalPending);
+                    $('#localComplete').text(settings.json.localTotalComplete);
+                    $('#localCancel').text(settings.json.localTotalCancel);
+                    $('#miscPending').text(settings.json.miscTotalPending);
+                    $('#miscComplete').text(settings.json.miscTotalComplete);
+                    $('#miscCancel').text(settings.json.miscTotalCancel);
+
+                    if(batchNoI == 'Y'){
+                        $('#lorryTableLabel').text('Completed Records (Lorry)');
+                    }
+                    else{
+                        $('#lorryTableLabel').text('Pending Records (Lorry)');
+                    }
+                } 
             });
         });
 
@@ -6638,6 +7509,32 @@ else{
                 $("#failBtn").click();
             }
         });
+    }
+
+    function complete(id){
+        $('#spinnerLoading').show();
+        if (confirm('Are you sure you want to complete this item?')) {
+            $.post('php/completeWeight.php', {userID: id}, function(data){
+                var obj = JSON.parse(data);
+                if(obj.status === 'success'){
+                    $('#spinnerLoading').hide();
+                    table.ajax.reload();
+                    $("#successBtn").attr('data-toast-text', obj.message);
+                    $("#successBtn").click();
+                }
+                else if(obj.status === 'failed'){
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', "Something Wrong");
+                    $("#failBtn").click();
+                }
+                $('#spinnerLoading').hide();
+            });
+        }
     }
     </script>
 </body>
