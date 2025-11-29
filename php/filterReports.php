@@ -75,6 +75,15 @@ if($_POST['plant'] != null && $_POST['plant'] != '' && $_POST['plant'] != '-'){
 	$searchQuery .= " and plant_code = '".$_POST['plant']."'";
 }
 
+if(isset($_POST['transactionId']) && $_POST['transactionId'] != null && $_POST['transactionId'] != '' && $_POST['transactionId'] != '-'){
+	if(is_array($_POST['transactionId'])){
+		$transactionIds = implode("','", $_POST['transactionId']);
+		$searchQuery .= " and transaction_id IN ('".$transactionIds."')";
+	}else{
+		$searchQuery .= " and transaction_id = '".$_POST['transactionId']."'";
+	}
+}
+
 if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
   if ($_POST['status'] == 'Complete'){
     $searchQuery .= " and is_complete = 'Y'";
