@@ -72,7 +72,7 @@
                     </div>
                 </li-->
                 <?php
-                    if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
+                    if($_SESSION["roles"] == 'SADMIN'){
                         echo '<!--li class="nav-item">
                             <a href="inventory.php" class="nav-link"><i class="mdi mdi-shipping-pallet"></i></i>'.$lang['t-inventory'].'</a>
                         </li--> 
@@ -122,6 +122,63 @@
                                     <li class="nav-item">
                                         <a href="location.php" class="nav-link">'.$lang['t-location'].'</a>
                                     </li>                                  
+                                    <!--li class="nav-item">
+                                        <a href="site.php" class="nav-link">'.$lang['t-site'].'</a>
+                                    </li-->    
+                                </ul>
+                            </div>
+                        </li>';
+                    }
+                    else if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN'){
+                        echo '<!--li class="nav-item">
+                            <a href="inventory.php" class="nav-link"><i class="mdi mdi-shipping-pallet"></i></i>'.$lang['t-inventory'].'</a>
+                        </li--> 
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#sidebarMasterdata" data-bs-toggle="collapse" role="button"
+                                aria-expanded="false" aria-controls="sidebarMasterdata">
+                                <i class="ri-pages-line"></i> <span>'.$lang['t-masterdata'].'</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="sidebarMasterdata">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="customer.php" class="nav-link">'.$lang['t-customer'].'</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="destination.php" class="nav-link">'.$lang['t-destination'].'</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="product.php" class="nav-link">'.$lang['t-product'].'</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="rawMaterial.php" class="nav-link">'.$lang['t-raw-mat'].'</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="supplier.php" class="nav-link">'.$lang['t-supplier'].'</a>
+                                    </li>       
+                                    <li class="nav-item">
+                                        <a href="vehicle.php" class="nav-link">'.$lang['t-vehicle'].'</a>
+                                    </li>             
+                                    <li class="nav-item">
+                                        <a href="transporter.php" class="nav-link">'.$lang['t-transporter'].'</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="transporterCap.php" class="nav-link">'.$lang['t-transporter-cap'].'</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="project.php" class="nav-link">'.$lang['t-project'].'</a>
+                                    </li>
+                                    <!--li class="nav-item">
+                                        <a href="unit.php" class="nav-link">'.$lang['t-unit'].'</a>
+                                    </li-->                           
+                                    <!--li class="nav-item">
+                                        <a href="agent.php" class="nav-link">'.$lang['t-agent'].'</a>
+                                    </li--> 
+                                    <li class="nav-item">
+                                        <a href="plant.php" class="nav-link">'.$lang['t-plant'].'</a>
+                                    </li>  
+                                    <!--li class="nav-item">
+                                        <a href="location.php" class="nav-link">'.$lang['t-location'].'</a>
+                                    </li-->                                  
                                     <!--li class="nav-item">
                                         <a href="site.php" class="nav-link">'.$lang['t-site'].'</a>
                                     </li-->    
