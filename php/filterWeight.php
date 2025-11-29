@@ -320,7 +320,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     "destination_code"=>$row['destination_code'],
     "destination"=>$row['destination'],
     "remarks"=>$row['remarks'],
-    "gate"=>(($row['indicator_id'] == 'EX2001') ? '1' : (($row['indicator_id'] == 'D2008') ? '2' : '')),
+    "gate"=>searchGateByLocationId($row['indicator_id'], $db),
     "gross_weight1"=>$row['gross_weight1'],
     "gross_weight1_date"=>$row['gross_weight1_date'],
     "gross_weight_by1"=>$row['gross_weight_by1'],

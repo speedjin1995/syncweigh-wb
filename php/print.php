@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'db_connect.php';
+require_once 'requires/lookup.php';
 include 'phpqrcode/qrlib.php';
 
 $compids = '1';
@@ -493,9 +494,9 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
                                     <td style="vertical-align: top; width:15%;">
                                         <p style="margin-top: 5px; font-size: 14px;">
-                                            <span style="margin-right: 10px">Gate : '.(($row['indicator_id'] == 'EX2001') ? '1' : (($row['indicator_id'] == 'D2008') ? '2' : '')).'</span>
+                                            <span style="margin-right: 15px">'.searchGateByLocationId($row['indicator_id'], $db).'</span>
                                             <span>In &nbsp;&nbsp;<span style="margin-left: 12px">:&nbsp;</span>'.formatWeight($row['gross_weight1']).'kg</span><br>
-                                            <span style="margin-right: 10px">Gate : '.(($row['indicator_id_2'] == 'EX2001') ? '1' : (($row['indicator_id_2'] == 'D2008') ? '2' : '')).'</span>
+                                            <span style="margin-right: 15px">'.searchGateByLocationId($row['indicator_id_2'], $db).'</span>
                                             <span>Out &nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.formatWeight($row['tare_weight1']).'kg</span><br>
                                         </p>
                                     </td>
