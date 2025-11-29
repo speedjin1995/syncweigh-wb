@@ -19,6 +19,7 @@ $unit = $db->query("SELECT * FROM Unit WHERE status = '0'");
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0'");
 $company2 = $db->query("SELECT * FROM Company WHERE status = '0' ORDER BY name ASC");
 $projects = $db->query("SELECT * FROM Projects WHERE status = '0' ORDER BY project ASC");
+$transactionIds = $db->query("SELECT * FROM Weight WHERE status = '0' ORDER BY transaction_id ASC");
 
 $plantName = '-';
 
@@ -71,6 +72,11 @@ else{
 
         .modal-header {
             padding: var(1rem, 1rem) !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice,
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #000 !important;
         }
     </style>
 </head>
@@ -275,6 +281,16 @@ else{
                                                                 <option selected>-</option>
                                                                 <?php while($rowCompF=mysqli_fetch_assoc($company2)){ ?>
                                                                     <option value="<?=$rowCompF['id'] ?>"><?=$rowCompF['name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div><!--end col-->
+                                                    <div class="col-3">
+                                                        <div class="mb-3">
+                                                            <label for="transactionIdSearch" class="form-label">Transaction Id</label>
+                                                            <select id="transactionIdSearch" class="form-select select2" multiple>
+                                                                <?php while($rowTransId=mysqli_fetch_assoc($transactionIds)){ ?>
+                                                                    <option value="<?=$rowTransId['transaction_id'] ?>"><?=$rowTransId['transaction_id'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -585,6 +601,9 @@ else{
             defaultDate: today
         });
 
+        // Apply custom styling to Select2 elements in search bar
+        resetSelect2Css();
+
         $('#selectAllCheckbox').on('change', function() {
             var checkboxes = $('#weightTable tbody input[type="checkbox"]');
             checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
@@ -606,6 +625,7 @@ else{
         var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
         var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
         var companyI = $('#companySearch').val() ? $('#companySearch').val() : '';
+        var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
 
         var table = $("#weightTable").DataTable({
             "responsive": true,
@@ -632,7 +652,8 @@ else{
                     plant: plantI,
                     status: statusI,
                     invDelPo: invDelPoI,
-                    company: companyI
+                    company: companyI,
+                    transactionId: transactionIdI
                 } 
             },
             'columns': [
@@ -692,6 +713,7 @@ else{
             var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
             var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
             var companyI = $('#companySearch').val() ? $('#companySearch').val() : '';
+            var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
 
             //Destroy the old Datatable
             $("#weightTable").DataTable().clear().destroy();
@@ -722,7 +744,8 @@ else{
                         plant: plantI,
                         status: statusI,
                         invDelPo: invDelPoI,
-                        company: companyI
+                        company: companyI,
+                        transactionId: transactionIdI
                     } 
                 },
                 'columns': [
