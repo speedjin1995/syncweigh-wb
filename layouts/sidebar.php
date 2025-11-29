@@ -200,9 +200,6 @@
                                     <a href="portSetup.php" class="nav-link"><?=$languageArray['port_setup_code'][$language]?></a>
                                 </li> 
                                 <li class="nav-item">
-                                    <a href="cameraSetup.php" class="nav-link"><?=$languageArray['camera_setup_code'][$language]?></a>
-                                </li> 
-                                <li class="nav-item">
                                     <a href="myProfile.php" class="nav-link"><?=$languageArray['profile_code'][$language]?></a>
                                 </li> 
                                 <li class="nav-item">
