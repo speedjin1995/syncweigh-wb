@@ -118,7 +118,10 @@
                                     </li--> 
                                     <li class="nav-item">
                                         <a href="plant.php" class="nav-link">'.$lang['t-plant'].'</a>
-                                    </li>                                    
+                                    </li>  
+                                    <li class="nav-item">
+                                        <a href="location.php" class="nav-link">'.$lang['t-location'].'</a>
+                                    </li>                                  
                                     <!--li class="nav-item">
                                         <a href="site.php" class="nav-link">'.$lang['t-site'].'</a>
                                     </li-->    
@@ -178,9 +181,9 @@
                                     }
                                 ?>
                                 
-                                <li class="nav-item">
+                                <!--li class="nav-item">
                                     <a href="portSetup.php" class="nav-link"><?=$lang['t-portSetup']?></a>
-                                </li> 
+                                </li--> 
                                 <li class="nav-item">
                                     <a href="myProfile.php" class="nav-link"><?=$lang['t-myProfile']?></a>
                                 </li> 

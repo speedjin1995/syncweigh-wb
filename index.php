@@ -7,8 +7,9 @@ require_once "php/db_connect.php";
 $user = $_SESSION['id'];
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
-$stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
-$stmt->bind_param('s', $user);
+$locationId = $_SESSION['location_id'];
+$stmt = $db->prepare("SELECT * from Location WHERE id = ?");
+$stmt->bind_param('s', $locationId);
 $stmt->execute();
 $result = $stmt->get_result();
 //$role = 'NORMAL';
@@ -1022,13 +1023,13 @@ else{
                                                         <input type="hidden" id="rawMaterialCode" name="rawMaterialCode">
                                                         <input type="hidden" id="siteCode" name="siteCode">
                                                         <input type="hidden" id="id" name="id">  
-                                                        <input type="hidden" id="weighbridge" name="weighbridge" value="Weigh1">
+                                                        <input type="hidden" id="weighbridge" name="weighbridge" value="<?=$indicator ?>">
                                                         <input type="hidden" id="previousRecordsTag" name="previousRecordsTag">
                                                         <input type="hidden" id="grossWeightBy1" name="grossWeightBy1">
                                                         <input type="hidden" id="tareWeightBy1" name="tareWeightBy1">
                                                         <input type="hidden" id="grossWeightBy2" name="grossWeightBy2">
                                                         <input type="hidden" id="tareWeightBy2" name="tareWeightBy2">
-                                                        <input type="hidden" id="indicatorId" name="indicatorId" value="<?=$indicator ?>">
+                                                        <input type="hidden" id="indicatorId" name="indicatorId" value="<?=$locationId ?>">
                                                         <input type="hidden" id="isWeightOut" name="isWeightOut">
 
                                                         <div style="display:none;">
@@ -5301,7 +5302,7 @@ else{
         $('#addModal').find('#reduceWeight').val("");
         $('#addModal').find('#weightDifference').val("");
         $('#addModal').find('#manualWeightNo').trigger('click');
-        $('#addModal').find('#weighbridge').val("");
+        //$('#addModal').find('#weighbridge').val("");
         $('#addModal').find('#productDescription').val("");
         $('#addModal').find('#productHigh').val("");
         $('#addModal').find('#productLow').val("");
@@ -5818,8 +5819,8 @@ else{
                             $('#manualWeightNo').trigger('click');
                         }
 
-                        $('#addModal').find('#indicatorId').val(obj.message.indicator_id);
-                        $('#addModal').find('#weighbridge').val(obj.message.weighbridge_id);
+                        //$('#addModal').find('#indicatorId').val(obj.message.indicator_id);
+                        //$('#addModal').find('#weighbridge').val(obj.message.weighbridge_id);
                         $('#addModal').find('#indicatorId2').val(obj.message.indicator_id_2);
                         $('#addModal').find('#productDescription').val(obj.message.product_description);
                         $('#addModal').find('#unitPrice').val(obj.message.unit_price);
@@ -6217,8 +6218,8 @@ else{
                             $('#manualWeightNo').trigger('click');
                         }
 
-                        $('#addModal').find('#indicatorId').val(obj.message.indicator_id);
-                        $('#addModal').find('#weighbridge').val(obj.message.weighbridge_id);
+                        //$('#addModal').find('#indicatorId').val(obj.message.indicator_id);
+                        //$('#addModal').find('#weighbridge').val(obj.message.weighbridge_id);
                         $('#addModal').find('#indicatorId2').val(obj.message.indicator_id_2);
                         $('#addModal').find('#productDescription').val(obj.message.product_description);
                         $('#addModal').find('#unitPrice').val(obj.message.unit_price);

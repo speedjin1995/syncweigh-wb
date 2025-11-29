@@ -17,8 +17,6 @@ $username_err = $password_err = "";
 
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-
     // Check if username is empty
     if (empty(trim($_POST["username"]))) {
         $username_err = "Please enter username.";
@@ -89,7 +87,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
                             else{
                                 // Redirect user to welcome page
-                                header("location: index.php");
+                                //header("location: index.php");
+                                header("location: select_location.php");
                             }
                         } else {
                             // Display an error message if password is not valid

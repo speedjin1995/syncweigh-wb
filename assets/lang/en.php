@@ -26,6 +26,7 @@
     $lang["t-agent"]="Sales Representative";
     $lang["t-raw-mat"]="Purchase Product";
     $lang["t-site"]="Site";
+    $lang["t-location"]="Location";
     $lang["t-plant"]="Plant";
     $lang["t-project"]="Projects";
 

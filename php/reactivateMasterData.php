@@ -688,6 +688,37 @@ if(isset($_POST['userID'])){
 				)
 			);
 		}
+	}elseif ($type == 'Location'){
+		if ($stmt2 = $db->prepare("UPDATE Location SET status=? WHERE id=?")) {
+			$stmt2->bind_param('ss', $reactivate, $id);
+			
+			if($stmt2->execute()){
+				echo json_encode(
+					array(
+						"status"=> "success", 
+						"message"=> "Reactivated"
+					)
+				);
+	
+				$stmt2->close();
+				$db->close();
+			} else{
+				echo json_encode(
+					array(
+						"status"=> "failed", 
+						"message"=> $stmt2->error
+					)
+				);
+			}
+		} 
+		else{
+			echo json_encode(
+				array(
+					"status"=> "failed", 
+					"message"=> "Somethings wrong"
+				)
+			);
+		}
 	}
 } 
 else{
