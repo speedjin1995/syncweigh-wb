@@ -31,8 +31,22 @@ while ($row = mysqli_fetch_assoc($result)) {
 
     <div class="auth-page-content" style="padding-bottom: 80px;">
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="text-center mt-sm-5 mb-4 text-white-50" style="margin-bottom: 5px !important;">
+                        <div>
+                            <a href="index.php" class="d-inline-block auth-logo">
+                                <img src="assets/images/logo-lg.png" alt="" height="20" style="width: 50%; height: 100%;">
+                            </a>
+                        </div>
+                        <p class="mt-3 fs-15 fw-medium" style="display: none;"> </p>
+                        <p class="mt-3 fs-15 fw-medium" style="display: none;">Synctronix Weighing System</p>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
 
+            <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-5">
                     <div class="card shadow border-2">
                         <div class="card-body p-4">
