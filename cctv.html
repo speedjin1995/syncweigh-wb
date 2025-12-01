@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Hikvision Fullscreen Stream + Capture</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --accent:#00b2ff;
+      --panel: rgba(255,255,255,0.06);
+      --thumb-size:120px;
+    }
+    html,body{
+      height:100%;
+      margin:0;
+      background:var(--bg);
+      font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;
+      color:#fff;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .app {
+      display:flex;
+      flex-direction:column;
+      height:100%;
+      width:100%;
+      box-sizing:border-box;
+    }
+
+    /* header */
+    .topbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 14px;
+      gap:10px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-bottom:1px solid rgba(255,255,255,0.04);
+    }
+    .title { font-size:18px; font-weight:600; }
+    .controls { display:flex; gap:8px; align-items:center; }
+
+    /* main fullscreen video area */
+    .stage {
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+    }
+
+    #stream {
+      max-width:100%;
+      max-height:100%;
+      width:100%;
+      height:auto;
+      object-fit:contain;
+      background:#000;
+      display:block;
+    }
+
+    .overlay-controls {
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:28px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      z-index:50;
+    }
+
+    .btn {
+      background:var(--panel);
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.06);
+      padding:10px 14px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+    }
+    .btn:active{ transform:translateY(1px); }
+
+    .btn.capture { background: linear-gradient(90deg, #ff7a59, #ffb86b); color:#000; }
+
+    /* gallery */
+    .gallery {
+      border-top:1px solid rgba(255,255,255,0.03);
+      padding:8px;
+      background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));
+      display:flex;
+      gap:8px;
+      align-items:center;
+      overflow-x:auto;
+      min-height: calc(var(--thumb-size) + 16px);
+    }
+    .thumb {
+      width:var(--thumb-size);
+      height:var(--thumb-size);
+      min-width:var(--thumb-size);
+      background:#111;
+      border-radius:6px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.06);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      cursor:pointer;
+    }
+    .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+    .thumb .meta {
+      position:absolute;
+      inset:auto 6px 6px 6px;
+      font-size:12px;
+      color:#fff;
+      text-shadow:0 1px 2px rgba(0,0,0,0.7);
+      display:flex;
+      justify-content:space-between;
+      gap:6px;
+    }
+
+    /* modal */
+    .modal {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.8);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:200;
+    }
+    .modal.open { display:flex; }
+    .modal img { max-width:95%; max-height:90%; border-radius:6px; box-shadow:0 6px 30px rgba(0,0,0,0.7); }
+
+    .hint { font-size:13px; color:rgba(255,255,255,0.7); margin-left:8px; }
+    .small { font-size:12px; color:rgba(255,255,255,0.6); }
+
+    /* responsive tweaks */
+    @media (max-width:700px){
+      .overlay-controls { bottom:18px; }
+      :root { --thumb-size:88px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="title">Hikvision — Fullscreen Stream & Capture</div>
+      <div class="controls">
+        <div class="small">Stream source: HTTP preview</div>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <!-- Change USERNAME, PASSWORD, CAMERA_IP below as needed -->
+      <!-- Many cameras provide this endpoint; some require firmware-specific path.
+           Example:
+           http://USERNAME:PASSWORD@192.168.0.25/ISAPI/Streaming/channels/101/httpPreview
+      -->
+      <img id="stream" crossorigin="anonymous" alt="Camera Stream" 
+           src="http://admin:@L@mpard1995@192.168.0.25/ISAPI/Streaming/channels/101/httpPreview" />
+
+      <div class="overlay-controls">
+        <button class="btn capture" id="captureBtn">📸 Capture</button>
+        <button class="btn" id="downloadAllBtn">⬇️ Download All (zip)</button>
+        <div class="hint" id="status">Ready</div>
+      </div>
+    </div>
+
+    <div class="gallery" id="gallery" aria-live="polite"></div>
+  </div>
+
+  <!-- hidden canvas for capture -->
+  <canvas id="scratch" style="display:none;"></canvas>
+
+  <!-- modal -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <img id="modalImg" alt="Captured large view" />
+  </div>
+
+<script>
+(function(){
+  const streamEl = document.getElementById('stream');
+  const captureBtn = document.getElementById('captureBtn');
+  const gallery = document.getElementById('gallery');
+  const scratch = document.getElementById('scratch');
+  const status = document.getElementById('status');
+  const modal = document.getElementById('modal');
+  const modalImg = document.getElementById('modalImg');
+  const downloadAllBtn = document.getElementById('downloadAllBtn');
+
+  // store captured images in-memory
+  const captures = [];
+
+  // Utility: create thumbnail element
+  function addThumbnail(dataUrl, ts){
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    const img = document.createElement('img');
+    img.src = dataUrl;
+    img.alt = 'capture-'+ts;
+    div.appendChild(img);
+
+    // meta overlay with download icon
+    const meta = document.createElement('div');
+    meta.className = 'meta small';
+    const time = new Date(ts).toLocaleString();
+    const dl = document.createElement('a');
+    dl.href = dataUrl;
+    dl.download = `capture-${ts}.png`;
+    dl.title = 'Download';
+    dl.innerText = '⬇';
+    meta.innerHTML = `<span>${time}</span>`;
+    meta.appendChild(dl);
+    div.appendChild(meta);
+
+    // click to open modal
+    div.addEventListener('click', () => {
+      modalImg.src = dataUrl;
+      modal.classList.add('open');
+    });
+
+    gallery.insertBefore(div, gallery.firstChild); // newest left
+  }
+
+  // Capture logic: draw current <img> to canvas
+  function captureFrame(){
+    // If stream not loaded, show error
+    if (!streamEl || streamEl.naturalWidth === 0) {
+      status.textContent = 'Stream not ready — try again';
+      return;
+    }
+
+    const w = streamEl.naturalWidth;
+    const h = streamEl.naturalHeight;
+
+    scratch.width = w;
+    scratch.height = h;
+    const ctx = scratch.getContext('2d');
+
+    try {
+      ctx.drawImage(streamEl, 0, 0, w, h);
+    } catch(err) {
+      status.textContent = 'Capture failed (CORS/stream type?)';
+      console.error('drawImage error', err);
+      return;
+    }
+
+    const dataUrl = scratch.toDataURL('image/png');
+    const ts = Date.now();
+    captures.push({ts, dataUrl});
+    addThumbnail(dataUrl, ts);
+    status.textContent = 'Captured';
+    // brief flash effect
+    captureBtn.animate([{opacity:1},{opacity:0.6},{opacity:1}], {duration:250});
+  }
+
+  // Hook up capture button
+  captureBtn.addEventListener('click', captureFrame);
+
+  // modal close on click
+  modal.addEventListener('click', () => {
+    modal.classList.remove('open');
+    modalImg.src = '';
+  });
+
+  // Helpful: allow pressing 'c' to capture
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'c' || e.key === 'C') captureFrame();
+  });
+
+  // Optional: download all images as individual files in a zip (requires JSZip)
+  downloadAllBtn.addEventListener('click', async () => {
+    if (captures.length === 0) {
+      alert('No captures yet');
+      return;
+    }
+    // try to use JSZip if loaded; otherwise prompt manual downloads
+    if (window.JSZip) {
+      status.textContent = 'Creating zip...';
+      const zip = new JSZip();
+      captures.forEach((c, idx) => {
+        const base64 = c.dataUrl.split(',')[1];
+        zip.file(`capture-${c.ts}.png`, base64, {base64:true});
+      });
+      const blob = await zip.generateAsync({type:'blob'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'captures.zip';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      status.textContent = 'Ready';
+    } else {
+      // fallback: open each capture in new tab for manual download
+      captures.forEach(c => window.open(c.dataUrl));
+      status.textContent = 'Opened images in new tabs';
+    }
+  });
+
+  // show basic loading / error status for the img stream
+  streamEl.addEventListener('load', () => {
+    status.textContent = 'Live';
+  });
+  streamEl.addEventListener('error', (e) => {
+    status.textContent = 'Stream error — check URL / credentials / CORS';
+    console.error('Stream <img> error', e);
+  });
+
+  // auto-focus modal close via ESC
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') modal.classList.remove('open');
+  });
+
+  // initial hint
+  status.textContent = 'Connecting... (replace USERNAME:PASSWORD and camera IP if needed)';
+})();
+</script>
+
+<!-- Optional: include JSZip if you want "Download All" zipped (uncomment to use) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+
+</body>
+</html>

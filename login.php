@@ -126,12 +126,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php include 'layouts/head-main.php'; ?>
 
     <head>
-        
         <title>Sign In | Synctronix - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
-
         <?php include 'layouts/head-css.php'; ?>
-
     </head>
 
     <?php include 'layouts/body.php'; ?>

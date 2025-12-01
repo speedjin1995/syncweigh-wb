@@ -114,6 +114,22 @@ if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
 else{
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0'");
 }
+
+$cameras = [];
+$stmtCam = $db->prepare("SELECT serial_number FROM Camera WHERE deleted = 0 AND active = 'Y'");
+$stmtCam->execute();
+$resultCam = $stmtCam->get_result();
+$count = 1;
+
+while ($rowCam = $resultCam->fetch_assoc()) {
+    $sn = $rowCam['serial_number'];
+    $cameras[] = [
+        'id' => "video-container$count",
+        'url' => "ezopen://open.ezviz.com/$sn/1.live"
+    ];
+    
+    $count++;
+}
 ?>
 
 <head>
@@ -859,20 +875,30 @@ else{
                                                                                                     <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
                                                                                                         <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
                                                                                                     <?php } ?>
-                                                                                                </select>                                                                                          
+                                                                                                </select>  
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="destination" class="col-sm-4 col-form-label">Destination</label>
-                                                                                            <div class="col-sm-8">
+                                                                                            <label for="destination" class="col-sm-3 col-form-label">Destination</label>
+                                                                                            <div class="col-sm-9">
                                                                                                 <select class="form-select select2" id="destination" name="destination" required>
                                                                                                     <option selected="-">-</option>
                                                                                                     <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
                                                                                                         <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
                                                                                                     <?php } ?>
                                                                                                 </select>            
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-6 col-lg-6 mb-3" id="replacementContainerDisplay" style="display:none">
+                                                                                        <div class="row">
+                                                                                            <label for="replacementContainer" class="col-sm-3 col-form-label">New Empty Entrance Bin</label>
+                                                                                            <div class="col-sm-9">
+                                                                                                <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -889,14 +915,8 @@ else{
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="replacementContainerDisplay" style="display:none">
-                                                                                        <div class="row">
-                                                                                            <label for="replacementContainer" class="col-sm-4 col-form-label">New Empty Entrance Bin</label>
-                                                                                            <div class="col-sm-8">
-                                                                                                <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
                                                                                     <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                         <div class="row">
                                                                                             <label for="otherRemarks" class="col-sm-2 col-form-label" style="width: 12.66666667%;">Other Remarks</label>
@@ -1115,15 +1135,7 @@ else{
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-xxl-4 col-lg-4" style="display: none;">
-                                                                        <div class="row">
-                                                                            <label for="otherRemarks" class="col-sm-2 col-form-label">Other Remarks</label>
-                                                                            <div class="col-sm-10">
-                                                                                <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-xxl-4 col-lg-4" id="normalCard">
+                                                                    <div class="col-xxl-4 col-lg-4" id="priceCard" style="display:none;">
                                                                         <div class="card bg-light" style="min-height: 385px;">
                                                                             <div class="card-body">
                                                                                 <div class="row mb-3" id="divOrderWeight">
@@ -1180,12 +1192,6 @@ else{
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>                                                                                                                                  
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-xxl-4 col-lg-4" id="normalCard">
-                                                                        <div class="card bg-light" style="min-height: 385px;">
-                                                                            <div class="card-body">
                                                                                 <div class="row mb-3" id="totalPriceDisplay">
                                                                                     <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
                                                                                     <div class="col-sm-8">
@@ -1195,18 +1201,7 @@ else{
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="row mb-3">
-                                                                                    <label for="destination" class="col-sm-4 col-form-label">Destination</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="destination" name="destination" required>
-                                                                                            <option selected="-">-</option>
-                                                                                            <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
-                                                                                                <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>            
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>                                                                                                                                  
+                                                                            </div>                 
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1844,6 +1839,9 @@ else{
     var tareOutgoingDatePicker2; 
     var rowCount = $("#productTable").find(".details").length;
     var player = null;
+    var player2 = null;
+    var player3 = null;
+    var player4 = null;
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -2907,13 +2905,15 @@ else{
                 });
             }
         });
+        
+        initAllCameras();
 
-        if (player) {
+        /*if (player) {
             destroy();
         }
 
-        /*player = new EZUIKit.EZUIKitPlayer({
-            id: "video-container1", // 视频容器ID
+        player = new EZUIKit.EZUIKitPlayer({
+            id: "video-container1, video-container2", // 视频容器ID
             accessToken: "at.dfjpxs2b541md3mmbng38uh240mkue0b-3uv8v3j7rg-07txnrv-3ffe0pydp",
             url: "ezopen://open.ezviz.com/BC6848896/1.live",
             template: "pcLive", // simple: 极简版; pcLive: 预览; pcRec: 回放; security: 安防版; voice: 语音版;
@@ -4746,7 +4746,7 @@ else{
         ?>
     });
 
-    function destroy() {
+    function destroy(player) {
         if (player) {
             player.destroy();
         }
@@ -5527,6 +5527,129 @@ else{
             console.warn("Error posting:", message, status, err);
         }
         });
+    }
+    
+    // Step 1: Fetch access token
+    async function getAccessToken() {
+      const response = await fetch("https://open.ezvizlife.com/api/lapp/token/get", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          appKey: "d8e5fb039e214702b698857e8ae8cb06",
+          appSecret: "9d85b3a9379949ecba28b54c3f9eb747",
+        }),
+      });
+    
+      const data = await response.json();
+      console.log("Token response:", data);
+    
+      if (data.code === "200" && data.data.accessToken) {
+        return data.data.accessToken;
+      } else {
+        throw new Error("Failed to get access token");
+      }
+    }
+    
+    // Step 2: Create player for each camera
+    function createPlayer(containerId, token, cameraUrl) {
+      // ✅ Safely destroy if an EZUIKitPlayer instance already exists
+      if (window[containerId] && typeof window[containerId].destroy === "function") {
+        try {
+          window[containerId].destroy();
+        } catch (err) {
+          console.warn(`Failed to destroy old player for ${containerId}:`, err);
+        }
+      }
+      
+      // ✅ Initialize new player
+      const player = new EZUIKit.EZUIKitPlayer({
+        id: containerId,
+        accessToken: token,
+        url: cameraUrl,
+        template: "pcLive",
+        width: 400,
+        height: 200,
+        language: "en",
+        env: { domain: "https://isgpopen.ezvizlife.com" },
+        //streamInfoCBType: 1,
+        staticPath: "cctv/ezuikit_static",
+        loggerOptions: {
+          level: "INFO",
+          name: "ezuikit",
+          showTime: true,
+        },
+        handleError: (error) => {
+            console.error(`${containerId} -> CCTV Error:`, error);
+            $('.loading').hide();
+
+            // replace video with UI message
+            document.getElementById(containerId).innerHTML = `
+                <div style="padding:25px;color:#ff3333;font-size:14px;text-align:center">
+                    📡 Camera offline / not reachable<br>
+                    <small>${error.msg || 'Please check device, WiFi or network'}</small>
+                </div>
+            `;
+        },
+      });
+    
+      // ✅ Save reference globally
+      window[containerId] = player;
+    
+      // Optional event listeners
+      player.eventEmitter.on(
+        EZUIKit.EZUIKitPlayer.EVENTS.firstFrameDisplay,
+        () => console.log(`${containerId} first frame displayed`)
+      );
+    
+      player.eventEmitter.on(
+        EZUIKit.EZUIKitPlayer.EVENTS.videoInfo,
+        (info) => console.log(`${containerId} video info:`, info)
+      );
+      
+      player.eventEmitter.on(
+          EZUIKit.EZUIKitPlayer.EVENTS.playerError,
+          (err) => {
+              debugger;
+            console.error("playerError:", err);
+            showCameraError(containerId, err.msg || "Playback error");
+            $('.loading').hide();
+          }
+        );
+        
+        player.eventEmitter.on(
+          EZUIKit.EZUIKitPlayer.EVENTS.connectFail,
+          (err) => {
+              debugger;
+            console.error("connectFail:", err);
+            showCameraError(containerId, err.msg || "Connection failed");
+            $('.loading').hide();
+          }
+        );
+    }
+    
+    // Step 3: Initialize all cameras
+    async function initAllCameras() {
+      try {
+        const token = await getAccessToken();
+    
+        cameras = <?= json_encode($cameras) ?>;
+        cameras.forEach((cam) => createPlayer(cam.id, token, cam.url));
+        
+        $('.loading').hide();
+
+    
+      } catch (error) {
+          $('.loading').hide();
+        console.error("Error initializing cameras:", error);
+      }
+    }
+    
+    function showCameraError(id, msg) {
+      document.getElementById(id).innerHTML = `
+        <div style="padding:20px;text-align:center;color:#ff3737;">
+            🚨 ${msg}<br>
+            <small>Please check device WiFi or network</small>
+        </div>`;
     }
     </script>
 </body>

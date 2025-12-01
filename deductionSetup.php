@@ -40,6 +40,9 @@ if ($row = $result->fetch_assoc()) {
     $F11 = $row['F11'] ?? 0;
     $F12 = $row['F12'] ?? 0;
     $autoData = $row['auto_data'] ?? null;
+    $defaultRangeMin = $row['default_range_min'] ?? 0;
+    $defaultRangeMax = $row['default_range_max'] ?? 0;
+    $defaultWeight = $row['default_range_weight'] ?? 0;
 }
 
 // Cleanup
@@ -80,9 +83,10 @@ $result->free();
                                             <div class="d-flex align-items-center">
                                                 <label for="statusSwitch" class="col-form-label me-2">Mode</label>
                                                 <select id="statusSwitch" name="statusSwitch" class="form-select select2" style="width: 150px;">
-                                                    <option value="Manual" <?php if ($status === 'Manual') echo 'selected'; ?>>Manual</option>
-                                                    <option value="Auto" <?php if ($status === 'Auto') echo 'selected'; ?>>Auto</option>
-                                                    <option value="Disable" <?php if ($status === 'Disable') echo 'selected'; ?>>Disable</option>
+                                                    <option value="Manual" <?php if ($status == 'Manual') echo 'selected'; ?>>Manual</option>
+                                                    <option value="Auto" <?php if ($status == 'Auto') echo 'selected'; ?>>Auto</option>
+                                                    <option value="Default" <?php if ($status == 'Default') echo 'selected'; ?>>Default</option>
+                                                    <option value="Disable" <?php if ($status == 'Disable') echo 'selected'; ?>>Disable</option>
                                                 </select>
                                             </div>
 
@@ -138,6 +142,26 @@ $result->free();
                                                         </thead>
                                                         <tbody id="autoTable"></tbody>
                                                     </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Grid for Default -->
+                                        <div id="defaultView" style="display: none;">
+                                            <div class="card bg-light p-3">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-4">
+                                                        <label class="form-label fw-bold mb-0">Range</label>
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <input type="number" id="defaultRangeMin" name="defaultRangeMin" class="form-control me-2" placeholder="Min" min="0" style="width: 45%;" value="<?= htmlspecialchars($defaultRangeMin) ?>">
+                                                            <span class="mx-1 fw-bold">–</span>
+                                                            <input type="number" id="defaultRangeMax" name="defaultRangeMax" class="form-control ms-2" placeholder="Max" min="0" style="width: 45%;" value="<?= htmlspecialchars($defaultRangeMax) ?>">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="defaultWeight" class="form-label fw-bold mb-0">Enter Weight (kg)</label>
+                                                        <input type="number" id="defaultWeight" name="defaultWeight" class="form-control mt-1" placeholder="Enter weight" value="<?= htmlspecialchars($defaultWeight) ?>">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -361,16 +385,25 @@ $result->free();
                         $('#autoView').hide();
                         $('#autoNewBtn').addClass('d-none');
                         $('#buttonRow').show();
+                        $('#defaultView').hide();
                     } else if (selectedValue == 'Auto') {
                         $('#manualView').hide();
                         $('#autoView').show();
                         $('#autoNewBtn').removeClass('d-none');
                         $('#buttonRow').show();
+                        $('#defaultView').hide();
+                    } else if (selectedValue == 'Default') {
+                        $('#manualView').hide();
+                        $('#autoView').hide();
+                        $('#autoNewBtn').addClass('d-none');
+                        $('#buttonRow').hide();
+                        $('#defaultView').show();
                     } else {
                         $('#manualView').hide();
                         $('#autoView').hide();
                         $('#autoNewBtn').addClass('d-none');
                         $('#buttonRow').hide();
+                        $('#defaultView').hide();
                     }
                 });
 
@@ -383,58 +416,19 @@ $result->free();
                     } else if (mode == 'Auto') {
                         // Clear the autoTable body
                         $('#autoTable').empty();
+                    } else if (mode == 'Default') {
+                        // Clear default range and weight inputs
+                        $('#defaultRangeMin').val('');
+                        $('#defaultRangeMax').val('');
+                        $('#defaultWeight').val('');
                     }
                 });
 
                 // Initialize view based on current status
                 $('#statusSwitch').val(status).trigger('change');
 
-                // Function to load existing auto data
-                function loadAutoData() {
-                    if (autoData && autoData.length > 0) {
-                        $('#autoTable').empty(); // Clear existing rows
-                        rowCount = 0;
-                        
-                        autoData.forEach(function(item, index) {
-                            var template = $("#autoRowTemplate").html();
-                            var newRow = $(template);
-                            
-                            // Set unique IDs for the new row
-                            newRow.find('.details:last').attr("id", "detail" + rowCount);
-                            newRow.find('.details:last').attr("data-index", rowCount);
-                            newRow.find('#remove:last').attr("id", "remove" + rowCount);
-
-                            newRow.find('input[name="rangeFrom"]').attr('id', 'rangeFrom' + rowCount);
-                            newRow.find('input[name="rangeTo"]').attr('id', 'rangeTo' + rowCount);
-                            newRow.find('input[name="negativeKg"]').attr('id', 'negativeKg' + rowCount);
-                            newRow.find('input[name="positiveKg"]').attr('id', 'positiveKg' + rowCount);
-                            newRow.find('input[name="negativePerc"]').attr('id', 'negativePerc' + rowCount);
-                            newRow.find('input[name="positivePerc"]').attr('id', 'positivePerc' + rowCount);
-                            
-                            // Set array names for form submission
-                            newRow.find('input[name="rangeFrom"]').attr('name', 'rangeFrom[' + rowCount + ']');
-                            newRow.find('input[name="rangeTo"]').attr('name', 'rangeTo[' + rowCount + ']');
-                            newRow.find('input[name="negativeKg"]').attr('name', 'negativeKg[' + rowCount + ']');
-                            newRow.find('input[name="positiveKg"]').attr('name', 'positiveKg[' + rowCount + ']');
-                            newRow.find('input[name="negativePerc"]').attr('name', 'negativePerc[' + rowCount + ']');
-                            newRow.find('input[name="positivePerc"]').attr('name', 'positivePerc[' + rowCount + ']');
-                            
-                            // Populate with existing data
-                            newRow.find('input[name="rangeFrom[' + rowCount + ']"]').val(item.rangeFrom !== undefined ? item.rangeFrom : '');
-                            newRow.find('input[name="rangeTo[' + rowCount + ']"]').val(item.rangeTo !== undefined ? item.rangeTo : '');
-                            newRow.find('input[name="negativeKg[' + rowCount + ']"]').val(item.negativeKg !== undefined ? item.negativeKg : '');
-                            newRow.find('input[name="positiveKg[' + rowCount + ']"]').val(item.positiveKg !== undefined ? item.positiveKg : '');
-                            newRow.find('input[name="negativePerc[' + rowCount + ']"]').val(item.negativePerc !== undefined ? item.negativePerc : '');
-                            newRow.find('input[name="positivePerc[' + rowCount + ']"]').val(item.positivePerc !== undefined ? item.positivePerc : '');
-                            
-                            $("#autoTable").append(newRow);
-                            rowCount++;
-                        });
-                    }
-                }
-
                 // Load auto data if status is Auto
-                if (status === 'Auto') {
+                if (status == 'Auto') {
                     loadAutoData();
                 }
 
@@ -484,6 +478,50 @@ $result->free();
                     }
                 });
             });
+
+            // Function to load existing auto data
+            function loadAutoData() {
+                if (autoData && autoData.length > 0) {
+                    $('#autoTable').empty(); // Clear existing rows
+                    rowCount = 0;
+                    
+                    autoData.forEach(function(item, index) {
+                        var template = $("#autoRowTemplate").html();
+                        var newRow = $(template);
+                        
+                        // Set unique IDs for the new row
+                        newRow.find('.details:last').attr("id", "detail" + rowCount);
+                        newRow.find('.details:last').attr("data-index", rowCount);
+                        newRow.find('#remove:last').attr("id", "remove" + rowCount);
+
+                        newRow.find('input[name="rangeFrom"]').attr('id', 'rangeFrom' + rowCount);
+                        newRow.find('input[name="rangeTo"]').attr('id', 'rangeTo' + rowCount);
+                        newRow.find('input[name="negativeKg"]').attr('id', 'negativeKg' + rowCount);
+                        newRow.find('input[name="positiveKg"]').attr('id', 'positiveKg' + rowCount);
+                        newRow.find('input[name="negativePerc"]').attr('id', 'negativePerc' + rowCount);
+                        newRow.find('input[name="positivePerc"]').attr('id', 'positivePerc' + rowCount);
+                        
+                        // Set array names for form submission
+                        newRow.find('input[name="rangeFrom"]').attr('name', 'rangeFrom[' + rowCount + ']');
+                        newRow.find('input[name="rangeTo"]').attr('name', 'rangeTo[' + rowCount + ']');
+                        newRow.find('input[name="negativeKg"]').attr('name', 'negativeKg[' + rowCount + ']');
+                        newRow.find('input[name="positiveKg"]').attr('name', 'positiveKg[' + rowCount + ']');
+                        newRow.find('input[name="negativePerc"]').attr('name', 'negativePerc[' + rowCount + ']');
+                        newRow.find('input[name="positivePerc"]').attr('name', 'positivePerc[' + rowCount + ']');
+                        
+                        // Populate with existing data
+                        newRow.find('input[name="rangeFrom[' + rowCount + ']"]').val(item.rangeFrom !== undefined ? item.rangeFrom : '');
+                        newRow.find('input[name="rangeTo[' + rowCount + ']"]').val(item.rangeTo !== undefined ? item.rangeTo : '');
+                        newRow.find('input[name="negativeKg[' + rowCount + ']"]').val(item.negativeKg !== undefined ? item.negativeKg : '');
+                        newRow.find('input[name="positiveKg[' + rowCount + ']"]').val(item.positiveKg !== undefined ? item.positiveKg : '');
+                        newRow.find('input[name="negativePerc[' + rowCount + ']"]').val(item.negativePerc !== undefined ? item.negativePerc : '');
+                        newRow.find('input[name="positivePerc[' + rowCount + ']"]').val(item.positivePerc !== undefined ? item.positivePerc : '');
+                        
+                        $("#autoTable").append(newRow);
+                        rowCount++;
+                    });
+                }
+            }
         </script>
     </body>
 </html>

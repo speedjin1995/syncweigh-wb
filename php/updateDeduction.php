@@ -55,20 +55,31 @@ if (isset($_POST)) {
     // Convert auto data to JSON string
     $autoDataJson = json_encode($autoData);
 
+    // Default
+    if ($statusSwitch == 'Default') {
+        $defaultRangeMin = parseNullableFloat('defaultRangeMin');
+        $defaultRangeMax = parseNullableFloat('defaultRangeMax');
+        $defaultWeight = parseNullableFloat('defaultWeight');
+    }
+
     $modified_by = $_SESSION['username'];
 
     $sql = "UPDATE Deduction 
             SET F1=?, F2=?, F3=?, F4=?, F5=?, F6=?, 
                 F7=?, F8=?, F9=?, F10=?, F11=?, F12=?, 
-                status=?, auto_data=?, modified_by=?, updated_at=NOW() 
+                status=?, auto_data=?, default_range_min=?, 
+                default_range_max=?, default_range_weight=?, 
+                modified_by=?, updated_at=NOW() 
             LIMIT 1";
 
     if ($stmt = $db->prepare($sql)) {
         $stmt->bind_param(
-            "ddddddddddddsss",
+            "ddddddddddddssddds",
             $F1, $F2, $F3, $F4, $F5, $F6,
             $F7, $F8, $F9, $F10, $F11, $F12,
-            $statusSwitch, $autoDataJson, $modified_by
+            $statusSwitch, $autoDataJson, 
+            $defaultRangeMin, $defaultRangeMax, 
+            $defaultWeight, $modified_by
         );
 
         if($stmt->execute()){
