@@ -2,7 +2,7 @@
 // Initialize the session
 session_start();
 require_once 'php/requires/lookup.php';
-$companies = include(dirname(__DIR__, 2) . '/license_wb.php');
+$companies = include(dirname(__DIR__, 1) . '/license.php');
 
 // Check if the user is already logged in, if yes then redirect him to index page
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
