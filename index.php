@@ -98,6 +98,7 @@ $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY nam
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $site = $db->query("SELECT * FROM Site WHERE status = '0' ORDER BY name ASC");
 $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
+//$driver = $db->query("SELECT * FROM Driver WHERE status = '0' ORDER BY name ASC");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);

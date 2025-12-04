@@ -21,6 +21,7 @@
     $lang["t-user"]="User";
     $lang["t-unit"]="Unit";
     $lang["t-vehicle"]="Vehicle";
+    $lang["t-driver"]="Driver";
     $lang["t-inventory"]="Inventory";
     $lang["t-agent"]="Sales Representative";
     $lang["t-raw-mat"]="Purchase Product";
