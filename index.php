@@ -843,16 +843,35 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row">
-                                                                                    <div class="col-xxl-12 col-lg-12 mb-3" id="divCustomerName">
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divCustomerName">
                                                                                         <div class="row">
-                                                                                            <label for="customerName" class="col-sm-2 col-form-label" style="width: 11%;">Customer Name</label>
-                                                                                            <div class="col-sm-10" style="width: 89%;">
+                                                                                            <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
+                                                                                            <div class="col-sm-8">
                                                                                                 <select class="form-select js-choice select2" id="customerName" name="customerName" required>
                                                                                                     <option selected="-">-</option>
                                                                                                     <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
                                                                                                         <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
                                                                                                     <?php } ?>
                                                                                                 </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control" id="driverName" name="driverName" placeholder="Driver Name" required>
+                                                                                                <div class="invalid-feedback">
+                                                                                                    Please fill in the field.
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                        <div class="row">
+                                                                                            <label for="driverIc" class="col-sm-4 col-form-label">Driver Ic</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver Ic">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
