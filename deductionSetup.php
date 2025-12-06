@@ -43,14 +43,17 @@ if ($row = $result->fetch_assoc()) {
     $defaultRangeMin = $row['default_range_min'] ?? 0;
     $defaultRangeMax = $row['default_range_max'] ?? 0;
     $defaultWeight = $row['default_range_weight'] ?? 0;
+    $customers = !empty($row['customers']) ? json_decode($row['customers'], true) : [];
+    $suppliers = !empty($row['suppliers']) ? json_decode($row['suppliers'], true) : [];
 }
 
 // Cleanup
 $stmt->close();
 $result->free();
+
+$customer = $db->query("SELECT * FROM Customer WHERE status = '0' AND status = '0' ORDER BY name ASC");
+$supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '0' ORDER BY name ASC");
 ?>
-
-
     <head>
         <title><?=$languageArray['deduction_setup_code'][$language]?> | Synctronix - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
@@ -59,6 +62,13 @@ $result->free();
         <link rel="stylesheet" href="assets/libs/swiper/swiper-bundle.min.css">
 
         <?php include 'layouts/head-css.php'; ?>
+
+        <style>
+            .select2-container--default .select2-selection--multiple .select2-selection__choice,
+            .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+                color: #000 !important;
+            }
+        </style>
 
     </head>
 
@@ -82,10 +92,11 @@ $result->free();
                                         <div class="d-flex align-items-center mb-3 justify-content-between">
                                             <div class="d-flex align-items-center">
                                                 <label for="statusSwitch" class="col-form-label me-2">Mode</label>
-                                                <select id="statusSwitch" name="statusSwitch" class="form-select select2" style="width: 150px;">
+                                                <select id="statusSwitch" name="statusSwitch" class="form-select">
                                                     <option value="Manual" <?php if ($status == 'Manual') echo 'selected'; ?>>Manual</option>
                                                     <option value="Auto" <?php if ($status == 'Auto') echo 'selected'; ?>>Auto</option>
                                                     <option value="Default" <?php if ($status == 'Default') echo 'selected'; ?>>Default</option>
+                                                    <option value="Customer_Supplier" <?php if ($status == 'Customer_Supplier') echo 'selected'; ?>>Customer/Supplier</option>
                                                     <option value="Disable" <?php if ($status == 'Disable') echo 'selected'; ?>>Disable</option>
                                                 </select>
                                             </div>
@@ -166,6 +177,28 @@ $result->free();
                                             </div>
                                         </div>
 
+                                        <!-- Grid for Customer/Supplier -->
+                                        <div id="customerSupplierView" style="display: none;">
+                                            <div class="row mb-3">
+                                                <div class="col-6">
+                                                    <label class="form-label fw-bold mb-0">Customer</label>
+                                                    <select id="customer" name="customer[]" class="form-select select2" multiple>
+                                                        <?php while($rowPF = mysqli_fetch_assoc($customer)){ ?>
+                                                            <option value="<?=$rowPF['id'] ?>" <?php if(in_array($rowPF['id'], $customers)) echo 'selected'; ?>><?=$rowPF['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="form-label fw-bold mb-0">Supplier</label>
+                                                    <select id="supplier" name="supplier[]" class="form-select select2" multiple>
+                                                        <?php while($rowPF = mysqli_fetch_assoc($supplier)){ ?>
+                                                            <option value="<?=$rowPF['id'] ?>" <?php if(in_array($rowPF['id'], $suppliers)) echo 'selected'; ?>><?=$rowPF['name'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <!-- Buttons -->
                                         <div class="row mt-4">
                                             <div class="col-4 text-center">
@@ -229,6 +262,8 @@ $result->free();
         <script src="assets/js/pages/profile.init.js"></script>
         <!-- App js -->
         <script src="assets/js/app.js"></script>
+        <!-- Select2 -->
+        <script src="plugins/select2/js/select2.full.min.js"></script> 
 
         <script type="text/html" id="autoRowTemplate">
             <tr class="details">
@@ -264,6 +299,23 @@ $result->free();
                 const status = "<?= $status ?>";
                 const autoData = <?= json_encode($autoData ? json_decode($autoData, true) : []) ?>;
                 var rowCount = 0;
+
+                // Initialize all Select2 elements in the modal
+                $('.select2').select2({
+                    placeholder: "Please Select",
+                    width: '100%'
+                });
+
+                $('.select2-container .select2-selection--multiple').css({
+                    'padding-top': '4px',
+                    'padding-bottom': '4px',
+                    'min-height': 'auto'
+                });
+
+                $('.select2-container .select2-selection__arrow').css({
+                    'padding-top': '33px',
+                    'height': 'auto'
+                });
 
                 // Check Password Logic when load screen
                 $('#passwordModal').find('#password2Div').val('').show(); // show password2 input
@@ -386,24 +438,35 @@ $result->free();
                         $('#autoNewBtn').addClass('d-none');
                         $('#buttonRow').show();
                         $('#defaultView').hide();
+                        $('#customerSupplierView').hide();
                     } else if (selectedValue == 'Auto') {
                         $('#manualView').hide();
                         $('#autoView').show();
                         $('#autoNewBtn').removeClass('d-none');
                         $('#buttonRow').show();
                         $('#defaultView').hide();
+                        $('#customerSupplierView').hide(); 
                     } else if (selectedValue == 'Default') {
                         $('#manualView').hide();
                         $('#autoView').hide();
                         $('#autoNewBtn').addClass('d-none');
                         $('#buttonRow').hide();
                         $('#defaultView').show();
-                    } else {
+                        $('#customerSupplierView').hide(); 
+                    } else if (selectedValue == 'Customer_Supplier') {
                         $('#manualView').hide();
                         $('#autoView').hide();
                         $('#autoNewBtn').addClass('d-none');
                         $('#buttonRow').hide();
                         $('#defaultView').hide();
+                        $('#customerSupplierView').show();   
+                    }else {
+                        $('#manualView').hide();
+                        $('#autoView').hide();
+                        $('#autoNewBtn').addClass('d-none');
+                        $('#buttonRow').hide();
+                        $('#defaultView').hide();
+                        $('#customerSupplierView').hide();   
                     }
                 });
 
@@ -421,6 +484,10 @@ $result->free();
                         $('#defaultRangeMin').val('');
                         $('#defaultRangeMax').val('');
                         $('#defaultWeight').val('');
+                    } else if (mode == 'Customer_Supplier') {
+                        // Clear selections
+                        $('#customer').val(null).trigger('change');
+                        $('#supplier').val(null).trigger('change');
                     }
                 });
 

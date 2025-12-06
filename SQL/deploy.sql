@@ -987,3 +987,38 @@ CREATE OR REPLACE TRIGGER `after_deduction_update` BEFORE UPDATE ON `Deduction` 
 END
 $$
 DELIMITER ;
+
+-- 06/12/2025 --
+ALTER TABLE `Deduction` ADD `customers` TEXT NULL AFTER `default_range_weight`, ADD `suppliers` TEXT NULL AFTER `customers`;
+
+ALTER TABLE `Deduction_Log` ADD `customers` TEXT NULL AFTER `default_range_weight`, ADD `suppliers` TEXT NULL AFTER `customers`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `after_deduction_update` BEFORE UPDATE ON `Deduction` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Always set action_id = 2 for update
+    SET action_value = 2;
+
+    -- Insert into Deduction_Log table
+    INSERT INTO Deduction_Log (
+        deduction_id,
+        F1, F2, F3, F4, F5, F6,
+        F7, F8, F9, F10, F11, F12, auto_data,
+        default_range_min, default_range_max, default_range_weight,
+        customers, suppliers,
+        status, created_by, modified_by,
+        action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id,
+        NEW.F1, NEW.F2, NEW.F3, NEW.F4, NEW.F5, NEW.F6,
+        NEW.F7, NEW.F8, NEW.F9, NEW.F10, NEW.F11, NEW.F12, NEW.auto_data,
+        NEW.default_range_min, NEW.default_range_max, NEW.default_range_weight,
+        NEW.customers, NEW.suppliers,
+        NEW.status, NEW.created_by, NEW.modified_by,
+        action_value, NEW.modified_by, NOW()
+    );
+END
+$$
+DELIMITER ;

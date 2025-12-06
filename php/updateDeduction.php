@@ -62,6 +62,15 @@ if (isset($_POST)) {
         $defaultWeight = parseNullableFloat('defaultWeight');
     }
 
+    // Customer/Supplier
+    if ($statusSwitch == 'Customer_Supplier') {
+        $selectedCustomers = isset($_POST['customer']) ? $_POST['customer'] : [];
+        $selectedSuppliers = isset($_POST['supplier']) ? $_POST['supplier'] : [];
+        // You can process these arrays as needed
+        $customersJson = json_encode($selectedCustomers);
+        $suppliersJson = json_encode($selectedSuppliers);
+    }
+
     $modified_by = $_SESSION['username'];
 
     $sql = "UPDATE Deduction 
@@ -69,17 +78,19 @@ if (isset($_POST)) {
                 F7=?, F8=?, F9=?, F10=?, F11=?, F12=?, 
                 status=?, auto_data=?, default_range_min=?, 
                 default_range_max=?, default_range_weight=?, 
+                customers=?, suppliers=?,
                 modified_by=?, updated_at=NOW() 
             LIMIT 1";
 
     if ($stmt = $db->prepare($sql)) {
         $stmt->bind_param(
-            "ddddddddddddssddds",
+            "ddddddddddddssdddsss",
             $F1, $F2, $F3, $F4, $F5, $F6,
             $F7, $F8, $F9, $F10, $F11, $F12,
             $statusSwitch, $autoDataJson, 
-            $defaultRangeMin, $defaultRangeMax, 
-            $defaultWeight, $modified_by
+            $defaultRangeMin, $defaultRangeMax,
+            $defaultWeight, $customersJson, $suppliersJson,
+            $modified_by
         );
 
         if($stmt->execute()){
