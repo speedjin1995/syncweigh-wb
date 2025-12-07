@@ -31,6 +31,51 @@ function formatWeight($weight){
     return $formatted;
 }
 
+// Helper function to get full image path
+function getImageFullPath($relativePath) {
+    if (empty($relativePath)) return null;
+    // If already an absolute URL, return as is
+    if (preg_match('/^https?:\/\//', $relativePath)) return $relativePath;
+    // Remove leading slash or backslash if present (cross-platform)
+    $relativePath = ltrim($relativePath, '/\\');
+
+    $baseUploadDir = dirname(__DIR__); // from php/ to root/
+
+    // Construct the full file path
+    $filePath = $baseUploadDir . '/' . $relativePath;
+
+    $filePath = convertLocalPathToUrl($filePath);
+
+    return $filePath;
+}
+
+function convertLocalPathToUrl($fullPath) {
+    if (empty($fullPath)) return null;
+
+    // Normalize slashes
+    $fullPath = str_replace('\\', '/', $fullPath);
+
+    // Determine the document root (Apache / local server root)
+    $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? '');
+
+    if ($docRoot && strpos($fullPath, $docRoot) === 0) {
+        // Remove the docRoot from the full path to get relative path
+        $relativePath = substr($fullPath, strlen($docRoot));
+
+        // Ensure leading slash
+        $relativePath = '/' . ltrim($relativePath, '/');
+
+        // Build full URL
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+        return $protocol . $host . $relativePath;
+    }
+
+    // Not local, return as is
+    return $fullPath;
+}
+
 if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
     $stmt = $db->prepare("SELECT * FROM Company WHERE id=?");
     $stmt->bind_param('s', $compids);
@@ -228,19 +273,29 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                         }
                     }
 
+                    // Get CCTV Images
+                    $placeholder = 'assets/images/placeholder.jpeg';
+                    $incoming1Image = !empty($row['incoming1']) ? $row['incoming1'] : $placeholder;
+                    $incoming2Image = !empty($row['incoming2']) ? $row['incoming2'] : $placeholder;
+                    $incoming3Image = !empty($row['incoming3']) ? $row['incoming3'] : $placeholder;
+                    $incoming4Image = !empty($row['incoming4']) ? $row['incoming4'] : $placeholder;
+                    $outgoing1Image = !empty($row['outgoing1']) ? $row['outgoing1'] : $placeholder;
+                    $outgoing2Image = !empty($row['outgoing2']) ? $row['outgoing2'] : $placeholder;
+                    $outgoing3Image = !empty($row['outgoing3']) ? $row['outgoing3'] : $placeholder;
+                    $outgoing4Image = !empty($row['outgoing4']) ? $row['outgoing4'] : $placeholder;
+
                     $message = 
                     '<html>
                         <head>
                             <style>
                                 @media print {
                                     @page {
-                                        size: A5 landscape;
+                                        size: A4 portrait;
                                         margin-left: 0.5in;
                                         margin-right: 0.5in;
                                         margin-top: 0.1in;
                                         margin-bottom: 0.1in;
                                     }
-                                    
                                 } 
                                       
                                 table {
@@ -278,16 +333,49 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                     margin-top: 20px;
                                     margin-right: -15px;
                                     margin-left: -15px;
-                                    
                                 } 
                                 
                                 .col-md-4{
                                     position: relative;
                                     width: 33.333333%;
                                 }
+
+                                .col-3 {
+                                    -webkit-box-flex: 0;
+                                        -ms-flex: 0 0 auto;
+                                            flex: 0 0 auto;
+                                    width: 25%;
+                                }
+
+                                .camera-section {
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    gap: 24px;
+                                    justify-content: flex-start;
+                                }
+                                .camera-box {
+                                    flex: 1 1 45%;
+                                    min-width: 220px;
+                                    max-width: 48%;
+                                }
+                                .camera-inner {
+                                    border: 1px solid #333;
+                                    min-height: 120px;
+                                    background: #fff;
+                                    position: relative;
+                                }
+                                .camera-label {
+                                    padding: 6px 10px 0 10px;
+                                    font-weight: bold;
+                                    font-size: 13px;
+                                }
+                                .camera-feed {
+                                    width: 100%;
+                                    height: 120px;
+                                }
                             </style>
                         </head>
-                        <body>
+                        <body style="margin-top: 20px;">
                             <table style="width:100%;">
                                 <tr>
                                     <td style="width: 50%;">
@@ -844,27 +932,108 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                             }
                             
                             $message .= '
-                            <table style="width: 100%; position: fixed; bottom: 0; left: 0;">
+                            <!-- Camera Section -->
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="camera-box">
+                                        <div class="camera-inner">
+                                            <div class="camera-label">Incoming 1</div>
+                                            <div class="camera-feed">
+                                                <img src="'.htmlspecialchars($incoming1Image). '" alt="Incoming 1" style="width:100%;height:100%;object-fit:cover;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="camera-box">
+                                        <div class="camera-inner">
+                                            <div class="camera-label">Incoming 2</div>
+                                            <div class="camera-feed">
+                                                <img src="'.htmlspecialchars($incoming2Image). '" alt="Incoming 2" style="width:100%;height:100%;object-fit:cover;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="camera-box">
+                                        <div class="camera-inner">
+                                            <div class="camera-label">Incoming 3</div>
+                                            <div class="camera-feed">
+                                                <img src="'.htmlspecialchars($incoming3Image). '" alt="Incoming 3" style="width:100%;height:100%;object-fit:cover;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="camera-box">
+                                        <div class="camera-inner">
+                                            <div class="camera-label">Incoming 4</div>
+                                            <div class="camera-feed">
+                                                <img src="'.htmlspecialchars($incoming4Image). '" alt="Incoming 4" style="width:100%;height:100%;object-fit:cover;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="camera-box">
+                                        <div class="camera-inner">
+                                            <div class="camera-label">Outgoing 1</div>
+                                            <div class="camera-feed">
+                                                <img src="'.htmlspecialchars($outgoing1Image). '" alt="Outgoing 1" style="width:100%;height:100%;object-fit:cover;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="camera-box">
+                                        <div class="camera-inner">
+                                            <div class="camera-label">Outgoing 2</div>
+                                            <div class="camera-feed">
+                                                <img src="'.htmlspecialchars($outgoing2Image). '" alt="Outgoing 2" style="width:100%;height:100%;object-fit:cover;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="camera-box">
+                                        <div class="camera-inner">
+                                            <div class="camera-label">Outgoing 3</div>
+                                            <div class="camera-feed">
+                                                <img src="'.htmlspecialchars($outgoing3Image). '" alt="Outgoing 3" style="width:100%;height:100%;object-fit:cover;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="camera-box">
+                                        <div class="camera-inner">
+                                            <div class="camera-label">Outgoing 4</div>
+                                            <div class="camera-feed">
+                                                <img src="'.htmlspecialchars($outgoing4Image). '" alt="Outgoing 4" style="width:100%;height:100%;object-fit:cover;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                    
+                            <!-- Signature Section -->
+                            <table style="width: 100%; position: fixed; bottom: 0; left: 0; margin-bottom: 10px;">
                                 <tr>
                                     <!-- This empty cell pushes the content to the right -->
-                                    <td style="width: 21%;"></td>
-
-                                    <td style="vertical-align: top; font-size: 14px; width: 25%;">
-                                        <hr width="100%" style="margin-left: 0; text-align: left;">
-                                        <span>1st Weight By: '.$row['gross_weight_by1'].'<br> 2nd Weight By: '.$row['tare_weight_by1'].'</span>
-                                    </td>
-                                    <td style="width: 2%;"></td>
+                                    <td style="width: 5%;"></td>
                                     <td style="vertical-align: top; font-size: 14px; width: 25%;">
                                         <hr width="100%" style="margin-left: 0; text-align: left;">
                                         <span>Acknowledge By Administrator</span>
                                     </td>
-                                    <td style="width: 2%;"></td>
+                                    <td style="width: 20%;"></td>
                                     <td style="vertical-align: top; font-size: 14px; width: 25%;">
                                         <hr width="100%" style="margin-left: 0; text-align: left;">
                                         <span>Received By</span><br>
                                         <span>Name: </span><br>
-                                        <span>I/C: </span>
                                     </td>
+                                    <td style="width: 5%;"></td>
                                 </tr>
                             </table>
                             
@@ -898,108 +1067,6 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                 ));
         }
     }
-    else{
-        $empQuery = "select count.id, count.serialNo, vehicles.veh_number, lots.lots_no, count.batchNo, count.invoiceNo, count.deliveryNo, 
-        count.purchaseNo, customers.customer_name, products.product_name, packages.packages, count.unitWeight, count.tare, count.totalWeight, 
-        count.actualWeight, count.currentWeight, units.units, count.moq, count.dateTime, count.unitPrice, count.totalPrice,count.totalPCS, 
-        count.remark, status.status from count, vehicles, packages, lots, customers, products, units, status WHERE 
-        count.vehicleNo = vehicles.id AND count.package = packages.id AND count.lotNo = lots.id AND count.customer = customers.id AND 
-        count.productName = products.id AND status.id=count.status AND units.id=count.unit AND count.deleted = '0' AND count.id=?";
-
-        if ($select_stmt = $db->prepare($empQuery)) {
-            $select_stmt->bind_param('s', $id);
-
-            // Execute the prepared query.
-            if (! $select_stmt->execute()) {
-                echo json_encode(
-                    array(
-                        "status" => "failed",
-                        "message" => "Something went wrong"
-                    )); 
-            }
-            else{
-                $result = $select_stmt->get_result();
-                
-
-                if ($row = $result->fetch_assoc()) {
-                    $message = '<html>
-                    <head>
-                        <title>Html to PDF</title>
-                    </head>
-                    <body>
-                        <h3>'.$compname.'</h3>
-                        <p>No.34, Jalan Bagan 1, <br>Taman Bagan, 13400 Butterworth.<br> Penang. Malaysia.</p>
-                        <p>TEL: 6043325822 | EMAIL: admin@synctronix.com.my</p><hr>
-                        <table style="width:100%">
-                        <tr>
-                            <td>
-                                <h4>CUSTOMER NAME: '.$row['customer_name'].'</h4>
-                            </td>
-                            <td>
-                                <h4>SERIAL NO: '.$row['serialNo'].'</h4>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <p>No.34, Jalan Bagan 1, <br>Taman Bagan, <br>13400 Butterworth. Penang. Malaysia.</p>
-                            </td>
-                            <td>
-                                <h4>Status: '.$row['status'].'</h4>
-                                <p>Date: 23/03/2022<br>Delivery No: '.$row['deliveryNo'].'</p>
-                            </td>
-                        </tr>
-                        </table>
-                        <table style="width:100%; border:1px solid black;">
-                        <tr>
-                            <th style="border:1px solid black;">Vehicle No.</th>
-                            <th style="border:1px solid black;">Product Name</th>
-                            <th style="border:1px solid black;">Date & Time</th>
-                            <th style="border:1px solid black;">Weight</th>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid black;">'.$row['veh_number'].'</td>
-                            <td style="border:1px solid black;">'.$row['product_name'].'</td>
-                            <td style="border:1px solid black;">'.$row['dateTime'].'</td>
-                            <td style="border:1px solid black;">'.$row['unitWeight'].' '.$row['units'].'</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td style="border:1px solid black;">Tare Weight</td>
-                            <td style="border:1px solid black;">'.$row['tare'].' '.$row['units'].'</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td style="border:1px solid black;">Net Weight</td>
-                            <td style="border:1px solid black;">'.$row['actualWeight'].' '.$row['units'].'</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td style="border:1px solid black;">M.O.Q</td>
-                            <td style="border:1px solid black;">'.$row['moq'].'</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td style="border:1px solid black;">Total Weight</td>
-                            <td style="border:1px solid black;">'.$row['totalWeight'].' '.$row['units'].'</td>
-                        </tr>
-                        </table>
-                        <p>Remark: '.$row['remark'].'</p>
-                    </body>
-                </html>';
-                }
-                
-                echo json_encode(
-                    array(
-                        "status" => "success",
-                        "message" => $message
-                    ));
-            }
-        }
-    } 
 }
 else{
     echo json_encode(

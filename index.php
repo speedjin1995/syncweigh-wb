@@ -1643,6 +1643,37 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="modal fade" id="printCameraModal">
+                                        <div class="modal-dialog modal-xl" style="max-width: 90%;">
+                                            <div class="modal-content">
+                                                <form role="form" id="printCameraForm">
+                                                    <div class="modal-header bg-gray-dark color-palette">
+                                                        <h4 class="modal-title">Print Slip</h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <label for="printSlipMode" class="col-sm-4 col-form-label">Print Slip Mode</label>
+                                                            <div class="col-sm-8">
+                                                                <select class="form-select" name="printSlipMode" id="printSlipMode" required>
+                                                                    <option value="Normal">Slip Without Camera</option>
+                                                                    <option value="Camera">Slip With Camera</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <input type="hidden" class="form-control" id="id" name="id">                                   
+                                                            <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">                                   
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer justify-content-between bg-gray-dark color-palette">
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                        <button type="button" class="btn btn-success" id="submitPrintCamera"><?=$languageArray['submit_code'][$language]?></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                     
                                     <div class="modal fade" id="cancelModal">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
@@ -1672,6 +1703,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                             </div>
                                         </div>
                                     </div>
+
                                     <!--div class="modal fade" id="uploadModal" role="dialog" aria-labelledby="importModalScrollableTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-scrollable custom-xxl">
                                             <div class="modal-content">
@@ -3047,6 +3079,66 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
+            }
+        });
+
+        $('#submitPrintCamera').on('click', function(){
+            if($('#printCameraForm').valid()){
+                $('#spinnerLoading').show();
+                var id = $('#printCameraModal').find('#id').val();
+                var printMode = $('#printCameraModal').find('#printSlipMode').val();
+                var isEmptyContainer = $('#printCameraModal').find('#isEmptyContainer').val();
+                var prePrintStatus = 'N';
+
+                if (printMode == 'Normal') {
+                    $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+                        var obj = JSON.parse(data);
+
+                        if(obj.status === 'success'){
+                            var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                            printWindow.document.write(obj.message);
+                            printWindow.document.close();
+                            setTimeout(function(){
+                                printWindow.print();
+                                printWindow.close();
+                            }, 500);
+
+                            $('#spinnerLoading').hide();
+                        }
+                        else if(obj.status === 'failed'){
+                            $("#failBtn").attr('data-toast-text', obj.message );
+                            $("#failBtn").click();
+                        }
+                        else{
+                            $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                            $("#failBtn").click();
+                        }
+                    });
+                }else if(printMode == 'Camera') {
+                    $.post('php/printCamera.php', {userID: id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+                        var obj = JSON.parse(data);
+
+                        if(obj.status === 'success'){
+                            var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                            printWindow.document.write(obj.message);
+                            printWindow.document.close();
+                            setTimeout(function(){
+                                printWindow.print();
+                                printWindow.close();
+                            }, 500);
+
+                            $('#spinnerLoading').hide();
+                        }
+                        else if(obj.status === 'failed'){
+                            $("#failBtn").attr('data-toast-text', obj.message );
+                            $("#failBtn").click();
+                        }
+                        else{
+                            $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                            $("#failBtn").click();
+                        }
+                    });
+                }
             }
         });
 
@@ -5628,31 +5720,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             });
         }*/
         //var id = $('#prePrintModal').find('#id').val();
-        var prePrintStatus = 'N';
-
-        $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
-            var obj = JSON.parse(data);
-
-            if(obj.status === 'success'){
-                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                printWindow.document.write(obj.message);
-                printWindow.document.close();
-                setTimeout(function(){
-                    printWindow.print();
-                    printWindow.close();
-                }, 500);
-
-                $('#spinnerLoading').hide();
-            }
-            else if(obj.status === 'failed'){
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-            else{
-                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                $("#failBtn").click();
-            }
-        });
+        $('#printCameraModal').find('#id').val(id);
+        $('#printCameraModal').find('#printSlipMode').val("Normal");
+        $('#printCameraModal').find('#isEmptyContainer').val(isEmptyContainer);
+        $("#printCameraModal").modal("show");
     }
 
     function buildMessage(action) {
