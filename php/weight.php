@@ -51,34 +51,6 @@ function saveBase64Image($base64, $prefix = 'img') {
     }
 }
 
-// ================================
-// ✅ INCOMING IMAGES
-// ================================
-$incomingImages = [];
-
-for ($i = 1; $i <= 4; $i++) {
-    if (!empty($_POST["incoming_cam$i"])) {
-        $path = saveBase64Image($_POST["incoming_cam$i"], "incoming_cam$i");
-        $incomingImages[$i] = $path;
-    } else {
-        $incomingImages[$i] = null;
-    }
-}
-
-// ================================
-// ✅ OUTGOING IMAGES
-// ================================
-$outgoingImages = [];
-
-for ($i = 1; $i <= 4; $i++) {
-    if (!empty($_POST["outgoing_cam$i"])) {
-        $path = saveBase64Image($_POST["outgoing_cam$i"], "outgoing_cam$i");
-        $outgoingImages[$i] = $path;
-    } else {
-        $outgoingImages[$i] = null;
-    }
-}
-
 // Processing form data when form is submitted
 if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightType'], $_POST['transactionDate'], $_POST['grossIncoming'], $_POST['grossIncomingDate']
 , $_POST['manualWeight'], $_POST['plantCode'], $_POST['plant'], $_POST['exDel'], $_POST['loadDrum'])) {
@@ -86,6 +58,23 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
     $isComplete = 'N';
     $isApproved = 'Y';
     $misValue = '';
+
+    // ==========================
+    // ✅ INCOMING IMAGES (1–4)
+    // ==========================
+    $incoming1 = !empty($_POST['incoming_cam1']) ? saveBase64Image($_POST['incoming_cam1'], 'incoming1') : null;
+    $incoming2 = !empty($_POST['incoming_cam2']) ? saveBase64Image($_POST['incoming_cam2'], 'incoming2') : null;
+    $incoming3 = !empty($_POST['incoming_cam3']) ? saveBase64Image($_POST['incoming_cam3'], 'incoming3') : null;
+    $incoming4 = !empty($_POST['incoming_cam4']) ? saveBase64Image($_POST['incoming_cam4'], 'incoming4') : null;
+
+    // ==========================
+    // ✅ OUTGOING IMAGES (1–4)
+    // ==========================
+    $outgoing1 = !empty($_POST['outgoing_cam1']) ? saveBase64Image($_POST['outgoing_cam1'], 'outgoing1') : null;
+    $outgoing2 = !empty($_POST['outgoing_cam2']) ? saveBase64Image($_POST['outgoing_cam2'], 'outgoing2') : null;
+    $outgoing3 = !empty($_POST['outgoing_cam3']) ? saveBase64Image($_POST['outgoing_cam3'], 'outgoing3') : null;
+    $outgoing4 = !empty($_POST['outgoing_cam4']) ? saveBase64Image($_POST['outgoing_cam4'], 'outgoing4') : null;
+
 
     if (empty($_POST["id"])) {
         $weightId = null;
@@ -415,6 +404,18 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $transporter = null;
     } else {
         $transporter = trim($_POST["transporter"]);
+    }
+
+    if (empty($_POST["driverName"])) {
+        $driverName = null;
+    } else {
+        $driverName = trim($_POST["driverName"]);
+    }
+
+    if (empty($_POST["driverIc"])) {
+        $driverIc = null;
+    } else {
+        $driverIc = trim($_POST["driverIc"]);
     }
 
     if (empty($_POST["weightDifference"])) {
