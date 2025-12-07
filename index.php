@@ -164,6 +164,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             padding: var(1rem, 1rem) !important;
         }
 
+        .video-row {
+            display: flex;
+            gap: 15px;          /* ✅ space between videos */
+            flex-wrap: wrap;
+        }
+
         .video-container {
             /*width: 400px;*/
             width: 25%;
@@ -957,7 +963,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row">
+                                                                <div class="row" id="containerInfo">
                                                                     <div class="col-xxl-12 col-lg-12">
                                                                         <div class="card bg-light" style="margin-bottom: 2.5rem;">
                                                                             <div class="card-body">
@@ -1050,7 +1056,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row" style="margin-bottom: 1.5rem;">
+                                                                <div class="row video-row" style="margin-bottom: 1.5rem;">
                                                                     <div class="video-container" id="video-container1"></div><br>
                                                                     <div class="video-container" id="video-container2"></div><br>
                                                                     <div class="video-container" id="video-container3"></div><br>
@@ -1104,14 +1110,74 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
+                                                                                <!-- ========================= -->
+                                                                                <!-- INCOMING PHOTOS (4 CAM) -->
+                                                                                <!-- ========================= -->
+                                                                                <div class="row mb-3">
+                                                                                    <label class="col-sm-4 col-form-label">Incoming Photos</label>
+                                                                                    <div class="col-sm-8">
 
+                                                                                        <!-- Preview Grid -->
+                                                                                        <div class="d-grid" style="grid-template-columns: repeat(4, 1fr); gap:10px;">
+                                                                                            <img id="in_img1" class="img-fluid rounded" style="display:none;">
+                                                                                            <img id="in_img2" class="img-fluid rounded" style="display:none;">
+                                                                                            <img id="in_img3" class="img-fluid rounded" style="display:none;">
+                                                                                            <img id="in_img4" class="img-fluid rounded" style="display:none;">
+                                                                                        </div>
+
+                                                                                        <div class="d-flex gap-2 mt-2">
+                                                                                            <button type="button" class="btn btn-primary" onclick="captureIncomingAll()">
+                                                                                                📸 Snap All
+                                                                                            </button>
+
+                                                                                            <button type="button" class="btn btn-danger" onclick="retakeIncomingAll()" id="incomingRetakeBtn" style="display:none;">
+                                                                                                🔄 Retake All
+                                                                                            </button>
+                                                                                        </div>
+
+                                                                                        <!-- Hidden Base64 Holders -->
+                                                                                        <input type="hidden" name="incoming_cam1" id="incoming_cam1">
+                                                                                        <input type="hidden" name="incoming_cam2" id="incoming_cam2">
+                                                                                        <input type="hidden" name="incoming_cam3" id="incoming_cam3">
+                                                                                        <input type="hidden" name="incoming_cam4" id="incoming_cam4">
+                                                                                    </div>
+                                                                                </div>
                                                                                 <div class="row mb-3">
                                                                                     <label for="grossIncomingDate" class="col-sm-4 col-form-label">Incoming Date</label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control input-readonly" id="grossIncomingDate" name="grossIncomingDate">
                                                                                     </div>
                                                                                 </div>
+                                                                                <!-- ========================= -->
+                                                                                <!-- OUTGOING PHOTOS (4 CAM) -->
+                                                                                <!-- ========================= -->
+                                                                                <div class="row mb-3">
+                                                                                    <label class="col-sm-4 col-form-label">Outgoing Photos</label>
+                                                                                    <div class="col-sm-8">
 
+                                                                                        <div class="d-grid" style="grid-template-columns: repeat(4, 1fr); gap:10px;">
+                                                                                            <img id="out_img1" class="img-fluid rounded" style="display:none;">
+                                                                                            <img id="out_img2" class="img-fluid rounded" style="display:none;">
+                                                                                            <img id="out_img3" class="img-fluid rounded" style="display:none;">
+                                                                                            <img id="out_img4" class="img-fluid rounded" style="display:none;">
+                                                                                        </div>
+
+                                                                                        <div class="d-flex gap-2 mt-2">
+                                                                                            <button type="button" class="btn btn-primary" onclick="captureOutgoingAll()">
+                                                                                                📸 Snap All
+                                                                                            </button>
+
+                                                                                            <button type="button" class="btn btn-danger" onclick="retakeOutgoingAll()" id="outgoingRetakeBtn" style="display:none;">
+                                                                                                🔄 Retake All
+                                                                                            </button>
+                                                                                        </div>
+
+                                                                                        <input type="hidden" name="outgoing_cam1" id="outgoing_cam1">
+                                                                                        <input type="hidden" name="outgoing_cam2" id="outgoing_cam2">
+                                                                                        <input type="hidden" name="outgoing_cam3" id="outgoing_cam3">
+                                                                                        <input type="hidden" name="outgoing_cam4" id="outgoing_cam4">
+                                                                                    </div>
+                                                                                </div>
                                                                                 <div class="row mb-3">
                                                                                     <label for="tareOutgoing" class="col-sm-4 col-form-label">Outgoing</label>
                                                                                     <div class="col-sm-8">                                                                                     
@@ -1939,6 +2005,19 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     var player2 = null;
     var player3 = null;
     var player4 = null;
+    const incomingCamIds = [
+        "video-container1",
+        "video-container2",
+        "video-container3",
+        "video-container4"
+    ];
+
+    const outgoingCamIds = [
+        "video-container1",
+        "video-container2",
+        "video-container3",
+        "video-container4"
+    ];
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -2606,39 +2685,33 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         //});*/
         
         $('#submitWeight').on('click', function () {
-            // 1️⃣ Capture the picture first
-            var capturePicturePromise = player.capturePicture();
+            var trueWeight = 0;
+            var variance = $('#productVariance').val() || '';
+            var high = $('#productHigh').val() || '';
+            var low = $('#productLow').val() || '';
+            var final = $('#finalWeight').val() || '0';
+            var pass = true;
+            var isComplete = 'N';
 
-            capturePicturePromise.then((data) => {
-                // Extract the base64 string from your returned object
-                var imageBase64 = data.data && data.data.base64 ? data.data.base64 : null;
-
-                // 2️⃣ Continue your existing logic only *after* capture is complete
-                var trueWeight = 0;
-                var variance = $('#productVariance').val() || '';
-                var high = $('#productHigh').val() || '';
-                var low = $('#productLow').val() || '';
-                var final = $('#finalWeight').val() || '0';
-                var pass = true;
-                var isComplete = 'N';
-
-                if ($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local") {
+            if ($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local") {
                 trueWeight = parseFloat($('#addModal').find('#supplierWeight').val());
-                } else {
+            } else {
                 trueWeight = parseFloat($('#addModal').find('#orderWeight').val());
-                }
+            }
 
-                if ($('#weightType').val() == 'Normal' && ($('#grossIncoming').val() && $('#tareOutgoing').val())) {
+            if ($('#weightType').val() == 'Normal' && ($('#grossIncoming').val() && $('#tareOutgoing').val())) {
                 isComplete = 'Y';
-                } else if ($('#weightType').val() == 'Container' &&
+            } 
+            else if ($('#weightType').val() == 'Container' &&
                 ($('#grossIncoming').val() && $('#tareOutgoing').val() &&
-                    $('#grossIncoming2').val() && $('#tareOutgoing2').val())) {
+                $('#grossIncoming2').val() && $('#tareOutgoing2').val())) {
                 isComplete = 'Y';
-                } else {
+            } 
+            else {
                 isComplete = 'N';
-                }
+            }
 
-                if (isComplete == 'Y' && variance != '') {
+            if (isComplete == 'Y' && variance != '') {
                 final = parseFloat(final);
                 low = low != '' ? parseFloat(low) : null;
                 high = high != '' ? parseFloat(high) : null;
@@ -2646,15 +2719,16 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 if (variance == 'W') {
                     if (low !== null && (final < trueWeight - low)) pass = false;
                     else if (high !== null && (final > trueWeight + high)) pass = false;
-                } else if (variance == 'P') {
+                } 
+                else if (variance == 'P') {
                     if (low !== null && (final < trueWeight * (1 - low / 100))) pass = false;
                     else if (high !== null && (final > trueWeight * (1 + high / 100))) pass = false;
                 }
-                }
+            }
 
-                // custom validation for select2
-                var isValid = true;
-                $('#addModal .select2[required]').each(function () {
+            // ✅ Select2 validation
+            var isValid = true;
+            $('#addModal .select2[required]').each(function () {
                 var select2Field = $(this);
                 var select2Container = select2Field.next('.select2-container');
                 var errorMsg = "<span class='select2-error text-danger' style='font-size: 11.375px;'>Please fill in the field.</span>";
@@ -2662,43 +2736,48 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 if (select2Field.val() === "" || select2Field.val() === null) {
                     select2Container.find('.select2-selection').css('border', '1px solid red');
                     if (select2Container.next('.select2-error').length === 0) {
-                    select2Container.after(errorMsg);
+                        select2Container.after(errorMsg);
                     }
                     isValid = false;
-                } else {
+                } 
+                else {
                     select2Container.find('.select2-selection').css('border', '');
                     select2Container.next('.select2-error').remove();
                 }
-                });
+            });
 
-                if (pass && $('#weightForm').valid() && isValid) {
-                $('#spinnerLoading').show();
+            // ✅ FINAL VALIDATION PASS
+            if (!(pass && $('#weightForm').valid() && isValid)) return;
 
-                // 3️⃣ Build FormData to include form + captured image
-                var formData = new FormData(document.getElementById('weightForm'));
-                debugger;
-                if (imageBase64) {
-                    // Convert base64 -> Blob
-                    var byteString = atob(imageBase64.split(',')[1]);
-                    var mimeString = imageBase64.split(',')[0].split(':')[1].split(';')[0];
-                    var ab = new ArrayBuffer(byteString.length);
-                    var ia = new Uint8Array(ab);
-                    for (var i = 0; i < byteString.length; i++) {
-                      ia[i] = byteString.charCodeAt(i);
-                    }
-                    var blob = new Blob([ab], { type: mimeString });
-            
-                    formData.append('capturedImage', blob, 'capture.jpg');
+            $('#spinnerLoading').show();
+
+            // ✅ Build FormData from form
+            var formData = new FormData(document.getElementById('weightForm'));
+
+            // ✅ ATTACH INCOMING 4 CAM IMAGES
+            for (let i = 1; i <= 4; i++) {
+                var base64 = $('#incoming_cam' + i).val();
+                if (base64) {
+                    formData.append('incoming_cam' + i, base64);
                 }
+            }
 
-                // 4️⃣ Send everything to the server
-                $.ajax({
-                    url: 'php/weight.php',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (data) {
+            // ✅ ATTACH OUTGOING 4 CAM IMAGES
+            for (let i = 1; i <= 4; i++) {
+                var base64 = $('#outgoing_cam' + i).val();
+                if (base64) {
+                    formData.append('outgoing_cam' + i, base64);
+                }
+            }
+
+            // ✅ SUBMIT TO SERVER
+            $.ajax({
+                url: 'php/weight.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
                     var obj = JSON.parse(data);
                     $('#spinnerLoading').hide();
 
@@ -2707,23 +2786,20 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $('#addModal').modal('hide');
                         $("#successBtn").attr('data-toast-text', obj.message);
                         $("#successBtn").click();
-                    } else {
-                        alert(obj.message);
+                    } 
+                    else {
                         $("#failBtn").attr('data-toast-text', obj.message);
                         $("#failBtn").click();
                     }
-                    },
-                    error: function (xhr, status, error) {
+                },
+                error: function (xhr, status, error) {
                     $('#spinnerLoading').hide();
-                    alert('Error uploading image: ' + error);
-                    }
-                });
+                    alert('Submit error: ' + error);
                 }
-            }).catch((error) => {
-                console.error("Capture failed:", error);
-                alert("Failed to capture image. Please try again.");
             });
+
         });
+
 
         $('#submitWeightPrint').on('click', function(){
             // Check weight
@@ -3827,6 +3903,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             var transaType = $('#transactionStatus').val();
 
             if (weightType == 'Container'){
+                $('#addModal').find('#containerInfo').show();
                 $.post('php/getContainers.php', {userID: transaType}, function (data){
                     var obj = JSON.parse(data);
 
@@ -3876,6 +3953,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 $('#addModal').find('#emptyContainerNo').attr('required', true);
             }else if (weightType == 'Empty Container'){
                 handleWeightType(weightType);
+                $('#addModal').find('#containerInfo').show();
                 $('#addModal').find('#containerNo1Label').text("Container No 1");
                 $('#addModal').find('#emptyContainerDisplay').hide();
                 $('#addModal').find('#replacementContainerDisplay').hide();
@@ -3891,6 +3969,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 $('#addModal').find('#containerNoInput').attr('required', true);
                 $('#addModal').find('#emptyContainerNo').attr('required', false);
             }else if (weightType == 'Different Container') {
+                $('#addModal').find('#containerInfo').show();
+
                 $.post('php/getContainers.php', {userID: transaType}, function (data){
                     var obj = JSON.parse(data);
 
@@ -3938,6 +4018,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 $('#addModal').find('#containerNoInput').attr('required', false);
                 $('#addModal').find('#emptyContainerNo').attr('required', true);
             }else{
+                $('#addModal').find('#containerInfo').hide();
                 handleWeightType(weightType);
                 $('#addModal').find('#containerNo1Label').text("Container No 1");
                 $('#addModal').find('#emptyContainerDisplay').hide();
@@ -5671,6 +5752,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         width: 330,
         height: 200,
         language: "en",
+        download: false,
         env: { domain: "https://isgpopen.ezvizlife.com" },
         //streamInfoCBType: 1,
         staticPath: "cctv/ezuikit_static",
@@ -5751,6 +5833,81 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             🚨 ${msg}<br>
             <small>Please check device WiFi or network</small>
         </div>`;
+    }
+
+    function captureFromPlayer(player, callback) {
+        try {
+            player.capturePicture("", function (data) {
+                if (!data || !data.base64) {
+                    console.error("Invalid snapshot data:", data);
+                    return;
+                }
+                callback(data.base64);
+            }, false);
+        } catch (e) {
+            console.error("Capture failed:", e);
+        }
+    }
+
+    // =======================
+    // INCOMING SNAP ALL (FIXED)
+    // =======================
+    function captureIncomingAll() {
+        incomingCamIds.forEach((camId, i) => {
+            const player = window[camId];
+            if (!player) return;
+
+            captureFromPlayer(player, (base64) => {
+                const imgId = "in_img" + (i + 1);
+                const inputId = "incoming_cam" + (i + 1);
+
+                document.getElementById(imgId).src = base64;
+                document.getElementById(imgId).style.display = "block";
+                document.getElementById(inputId).value = base64;
+            });
+        });
+
+        document.getElementById("incomingRetakeBtn").style.display = "inline-block";
+    }
+
+    // =======================
+    // OUTGOING SNAP ALL (FIXED)
+    // =======================
+    function captureOutgoingAll() {
+        outgoingCamIds.forEach((camId, i) => {
+            const player = window[camId];
+            if (!player) return;
+
+            captureFromPlayer(player, (base64) => {
+                const imgId = "out_img" + (i + 1);
+                const inputId = "outgoing_cam" + (i + 1);
+
+                document.getElementById(imgId).src = base64;
+                document.getElementById(imgId).style.display = "block";
+                document.getElementById(inputId).value = base64;
+            });
+        });
+
+        document.getElementById("outgoingRetakeBtn").style.display = "inline-block";
+    }
+
+    // =======================
+    // RETAKE FUNCTIONS
+    // =======================
+    function retakeIncomingAll() {
+        for (let i = 1; i <= 4; i++) {
+            document.getElementById("in_img" + i).style.display = "none";
+            document.getElementById("incoming_cam" + i).value = "";
+        }
+        document.getElementById("incomingRetakeBtn").style.display = "none";
+    }
+
+    function retakeOutgoingAll() {
+        for (let i = 1; i <= 4; i++) {
+            document.getElementById("out_img" + i).style.display = "none";
+            document.getElementById("outgoing_cam" + i).value = "";
+        }
+        document.getElementById("outgoingRetakeBtn").style.display = "none";
     }
     </script>
 </body>

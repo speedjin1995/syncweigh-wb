@@ -9,35 +9,74 @@ if(!isset($_SESSION['id'])){
 }
 // Check if the user is already logged in, if yes then redirect him to index page
 $id = $_SESSION['id'];
-
 $today = date('ym');
 
-if (isset($_FILES['capturedImage']) && $_FILES['capturedImage']['error'] === UPLOAD_ERR_OK) {
+// ================================
+// ✅ BASE64 IMAGE SAVE FUNCTION
+// ================================
+function saveBase64Image($base64, $prefix = 'img') {
+
+    if (!$base64) return null;
+
     // Create uploads folder if not exist
     $targetDir = "../uploads/captured/";
     if (!is_dir($targetDir)) {
         mkdir($targetDir, 0777, true);
     }
 
+    // Extract image type
+    if (preg_match('/^data:image\/(\w+);base64,/', $base64, $type)) {
+        $base64 = substr($base64, strpos($base64, ',') + 1);
+        $extension = strtolower($type[1]); // jpg, png, etc
+    } else {
+        return null;
+    }
+
+    $base64 = str_replace(' ', '+', $base64);
+    $data = base64_decode($base64);
+
+    if ($data === false) {
+        return null;
+    }
+
     // Generate unique file name
-    $extension = pathinfo($_FILES["capturedImage"]["name"], PATHINFO_EXTENSION);
-    $fileName = 'capture_' . date('Ymd_His') . '_' . uniqid() . '.' . $extension;
+    $fileName = $prefix . "_" . date('Ymd_His') . "_" . uniqid() . "." . $extension;
     $targetFile = $targetDir . $fileName;
 
-    // Move uploaded file to destination folder
-    if (move_uploaded_file($_FILES["capturedImage"]["tmp_name"], $targetFile)) {
-        // ✅ Save relative path (to use later in web)
-        $imagePath = "uploads/captured/" . $fileName;
+    if (file_put_contents($targetFile, $data)) {
+        // ✅ Return relative path for DB storage
+        return "uploads/captured/" . $fileName;
     } else {
-        echo json_encode([
-            'status' => 'failed',
-            'message' => 'Failed to move uploaded file.'
-        ]);
-        exit;
+        return null;
     }
-} else {
-    // Optional: handle case with no image
-    $imagePath = null;
+}
+
+// ================================
+// ✅ INCOMING IMAGES
+// ================================
+$incomingImages = [];
+
+for ($i = 1; $i <= 4; $i++) {
+    if (!empty($_POST["incoming_cam$i"])) {
+        $path = saveBase64Image($_POST["incoming_cam$i"], "incoming_cam$i");
+        $incomingImages[$i] = $path;
+    } else {
+        $incomingImages[$i] = null;
+    }
+}
+
+// ================================
+// ✅ OUTGOING IMAGES
+// ================================
+$outgoingImages = [];
+
+for ($i = 1; $i <= 4; $i++) {
+    if (!empty($_POST["outgoing_cam$i"])) {
+        $path = saveBase64Image($_POST["outgoing_cam$i"], "outgoing_cam$i");
+        $outgoingImages[$i] = $path;
+    } else {
+        $outgoingImages[$i] = null;
+    }
 }
 
 // Processing form data when form is submitted
