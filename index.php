@@ -98,7 +98,7 @@ $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY nam
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $site = $db->query("SELECT * FROM Site WHERE status = '0' ORDER BY name ASC");
 $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
-//$driver = $db->query("SELECT * FROM Driver WHERE status = '0' ORDER BY name ASC");
+$drivers = $db->query("SELECT * FROM Driver WHERE status = '0' ORDER BY driver_name ASC");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
@@ -860,10 +860,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         <div class="row">
                                                                                             <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
                                                                                             <div class="col-sm-8">
-                                                                                                <input type="text" class="form-control" id="driverName" name="driverName" placeholder="Driver Name" required>
-                                                                                                <div class="invalid-feedback">
-                                                                                                    Please fill in the field.
-                                                                                                </div>
+                                                                                                <select class="form-select js-choice select2" id="driverName" name="driverName">
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($rowDriver=mysqli_fetch_assoc($drivers)){ ?>
+                                                                                                        <option value="<?=$rowDriver['driver_name'] ?>" data-code="<?=$rowDriver['driver_ic'] ?>"><?=$rowDriver['driver_name'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -871,7 +873,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         <div class="row">
                                                                                             <label for="driverIc" class="col-sm-4 col-form-label">Driver Ic</label>
                                                                                             <div class="col-sm-8">
-                                                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver Ic">
+                                                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -4529,6 +4531,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         //supplierName
         $('#supplierName').on('change', function(){
             $('#supplierCode').val($('#supplierName :selected').data('code'));
+        });
+
+        $('#driverName').on('change', function(){
+            $('#driverIc').val($('#driverName :selected').data('code'));
         });
 
         //transporter

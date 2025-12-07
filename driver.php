@@ -348,7 +348,7 @@ $(function () {
     // $.validator.setDefaults({
     //     submitHandler: function() {
     $('#submitDriver').on('click', function(){
-        if($('#DriverForm').valid()){
+        if($('#driverForm').valid()){
             $('#spinnerLoading').show();
             $.post('php/driver.php', $('#driverForm').serialize(), function(data){
                 var obj = JSON.parse(data); 
