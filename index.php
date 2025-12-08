@@ -2900,29 +2900,35 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $("#successBtn").attr('data-toast-text', obj.message);
                         $("#successBtn").click();
 
-                        $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-                            var obj2 = JSON.parse(data);
+                        $('#printCameraModal').find('#id').val(obj.id);
+                        $('#printCameraModal').find('#printSlipMode').val("Normal");
+                        $('#printCameraModal').find('#isEmptyContainer').val(isEmptyContainer);
+                        $("#printCameraModal").modal("show");
 
-                            if(obj2.status === 'success'){
-                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                printWindow.document.write(obj2.message);
-                                printWindow.document.close();
-                                setTimeout(function(){
-                                    printWindow.print();
-                                    printWindow.close();
-                                    table.ajax.reload();
-                                    window.location = 'index.php';
-                                }, 500);
-                            }
-                            else if(obj.status === 'failed'){
-                                $("#failBtn").attr('data-toast-text', obj.message );
-                                $("#failBtn").click();
-                            }
-                            else{
-                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                                $("#failBtn").click();
-                            }
-                        });
+
+                        // $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+                        //     var obj2 = JSON.parse(data);
+
+                        //     if(obj2.status === 'success'){
+                        //         var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                        //         printWindow.document.write(obj2.message);
+                        //         printWindow.document.close();
+                        //         setTimeout(function(){
+                        //             printWindow.print();
+                        //             printWindow.close();
+                        //             table.ajax.reload();
+                        //             window.location = 'index.php';
+                        //         }, 500);
+                        //     }
+                        //     else if(obj.status === 'failed'){
+                        //         $("#failBtn").attr('data-toast-text', obj.message );
+                        //         $("#failBtn").click();
+                        //     }
+                        //     else{
+                        //         $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                        //         $("#failBtn").click();
+                        //     }
+                        // });
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -3696,6 +3702,26 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#addModal').find('#containerNo2').val("");
             $('#addModal').find('#sealNo2').val("");
 
+            // Reset Camera
+            $('#addModal').find('#incoming_cam1').val("");
+            $('#addModal').find('#incoming_cam2').val("");
+            $('#addModal').find('#incoming_cam3').val("");
+            $('#addModal').find('#incoming_cam4').val("");
+            $('#addModal').find('#in_img1').attr('src', '').hide();
+            $('#addModal').find('#in_img2').attr('src', '').hide();
+            $('#addModal').find('#in_img3').attr('src', '').hide();
+            $('#addModal').find('#in_img4').attr('src', '').hide();
+            $('#addModal').find('#incomingRetakeBtn').hide();
+            $('#addModal').find('#outgoing_cam1').val("");
+            $('#addModal').find('#outgoing_cam2').val("");
+            $('#addModal').find('#outgoing_cam3').val("");
+            $('#addModal').find('#outgoing_cam4').val("");
+            $('#addModal').find('#out_img1').attr('src', '').hide();
+            $('#addModal').find('#out_img2').attr('src', '').hide();
+            $('#addModal').find('#out_img3').attr('src', '').hide();
+            $('#addModal').find('#out_img4').attr('src', '').hide();
+            $('#addModal').find('#outgoingRetakeBtn').hide();
+            
             // Show select and hide input readonly
             $('#addModal').find('#salesOrderEdit').val("").hide();
             $('#addModal').find('#purchaseOrderEdit').val("").hide();
