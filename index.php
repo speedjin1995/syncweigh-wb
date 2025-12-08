@@ -1645,7 +1645,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                     </div>
 
                                     <div class="modal fade" id="printCameraModal">
-                                        <div class="modal-dialog modal-xl" style="max-width: 90%;">
+                                        <div class="modal-dialog modal-xl" style="max-width: 50%;">
                                             <div class="modal-content">
                                                 <form role="form" id="printCameraForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
