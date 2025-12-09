@@ -601,7 +601,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>-->
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierWeight" style="display:none;">
+                                                                                    <!--div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierWeight" style="display:none;">
                                                                                         <div class="row">
                                                                                             <label for="supplierWeight" class="col-sm-4 col-form-label">Supplier Weight</label>
                                                                                             <div class="col-sm-8">
@@ -611,7 +611,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div>  
+                                                                                    </div-->  
                                                                                 </div>
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
@@ -851,6 +851,19 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
+                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierName" style="display:none;">
+                                                                                        <div class="row">
+                                                                                            <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-select select2" id="supplierName" name="supplierName" required>
+                                                                                                    <option selected="-">-</option>
+                                                                                                    <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
+                                                                                                        <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
+                                                                                                    <?php } ?>
+                                                                                                </select>                                                                                        
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
                                                                                             <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
@@ -869,19 +882,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             <label for="driverIc" class="col-sm-4 col-form-label">Driver Ic</label>
                                                                                             <div class="col-sm-8">
                                                                                                 <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierName" style="display:none;">
-                                                                                        <div class="row">
-                                                                                            <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
-                                                                                            <div class="col-sm-8">
-                                                                                                <select class="form-select select2" id="supplierName" name="supplierName" required>
-                                                                                                    <option selected="-">-</option>
-                                                                                                    <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
-                                                                                                        <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
-                                                                                                    <?php } ?>
-                                                                                                </select>                                                                                        
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -1314,7 +1314,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="row mb-3">
+                                                                                <!--div class="row mb-3">
                                                                                     <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
@@ -1322,7 +1322,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             <div class="input-group-text">Kg</div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
+                                                                                </div-->
                                                                                 <div class="row mb-3" id="unitPriceDisplay">
                                                                                     <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
                                                                                     <div class="col-sm-8">
@@ -4684,7 +4684,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
             if($(this).val() == "Purchase" || $(this).val() == "Local"){
                 $('#divWeightDifference').show();
-                $('#divSupplierWeight').show();
+                //$('#divSupplierWeight').show();
                 $('#addModal').find('#orderWeight').val("");
                 $('#addModal').find('#supplierWeight').val("0");
                 $('#divSupplierName').show();

@@ -387,10 +387,18 @@ else{
                                                                 <h5 class="card-title text-white mb-0">Weighing Records</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                <button type="button" id="exportSummaryPdf" class="btn btn-info waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                    <i class="ri-file-pdf-line align-middle me-1"></i>
+                                                                    Export Summary Report
+                                                                </button>
+                                                                <button type="button" id="exportSalesPdf" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                    <i class="ri-file-pdf-line align-middle me-1"></i>
+                                                                    Export Details Report
+                                                                </button>
+                                                                <!--button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_pdf_code'][$language]?>
-                                                                </button>
+                                                                </button-->
                                                                 <button type="button" id="exportExcel" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_excel_code'][$language]?>
@@ -503,6 +511,95 @@ else{
                             <div class="hstack gap-2 justify-content-end">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
                                 <button type="submit" class="btn btn-success" id="submit"><?=$languageArray['submit_code'][$language]?></button>
+                            </div>
+                        </div><!--end col-->                                                               
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="exportSoRepModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Export Sales Report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="exportSoRepForm" class="needs-validation" novalidate autocomplete="off">
+                        <div class="row col-12">
+                            <div class="col-12">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <input type="hidden" class="form-control" id="id" name="id"> 
+                                            <div class="col-12">
+                                                <div class="row">
+                                                    <div class="form-group col-4 mb-3">
+                                                        <label for="group1">Group 1</label>
+                                                        <select id="group1" name="group1" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="customer_code">Customer</option>
+                                                            <option value="product_code">Product</option>
+                                                            <option value="lorry_plate_no1">Vehicle</option>
+                                                            <option value="destination_code">Destination</option>
+                                                            <option value="transporter_code">Transporter</option>
+                                                            <option value="plant_code">Plant</option>
+                                                        </select>         
+                                                    </div>
+                                                    <div class="form-group col-4 mb-3">
+                                                        <label for="group2">Group 2</label>
+                                                        <select id="group2" name="group2" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="customer_code">Customer</option>
+                                                            <option value="product_code">Product</option>
+                                                            <option value="lorry_plate_no1">Vehicle</option>
+                                                            <option value="destination_code">Destination</option>
+                                                            <option value="transporter_code">Transporter</option>
+                                                            <option value="plant_code">Plant</option>
+                                                        </select>         
+                                                    </div>
+                                                    <div class="form-group col-4 mb-3">
+                                                        <label for="group3">Group 3</label>
+                                                        <select id="group3" name="group3" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="customer_code">Customer</option>
+                                                            <option value="product_code">Product</option>
+                                                            <option value="lorry_plate_no1">Vehicle</option>
+                                                            <option value="destination_code">Destination</option>
+                                                            <option value="transporter_code">Transporter</option>
+                                                            <option value="plant_code">Plant</option>
+                                                        </select>         
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" class="form-control" id="fromDate" name="fromDate">                                   
+                                            <input type="hidden" class="form-control" id="toDate" name="toDate">                                   
+                                            <input type="hidden" class="form-control" id="status" name="status">                                   
+                                            <input type="hidden" class="form-control" id="customer" name="customer">     
+                                            <input type="hidden" class="form-control" id="supplier" name="supplier"> 
+                                            <input type="hidden" class="form-control" id="vehicle" name="vehicle">     
+                                            <input type="hidden" class="form-control" id="weighingType" name="weighingType">     
+                                            <input type="hidden" class="form-control" id="customerType" name="customerType">     
+                                            <input type="hidden" class="form-control" id="product" name="product">  
+                                            <input type="hidden" class="form-control" id="rawMat" name="rawMat">   
+                                            <input type="hidden" class="form-control" id="destination" name="destination">     
+                                            <input type="hidden" class="form-control" id="plant" name="plant">     
+                                            <input type="hidden" class="form-control" id="batchDrum" name="batchDrum">     
+                                            <input type="hidden" class="form-control" id="type" name="type">     
+                                            <input type="hidden" class="form-control" id="isMulti" name="isMulti">     
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-12">
+                            <div class="hstack gap-2 justify-content-end">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger" id="submit">Submit</button>
                             </div>
                         </div><!--end col-->                                                               
                     </form>
@@ -799,6 +896,83 @@ else{
                         alert("An error occurred while generating the PDF.");
                     });
                 }
+                else if($('#exportSoRepModal').hasClass('show')){   
+                    var group1 = $('#exportSoRepModal').find('#group1').val();
+                    var group2 = $('#exportSoRepModal').find('#group2').val();
+                    var group3 = $('#exportSoRepModal').find('#group3').val();
+                    var group4 = $('#exportSoRepModal').find('#group4').val();
+
+                    // Added checking to ensure previous group is selected
+                    if (group2 && !group1) {
+                        alert("Please select Group 1 before selecting Group 2.");
+                        return;
+                    }
+                    if (group3 && (!group1 || !group2)) {
+                        alert("Please select Group 1 and Group 2 before selecting Group 3.");
+                        return;
+                    }
+
+                    var fromDateI = $('#fromDateSearch').val();
+                    var toDateI = $('#toDateSearch').val();
+                    var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+                    var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+                    var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+                    var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+                    var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
+                    var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
+                    var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+                    var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
+                    var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+                    var batchDrumSearchI = $('#batchDrumSearch').val() ? $('#batchDrumSearch').val() : '';
+
+                    var selectedIds = []; // An array to store the selected 'id' values
+                    $("#weightTable tbody input[type='checkbox']").each(function () {
+                        if (this.checked) {
+                            selectedIds.push($(this).val());
+                        }
+                    });
+
+                    if (selectedIds.length > 0) {
+                        $('#exportSoRepForm').find('#id').val(selectedIds);
+                        $('#exportSoRepForm').find('#isMulti').val('Y');
+                    }else{
+                        $('#exportSoRepForm').find('#isMulti').val('N');
+                    }
+
+                    $('#exportSoRepForm').find('#fromDate').val(fromDateI);
+                    $('#exportSoRepForm').find('#toDate').val(toDateI);
+                    $('#exportSoRepForm').find('#status').val(statusI);
+                    $('#exportSoRepForm').find('#customer').val(customerNoI);
+                    $('#exportSoRepForm').find('#supplier').val(supplierNoI);
+                    $('#exportSoRepForm').find('#vehicle').val(vehicleNoI);
+                    $('#exportSoRepForm').find('#customerType').val(customerTypeI);
+                    $('#exportSoRepForm').find('#product').val(productI);
+                    $('#exportSoRepForm').find('#rawMat').val(rawMatI);
+                    $('#exportSoRepForm').find('#destination').val(destinationI);
+                    $('#exportSoRepForm').find('#plant').val(plantI);
+                    $('#exportSoRepForm').find('#batchDrum').val(batchDrumSearchI);
+                    $('#exportSoRepForm').find('#type').val('Sales');
+                    $('#exportSoRepModal').modal('hide');
+
+                    $.post('php/exportSoPoReport.php', $('#exportSoRepForm').serialize(), function(response){
+                        var obj = JSON.parse(response);
+
+                        if(obj.status === 'success'){
+                            var previewWindow = window.open('', '_blank');
+                            previewWindow.document.write(obj.message);
+                            previewWindow.document.close();
+                        }
+                        else if(obj.status === 'failed'){
+                            toastr["error"](obj.message, "Failed:");
+                        }
+                        else{
+                            toastr["error"]("Something wrong when activate", "Failed:");
+                        }
+                    }).fail(function(error){
+                        console.error("Error exporting PDF:", error);
+                        alert("An error occurred while generating the PDF.");
+                    });
+                }
             }
         });
 
@@ -896,6 +1070,48 @@ else{
                 });
             }
             
+        });
+
+        $('#exportSummaryPdf').on('click', function(){
+            $("#exportPdfModal").find('#reportType').val('');
+            $("#exportPdfModal").modal("show");
+
+            $('#exportPdfForm').validate({
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+        });
+        
+        $('#exportSalesPdf').on('click', function(){
+            $("#exportSoRepModal").find('#group1').val('');
+            $("#exportSoRepModal").find('#group2').val('');
+            $("#exportSoRepModal").find('#group3').val('');
+            $("#exportSoRepModal").find('#group4').val('');
+            $("#exportSoRepModal").find('select[id^="group"] option').prop('disabled', false);
+            $("#exportSoRepModal").modal("show");
+
+            $('#exportSoRepForm').validate({
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
         });
 
         $('#exportExcel').on('click', function(){
