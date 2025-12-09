@@ -59,11 +59,10 @@ if($row = $result->fetch_assoc()){
                                                 <div class="form-group">
                                                     <label>Indicator</label>
                                                     <select class="form-control" style="width: 100%;" id="indicator" name="indicator" required>
-                                                        <option value="BDI" <?=$indicator == 'BDI' ? 'selected="selected"' : '';?>>BDI2001B</option>
+                                                        <option value="BX23" <?=$indicator == 'BX23' ? 'selected="selected"' : '';?>>BAYKON BX23</option>
                                                         <option value="X2S" <?=$indicator == 'X2S' ? ' selected="selected"' : '';?>>SYNCTRONIX X2S</option>
                                                         <option value="X722" <?=$indicator == 'X722' ? ' selected="selected"' : '';?>>SYNCTRONIX X722</option>
-                                                        <option value="EX2001" <?=$indicator == 'EX2001' ? ' selected="selected"' : '';?>>SYNCTRONIX EX2001</option>
-                                                        <option value="D2008" <?=$indicator == 'D2008' ? ' selected="selected"' : '';?>>SYNCTRONIX D2008</option>
+                                                        <option value="205" <?=$indicator == '205' ? ' selected="selected"' : '';?>>CARDINAL STORM 205</option>
                                                     </select>
                                                 </div>
                                             </div>

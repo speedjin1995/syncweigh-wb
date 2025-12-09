@@ -116,7 +116,7 @@ else{
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0'");
 }
 
-$cameras = [];
+/*$cameras = [];
 $stmtCam = $db->prepare("SELECT serial_number FROM Camera WHERE deleted = 0 AND active = 'Y'");
 $stmtCam->execute();
 $resultCam = $stmtCam->get_result();
@@ -130,7 +130,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     ];
     
     $count++;
-}
+}*/
 ?>
 
 <head>
@@ -727,17 +727,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
-                                                                                        <div class="row">
-                                                                                            <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
-                                                                                            <div class="col-sm-8">
-                                                                                                <div class="input-group">
-                                                                                                    <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
-                                                                                                    <div class="input-group-text">Kg</div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
                                                                                 </div>
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
@@ -1027,7 +1016,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row col-12" style="display: none;">
+                                                                <!--div class="row col-12" style="display: none;">
                                                                     <div class="col-xxl-12 col-lg-12">
                                                                         <div class="card bg-light">
                                                                             <div class="card-body">
@@ -1051,17 +1040,17 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         </thead>
                                                                                         <tbody id="productTable"></tbody>
                                                                                     </table>                                            
-                                                                                </div><!-- end row -->     
+                                                                                </div>   
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="row video-row" style="margin-bottom: 1.5rem;">
+                                                                </div-->
+                                                                <!--div class="row video-row" style="margin-bottom: 1.5rem;">
                                                                     <div class="video-container" id="video-container1"></div><br>
                                                                     <div class="video-container" id="video-container2"></div><br>
                                                                     <div class="video-container" id="video-container3"></div><br>
                                                                     <div class="video-container" id="video-container4"></div><br>
-                                                                </div>
+                                                                </div-->
                                                                 <div class="row col-12">
                                                                     <div class="col-xxl-4 col-lg-4" id="normalCard">
                                                                         <div class="card bg-light">
@@ -1113,11 +1102,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <!-- ========================= -->
                                                                                 <!-- INCOMING PHOTOS (4 CAM) -->
                                                                                 <!-- ========================= -->
-                                                                                <div class="row mb-3">
+                                                                                <!--div class="row mb-3">
                                                                                     <label class="col-sm-4 col-form-label">Incoming Photos</label>
                                                                                     <div class="col-sm-8">
-
-                                                                                        <!-- Preview Grid -->
                                                                                         <div class="d-grid" style="grid-template-columns: repeat(4, 1fr); gap:10px;">
                                                                                             <img id="in_img1" class="img-fluid rounded" style="display:none;">
                                                                                             <img id="in_img2" class="img-fluid rounded" style="display:none;">
@@ -1135,13 +1122,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </button>
                                                                                         </div>
 
-                                                                                        <!-- Hidden Base64 Holders -->
                                                                                         <input type="hidden" name="incoming_cam1" id="incoming_cam1">
                                                                                         <input type="hidden" name="incoming_cam2" id="incoming_cam2">
                                                                                         <input type="hidden" name="incoming_cam3" id="incoming_cam3">
                                                                                         <input type="hidden" name="incoming_cam4" id="incoming_cam4">
                                                                                     </div>
-                                                                                </div>
+                                                                                </div-->
                                                                                 <div class="row mb-3">
                                                                                     <label for="grossIncomingDate" class="col-sm-4 col-form-label">Incoming Date</label>
                                                                                     <div class="col-sm-8">
@@ -1151,7 +1137,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <!-- ========================= -->
                                                                                 <!-- OUTGOING PHOTOS (4 CAM) -->
                                                                                 <!-- ========================= -->
-                                                                                <div class="row mb-3">
+                                                                                <!--div class="row mb-3">
                                                                                     <label class="col-sm-4 col-form-label">Outgoing Photos</label>
                                                                                     <div class="col-sm-8">
 
@@ -1177,7 +1163,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         <input type="hidden" name="outgoing_cam3" id="outgoing_cam3">
                                                                                         <input type="hidden" name="outgoing_cam4" id="outgoing_cam4">
                                                                                     </div>
-                                                                                </div>
+                                                                                </div-->
                                                                                 <div class="row mb-3">
                                                                                     <label for="tareOutgoing" class="col-sm-4 col-form-label">Outgoing</label>
                                                                                     <div class="col-sm-8">                                                                                     
@@ -1202,6 +1188,15 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="nettWeight" name="nettWeight" placeholder="0" readonly>
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
                                                                                             <div class="input-group-text">Kg</div>
                                                                                         </div>
                                                                                     </div>
@@ -2349,7 +2344,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                 buttons += `
                                 <div class="col-auto">
                                     <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                        <i class="fa-solid fa-print"></i>
+                                        <i class="fas fa-print"></i>
                                     </button>
                                 </div>`;
                             }
@@ -2479,7 +2474,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         buttons += `
                         <div class="col-auto">
                             <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                <i class="fa-solid fa-print"></i>
+                                <i class="fas fa-print"></i>
                             </button>
                         </div>`;
 
@@ -2555,7 +2550,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             }
         });
 
-        /*$('#submitWeight').on('click', function(){
+        $('#submitWeight').on('click', function(){
             // Check weight
             var trueWeight = 0;
             var variance = $('#productVariance').val() || '';
@@ -2714,9 +2709,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     });
                 }
             }*/
-        //});*/
+        });
         
-        $('#submitWeight').on('click', function () {
+        /*$('#submitWeight').on('click', function () {
             var trueWeight = 0;
             var variance = $('#productVariance').val() || '';
             var high = $('#productHigh').val() || '';
@@ -2830,7 +2825,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 }
             });
 
-        });
+        });*/
 
 
         $('#submitWeightPrint').on('click', function(){
@@ -2900,35 +2895,34 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $("#successBtn").attr('data-toast-text', obj.message);
                         $("#successBtn").click();
 
-                        $('#printCameraModal').find('#id').val(obj.id);
+                        /*$('#printCameraModal').find('#id').val(obj.id);
                         $('#printCameraModal').find('#printSlipMode').val("Normal");
                         $('#printCameraModal').find('#isEmptyContainer').val(isEmptyContainer);
-                        $("#printCameraModal").modal("show");
+                        $("#printCameraModal").modal("show");*/
 
+                        $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+                            var obj2 = JSON.parse(data);
 
-                        // $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-                        //     var obj2 = JSON.parse(data);
-
-                        //     if(obj2.status === 'success'){
-                        //         var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        //         printWindow.document.write(obj2.message);
-                        //         printWindow.document.close();
-                        //         setTimeout(function(){
-                        //             printWindow.print();
-                        //             printWindow.close();
-                        //             table.ajax.reload();
-                        //             window.location = 'index.php';
-                        //         }, 500);
-                        //     }
-                        //     else if(obj.status === 'failed'){
-                        //         $("#failBtn").attr('data-toast-text', obj.message );
-                        //         $("#failBtn").click();
-                        //     }
-                        //     else{
-                        //         $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                        //         $("#failBtn").click();
-                        //     }
-                        // });
+                            if(obj2.status === 'success'){
+                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                                printWindow.document.write(obj2.message);
+                                printWindow.document.close();
+                                setTimeout(function(){
+                                    printWindow.print();
+                                    printWindow.close();
+                                    table.ajax.reload();
+                                    window.location = 'index.php';
+                                }, 500);
+                            }
+                            else if(obj.status === 'failed'){
+                                $("#failBtn").attr('data-toast-text', obj.message );
+                                $("#failBtn").click();
+                            }
+                            else{
+                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                                $("#failBtn").click();
+                            }
+                        });
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -3177,7 +3171,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             }
         });
         
-        initAllCameras();
+        //initAllCameras();
 
         /*if (player) {
             destroy();
@@ -3262,6 +3256,22 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#indicatorConnected').addClass('bg-primary');
                             $('#checkingConnection').removeClass('bg-danger');
                         }
+                    }
+                    else if(ind == 'BX23'){
+                        var text = data.split(" ");
+                        let newArray = text.slice(1, -1);
+                        let newtext = newArray.join();
+                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
+                        $('#indicatorConnected').addClass('bg-primary');
+                        $('#checkingConnection').removeClass('bg-danger');
+                    }
+                    else if(ind == '205'){
+                        var text = data.split(" ");
+                        let newArray = text.slice(1, -1);
+                        let newtext = newArray.join();
+                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
+                        $('#indicatorConnected').addClass('bg-primary');
+                        $('#checkingConnection').removeClass('bg-danger');
                     }
                     else if(ind == 'BDI'){
                         if(data.includes("GS") || data.includes("NT") || data.includes("ST") || data.includes("US")){
@@ -3460,7 +3470,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                            <i class="fa-solid fa-print"></i>
+                                            <i class="fas fa-print"></i>
                                         </button>
                                     </div>`;
                                 }
@@ -3590,7 +3600,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             buttons += `
                             <div class="col-auto">
                                 <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                    <i class="fa-solid fa-print"></i>
+                                    <i class="fas fa-print"></i>
                                 </button>
                             </div>`;
 
@@ -4206,7 +4216,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#vehicleNoTxt').val(x);
             var transactionStatus = $('#transactionStatus').val();
 
-            if (x){
+            /*if (x){
                 $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
@@ -4226,7 +4236,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);
-                        $('#vehicleNoTxt').val('');
+                        //$('#vehicleNoTxt').val('');
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -4239,13 +4249,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
-            }
+            }*/
         });
 
         $('#vehiclePlateNo1').on('change', function(){
             var vehiclePlateNo1 = $(this).val();
             var transactionStatus = $('#transactionStatus').val();
-            if (vehiclePlateNo1){
+            /*if (vehiclePlateNo1){
                 $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
@@ -4278,7 +4288,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
-            }
+            }*/
         });
 
         $('#manualVehicle2').on('change', function(){
@@ -5722,289 +5732,34 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     $(element).removeClass('is-invalid');
                 }
             });
-        }else{
-            $.post('php/print.php', {userID: id, file: 'weight'}, function(data){
-                var obj = JSON.parse(data);
+        }else{*/
+        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+            var obj = JSON.parse(data);
 
-                if(obj.status === 'success'){
-                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                    printWindow.document.write(obj.message);
-                    printWindow.document.close();
-                    setTimeout(function(){
-                        printWindow.print();
-                        printWindow.close();
-                    }, 500);
-                }
-                else if(obj.status === 'failed'){
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-                else{
-                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                    $("#failBtn").click();
-                }
-            });
-        }*/
+            if(obj.status === 'success'){
+                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                printWindow.document.write(obj.message);
+                printWindow.document.close();
+                setTimeout(function(){
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
+            }
+            else if(obj.status === 'failed'){
+                $("#failBtn").attr('data-toast-text', obj.message );
+                $("#failBtn").click();
+            }
+            else{
+                $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                $("#failBtn").click();
+            }
+        });
+        //}
         //var id = $('#prePrintModal').find('#id').val();
-        $('#printCameraModal').find('#id').val(id);
+        /*$('#printCameraModal').find('#id').val(id);
         $('#printCameraModal').find('#printSlipMode').val("Normal");
         $('#printCameraModal').find('#isEmptyContainer').val(isEmptyContainer);
-        $("#printCameraModal").modal("show");
-    }
-
-    function buildMessage(action) {
-        // Bootstrap values from PHP
-        const deductions = {
-            F1: <?= (int)$F1 ?>,
-            F2: <?= (int)$F2 ?>,
-            F3: <?= (int)$F3 ?>,
-            F4: <?= (int)$F4 ?>,
-            F5: <?= (int)$F5 ?>,
-            F6: <?= (int)$F6 ?>,
-            F7: <?= (int)$F7 ?>,
-            F8: <?= (int)$F8 ?>,
-            F9: <?= (int)$F9 ?>,
-            F10: <?= (int)$F10 ?>,
-            F11: <?= (int)$F11 ?>,
-            F12: <?= (int)$F12 ?>
-        };
-
-        // Map F key → input name + format
-        const mapping = {
-            F1: { field: 'F1', sign: '-', suffix: '#' },
-            F2: { field: 'F2', sign: '-', suffix: '#' },
-            F3: { field: 'F3', sign: '-', suffix: '#' },
-            F4: { field: 'F4', sign: '+', suffix: '#' },
-            F5: { field: 'F5', sign: '+', suffix: '#' },
-            F6: { field: 'F6', sign: '+', suffix: '#' },
-            F7: { field: 'F7', sign: '-', suffix: '%' },
-            F8: { field: 'F8', sign: '-', suffix: '%' },
-            F9: { field: 'F9', sign: '-', suffix: '%' },
-            F10: { field: 'F10', sign: '+', suffix: '%' },
-            F11: { field: 'F11', sign: '+', suffix: '%' },
-            F12: { field: 'F12', sign: '+', suffix: '%' }
-        };
-
-        const cfg = mapping[action];
-        if (!cfg) return null;
-
-        const val = deductions[action] || 0;
-        const padded = String(val).padStart(5, '0');
-        return "JS" + cfg.sign + padded + cfg.suffix;
-    }
-
-    function postMessage(message) {
-        $.ajax({
-        url: 'http://127.0.0.1:5002/deduction',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ message: message }),
-        success: function (res) {
-            console.log("Sent:", message, "→", res);
-        },
-        error: function (xhr, status, err) {
-            console.warn("Error posting:", message, status, err);
-        }
-        });
-    }
-    
-    // Step 1: Fetch access token
-    async function getAccessToken() {
-      const response = await fetch("https://open.ezvizlife.com/api/lapp/token/get", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          appKey: "d8e5fb039e214702b698857e8ae8cb06",
-          appSecret: "9d85b3a9379949ecba28b54c3f9eb747",
-        }),
-      });
-    
-      const data = await response.json();
-      console.log("Token response:", data);
-    
-      if (data.code === "200" && data.data.accessToken) {
-        return data.data.accessToken;
-      } else {
-        throw new Error("Failed to get access token");
-      }
-    }
-    
-    // Step 2: Create player for each camera
-    function createPlayer(containerId, token, cameraUrl) {
-      // ✅ Safely destroy if an EZUIKitPlayer instance already exists
-      if (window[containerId] && typeof window[containerId].destroy === "function") {
-        try {
-          window[containerId].destroy();
-        } catch (err) {
-          console.warn(`Failed to destroy old player for ${containerId}:`, err);
-        }
-      }
-      
-      // ✅ Initialize new player
-      const player = new EZUIKit.EZUIKitPlayer({
-        id: containerId,
-        accessToken: token,
-        url: cameraUrl,
-        template: "pcLive",
-        width: 330,
-        height: 200,
-        language: "en",
-        download: false,
-        env: { domain: "https://isgpopen.ezvizlife.com" },
-        //streamInfoCBType: 1,
-        staticPath: "cctv/ezuikit_static",
-        loggerOptions: {
-          level: "INFO",
-          name: "ezuikit",
-          showTime: true,
-        },
-        handleError: (error) => {
-            console.error(`${containerId} -> CCTV Error:`, error);
-            $('.loading').hide();
-
-            // replace video with UI message
-            document.getElementById(containerId).innerHTML = `
-                <div style="padding:25px;color:#ff3333;font-size:14px;text-align:center">
-                    📡 Camera offline / not reachable<br>
-                    <small>${error.msg || 'Please check device, WiFi or network'}</small>
-                </div>
-            `;
-        },
-      });
-    
-      // ✅ Save reference globally
-      window[containerId] = player;
-    
-      // Optional event listeners
-      player.eventEmitter.on(
-        EZUIKit.EZUIKitPlayer.EVENTS.firstFrameDisplay,
-        () => console.log(`${containerId} first frame displayed`)
-      );
-    
-      player.eventEmitter.on(
-        EZUIKit.EZUIKitPlayer.EVENTS.videoInfo,
-        (info) => console.log(`${containerId} video info:`, info)
-      );
-      
-      player.eventEmitter.on(
-          EZUIKit.EZUIKitPlayer.EVENTS.playerError,
-          (err) => {
-              debugger;
-            console.error("playerError:", err);
-            showCameraError(containerId, err.msg || "Playback error");
-            $('.loading').hide();
-          }
-        );
-        
-        player.eventEmitter.on(
-          EZUIKit.EZUIKitPlayer.EVENTS.connectFail,
-          (err) => {
-              debugger;
-            console.error("connectFail:", err);
-            showCameraError(containerId, err.msg || "Connection failed");
-            $('.loading').hide();
-          }
-        );
-    }
-    
-    // Step 3: Initialize all cameras
-    async function initAllCameras() {
-      try {
-        const token = await getAccessToken();
-    
-        cameras = <?= json_encode($cameras) ?>;
-        cameras.forEach((cam) => createPlayer(cam.id, token, cam.url));
-        
-        $('.loading').hide();
-
-    
-      } catch (error) {
-          $('.loading').hide();
-        console.error("Error initializing cameras:", error);
-      }
-    }
-    
-    function showCameraError(id, msg) {
-      document.getElementById(id).innerHTML = `
-        <div style="padding:20px;text-align:center;color:#ff3737;">
-            🚨 ${msg}<br>
-            <small>Please check device WiFi or network</small>
-        </div>`;
-    }
-
-    function captureFromPlayer(player, callback) {
-        try {
-            player.capturePicture("", function (data) {
-                if (!data || !data.base64) {
-                    console.error("Invalid snapshot data:", data);
-                    return;
-                }
-                callback(data.base64);
-            }, false);
-        } catch (e) {
-            console.error("Capture failed:", e);
-        }
-    }
-
-    // =======================
-    // INCOMING SNAP ALL (FIXED)
-    // =======================
-    function captureIncomingAll() {
-        incomingCamIds.forEach((camId, i) => {
-            const player = window[camId];
-            if (!player) return;
-
-            captureFromPlayer(player, (base64) => {
-                const imgId = "in_img" + (i + 1);
-                const inputId = "incoming_cam" + (i + 1);
-
-                document.getElementById(imgId).src = base64;
-                document.getElementById(imgId).style.display = "block";
-                document.getElementById(inputId).value = base64;
-            });
-        });
-
-        document.getElementById("incomingRetakeBtn").style.display = "inline-block";
-    }
-
-    // =======================
-    // OUTGOING SNAP ALL (FIXED)
-    // =======================
-    function captureOutgoingAll() {
-        outgoingCamIds.forEach((camId, i) => {
-            const player = window[camId];
-            if (!player) return;
-
-            captureFromPlayer(player, (base64) => {
-                const imgId = "out_img" + (i + 1);
-                const inputId = "outgoing_cam" + (i + 1);
-
-                document.getElementById(imgId).src = base64;
-                document.getElementById(imgId).style.display = "block";
-                document.getElementById(inputId).value = base64;
-            });
-        });
-
-        document.getElementById("outgoingRetakeBtn").style.display = "inline-block";
-    }
-
-    // =======================
-    // RETAKE FUNCTIONS
-    // =======================
-    function retakeIncomingAll() {
-        for (let i = 1; i <= 4; i++) {
-            document.getElementById("in_img" + i).style.display = "none";
-            document.getElementById("incoming_cam" + i).value = "";
-        }
-        document.getElementById("incomingRetakeBtn").style.display = "none";
-    }
-
-    function retakeOutgoingAll() {
-        for (let i = 1; i <= 4; i++) {
-            document.getElementById("out_img" + i).style.display = "none";
-            document.getElementById("outgoing_cam" + i).value = "";
-        }
-        document.getElementById("outgoingRetakeBtn").style.display = "none";
+        $("#printCameraModal").modal("show");*/
     }
     </script>
 </body>
