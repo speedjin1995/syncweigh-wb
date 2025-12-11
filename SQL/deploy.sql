@@ -1045,3 +1045,74 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH 
 END
 $$
 DELIMITER ;
+
+ALTER TABLE `Customer` ADD `mpob` TEXT NULL AFTER `tin_no`;
+ALTER TABLE `Customer_Log` ADD `mpob` TEXT NULL AFTER `tin_no`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_CUSTOMER` AFTER INSERT ON `Customer` FOR EACH ROW 
+INSERT INTO Customer_Log (
+    customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_CUSTOMER` BEFORE UPDATE ON `Customer` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Customer_Log table
+    INSERT INTO Customer_Log (
+        customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Supplier` ADD `mpob` TEXT NULL AFTER `tin_no`;
+ALTER TABLE `Supplier_Log` ADD `mpob` TEXT NULL AFTER `tin_no`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_SUPPLIER` AFTER INSERT ON `Supplier` FOR EACH ROW 
+INSERT INTO Supplier_Log (
+    supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_SUPPLIER` BEFORE UPDATE ON `Supplier` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Supplier_Log table
+    INSERT INTO Supplier_Log (
+        supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
