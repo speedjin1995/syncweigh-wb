@@ -5,7 +5,7 @@ require_once 'db_connect.php';
 $username = $_SESSION["username"];
 
 if(isset($_POST['fromDateSearch'], $_POST['toDateSearch'])){
-	if($_POST['fromDateSearch'] != null && $fromDateSearch['fromDate'] != ''){
+	if($_POST['fromDateSearch'] != null && $_POST['fromDateSearch'] != ''){
         $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['fromDateSearch']);
         $fromDateTime = $dateTime->format('Y-m-d 00:00:00');
     }
@@ -17,11 +17,11 @@ if(isset($_POST['fromDateSearch'], $_POST['toDateSearch'])){
 
 	$action = "3";
 	
-	if ($stmt2 = $db->prepare("DELETE FROM Weight SET WHERE transaction_date>=? AND transaction_date<=?")) {
+	if ($stmt2 = $db->prepare("DELETE FROM Weight WHERE transaction_date>=? AND transaction_date<=?")) {
         $stmt2->bind_param('ss', $fromDateTime , $toDateTime);
         
         if($stmt2->execute()){
-            $stmt = $db->prepare("DELETE FROM Weight_Log SET WHERE transaction_date>=? AND transaction_date<=?");
+            $stmt = $db->prepare("DELETE FROM Weight_Log WHERE transaction_date>=? AND transaction_date<=?");
             $stmt->bind_param('ss', $fromDateTime , $toDateTime);
             $stmt->execute();
 

@@ -38,19 +38,19 @@
                                             <div class="col-4">
                                                 <div class="mb-3">
                                                     <label for="fromDateSearch" class="form-label">From Date</label>
-                                                    <input type="date" class="form-control" data-provider="flatpickr" id="fromDateSearch" required>
+                                                    <input type="date" class="form-control" data-provider="flatpickr" id="fromDateSearch" name="fromDateSearch" required>
                                                 </div>
                                             </div><!--end col-->
                                             <div class="col-4">
                                                 <div class="mb-3">
                                                     <label for="toDateSearch" class="form-label">To Date</label>
-                                                    <input type="date" class="form-control" data-provider="flatpickr" id="toDateSearch" required>
+                                                    <input type="date" class="form-control" data-provider="flatpickr" id="toDateSearch" name="toDateSearch" required>
                                                 </div>
                                             </div><!--end col-->
                                         </div>
                                         <div class="row">
                                             <div class="mt-4">
-                                                <button class="btn btn-success w-100" type="submit">Purge</button>
+                                                <button class="btn btn-success w-100" type="button" id="submitPrePrint">Purge</button>
                                             </div>
                                         </div>
                                     </form>
@@ -110,6 +110,33 @@
                 $('#toDateSearch').flatpickr({
                     dateFormat: "d-m-Y",
                     defaultDate: ''
+                });
+
+                $('#submitPrePrint').on('click', function(){
+                    if($('#prePrintForm').valid()){
+                        $('#spinnerLoading').show();
+
+                        $.post('php/purgeData.php', $('#prePrintForm').serialize(), function(data){
+                            var obj = JSON.parse(data);
+                            debugger;
+
+                            if(obj.status === 'success'){
+                                window.location.reload();
+
+                                $('#spinnerLoading').hide();
+                            }
+                            else if(obj.status === 'failed'){
+                                $("#failBtn").attr('data-toast-text', obj.message );
+                                $("#failBtn").click();
+                                window.location.reload();
+                            }
+                            else{
+                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                                $("#failBtn").click();
+                                window.location.reload();
+                            }
+                        });
+                    }
                 });
 
                 $.validator.setDefaults({
