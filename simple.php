@@ -212,10 +212,9 @@ else{
                                                                 <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
                                                                 <div class="col-sm-8">
                                                                     <select id="transactionStatus" name="transactionStatus" class="form-select select2">
-                                                                        <option value="Sales">Dispatch</option>
-                                                                        <option value="Purchase" selected>Receiving</option>
-                                                                        <option value="Local">Internal Transfer</option>
-                                                                        <option value="Misc">Miscellaneous</option>
+                                                                        <option value="Sales" selected>Sales</option>
+                                                                        <option value="Purchase">Purchase</option>
+                                                                        <option value="Local">Public</option>
                                                                     </select>  
                                                                 </div>
                                                             </div>
@@ -389,7 +388,7 @@ else{
                                             <div class="h-100">
                                                 <div class="col-xxl-12 col-lg-12">
                                                     <div class="card">
-                                                        <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" style="background-color: #405189;">
+                                                        <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" >
                                                             <i class="mdi mdi-chevron-down pull-right"></i>
                                                             Search Records
                                                         </div>
@@ -423,10 +422,9 @@ else{
                                                                                 <label for="statusSearch" class="form-label">Transaction Status</label>
                                                                                 <select id="statusSearch" class="form-select select2">
                                                                                     <option selected>-</option>
-                                                                                    <option value="Sales">Dispatch</option>
-                                                                                    <option value="Purchase">Receiving</option>
-                                                                                    <option value="Local">Internal Transfer</option>
-                                                                                    <option value="Misc">Miscellaneous</option>
+                                                                                    <option value="Sales">Sales</option>
+                                                                                    <option value="Purchase">Purchase</option>
+                                                                                    <option value="Local">Public</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->
@@ -513,10 +511,10 @@ else{
                                                 <div class="row">
                                                     <div class="col-lg-12">
                                                         <div class="card">
-                                                            <div class="card-header" style="background-color: #405189;">
+                                                            <div class="card-header" >
                                                                 <div class="d-flex justify-content-between">
                                                                     <div>
-                                                                        <h5 class="card-title mb-0 text-white">Pending Records</h5>
+                                                                        <h5 class="card-title mb-0">Pending Records</h5>
                                                                     </div>
                                                                 </div> 
                                                             </div>
@@ -2709,11 +2707,11 @@ else{
         var weightType = '';
 
         if (row.transaction_status == 'Sales') {
-            transactionStatus = 'Dispatch';
+            transactionStatus = 'Sales';
         } else if (row.transaction_status == 'Purchase') {
-            transactionStatus = 'Receiving';
+            transactionStatus = 'Purchase';
         } else if (row.transaction_status == 'Local') {
-            transactionStatus = 'Internal Transfer';
+            transactionStatus = 'Public';
         } else {
             transactionStatus = 'Miscellaneous';
         }

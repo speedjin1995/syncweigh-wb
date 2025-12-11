@@ -153,10 +153,9 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             <label for="transactionStatusSearch" class="form-label">Transaction Status</label>
                                                             <select id="transactionStatusSearch" class="form-select">
                                                                 <option selected>-</option>
-                                                                <option value="Sales" selected>Dispatch</option>
-                                                                <option value="Purchase">Receiving</option>
-                                                                <option value="Local">Internal Transfer</option>
-                                                                <option value="Misc">Miscellaneous</option>
+                                                                <option value="Sales" selected>Sales</option>
+                                                                <option value="Purchase">Purchase</option>
+                                                                <option value="Local">Public</option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->

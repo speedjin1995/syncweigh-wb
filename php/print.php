@@ -101,11 +101,11 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                     $tareWeightTime2 = $row['tare_weight2_date'] != null ? date("d/m/Y - H:i:s", strtotime($row['tare_weight2_date'])) : "";
 
                     if ($row['transaction_status'] == 'Sales'){
-                        $transacationStatus = 'Dispatch';
+                        $transacationStatus = 'Sales';
                     }elseif ($row['transaction_status'] == 'Purchase'){
-                        $transacationStatus = 'Receiving';
+                        $transacationStatus = 'Purchase';
                     }elseif ($row['transaction_status'] == 'Local'){
-                        $transacationStatus = 'Internal Transfer';
+                        $transacationStatus = 'Public';
                     }else {
                         $transacationStatus = 'Miscellaneous';
                     }

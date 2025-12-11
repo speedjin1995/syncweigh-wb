@@ -117,16 +117,16 @@ $salesCount = 1;
 while($row = mysqli_fetch_assoc($empRecords)) {
   $transactionStatus = '';
   if($row['transaction_status'] == 'Sales'){
-    $transactionStatus = 'Dispatch';
+    $transactionStatus = 'Sales';
   }
   else if($row['transaction_status'] == 'Purchase'){
-    $transactionStatus = 'Receiving';
+    $transactionStatus = 'Purchase';
   }
   else if($row['transaction_status'] == 'Misc'){
     $transactionStatus = 'Miscellaneous';
   }
   else{
-    $transactionStatus = 'Internal Transfer';
+    $transactionStatus = 'Public';
   }
 
   if($row['weight_type'] == 'Container'){

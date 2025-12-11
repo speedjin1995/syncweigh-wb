@@ -235,7 +235,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
                             <div class="col-xxl-12 col-lg-12">
                                 <div class="card">
-                                    <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" style="background-color: #405189;">
+                                    <div class="card-header fs-5" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch">
                                         <i class="mdi mdi-chevron-down pull-right"></i>
                                         Search Records
                                     </div>
@@ -260,10 +260,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                             <label for="statusSearch" class="form-label">Transaction Status</label>
                                                             <select id="statusSearch" class="form-select select2">
                                                                 <option selected>-</option>
-                                                                <option value="Sales">Dispatch</option>
-                                                                <option value="Purchase">Receiving</option>
-                                                                <option value="Local">Internal Transfer</option>
-                                                                <option value="Misc">Miscellaneous</option>
+                                                                <option value="Sales">Sales</option>
+                                                                <option value="Purchase">Purchase</option>
+                                                                <option value="Local">Public</option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -390,109 +389,108 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             </div>
                             
                             <div class="row">
-                                <!-- <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #4CAF50;">
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card card-animate" id="dispatchCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Dispatch
-                                                    </p>
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Sales</p>
                                                 </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="salesInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
+                                                <div class="avatar-sm flex-shrink-0">
                                                     <span class="avatar-title bg-soft-success rounded fs-3">
-                                                        <i class="bx bx-dollar-circle text-success"></i>
+                                                        <i class="bx bx-export text-success"></i>
                                                     </span>
+                                                </div>
+                                            </div>
+                                            <hr>
+
+                                            <!-- Status breakdown -->
+                                            <div class="mt-4">
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="N" data-transaction="Sales" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                    <span class="text-muted">Pending</span>
+                                                    <span class="fw-semibold" id="salesPending">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Y" data-transaction="Sales" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                    <span class="text-muted">Complete</span>
+                                                    <span class="fw-semibold text-success" id="salesComplete">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between status-item" data-status="C" data-transaction="Sales" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                    <span class="text-muted">Cancel</span>
+                                                    <span class="fw-semibold text-danger" id="salesCancel">0</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #FFC107;">
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card card-animate" id="receivingCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Receiving
-                                                    </p>
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Purchase</p>
                                                 </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="purchaseInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
+                                                <div class="avatar-sm flex-shrink-0">
                                                     <span class="avatar-title bg-soft-info rounded fs-3">
-                                                        <i class="bx bx-shopping-bag text-info"></i>
+                                                        <i class="bx bx-import text-info"></i>
                                                     </span>
+                                                </div>
+                                            </div>
+                                            <hr>
+
+                                            <!-- Status breakdown -->
+                                            <div class="mt-4">
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="N" data-transaction="Purchase" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                    <span class="text-muted">Pending</span>
+                                                    <span class="fw-semibold" id="purchasePending">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Y" data-transaction="Purchase" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                    <span class="text-muted">Complete</span>
+                                                    <span class="fw-semibold text-success" id="purchaseComplete">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between status-item" data-status="C" data-transaction="Purchase" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                    <span class="text-muted">Cancel</span>
+                                                    <span class="fw-semibold text-danger" id="purchaseCancel">0</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #81D4FA;">
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card card-animate"  id="intTransCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Internal Transfer
-                                                    </p>
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Public</p>
+                                                </div>
+                                                <div class="avatar-sm flex-shrink-0">
+                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
+                                                        <i class="bx bx-transfer text-warning"></i>
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="localInfo">0</span>
-                                                    </h4>
+                                            <hr>
+
+                                            <!-- Status breakdown -->
+                                            <div class="mt-4">
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="N" data-transaction="Local" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                    <span class="text-muted">Pending</span>
+                                                    <span class="fw-semibold" id="localPending">0</span>
                                                 </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
-                                                        <i class="bx bx-user-circle text-warning"></i>
-                                                    </span>
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Y" data-transaction="Local" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                    <span class="text-muted">Complete</span>
+                                                    <span class="fw-semibold text-success" id="localComplete">0</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between status-item" data-status="C" data-transaction="Local" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                    <span class="text-muted">Cancel</span>
+                                                    <span class="fw-semibold text-danger" id="localCancel">0</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #9C27B0;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-white text-uppercase fw-medium text-truncate mb-0">
-                                                        Miscellaneous
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="miscInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
-                                                        <i class="bx bx-user-circle text-warning"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
                                 
                                 <div class="col-xl-3 col-md-6 add-new-weight">
                                     <!-- <button type="button" class="btn btn-lg btn-soft-success" data-bs-toggle="modal" data-bs-target="#addModal"><i
@@ -703,10 +701,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select id="transactionStatus" name="transactionStatus" class="form-select select2">
-                                                                                                    <option value="Sales" selected>Dispatch</option>
-                                                                                                    <option value="Purchase">Receiving</option>
-                                                                                                    <option value="Local">Internal Transfer</option>
-                                                                                                    <option value="Misc">Miscellaneous</option>
+                                                                                                    <option value="Sales" selected>Sales</option>
+                                                                                                    <option value="Purchase">Purchase</option>
+                                                                                                    <option value="Local">Public</option>
                                                                                                 </select>  
                                                                                             </div>
                                                                                         </div>
@@ -1749,10 +1746,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="card">
-                                                    <div class="card-header" style="background-color: #405189;">
+                                                    <div class="card-header">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title mb-0 text-white"><?=$languageArray['previous_records_code'][$language]?> (Lorry)</h5>
+                                                                <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?> (Lorry)</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
                                                                 <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light">
@@ -1829,10 +1826,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="card">
-                                                    <div class="card-header" style="background-color: #405189;">
+                                                    <div class="card-header">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title mb-0 text-white">Pending Empty Container Records</h5>
+                                                                <h5 class="card-title mb-0">Pending Empty Container Records</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
                                                                 <!--a href="/template/Weight_Template.xlsx" download>
@@ -2073,8 +2070,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
+        const last30 = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         yesterday.setDate(yesterday.getDate() - 1);
+        last30.setDate(today.getDate() - 30);
 
         // Initialize all Select2 elements in the search bar
         $('#collapseSearch .select2').select2({
@@ -2116,12 +2115,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         //Date picker
         $('#fromDateSearch').flatpickr({
             dateFormat: "d-m-Y",
-            defaultDate: ''
+            defaultDate: last30
         });
 
         $('#toDateSearch').flatpickr({
             dateFormat: "d-m-Y",
-            defaultDate: ''
+            defaultDate: today
         });
 
         $('#transactionDate').flatpickr({
@@ -2237,6 +2236,24 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         $('#selectAllContainerCheckbox').on('change', function() {
             var checkboxes = $('#emptyContainerTable tbody input[type="checkbox"]');
             checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
+        });
+
+        // Handle status item clicks
+        $('.status-item').on('click', function() {
+            var status = $(this).data('status');
+            var transaction = $(this).data('transaction');
+            
+            // Update the search form fields
+            $('#statusSearch').val(transaction).trigger('change');
+            $('#batchNoSearch').val(status).trigger('change');
+            
+            // Expand the search section if collapsed
+            /*if (!$('#collapseSearch').hasClass('show')) {
+                $('#collapseSearch').collapse('show');
+            }*/
+            
+            // Trigger the search
+            $('#filterSearch').click();
         });
 
         var fromDateI = $('#fromDateSearch').val();
@@ -2427,10 +2444,18 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 }
             ],
             "drawCallback": function(settings) {
-                $('#salesInfo').text(settings.json.salesTotal);
-                $('#purchaseInfo').text(settings.json.purchaseTotal);
-                $('#localInfo').text(settings.json.localTotal);
-                $('#miscInfo').text(settings.json.miscTotal);
+                $('#salesPending').text(settings.json.salesTotalPending);
+                $('#salesComplete').text(settings.json.salesTotalComplete);
+                $('#salesCancel').text(settings.json.salesTotalCancel);
+                $('#purchasePending').text(settings.json.purchaseTotalPending);
+                $('#purchaseComplete').text(settings.json.purchaseTotalComplete);
+                $('#purchaseCancel').text(settings.json.purchaseTotalCancel);
+                $('#localPending').text(settings.json.localTotalPending);
+                $('#localComplete').text(settings.json.localTotalComplete);
+                $('#localCancel').text(settings.json.localTotalCancel);
+                $('#miscPending').text(settings.json.miscTotalPending);
+                $('#miscComplete').text(settings.json.miscTotalComplete);
+                $('#miscCancel').text(settings.json.miscTotalCancel);
             }   
         });
 
@@ -3554,10 +3579,18 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     }
                 ],
                 "drawCallback": function(settings) {
-                    $('#salesInfo').text(settings.json.salesTotal);
-                    $('#purchaseInfo').text(settings.json.purchaseTotal);
-                    $('#localInfo').text(settings.json.localTotal);
-                    $('#miscInfo').text(settings.json.miscTotal);
+                    $('#salesPending').text(settings.json.salesTotalPending);
+                    $('#salesComplete').text(settings.json.salesTotalComplete);
+                    $('#salesCancel').text(settings.json.salesTotalCancel);
+                    $('#purchasePending').text(settings.json.purchaseTotalPending);
+                    $('#purchaseComplete').text(settings.json.purchaseTotalComplete);
+                    $('#purchaseCancel').text(settings.json.purchaseTotalCancel);
+                    $('#localPending').text(settings.json.localTotalPending);
+                    $('#localComplete').text(settings.json.localTotalComplete);
+                    $('#localCancel').text(settings.json.localTotalCancel);
+                    $('#miscPending').text(settings.json.miscTotalPending);
+                    $('#miscComplete').text(settings.json.miscTotalComplete);
+                    $('#miscCancel').text(settings.json.miscTotalCancel);
                 }   
             });
 
@@ -5141,11 +5174,11 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         var weightType = '';
 
         if (row.transaction_status == 'Sales') {
-            transactionStatus = 'Dispatch';
+            transactionStatus = 'Sales';
         } else if (row.transaction_status == 'Purchase') {
-            transactionStatus = 'Receiving';
+            transactionStatus = 'Purchase';
         } else if (row.transaction_status == 'Local') {
-            transactionStatus = 'Internal Transfer';
+            transactionStatus = 'Public';
         } else {
             transactionStatus = 'Miscellaneous';
         }

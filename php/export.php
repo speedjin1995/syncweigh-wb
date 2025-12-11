@@ -220,10 +220,10 @@ if($query->num_rows > 0){
             $productName = $row['product_name'];
 
             if($row['transaction_status'] == 'Sales'){
-                $transactionStatus = 'Dispatch';
+                $transactionStatus = 'Sales';
             }
             else if($row['transaction_status'] == 'Purchase'){
-                $transactionStatus = 'Receiving';
+                $transactionStatus = 'Purchase';
                 $productCode = $row['raw_mat_code'];
                 $productName = $row['raw_mat_name'];
             }
@@ -231,7 +231,7 @@ if($query->num_rows > 0){
                 $transactionStatus = 'Miscellaneous';
             }
             else{
-                $transactionStatus = 'Internal Transfer';
+                $transactionStatus = 'Public';
                 $productCode = $row['raw_mat_code'];
                 $productName = $row['raw_mat_name'];
             }
