@@ -3,11 +3,12 @@
 
 <?php
 $user = $_SESSION['id'];
+$pid = "1";
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
 $allowManual = $_SESSION['allowManual'];
 $stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
-$stmt->bind_param('s', $user);
+$stmt->bind_param('s', $pid);
 $stmt->execute();
 $result = $stmt->get_result();
 //$role = 'NORMAL';
@@ -2025,23 +2026,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
     var rowCount = $("#productTable").find(".details").length;
-    var player = null;
-    var player2 = null;
-    var player3 = null;
-    var player4 = null;
-    const incomingCamIds = [
-        "video-container1",
-        "video-container2",
-        "video-container3",
-        "video-container4"
-    ];
-
-    const outgoingCamIds = [
-        "video-container1",
-        "video-container2",
-        "video-container3",
-        "video-container4"
-    ];
 
     $(function () {
         var userRole = '<?=$role ?>';

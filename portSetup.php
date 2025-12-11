@@ -3,7 +3,7 @@
 <?php
 require_once 'php/db_connect.php';
 
-$id = $_SESSION['id'];
+$id = '1';
 $stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
 $stmt->bind_param('s', $id);
 $stmt->execute();
