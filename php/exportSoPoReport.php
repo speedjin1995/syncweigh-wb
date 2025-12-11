@@ -68,9 +68,9 @@ if(isset($_POST['plant']) && $_POST['plant'] != null && $_POST['plant'] != '' &&
     $searchQuery .= " and Weight.plant_code = '".$_POST['plant']."'";
 }
 
-if(isset($_POST['batchDrum']) && $_POST['batchDrum'] != null && $_POST['batchDrum'] != '' && $_POST['batchDrum'] != '-'){
-    $searchQuery .= " and Weight.batch_drum = '".$_POST['batchDrum']."'";
-}
+// if(isset($_POST['batchDrum']) && $_POST['batchDrum'] != null && $_POST['batchDrum'] != '' && $_POST['batchDrum'] != '-'){
+//     $searchQuery .= " and Weight.batch_drum = '".$_POST['batchDrum']."'";
+// }
 
 if(isset($_POST['group1']) && $_POST['group1'] != null && $_POST['group1'] != '' && $_POST['group1'] != '-'){
     $group1 = $_POST['group1'];
@@ -175,7 +175,7 @@ function callLookup($group, $groupValue, $db){
     return $value;
 }
 
-if(isset($_POST["type"])){
+if(isset($_POST["status"])){
     $companyCode = '';
     $companyName = '';
 
@@ -197,7 +197,7 @@ if(isset($_POST["type"])){
 
     $sql = '';
 
-    if($_POST["type"] == 'Sales'){
+    if($_POST["status"] == 'Sales'){
         if ($_POST['status'] == 'Local') {
             $reportType = "Public";
         }
@@ -209,7 +209,7 @@ if(isset($_POST["type"])){
             $id = $_POST['id'];
             $sql = "select * from Weight WHERE id IN ($id) ORDER BY tare_weight1_date";
         }else{
-            $sql = "select * from Weight WHERE is_complete = 'Y' AND  is_cancel <> 'Y'".$searchQuery.' ORDER BY tare_weight1_date';
+            $sql = "select * from Weight WHERE is_complete = 'Y' AND is_cancel <> 'Y'".$searchQuery.' ORDER BY tare_weight1_date';
         }
 
         if ($select_stmt = $db->prepare($sql)) {
@@ -270,10 +270,10 @@ if(isset($_POST["type"])){
                                 $groupBy .= '/Plant';
                                 $groupOrder[] = 'Plant';
                                 break;
-                            case 'batch_drum':
-                                $groupBy .= '/Batch Or Drum';
-                                $groupOrder[] = 'Batch Or Drum';
-                                break;
+                            // case 'batch_drum':
+                            //     $groupBy .= '/Batch Or Drum';
+                            //     $groupOrder[] = 'Batch Or Drum';
+                            //     break;
                         }
                     }
                 }
@@ -378,7 +378,6 @@ if(isset($_POST["type"])){
                                 <td class="text-end">0.00</td>
                                 <td class="text-end">0.00</td>
                                 <td>'.$exDel.'</td>
-                                <td>'.$data['batch_drum'].'</td>
                                 <td>'.searchNamebyId($data['created_by'], $db).'</td>
                             </tr>';                
                         }
@@ -482,7 +481,6 @@ if(isset($_POST["type"])){
                                     <td class="text-end">0.00</td>
                                     <td class="text-end">0.00</td>
                                     <td>'.$exDel.'</td>
-                                    <td>'.$data['batch_drum'].'</td>
                                     <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                 </tr>';                
                             }
@@ -627,7 +625,6 @@ if(isset($_POST["type"])){
                                         <td class="text-end">0.00</td>
                                         <td class="text-end">0.00</td>
                                         <td>'.$exDel.'</td>
-                                        <td>'.$data['batch_drum'].'</td>
                                         <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                     </tr>';                
                                 }
@@ -803,7 +800,6 @@ if(isset($_POST["type"])){
                                             <td class="text-end">0.00</td>
                                             <td class="text-end">0.00</td>
                                             <td>'.$exDel.'</td>
-                                            <td>'.$data['batch_drum'].'</td>
                                             <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                         </tr>';                
                                     }
@@ -1015,7 +1011,6 @@ if(isset($_POST["type"])){
                                                 <td class="text-end">0.00</td>
                                                 <td class="text-end">0.00</td>
                                                 <td>'.$exDel.'</td>
-                                                <td>'.$data['batch_drum'].'</td>
                                                 <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                             </tr>';                
                                         }
@@ -1298,7 +1293,7 @@ if(isset($_POST["type"])){
         }
 
         $db->close();
-    }elseif($_POST["type"] == 'Purchase'){
+    }elseif($_POST["status"] == 'Purchase'){
         if ($isMulti == 'Y'){
             $id = $_POST['id'];
             $sql = "select * from Weight WHERE id IN ($id) ORDER BY tare_weight1_date";
@@ -1364,10 +1359,10 @@ if(isset($_POST["type"])){
                                 $groupBy .= '/Plant';
                                 $groupOrder[] = 'Plant';
                                 break;
-                            case 'batch_drum':
-                            $groupBy .= '/Batch Or Drum';
-                            $groupOrder[] = 'Batch Or Drum';
-                            break;
+                            // case 'batch_drum':
+                            // $groupBy .= '/Batch Or Drum';
+                            // $groupOrder[] = 'Batch Or Drum';
+                            // break;
                         }
                     }
                 }
@@ -1481,7 +1476,6 @@ if(isset($_POST["type"])){
                                 <td class="text-end">0.00</td>
                                 <td class="text-end">0.00</td>
                                 <td>'.$exDel.'</td>
-                                <td>'.$data['batch_drum'].'</td>
                                 <td>'.searchNamebyId($data['created_by'], $db).'</td>
                             </tr>';                
                         }
@@ -1604,7 +1598,6 @@ if(isset($_POST["type"])){
                                     <td class="text-end">0.00</td>
                                     <td class="text-end">0.00</td>
                                     <td>'.$exDel.'</td>
-                                    <td>'.$data['batch_drum'].'</td>
                                     <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                 </tr>';                
                             }
@@ -1767,7 +1760,6 @@ if(isset($_POST["type"])){
                                         <td class="text-end">0.00</td>
                                         <td class="text-end">0.00</td>
                                         <td>'.$exDel.'</td>
-                                        <td>'.$data['batch_drum'].'</td>
                                         <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                     </tr>';                
                                 }
@@ -1962,7 +1954,6 @@ if(isset($_POST["type"])){
                                             <td class="text-end">0.00</td>
                                             <td class="text-end">0.00</td>
                                             <td>'.$exDel.'</td>
-                                            <td>'.$data['batch_drum'].'</td>
                                             <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                         </tr>';                
                                     }
@@ -2199,7 +2190,6 @@ if(isset($_POST["type"])){
                                                 <td class="text-end">0.00</td>
                                                 <td class="text-end">0.00</td>
                                                 <td>'.$exDel.'</td>
-                                                <td>'.$data['batch_drum'].'</td>
                                                 <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                             </tr>';                
                                         }

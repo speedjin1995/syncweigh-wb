@@ -265,7 +265,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="invDelPoSearch" class="form-label">DO/PO No</label>
-                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
+                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="DO/PO No">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
@@ -933,6 +933,7 @@ if(($row = $result->fetch_assoc()) !== null){
 
                     var fromDateI = $('#fromDateSearch').val();
                     var toDateI = $('#toDateSearch').val();
+                    var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
                     var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
                     var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
                     var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
@@ -960,7 +961,7 @@ if(($row = $result->fetch_assoc()) !== null){
 
                     $('#exportSoRepForm').find('#fromDate').val(fromDateI);
                     $('#exportSoRepForm').find('#toDate').val(toDateI);
-                    $('#exportSoRepForm').find('#status').val(statusI);
+                    $('#exportSoRepForm').find('#status').val(transactionStatusI);
                     $('#exportSoRepForm').find('#customer').val(customerNoI);
                     $('#exportSoRepForm').find('#supplier').val(supplierNoI);
                     $('#exportSoRepForm').find('#vehicle').val(vehicleNoI);
@@ -970,7 +971,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     $('#exportSoRepForm').find('#destination').val(destinationI);
                     $('#exportSoRepForm').find('#plant').val(plantI);
                     $('#exportSoRepForm').find('#batchDrum').val(batchDrumSearchI);
-                    $('#exportSoRepForm').find('#type').val('Sales');
+                    // $('#exportSoRepForm').find('#type').val('Sales');
                     $('#exportSoRepModal').modal('hide');
 
                     $.post('php/exportSoPoReport.php', $('#exportSoRepForm').serialize(), function(response){
@@ -1116,6 +1117,11 @@ if(($row = $result->fetch_assoc()) !== null){
             $("#exportSoRepModal").find('#group3').val('');
             $("#exportSoRepModal").find('#group4').val('');
             $("#exportSoRepModal").find('select[id^="group"] option').prop('disabled', false);
+            
+            // Update group options based on transaction status
+            var transactionStatus = $('#transactionStatusSearch').val();
+            updateGroupOptions(transactionStatus);
+            
             $("#exportSoRepModal").modal("show");
 
             $('#exportSoRepForm').validate({
@@ -1185,6 +1191,25 @@ if(($row = $result->fetch_assoc()) !== null){
             }
         });
     });
+
+    // Function to update group select options based on transaction status
+    function updateGroupOptions(transactionStatus) {
+        var groupSelects = ['#group1', '#group2', '#group3'];
+        
+        groupSelects.forEach(function(selectId) {
+            var select = $(selectId);
+            
+            if (transactionStatus == 'Sales' || transactionStatus == 'Local') {
+                // For Sales/Local: change customer_code to supplier_code and product_code to raw_mat_code
+                select.find('option[value="supplier_code"]').attr('value', 'customer_code').text('Customer');
+                select.find('option[value="raw_mat_code"]').attr('value', 'product_code').text('Product');
+            } else {
+                // For other statuses: restore original values
+                select.find('option[value="customer_code"]').attr('value', 'supplier_code').text('Supplier');
+                select.find('option[value="product_code"]').attr('value', 'raw_mat_code').text('Raw Material');
+            }
+        });
+    }
 
     function edit(id){
         $('#spinnerLoading').show();
