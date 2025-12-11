@@ -1022,3 +1022,26 @@ CREATE OR REPLACE TRIGGER `after_deduction_update` BEFORE UPDATE ON `Deduction` 
 END
 $$
 DELIMITER ;
+
+--11/12/2025 --
+ALTER TABLE `Company` ADD `include_price` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `mobile_no`, ADD `include_container` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_price`;
+
+ALTER TABLE `Company_Log` ADD `include_price` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `mobile_no`, ADD `include_container` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_price`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Always set action_id = 2 for update
+    SET action_value = 2;
+
+    -- Insert into Company_Log table
+    INSERT INTO Company_Log (
+        company_id, company_code, company_reg_no, new_reg_no, `name`, address_line_1, address_line_2, address_line_3, phone_no, fax_no, tin_no, mobile_no, include_price, include_container, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.company_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.tin_no, NEW.mobile_no, NEW.include_price, NEW.include_container, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
