@@ -116,6 +116,18 @@ else{
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0'");
 }
 
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$includePrice = '';
+$includeContainer = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $includePrice = $row['include_price'];
+    $includeContainer = $row['include_container'];
+}
+
 /*$cameras = [];
 $stmtCam = $db->prepare("SELECT serial_number FROM Camera WHERE deleted = 0 AND active = 'Y'");
 $stmtCam->execute();
@@ -289,9 +301,11 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                             <select id="invoiceNoSearch" class="form-select select2"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal">Normal Weighing</option>
+                                                                <?php if($includeContainer == 'Y'): ?>
                                                                 <option value="Container">Primer Mover</option>
                                                                 <option value="Empty Container">Primer Mover + Container</option>
                                                                 <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                <?php endif; ?>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -343,22 +357,24 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                             <input type="text" class="form-control" id="transactionIdSearch" name="transactionIdSearch" placeholder="Transaction ID">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
-                                                    <div class="col-3">
+
+                                                    <div class="col-3" <?= $includeContainer == "N" ? 'style="display: none;"' : '' ?>>
                                                         <div class="mb-3">
                                                             <label for="containerNoSearch" class="form-label">Container No</label>
                                                             <input type="text" class="form-control" id="containerNoSearch" name="containerNoSearch" placeholder="Container No">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
-                                                    <div class="col-3">
+                                                    <div class="col-3" <?= $includeContainer == "N" ? 'style="display: none;"' : '' ?>>
                                                         <div class="mb-3">
                                                             <label for="sealNoSearch" class="form-label">Seal No</label>
                                                             <input type="text" class="form-control" id="sealNoSearch" name="sealNoSearch" placeholder="Seal No">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
+                                                    
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="invDelPoSearch" class="form-label">INV/DO/PO No</label>
-                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
+                                                            <label for="invDelPoSearch" class="form-label">DO/PO No</label>
+                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="DO/PO No">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
@@ -620,9 +636,11 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             <div class="col-sm-8">
                                                                                                 <select id="weightType" name="weightType" class="form-select select2">
                                                                                                     <option value="Normal" selected>Normal Weighing</option>
+                                                                                                    <?php if($includeContainer == 'Y'): ?>
                                                                                                     <option value="Container">Primer Mover</option>
                                                                                                     <option value="Empty Container">Primer Mover + Container</option>
                                                                                                     <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                                                    <?php endif; ?>
                                                                                                 </select>   
                                                                                             </div>
                                                                                         </div>
@@ -1775,8 +1793,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
                                                                     <th>Customer/ <br> Supplier</th>
+                                                                    <?php if($includeContainer == 'Y'): ?>
                                                                     <th>Container No</th>
                                                                     <th>Seal No</th>
+                                                                    <?php endif; ?>
                                                                     <th>Vehicle</th>
                                                                     <th>Gross <br>Incoming</th>
                                                                     <th>Incoming <br>Date</th>
@@ -1802,7 +1822,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             </div><!-- container-fluid -->
 
                             <!-- Second Card for Empty Container -->
-                            <div class="row">
+                            <div class="row" <?= $includeContainer == "N" ? 'style="display: none;"' : '' ?>>
                                 <div class="col">
                                     <div class="h-100">
                                         <!--datatable--> 
@@ -2280,8 +2300,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
+                <?php if($includeContainer == 'Y'): ?>
                 { data: 'container_no' },
                 { data: 'seal_no' },
+                <?php endif; ?>
                 { data: 'lorry_plate_no1' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
@@ -3406,8 +3428,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
+                    <?php if($includeContainer == 'Y'): ?>
                     { data: 'container_no' },
                     { data: 'seal_no' },
+                    <?php endif; ?>
                     { data: 'lorry_plate_no1' },
                     { data: 'gross_weight1' },
                     { data: 'gross_weight1_date' },

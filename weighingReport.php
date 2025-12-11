@@ -37,6 +37,18 @@ if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
 else{
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
 }
+
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$includePrice = '';
+$includeContainer = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $includePrice = $row['include_price'];
+    $includeContainer = $row['include_container'];
+}
 ?>
 
 <head>
@@ -182,7 +194,9 @@ else{
                                                             <select id="invoiceNoSearch" class="form-select"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal">Normal Weighing</option>
+                                                                <?php if($includeContainer == 'Y'): ?>
                                                                 <option value="Container">Primer Mover</option>
+                                                                <?php endif; ?>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->                                               
@@ -251,7 +265,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="invDelPoSearch" class="form-label">INV/DO/PO No</label>
+                                                            <label for="invDelPoSearch" class="form-label">DO/PO No</label>
                                                             <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
@@ -415,8 +429,10 @@ else{
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
                                                                     <th>Customer/ <br> Supplier</th>
+                                                                    <?php if($includeContainer == 'Y'): ?>
                                                                     <th>Container No</th>
                                                                     <th>Seal No</th>
+                                                                    <?php endif; ?>
                                                                     <th>Vehicle</th>
                                                                     <th>Gross <br>Incoming</th>
                                                                     <th>Incoming <br>Date</th>
@@ -719,8 +735,10 @@ else{
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
+                <?php if($includeContainer == 'Y'): ?>
                 { data: 'container_no' },
                 { data: 'seal_no' },
+                <?php endif; ?>
                 { data: 'lorry_plate_no1' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
@@ -811,8 +829,10 @@ else{
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
+                    <?php if($includeContainer == 'Y'): ?>
                     { data: 'container_no' },
                     { data: 'seal_no' },
+                    <?php endif; ?>
                     { data: 'lorry_plate_no1' },
                     { data: 'gross_weight1' },
                     { data: 'gross_weight1_date' },

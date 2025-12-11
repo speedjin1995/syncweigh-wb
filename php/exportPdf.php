@@ -2,6 +2,18 @@
 session_start();
 require_once 'db_connect.php';
 
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$includePrice = '';
+$includeContainer = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $includePrice = $row['include_price'];
+    $includeContainer = $row['include_container'];
+}
+
 $searchQuery = "";
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
@@ -248,23 +260,36 @@ if(isset($_POST["file"])){
                                             <th>DESTINATION <br>CODE</th>
                                             <th>DESTINATION</th>
                                             <th>PO NO.</th>
-                                            <th>DO NO.</th>
-                                            <th>CONTAINER <br>NO.</th>
-                                            <th>SEAL NO.</th>
-                                            <th>CONTAINER <br>NO. 2</th>
-                                            <th>SEAL NO. 2</th>
+                                            <th>DO NO.</th>';
+
+                                            if ($includeContainer == 'Y'){
+                                                $message .= '
+                                                    <th>CONTAINER <br>NO.</th>
+                                                    <th>SEAL NO.</th>
+                                                    <th>CONTAINER <br>NO. 2</th>
+                                                    <th>SEAL NO. 2</th>
+                                                ';
+                                            }
+
+                                            $message .= '
                                             <th>ORDER WEIGHT</th>
                                             <th>SUPPLIER WEIGHT</th>
                                             <th>INCOMING <br>(MT)</th>
                                             <th>OUTGOING <br>(MT)</th>
                                             <th>NET <br>(MT)</th>
                                             <th>IN TIME</th>
-                                            <th>OUT TIME</th>
-                                            <th>INCOMING 2 <br>(MT)</th>
-                                            <th>OUTGOING 2 <br>(MT)</th>
-                                            <th>NET 2 <br>(MT)</th>
-                                            <th>IN TIME 2</th>
-                                            <th>OUT TIME 2</th>
+                                            <th>OUT TIME</th>';
+
+                                            if ($includeContainer == 'Y'){
+                                                $message .= '
+                                                    <th>INCOMING 2 <br>(MT)</th>
+                                                    <th>OUTGOING 2 <br>(MT)</th>
+                                                    <th>NET 2 <br>(MT)</th>
+                                                    <th>IN TIME 2</th>
+                                                    <th>OUT TIME 2</th>
+                                                ';
+                                            }
+                                            $message .= '
                                             <th>VARIANCE</th>
                                             <th>SUB TOTAL WEIGHT</th>
                                             <th>USER</th>
@@ -351,21 +376,34 @@ if(isset($_POST["file"])){
                                                 <td>' . $row['destination_code'] . '</td>
                                                 <td>' . $row['destination'] . '</td>
                                                 <td>' . $row['purchase_order'] . '</td>
-                                                <td>' . $row['delivery_no'] . '</td>
-                                                <td>' . $row['container_no'] . '</td>
-                                                <td>' . $row['seal_no'] . '</td>
+                                                <td>' . $row['delivery_no'] . '</td>';
+
+                                                if ($includeContainer == 'Y'){
+                                                    $message .= '
+                                                        <td>' . $row['container_no'] . '</td>
+                                                        <td>' . $row['seal_no'] . '</td>
+                                                    ';
+                                                }
+
+                                                $message .= '
                                                 <td>' . (!empty($row['order_weight']) ? number_format($row['order_weight'] / 1000, 2) : '') . '</td>
                                                 <td>' . (!empty($row['supplier_weight']) ? number_format($row['supplier_weight'] / 1000, 2) : '') . '</td>
                                                 <td>' . number_format($row['gross_weight1']/1000, 2) . '</td>
                                                 <td>' . number_format($row['tare_weight1']/1000, 2) . '</td>
                                                 <td>' . number_format($row['nett_weight1']/1000, 2) . '</td>
                                                 <td>' . $formattedGrossWeightDate . '</td>
-                                                <td>' . $formattedTareWeightDate . '</td>
-                                                <td>' . (!empty($row['gross_weight2']) ? number_format($row['gross_weight2'] / 1000, 2) : '') . '</td>
-                                                <td>' . (!empty($row['tare_weight2']) ? number_format($row['tare_weight2'] / 1000, 2) : '') . '</td>
-                                                <td>' . (!empty($row['nett_weight2']) ? number_format($row['nett_weight2'] / 1000, 2) : '') . '</td>
-                                                <td>' . $formattedGrossWeightDate2 . '</td>
-                                                <td>' . $formattedTareWeightDate2 . '</td>
+                                                <td>' . $formattedTareWeightDate . '</td>';
+
+                                                if ($includeContainer == 'Y'){
+                                                    $message .= '
+                                                        <td>' . (!empty($row['gross_weight2']) ? number_format($row['gross_weight2'] / 1000, 2) : '') . '</td>
+                                                        <td>' . (!empty($row['tare_weight2']) ? number_format($row['tare_weight2'] / 1000, 2) : '') . '</td>
+                                                        <td>' . (!empty($row['nett_weight2']) ? number_format($row['nett_weight2'] / 1000, 2) : '') . '</td>
+                                                        <td>' . $formattedGrossWeightDate2 . '</td>
+                                                        <td>' . $formattedTareWeightDate2 . '</td>
+                                                    ';
+                                                }
+                                                $message .= '
                                                 <td>' . (!empty($row['weight_different']) ? number_format($row['weight_different'] / 1000, 2) : '') . '</td>
                                                 <td>' . number_format($row['final_weight']/1000, 2) . '</td>
                                                 <td>' . $row['created_by'] . '</td>
@@ -379,7 +417,7 @@ if(isset($_POST["file"])){
                                     
                                         // Add product-wise subtotal
                                         $message .= '<tr>
-                                            <th style="font-size: 10px;" colspan="18">Subtotal (' . $product . ')</th>
+                                            <th style="font-size: 10px;" colspan="'.($includeContainer == 'Y' ? '18' : '14').'">Subtotal (' . $product . ')</th>
                                             <th style="border:1px solid black;font-size: 9px;">' . number_format($totalGross /1000, 2). '</th>
                                             <th style="border:1px solid black;font-size: 9px;">' . number_format($totalTare/1000, 2) . '</th>
                                             <th style="border:1px solid black;font-size: 9px;">' . number_format($totalNet/1000, 2) . '</th>
@@ -394,7 +432,7 @@ if(isset($_POST["file"])){
                                     $message .= '</tbody>
                                         <tfoot>
                                             <tr>
-                                                <th style="font-size: 10px;" colspan="18">Grand Total</th>
+                                                <th style="font-size: 10px;" colspan="'.($includeContainer == 'Y' ? '18' : '14').'">Grand Total</th>
                                                 <th style="border:1px solid black;font-size: 9px;border:1px solid black;">'.number_format($grandTotalGross/1000, 2).'</th>
                                                 <th style="border:1px solid black;font-size: 9px;border:1px solid black;">'.number_format($grandTotalTare/1000, 2).'</th>
                                                 <th style="border:1px solid black;font-size: 9px;border:1px solid black;">'.number_format($grandTotalNet/1000, 2).'</th>
