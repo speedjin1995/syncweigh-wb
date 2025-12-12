@@ -438,12 +438,14 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     <th>Tare <br>Outgoing</th>
                                                                     <th>Outgoing <br>Date</th>
                                                                     <th>Nett <br>Weight</th>
+                                                                    <?php if($includeContainer == 'Y'): ?>
                                                                     <th>Vehicle 2</th>
                                                                     <th>Gross <br>Incoming 2</th>
                                                                     <th>Incoming <br>Date 2</th>
                                                                     <th>Tare <br>Outgoing 2</th>
                                                                     <th>Outgoing <br>Date 2</th>
                                                                     <th>Nett <br>Weight 2</th>
+                                                                    <?php endif; ?>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -744,12 +746,14 @@ if(($row = $result->fetch_assoc()) !== null){
                 { data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
+                <?php if($includeContainer == 'Y'): ?>
                 { data: 'lorry_plate_no2' },
                 { data: 'gross_weight2' },
                 { data: 'gross_weight2_date' },
                 { data: 'tare_weight2' },
                 { data: 'tare_weight2_date' },
                 { data: 'nett_weight2' },
+                <?php endif; ?>
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -838,12 +842,14 @@ if(($row = $result->fetch_assoc()) !== null){
                     { data: 'tare_weight1' },
                     { data: 'tare_weight1_date' },
                     { data: 'nett_weight1' },
+                    <?php if($includeContainer == 'Y'): ?>
                     { data: 'lorry_plate_no2' },
                     { data: 'gross_weight2' },
                     { data: 'gross_weight2_date' },
                     { data: 'tare_weight2' },
                     { data: 'tare_weight2_date' },
                     { data: 'nett_weight2' },
+                    <?php endif; ?>
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {
@@ -1334,7 +1340,7 @@ if(($row = $result->fetch_assoc()) !== null){
     }
 
     function print(id) {
-        $.post('php/print.php', {userID: id, file: 'weight'}, function(data){
+        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N'}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

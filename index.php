@@ -1799,12 +1799,14 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                     <th>Tare <br>Outgoing</th>
                                                                     <th>Outgoing <br>Date</th>
                                                                     <th>Nett <br>Weight</th>
+                                                                    <?php if($includeContainer == 'Y'): ?>
                                                                     <th>Vehicle 2</th>
                                                                     <th>Gross <br>Incoming 2</th>
                                                                     <th>Incoming <br>Date 2</th>
                                                                     <th>Tare <br>Outgoing 2</th>
                                                                     <th>Outgoing <br>Date 2</th>
                                                                     <th>Nett <br>Weight 2</th>
+                                                                    <?php endif; ?>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -2038,6 +2040,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     var table = null;
     var emptyContainerTable = null;
     let clickTimer = null;
+    var includeContainer = '<?= $includeContainer ?>';
 
     var grossIncomingDatePicker;
     var tareOutgoingDatePicker; 
@@ -2309,12 +2312,14 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 { data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
+                <?php if($includeContainer == 'Y'): ?>
                 { data: 'lorry_plate_no2' },
                 { data: 'gross_weight2' },
                 { data: 'gross_weight2_date' },
                 { data: 'tare_weight2' },
                 { data: 'tare_weight2_date' },
                 { data: 'nett_weight2' },
+                <?php endif; ?>
                 { 
                     data: 'id',
                     class: 'action-button',
@@ -3445,12 +3450,14 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     { data: 'tare_weight1' },
                     { data: 'tare_weight1_date' },
                     { data: 'nett_weight1' },
+                    <?php if($includeContainer == 'Y'): ?>
                     { data: 'lorry_plate_no2' },
                     { data: 'gross_weight2' },
                     { data: 'gross_weight2_date' },
                     { data: 'tare_weight2' },
                     { data: 'tare_weight2_date' },
                     { data: 'nett_weight2' },
+                    <?php endif; ?>
                     { 
                         data: 'id',
                         class: 'action-button',
@@ -5204,50 +5211,84 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     returnString += `<p><strong>SALES PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
                 }
         
+            if (includeContainer == 'Y') {
+                returnString += `
+                    <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
+                    <p><strong>SEAL NO:</strong> ${row.seal_no}</p>`;
+            }
             returnString += `
-                <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
-                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
             </div>
             <div class="col-6">
                 <p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
                 <p><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
                 <p><strong>WEIGHT TYPE:</strong> ${weightType}</p>
                 <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p>
-                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
-                <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
-                <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>
+                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>`;
+            if (includeContainer == 'Y') {
+                returnString += `
+                    <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
+                    <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>`;
+            }
+            returnString += `
             </div>
         </div>
-        <hr>
+        <hr>`;
 
-        <!-- Weighing Section -->
-        <div class="row">
-            <p><span><strong style="font-size:120%; text-decoration: underline;">Weighing Information</strong></span><br>
-            <!-- Normal -->
-            <div class="col-6">
-                <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
-                <p><strong>IN WEIGHT:</strong> ${row.gross_weight1}</p>
-                <p><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
-                <p><strong>IN WEIGH BY:</strong> ${row.gross_weight_by1}</p>
-                <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1}</p>
-                <p><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
-                <p><strong>OUT WEIGH BY:</strong> ${row.tare_weight_by1}</p>
-                <p><strong>NETT WEIGHT:</strong> ${row.nett_weight1}</p>
-                <p><strong>SUB TOTAL WEIGHT:</strong> ${row.final_weight}</p>
-            </div>
-            <!-- Container -->
-            <div class="col-6">
-                <p><strong>VEHICLE PLATE 2:</strong> ${row.lorry_plate_no2}</p>
-                <p><strong>IN WEIGHT 2:</strong> ${row.gross_weight2}</p>
-                <p><strong>IN DATE / TIME 2:</strong> ${row.gross_weight2_date}</p>
-                <p><strong>IN WEIGH BY 2:</strong> ${row.gross_weight_by2}</p>
-                <p><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2}</p>
-                <p><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
-                <p><strong>OUT WEIGH BY 2:</strong> ${row.tare_weight_by2}</p>
-                <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2}</p>            
+        if (includeContainer == 'N') {
+            returnString += `
+                <!-- Weighing Section -->
+                <div class="row">
+                    <p><span><strong style="font-size:120%; text-decoration: underline;">Weighing Information</strong></span><br>
+                    <!-- Normal -->
+                    <div class="col-6">
+                        <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
+                        <p><strong>IN WEIGHT:</strong> ${row.gross_weight1} KG</p>
+                        <p><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
+                        <p><strong>IN WEIGH BY:</strong> ${row.gross_weight_by1}</p>
+                        <p><strong>NETT WEIGHT:</strong> ${row.nett_weight1} KG</p>
+                        <p><strong>FINAL WEIGHT:</strong> ${row.final_weight} KG</p>
+                    </div>
+                    <!-- Container -->
+                    <div class="col-6">
+                        <p style="visibility:hidden"><strong>OUT WEIGHT:</strong> ${row.tare_weight1}</p>
+                        <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1} KG</p>
+                        <p><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
+                        <p><strong>OUT WEIGH BY:</strong> ${row.tare_weight_by1}</p>     
+                        <p><strong>REDUCE WEIGHT:</strong> ${row.reduce_weight} KG</p>   
+                    </div>
                 </div>
-        </div>
-        `;
+            `;
+        }else{
+            returnString += `
+                <!-- Weighing Section -->
+                <div class="row">
+                    <p><span><strong style="font-size:120%; text-decoration: underline;">Weighing Information</strong></span><br>
+                    <!-- Normal -->
+                    <div class="col-6">
+                        <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
+                        <p><strong>IN WEIGHT:</strong> ${row.gross_weight1} KG</p>
+                        <p><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
+                        <p><strong>IN WEIGH BY:</strong> ${row.gross_weight_by1}</p>
+                        <p style="visibility: hidden;"><strong>OUT WEIGHT:</strong> ${row.tare_weight1} KG</p>
+                        <p><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
+                        <p><strong>OUT WEIGH BY:</strong> ${row.tare_weight_by1}</p>
+                        <p><strong>NETT WEIGHT:</strong> ${row.nett_weight1} KG</p>
+                        <p><strong>FINAL WEIGHT:</strong> ${row.final_weight} KG</p>
+                    </div>
+                    <!-- Container -->
+                    <div class="col-6">
+                        <p><strong>VEHICLE PLATE 2:</strong> ${row.lorry_plate_no2}</p>
+                        <p><strong>IN WEIGHT 2:</strong> ${row.gross_weight2} KG</p>
+                        <p><strong>IN DATE / TIME 2:</strong> ${row.gross_weight2_date}</p>
+                        <p><strong>IN WEIGH BY 2:</strong> ${row.gross_weight_by2}</p>
+                        <p><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2} KG</p>
+                        <p><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
+                        <p><strong>OUT WEIGH BY 2:</strong> ${row.tare_weight_by2}</p>
+                        <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2} KG</p>            
+                    </div>
+                </div>
+            `;
+        }
         
         return returnString;
     }
