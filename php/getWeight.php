@@ -438,6 +438,7 @@ if(isset($_POST['userID'])){
                             $message['final_weight'] = $row['final_weight'];
                             $message['load_drum'] = $row['load_drum'];
                             $message['no_of_drum'] = $row['no_of_drum'];
+                            $message['driver_name'] = $row['driver_name'];
 
                             // retrieve products
                             $empQuery = "SELECT * FROM Weight_Product WHERE weight_id = $id AND status = '0' ORDER BY id ASC";

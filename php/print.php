@@ -46,6 +46,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
         $compaddress3 = $row['address_line_3'];
         $compphone = $row['phone_no'];
         $compiemail = $row['fax_no'];
+        $includePrice = $row['include_price'];
+        $includeContainer = $row['include_container'];
     }
 
     if($_POST["file"] == 'weight'){
@@ -335,50 +337,56 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                             }
 
                                         $message .= '</p>
-                                    </td>
-                                    <td style="vertical-align: top;">
-                                        <p style="vertical-align: top; margin-top: 5px; margin-left:30px; font-size: 14px;">';
-                                            if ($row['weight_type'] == 'Different Container' && $_POST['isEmptyContainer'] == 'N'){
-                                                $message .= '
-                                                <table style="width:100%; border:0px solid black; text-align:center">
-                                                    <tr>
-                                                        <th style="border:1px solid black;">New Empty Entrance Bin</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="border:1px solid black;">'.$row['replacement_container'].'</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th style="border:1px solid black;">Weight</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="border:1px solid black;">'.$row['empty_container2_weight'].'</td>
-                                                    </tr>
-                                                </table>';
-                                            }else{
-                                                $message .= '
-                                                <table style="width:100%; border:0px solid black;">
-                                                    <tr style="font-size: 14px;text-align: center;">
-                                                        <th style="border:1px solid black;">Container No.1</th>
-                                                        <th style="border:1px solid black;">Seal No.1</th>
-                                                    </tr>
-                                                    <tr style="font-size: 14px;text-align: center;">
-                                                        <td style="border:1px solid black;">'.(!empty($row["container_no"]) ? $row["container_no"] : '&nbsp;').'</td>
-                                                        <td style="border:1px solid black;">'.$row["seal_no"].'</td>
-                                                    </tr>
-                                                    <tr style="font-size: 14px;text-align: center;">
-                                                        <th style="border:1px solid black;">Container No.2</th>
-                                                        <th style="border:1px solid black;">Seal No.2</th>
-                                                    </tr>
-                                                    <tr style="font-size: 14px;text-align: center;">
-                                                        <td style="border:1px solid black;">'.(!empty($row["container_no2"]) ? $row["container_no2"] : '&nbsp;').'</td>
-                                                        <td style="border:1px solid black;">'.$row["seal_no2"].'</td>    
-                                                    </tr>
-                                                </table>';
-                                            }
+                                    </td>';
+
+                                    if ($includeContainer == 'Y'){
                                         $message .= '
-                                        </p>
-                                    </td>
-                                </tr>
+                                            <td style="vertical-align: top;">
+                                                <p style="vertical-align: top; margin-top: 5px; margin-left:30px; font-size: 14px;">';
+                                                    if ($row['weight_type'] == 'Different Container' && $_POST['isEmptyContainer'] == 'N'){
+                                                        $message .= '
+                                                        <table style="width:100%; border:0px solid black; text-align:center">
+                                                            <tr>
+                                                                <th style="border:1px solid black;">New Empty Entrance Bin</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border:1px solid black;">'.$row['replacement_container'].'</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th style="border:1px solid black;">Weight</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border:1px solid black;">'.$row['empty_container2_weight'].'</td>
+                                                            </tr>
+                                                        </table>';
+                                                    }else{
+                                                        $message .= '
+                                                        <table style="width:100%; border:0px solid black;">
+                                                            <tr style="font-size: 14px;text-align: center;">
+                                                                <th style="border:1px solid black;">Container No.1</th>
+                                                                <th style="border:1px solid black;">Seal No.1</th>
+                                                            </tr>
+                                                            <tr style="font-size: 14px;text-align: center;">
+                                                                <td style="border:1px solid black;">'.(!empty($row["container_no"]) ? $row["container_no"] : '&nbsp;').'</td>
+                                                                <td style="border:1px solid black;">'.$row["seal_no"].'</td>
+                                                            </tr>
+                                                            <tr style="font-size: 14px;text-align: center;">
+                                                                <th style="border:1px solid black;">Container No.2</th>
+                                                                <th style="border:1px solid black;">Seal No.2</th>
+                                                            </tr>
+                                                            <tr style="font-size: 14px;text-align: center;">
+                                                                <td style="border:1px solid black;">'.(!empty($row["container_no2"]) ? $row["container_no2"] : '&nbsp;').'</td>
+                                                                <td style="border:1px solid black;">'.$row["seal_no2"].'</td>    
+                                                            </tr>
+                                                        </table>';
+                                                    }
+                                                $message .= '
+                                                </p>
+                                            </td>
+                                        ';
+                                    }
+
+                            $message .= '</tr>
                             </table>';
                             
                             if($row['weight_type'] == 'Container' && $_POST['isEmptyContainer'] == 'N'){
@@ -846,10 +854,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                             $message .= '
                             <table style="width: 100%; position: fixed; bottom: 0; left: 0;">
                                 <tr>
-                                    <!-- This empty cell pushes the content to the right -->
-                                    <td style="width: 21%;"></td>
-
-                                    <td style="vertical-align: top; font-size: 14px; width: 25%;">
+                                    <td style="vertical-align: top; font-size: 14px; width: 25%; padding-left:10px;">
                                         <hr width="100%" style="margin-left: 0; text-align: left;">
                                         <span>1st Weight By: '.$row['gross_weight_by1'].'<br> 2nd Weight By: '.$row['tare_weight_by1'].'</span>
                                     </td>
@@ -859,7 +864,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                         <span>Acknowledge By Administrator</span>
                                     </td>
                                     <td style="width: 2%;"></td>
-                                    <td style="vertical-align: top; font-size: 14px; width: 25%;">
+                                    <td style="vertical-align: top; font-size: 14px; width: 25%; padding-right:15px;">
                                         <hr width="100%" style="margin-left: 0; text-align: left;">
                                         <span>Received By</span><br>
                                         <span>Name: </span><br>

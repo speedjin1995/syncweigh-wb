@@ -9,12 +9,11 @@ require_once "layouts/config.php";
 // Check if the user is already logged in, if yes then redirect him to index page
 $user = $_SESSION['id'];
 $id = '1';
-$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no from Company where id = ?");
+$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, include_price, include_container from Company where id = ?");
 mysqli_stmt_bind_param($stmt2, "s", $id);
 mysqli_stmt_execute($stmt2);
 mysqli_stmt_store_result($stmt2);
-mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $fax_no);
-
+mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $fax_no, $include_price, $include_container);
 if (mysqli_stmt_fetch($stmt2)) {
     $usercompany_reg_no = $company_reg_no;
     $username = $name;
@@ -23,6 +22,8 @@ if (mysqli_stmt_fetch($stmt2)) {
     $useraddress_line_3 = $address_line_3;
     $userphone_no = $phone_no;
     $userfax_no = $fax_no;
+    $includePrice = $include_price;
+    $includeContainer = $include_container;
 }
 
 $role = 'NORMAL';
@@ -43,7 +44,6 @@ if ($role != 'SADMIN'){
     $readonly = 'readonly';
     $hidden = true;
 }
-
 ?>
 
     <head>
@@ -77,7 +77,7 @@ if ($role != 'SADMIN'){
                                 <div class="card-body">
                                     <form action="php/updateCompany.php" method="post">
                                         <div class="row">
-                                            <div class="col-12">
+                                            <div class="col-12 mb-3">
                                                 <div class="row">
                                                     <label for="companyRegNo" class="col-sm-4 col-form-label">Company Reg No. *</label>
                                                     <div class="col-sm-8">
@@ -85,7 +85,7 @@ if ($role != 'SADMIN'){
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-12">
+                                            <div class="col-12 mb-3">
                                                 <div class="row">
                                                     <label for="companyName" class="col-sm-4 col-form-label">Company Name *</label>
                                                     <div class="col-sm-8">
@@ -93,7 +93,7 @@ if ($role != 'SADMIN'){
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-12">
+                                            <div class="col-12 mb-3">
                                                 <div class="row">
                                                     <label for="companyAddress" class="col-sm-4 col-form-label">Company Address 1 *</label>
                                                     <div class="col-sm-8">
@@ -101,7 +101,7 @@ if ($role != 'SADMIN'){
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-12">
+                                            <div class="col-12 mb-3">
                                                 <div class="row">
                                                     <label for="companyAddress2" class="col-sm-4 col-form-label">Company Address 2</label>
                                                     <div class="col-sm-8">
@@ -109,7 +109,7 @@ if ($role != 'SADMIN'){
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-12">
+                                            <div class="col-12 mb-3">
                                                 <div class="row">
                                                     <label for="companyAddress3" class="col-sm-4 col-form-label">Company Address 3</label>
                                                     <div class="col-sm-8">
@@ -117,7 +117,7 @@ if ($role != 'SADMIN'){
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-12">
+                                            <div class="col-12 mb-3">
                                                 <div class="row">
                                                     <label for="companyPhone" class="col-sm-4 col-form-label">Company Phone</label>
                                                     <div class="col-sm-8">
@@ -125,11 +125,31 @@ if ($role != 'SADMIN'){
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-12">
+                                            <div class="col-12 mb-3">
                                                 <div class="row">
                                                     <label for="companyFax" class="col-sm-4 col-form-label">Fax No.</label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control input-readonly" id="companyFax" name="companyFax" placeholder="Company Fax" value="<?=$userfax_no ?>" <?= $readonly ?>>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div <?= $hidden ? 'style="display:none;"' : '' ?>>
+                                                <div class="col-12 mb-3">
+                                                    <div class="row">
+                                                        <label class="col-sm-4 col-form-label">Include Price</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="radio" class="form-check-input" id="includePriceYes" name="includePrice" value="Y" <?= $includePrice == 'Y' ? 'checked' : '' ?> <?= $readonly ?>> Yes
+                                                            <input type="radio" class="form-check-input ms-3" id="includePriceNo" name="includePrice" value="N" <?= $includePrice == 'N' ? 'checked' : '' ?> <?= $readonly ?>> No
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="row">
+                                                        <label class="col-sm-4 col-form-label">Include Container</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="radio" class="form-check-input" id="includeContainerYes" name="includeContainer" value="Y" <?= $includeContainer == 'Y' ? 'checked' : '' ?> <?= $readonly ?>> Yes
+                                                            <input type="radio" class="form-check-input ms-3" id="includeContainerNo" name="includeContainer" value="N" <?= $includeContainer == 'N' ? 'checked' : '' ?> <?= $readonly ?>> No
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

@@ -34,6 +34,7 @@ if(isset($_POST['userID'])){
                 $message['contact_name'] = $row['contact_name'];
                 $message['ic_no'] = $row['ic_no'];
                 $message['tin_no'] = $row['tin_no'];
+                $message['mpob'] = $row['mpob'];
             }
             
             echo json_encode(

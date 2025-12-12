@@ -8,7 +8,7 @@ if(!isset($_SESSION['id'])){
 	$username = $_SESSION["username"];
 }
 
-if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress'], $_POST['companyPhone'])){
+if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress'], $_POST['companyPhone'], $_POST['includePrice'], $_POST['includeContainer'])){
 	$companyRegNo = filter_input(INPUT_POST, 'companyRegNo', FILTER_SANITIZE_STRING);
 	$companyName = filter_input(INPUT_POST, 'companyName', FILTER_SANITIZE_STRING);
 	$companyAddress = filter_input(INPUT_POST, 'companyAddress', FILTER_SANITIZE_STRING);
@@ -32,32 +32,15 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 		$companyFax = filter_input(INPUT_POST, 'companyFax', FILTER_SANITIZE_STRING);
 	}
 
-	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, name=?, modified_date=?, modified_by=? WHERE id=?")) {
-		$stmt2->bind_param('ssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyFax, $companyName, $today, $username, $id);
+	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, name=?, include_price=?, include_container=?, modified_date=?, modified_by=? WHERE id=?")) {
+		$stmt2->bind_param('ssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyFax, $companyName, $_POST['includePrice'], $_POST['includeContainer'], $today, $username, $id);
 		
 		if($stmt2->execute()){
 			$stmt2->close();
+			$db->close();
 
-			if ($log_insert_stmt = $db->prepare("INSERT INTO Company_Log (company_id, company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, action_id, action_by, event_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-				$log_insert_stmt->bind_param('sssssssssss', $id, $companyRegNo, $companyName, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyFax, $action, $username, $today);
-			
-
-				if (! $log_insert_stmt->execute()) {
-					echo '<script type="text/javascript">alert("Failed due to '.$log_insert_stmt->error.'");</script>'; 
-					header("location: ../companyProfile.php");
-				}
-				else{
-					$log_insert_stmt->close();
-					$db->close();
-
-					echo '<script type="text/javascript">alert("Your company profile is updated successfully!");</script>'; 
-					header("location: ../companyProfile.php");
-				}
-			}
-			else{
-				echo '<script type="text/javascript">alert("Something went wrong when insert log!");</script>'; 
-				header("location: ../companyProfile.php");
-			}
+			echo '<script type="text/javascript">alert("Your company profile is updated successfully!");</script>'; 
+			header("location: ../companyProfile.php");
 		} 
 		else{
 			echo '<script type="text/javascript">alert("Failed due to '.$stmt2->error.'");</script>'; 

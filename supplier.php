@@ -229,6 +229,14 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="mpob" class="col-sm-4 col-form-label"><?=$languageArray['mpob_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="mpob" name="mpob" placeholder="<?=$languageArray['mpob_code'][$language]?>">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                             <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
                                                                         </div>
                                                                     </div>
@@ -611,10 +619,10 @@ $(function () {
                     dropdownHtml += '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>';
 
                     // Conditionally add Deduction Setup button
-                    if (role === 'ADMIN' || role === 'SADMIN' || allowDeduct === 'Y') {
-                        dropdownHtml += '<li><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ')">';
-                        dropdownHtml += '<i class="ri-subtract-fill align-bottom me-2 text-muted"></i> <?=$languageArray['deduction_setup_code'][$language] ?></a></li>';
-                    }
+                    // if (role === 'ADMIN' || role === 'SADMIN' || allowDeduct === 'Y') {
+                    //     dropdownHtml += '<li><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ')">';
+                    //     dropdownHtml += '<i class="ri-subtract-fill align-bottom me-2 text-muted"></i> <?=$languageArray['deduction_setup_code'][$language] ?></a></li>';
+                    // }
 
                     // Delete button
                     dropdownHtml += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')">';
@@ -731,6 +739,7 @@ $(function () {
         $('#addModal').find('#contactName').val("");
         $('#addModal').find('#icNo').val("");
         $('#addModal').find('#tinNo').val("");
+        $('#addModal').find('#mpob').val("");
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -1094,7 +1103,7 @@ function displayPreview(data) {
     var headers = jsonData[0];
 
     // Ensure we handle cases where there may be less than 15 columns
-    while (headers.length < 12) {
+    while (headers.length < 13) {
         headers.push(''); // Adding empty headers to reach 15 columns
     }
 
@@ -1111,11 +1120,11 @@ function displayPreview(data) {
         var rowData = jsonData[i];
 
         // Ensure we handle cases where there may be less than 15 cells in a row
-        while (rowData.length < 12) {
+        while (rowData.length < 13) {
             rowData.push(''); // Adding empty cells to reach 15 columns
         }
 
-        for (var j = 0; j < 12; j++) {
+        for (var j = 0; j < 13; j++) {
             var cellData = rowData[j];
             var formattedData = cellData;
 
@@ -1154,6 +1163,7 @@ function edit(id){
             $('#addModal').find('#contactName').val(obj.message.contact_name);
             $('#addModal').find('#icNo').val(obj.message.ic_no);
             $('#addModal').find('#tinNo').val(obj.message.tin_no);
+            $('#addModal').find('#mpob').val(obj.message.mpob);
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');

@@ -37,6 +37,18 @@ if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
 else{
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
 }
+
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$includePrice = '';
+$includeContainer = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $includePrice = $row['include_price'];
+    $includeContainer = $row['include_container'];
+}
 ?>
 
 <head>
@@ -181,7 +193,9 @@ else{
                                                             <select id="invoiceNoSearch" class="form-select"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal">Normal Weighing</option>
+                                                                <?php if($includeContainer == 'Y'): ?>
                                                                 <option value="Container">Primer Mover</option>
+                                                                <?php endif; ?>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->                                               
@@ -250,8 +264,8 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="invDelPoSearch" class="form-label">INV/DO/PO No</label>
-                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
+                                                            <label for="invDelPoSearch" class="form-label">DO/PO No</label>
+                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="DO/PO No">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
@@ -414,8 +428,10 @@ else{
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
                                                                     <th>Customer/ <br> Supplier</th>
+                                                                    <?php if($includeContainer == 'Y'): ?>
                                                                     <th>Container No</th>
                                                                     <th>Seal No</th>
+                                                                    <?php endif; ?>
                                                                     <th>Vehicle</th>
                                                                     <th>Gross <br>Incoming</th>
                                                                     <th>Incoming <br>Date</th>
@@ -718,8 +734,10 @@ else{
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
+                <?php if($includeContainer == 'Y'): ?>
                 { data: 'container_no' },
                 { data: 'seal_no' },
+                <?php endif; ?>
                 { data: 'lorry_plate_no1' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
@@ -810,8 +828,10 @@ else{
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
+                    <?php if($includeContainer == 'Y'): ?>
                     { data: 'container_no' },
                     { data: 'seal_no' },
+                    <?php endif; ?>
                     { data: 'lorry_plate_no1' },
                     { data: 'gross_weight1' },
                     { data: 'gross_weight1_date' },
@@ -913,6 +933,7 @@ else{
 
                     var fromDateI = $('#fromDateSearch').val();
                     var toDateI = $('#toDateSearch').val();
+                    var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
                     var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
                     var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
                     var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
@@ -940,7 +961,7 @@ else{
 
                     $('#exportSoRepForm').find('#fromDate').val(fromDateI);
                     $('#exportSoRepForm').find('#toDate').val(toDateI);
-                    $('#exportSoRepForm').find('#status').val(statusI);
+                    $('#exportSoRepForm').find('#status').val(transactionStatusI);
                     $('#exportSoRepForm').find('#customer').val(customerNoI);
                     $('#exportSoRepForm').find('#supplier').val(supplierNoI);
                     $('#exportSoRepForm').find('#vehicle').val(vehicleNoI);
@@ -950,7 +971,7 @@ else{
                     $('#exportSoRepForm').find('#destination').val(destinationI);
                     $('#exportSoRepForm').find('#plant').val(plantI);
                     $('#exportSoRepForm').find('#batchDrum').val(batchDrumSearchI);
-                    $('#exportSoRepForm').find('#type').val('Sales');
+                    // $('#exportSoRepForm').find('#type').val('Sales');
                     $('#exportSoRepModal').modal('hide');
 
                     $.post('php/exportSoPoReport.php', $('#exportSoRepForm').serialize(), function(response){
@@ -1096,6 +1117,11 @@ else{
             $("#exportSoRepModal").find('#group3').val('');
             $("#exportSoRepModal").find('#group4').val('');
             $("#exportSoRepModal").find('select[id^="group"] option').prop('disabled', false);
+            
+            // Update group options based on transaction status
+            var transactionStatus = $('#transactionStatusSearch').val();
+            updateGroupOptions(transactionStatus);
+            
             $("#exportSoRepModal").modal("show");
 
             $('#exportSoRepForm').validate({
@@ -1165,6 +1191,25 @@ else{
             }
         });
     });
+
+    // Function to update group select options based on transaction status
+    function updateGroupOptions(transactionStatus) {
+        var groupSelects = ['#group1', '#group2', '#group3'];
+        
+        groupSelects.forEach(function(selectId) {
+            var select = $(selectId);
+            
+            if (transactionStatus == 'Sales' || transactionStatus == 'Local') {
+                // For Sales/Local: change customer_code to supplier_code and product_code to raw_mat_code
+                select.find('option[value="supplier_code"]').attr('value', 'customer_code').text('Customer');
+                select.find('option[value="raw_mat_code"]').attr('value', 'product_code').text('Product');
+            } else {
+                // For other statuses: restore original values
+                select.find('option[value="customer_code"]').attr('value', 'supplier_code').text('Supplier');
+                select.find('option[value="product_code"]').attr('value', 'raw_mat_code').text('Raw Material');
+            }
+        });
+    }
 
     function edit(id){
         $('#spinnerLoading').show();
