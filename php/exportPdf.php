@@ -893,9 +893,13 @@ if(isset($_POST["file"])){
                                         <i class="fas fa-print"></i>
                                         Print Report
                                     </button>
+                                    <div style="margin-bottom: 10px; border-bottom: 2px solid #000; padding-bottom: 15px; text-align: center;">
+                                        <h3 class="fw-bold" style="margin: 0; font-size: 24px; color: #000;">'.$companyName.'</h3>
+                                        <h5 style="margin: 5px 0 0 0; font-size: 16px; color: #666;">Summary Report By Customer</h5>
+                                    </div>
                                     <table style="width:100%;">
                                         <thead>
-                                            <tr style="font-size: 11px; text-align: center;">
+                                            <tr style="border-bottom: 1px solid black; font-size: 11px; text-align: center;">
                                                 <th>TRANSACTION <br>ID</th>
                                                 <th>TRANSACTION <br>DATE</th>
                                                 <th>LORRY <br>NO.</th>';
@@ -1626,9 +1630,13 @@ if(isset($_POST["file"])){
                                         <i class="fas fa-print"></i>
                                         Print Report
                                     </button>
+                                    <div style="margin-bottom: 10px; border-bottom: 2px solid #000; padding-bottom: 15px; text-align: center;">
+                                        <h3 class="fw-bold" style="margin: 0; font-size: 24px; color: #000;">'.$companyName.'</h3>
+                                        <h5 style="margin: 5px 0 0 0; font-size: 16px; color: #666;">Summary Report By Product</h5>
+                                    </div>
                                     <table style="width:100%;">
                                         <thead>
-                                            <tr style="font-size: 11px; text-align: center;">
+                                            <tr style="border-bottom: 1px solid black; font-size: 11px; text-align: center;">
                                                 <th>TRANSACTION <br>ID</th>
                                                 <th>TRANSACTION <br>DATE</th>
                                                 <th>LORRY <br>NO.</th>';
