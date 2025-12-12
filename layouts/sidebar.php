@@ -1,13 +1,3 @@
-<!-- ========== App Menu ========== -->
-<style>
-    .nav-item .nav-link {
-        color: white !important;
-    }
-    .nav-item .nav-link.active {
-        color: #333333 !important;
-        font-weight: 900 !important;
-    }
-</style>
 <div class="app-menu navbar-menu" style="background: #dc3545;">
     <!-- LOGO -->
     <div class="navbar-brand-box">
