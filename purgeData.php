@@ -3,7 +3,7 @@
 
     <head>
         
-        <title>Purge Data | Synctronix - Weighing System</title>
+        <title>Purge Data | PWS - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->

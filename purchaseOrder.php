@@ -20,7 +20,7 @@ $vehicle = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
 
 <head>
 
-    <title>Purchase Order | Synctronix - Weighing System</title>
+    <title>Purchase Order | PWS - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->

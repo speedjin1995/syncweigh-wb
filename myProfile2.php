@@ -22,7 +22,7 @@ if (mysqli_stmt_fetch($stmt2)) {
 
     <head>
         
-        <title>My Profile | Synctronix - Weighing System</title>
+        <title>My Profile | PWS - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->

@@ -126,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php include 'layouts/head-main.php'; ?>
 
     <head>
-        <title>Sign In | Synctronix - Weighing System</title>
+        <title>Sign In | PWS - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
         <?php include 'layouts/head-css.php'; ?>
     </head>
@@ -136,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="auth-page-wrapper pt-5">
             <!-- auth page bg -->
             <div class="auth-one-bg-position auth-one-bg"  id="auth-particles">
-                <div class="bg-overlay"></div>
+                <div class="bg-overlay" style="background: #ff0000;opacity: 1;"></div>
                 
                 <div class="shape">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
@@ -169,7 +169,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                                 <div class="card-body p-4"> 
                                     <div class="text-center mt-2">
-                                        <h5 class="text-primary">Welcome Back !</h5>
+                                        <img src="assets/images/logo-lg.png" alt="" width="100%">
+                                        <h5 class="text-primary"><br>Welcome Back !</h5>
                                         <p class="text-muted">Sign in to continue to weighing.</p>
                                     </div>
                                     <div class="p-2 mt-4">
@@ -209,7 +210,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             </div-->
                                             
                                             <div class="mt-4">
-                                                <button class="btn btn-success w-100" type="submit">Sign In</button>
+                                                <button class="btn btn-danger w-100" type="submit">Sign In</button>
                                             </div>
 
                                             <!--div class="mt-4 text-center">

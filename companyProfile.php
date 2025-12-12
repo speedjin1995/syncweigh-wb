@@ -48,7 +48,7 @@ if ($role != 'SADMIN'){
 
     <head>
         
-        <title>Company Profile | Synctronix - Weighing System</title>
+        <title>Company Profile | PWS - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->

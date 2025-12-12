@@ -3,7 +3,7 @@
 
     <head>
         
-        <title>Change Password | Synctronix - Weighing System</title>
+        <title>Change Password | PWS - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->

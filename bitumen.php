@@ -14,7 +14,7 @@ else{
 
 <head>
 
-    <title>Bitumen | Synctronix - Weighing System</title>
+    <title>Bitumen | PWS - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
