@@ -364,20 +364,14 @@ if(isset($_POST["status"])){
                                 <td>'.$data['transaction_id'].'</td>
                                 <td>'.$data['transporter_code'].'</td>
                                 <td>'.$data['lorry_plate_no1'].'</td>
-                                <td>'.$data['agent_code'].'</td>
                                 <td>'.date("d/m/Y", strtotime($data['transaction_date'])).'</td>
                                 <td width="10%">'.$data['purchase_order'].'</td>
+                                <td width="10%">'.$data['delivery_no'].'</td>
                                 <td class="text-end">'.date("H:i", strtotime($data['gross_weight1_date'])).'</td>
                                 <td class="text-end">'.date("H:i", strtotime($data['tare_weight1_date'])).'</td>
                                 <td class="text-end">'.number_format(($data['gross_weight1']/1000),2).'</td>
                                 <td class="text-end">'.number_format(($data['tare_weight1']/1000),2).'</td>
                                 <td class="text-end">'.number_format(($data['nett_weight1']/1000),2).'</td>
-                                <td class="text-end">'.$unitPrice.'</td>
-                                <td class="text-end">0.00</td>
-                                <td class="text-end">0.00</td>
-                                <td class="text-end">0.00</td>
-                                <td class="text-end">0.00</td>
-                                <td>'.$exDel.'</td>
                                 <td>'.searchNamebyId($data['created_by'], $db).'</td>
                             </tr>';                
                         }
@@ -387,12 +381,6 @@ if(isset($_POST["status"])){
                                 <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">Date Total : '.$date.'</td>
                                 <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.count($grpData).'</td>
                                 <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grpNettWeight,2).'</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                             </tr>
                             <tr style="height: 18.5px;"></tr>
                         ';
@@ -409,12 +397,6 @@ if(isset($_POST["status"])){
                             <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">Company Total : </td>
                             <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grpTotalCount.'</td>
                             <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($totalNettWeight,2).'</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                         </tr>
                         <tr style="height: 18.5px;"></tr>         
                     ';
@@ -467,20 +449,14 @@ if(isset($_POST["status"])){
                                     <td>'.$data['transaction_id'].'</td>
                                     <td>'.$data['transporter_code'].'</td>
                                     <td>'.$data['lorry_plate_no1'].'</td>
-                                    <td>'.$data['agent_code'].'</td>
                                     <td>'.date("d/m/Y", strtotime($data['transaction_date'])).'</td>
                                     <td width="10%">'.$data['purchase_order'].'</td>
+                                    <td width="10%">'.$data['delivery_no'].'</td>
                                     <td class="text-end">'.date("H:i", strtotime($data['gross_weight1_date'])).'</td>
                                     <td class="text-end">'.date("H:i", strtotime($data['tare_weight1_date'])).'</td>
                                     <td class="text-end">'.number_format(($data['gross_weight1']/1000),2).'</td>
                                     <td class="text-end">'.number_format(($data['tare_weight1']/1000),2).'</td>
                                     <td class="text-end">'.number_format(($data['nett_weight1']/1000),2).'</td>
-                                    <td class="text-end">'.$unitPrice.'</td>
-                                    <td class="text-end">0.00</td>
-                                    <td class="text-end">0.00</td>
-                                    <td class="text-end">0.00</td>
-                                    <td class="text-end">0.00</td>
-                                    <td>'.$exDel.'</td>
                                     <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                 </tr>';                
                             }
@@ -490,12 +466,6 @@ if(isset($_POST["status"])){
                                     <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">Date Total : '.$date.'</td>
                                     <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.count($dateData).'</td>
                                     <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($dateNettWeight,2).'</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                    <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                    <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                                 </tr>
                                 <tr style="height: 18.5px;"></tr>      
                             ';
@@ -509,12 +479,6 @@ if(isset($_POST["status"])){
                                 <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$groupOrder[0].' Total : '.callLookup($groupOrder[0], $grp1, $db).'</td>
                                 <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp1Records.'</td>
                                 <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grp1NettWeight,2).'</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                             </tr>
                             <tr style="height: 18.5px;"></tr>   
                         ';
@@ -531,12 +495,6 @@ if(isset($_POST["status"])){
                             <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">Company Total : </td>
                             <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grpTotalCount.'</td>
                             <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($totalNettWeight,2).'</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                         </tr>
                     ';
                 }elseif ($groupCount == 3) {
@@ -611,20 +569,14 @@ if(isset($_POST["status"])){
                                         <td>'.$data['transaction_id'].'</td>
                                         <td>'.$data['transporter_code'].'</td>
                                         <td>'.$data['lorry_plate_no1'].'</td>
-                                        <td>'.$data['agent_code'].'</td>
                                         <td>'.date("d/m/Y", strtotime($data['transaction_date'])).'</td>
                                         <td width="10%">'.$data['purchase_order'].'</td>
+                                        <td width="10%">'.$data['delivery_no'].'</td>
                                         <td class="text-end">'.date("H:i", strtotime($data['gross_weight1_date'])).'</td>
                                         <td class="text-end">'.date("H:i", strtotime($data['tare_weight1_date'])).'</td>
                                         <td class="text-end">'.number_format(($data['gross_weight1']/1000),2).'</td>
                                         <td class="text-end">'.number_format(($data['tare_weight1']/1000),2).'</td>
                                         <td class="text-end">'.number_format(($data['nett_weight1']/1000),2).'</td>
-                                        <td class="text-end">'.$unitPrice.'</td>
-                                        <td class="text-end">0.00</td>
-                                        <td class="text-end">0.00</td>
-                                        <td class="text-end">0.00</td>
-                                        <td class="text-end">0.00</td>
-                                        <td>'.$exDel.'</td>
                                         <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                     </tr>';                
                                 }
@@ -634,12 +586,6 @@ if(isset($_POST["status"])){
                                         <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">Date Total : '.$grp3.'</td>
                                         <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.count($grp3Data).'</td>
                                         <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($dateNettWeight,2).'</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                        <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                        <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                                     </tr>
                                     <tr style="height: 18.5px;"></tr>      
                                 ';
@@ -654,12 +600,6 @@ if(isset($_POST["status"])){
                                     <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$groupOrder[1].' Total : '.callLookup($groupOrder[1], $grp2, $db).'</td>
                                     <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp2Count[$grp2].'</td>
                                     <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grp2NettWeight[$grp2],2).'</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                    <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                    <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                                 </tr>
                                 <tr style="height: 18.5px;"></tr>
                             ';
@@ -670,12 +610,6 @@ if(isset($_POST["status"])){
                                 <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$groupOrder[0].' Total : '.callLookup($groupOrder[0], $grp1, $db).'</td>
                                 <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp1Count.'</td>
                                 <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grp1NettWeight,2).'</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                             </tr>
                             <tr style="height: 18.5px;"></tr>   
                         ';
@@ -691,12 +625,6 @@ if(isset($_POST["status"])){
                             <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">Company Total : </td>
                             <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$companyCount.'</td>
                             <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($companyNettWeight,2).'</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                         </tr>
                     ';
                 }elseif($groupCount == 4){
@@ -786,20 +714,14 @@ if(isset($_POST["status"])){
                                             <td>'.$data['transaction_id'].'</td>
                                             <td>'.$data['transporter_code'].'</td>
                                             <td>'.$data['lorry_plate_no1'].'</td>
-                                            <td>'.$data['agent_code'].'</td>
                                             <td>'.date("d/m/Y", strtotime($data['transaction_date'])).'</td>
                                             <td width="10%">'.$data['purchase_order'].'</td>
+                                            <td width="10%">'.$data['delivery_no'].'</td>
                                             <td class="text-end">'.date("H:i", strtotime($data['gross_weight1_date'])).'</td>
                                             <td class="text-end">'.date("H:i", strtotime($data['tare_weight1_date'])).'</td>
                                             <td class="text-end">'.number_format(($data['gross_weight1']/1000),2).'</td>
                                             <td class="text-end">'.number_format(($data['tare_weight1']/1000),2).'</td>
                                             <td class="text-end">'.number_format(($data['nett_weight1']/1000),2).'</td>
-                                            <td class="text-end">'.$unitPrice.'</td>
-                                            <td class="text-end">0.00</td>
-                                            <td class="text-end">0.00</td>
-                                            <td class="text-end">0.00</td>
-                                            <td class="text-end">0.00</td>
-                                            <td>'.$exDel.'</td>
                                             <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                         </tr>';                
                                     }
@@ -809,12 +731,6 @@ if(isset($_POST["status"])){
                                             <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">Date Total : '.$grp4.'</td>
                                             <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp4Count.'</td>
                                             <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($dateNettWeight,2).'</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                                         </tr>
                                         <tr style="height: 18.5px;"></tr>      
                                     ';
@@ -828,12 +744,6 @@ if(isset($_POST["status"])){
                                         <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$groupOrder[2].' Total : '.callLookup($groupOrder[2], $grp3, $db).'</td>
                                         <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp3Count.'</td>
                                         <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grp3TotalNettWeight,2).'</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                        <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                        <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                                     </tr>
                                     <tr style="height: 18.5px;"></tr>
                                 ';
@@ -847,12 +757,6 @@ if(isset($_POST["status"])){
                                     <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$groupOrder[1].' Total : '.callLookup($groupOrder[1], $grp2, $db).'</td>
                                     <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp2Count.'</td>
                                     <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grp2TotalNettWeight,2).'</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                    <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                    <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                                 </tr>
                                 <tr style="height: 18.5px;"></tr>   
                             ';
@@ -866,12 +770,6 @@ if(isset($_POST["status"])){
                                 <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$groupOrder[0].' Total : '.callLookup($groupOrder[0], $grp1, $db).'</td>
                                 <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp1Count.'</td>
                                 <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grp1TotalNettWeight,2).'</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                             </tr>
                             <tr style="height: 18.5px;"></tr>   
                         ';
@@ -886,12 +784,6 @@ if(isset($_POST["status"])){
                             <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">Company Total : </td>
                             <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$companyCount.'</td>
                             <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($companyNettWeight,2).'</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                         </tr>
                     ';
                 }elseif($groupCount == 5){
@@ -997,20 +889,14 @@ if(isset($_POST["status"])){
                                                 <td>'.$data['transaction_id'].'</td>
                                                 <td>'.$data['transporter_code'].'</td>
                                                 <td>'.$data['lorry_plate_no1'].'</td>
-                                                <td>'.$data['agent_code'].'</td>
                                                 <td>'.date("d/m/Y", strtotime($data['transaction_date'])).'</td>
                                                 <td width="10%">'.$data['purchase_order'].'</td>
+                                                <td width="10%">'.$data['delivery_no'].'</td>
                                                 <td class="text-end">'.date("H:i", strtotime($data['gross_weight1_date'])).'</td>
                                                 <td class="text-end">'.date("H:i", strtotime($data['tare_weight1_date'])).'</td>
                                                 <td class="text-end">'.number_format(($data['gross_weight1']/1000),2).'</td>
                                                 <td class="text-end">'.number_format(($data['tare_weight1']/1000),2).'</td>
                                                 <td class="text-end">'.number_format(($data['nett_weight1']/1000),2).'</td>
-                                                <td class="text-end">'.$unitPrice.'</td>
-                                                <td class="text-end">0.00</td>
-                                                <td class="text-end">0.00</td>
-                                                <td class="text-end">0.00</td>
-                                                <td class="text-end">0.00</td>
-                                                <td>'.$exDel.'</td>
                                                 <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                             </tr>';                
                                         }
@@ -1020,12 +906,6 @@ if(isset($_POST["status"])){
                                                 <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">Date Total : '.$grp5.'</td>
                                                 <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp5Count.'</td>
                                                 <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($dateNettWeight,2).'</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                                             </tr>
                                             <tr style="height: 18.5px;"></tr>      
                                         ';
@@ -1039,12 +919,6 @@ if(isset($_POST["status"])){
                                             <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$groupOrder[3].' Total : '.($groupOrder[3] == 'Batch Or Drum' || $groupOrder[3] == 'Vehicle' ? $grp4 : callLookup($groupOrder[3], $grp4, $db)).'</td>
                                             <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp4Count.'</td>
                                             <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grp4TotalNettWeight,2).'</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                                         </tr>
                                         <tr style="height: 18.5px;"></tr>
                                     ';
@@ -1058,12 +932,6 @@ if(isset($_POST["status"])){
                                         <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$groupOrder[2].' Total : '.($groupOrder[2] == 'Batch Or Drum' || $groupOrder[2] == 'Vehicle' ? $grp3 : callLookup($groupOrder[2], $grp3, $db)).'</td>
                                         <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp3Count.'</td>
                                         <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grp3TotalNettWeight,2).'</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                        <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                        <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                                     </tr>
                                     <tr style="height: 18.5px;"></tr>
                                 ';
@@ -1077,12 +945,6 @@ if(isset($_POST["status"])){
                                     <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$groupOrder[1].' Total : '.($groupOrder[1] == 'Batch Or Drum' || $groupOrder[1] == 'Vehicle' ? $grp2 : callLookup($groupOrder[1], $grp2, $db)).'</td>
                                     <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp2Count.'</td>
                                     <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grp2TotalNettWeight,2).'</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                    <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                    <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                                 </tr>
                                 <tr style="height: 18.5px;"></tr>   
                             ';
@@ -1096,12 +958,6 @@ if(isset($_POST["status"])){
                                 <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$groupOrder[0].' Total : '.($groupOrder[0] == 'Batch Or Drum' || $groupOrder[0] == 'Vehicle' ? $grp1 : callLookup($groupOrder[0], $grp1, $db)).'</td>
                                 <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$grp1Count.'</td>
                                 <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($grp1TotalNettWeight,2).'</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                                <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                             </tr>
                             <tr style="height: 18.5px;"></tr>   
                         ';
@@ -1116,12 +972,6 @@ if(isset($_POST["status"])){
                             <td colspan="6" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">Company Total : </td>
                             <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.$companyCount.'</td>
                             <td colspan="3" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">'.number_format($companyNettWeight,2).'</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td colspan="2" class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
-                            <td class="text-end" style="border-top: 1px dashed black; border-bottom: 1px dashed black;">0.00</td>
                         </tr>
                     ';
                 }
@@ -1241,19 +1091,12 @@ if(isset($_POST["status"])){
                                                     <th rowspan="2" class="text-start">Serial No.</th>
                                                     <th rowspan="2">Transport</th>
                                                     <th rowspan="2">Vehicle No.</th>
-                                                    <th rowspan="2">Salesman</th>
                                                     <th rowspan="2">Date</th>
                                                     <th rowspan="2">P/O No</th>
+                                                    <th rowspan="2">D/O No</th>
                                                     <th colspan="2" class="pb-0 pt-0" style="border-bottom: none;">Time</th>
                                                     <th colspan="3" class="pt-0 pb-0" style="border-bottom: none;">Weight (MT)</th>
-                                                    <th rowspan="2">Price <br>/Ton</th>
-                                                    <th rowspan="2">Trans Rate</th>
-                                                    <th rowspan="2">Ex_GST <br>(RM)</th>
-                                                    <th rowspan="2">GST 0% <br>(RM)</th>
-                                                    <th rowspan="2">Amount <br>(RM)</th>
-                                                    <th rowspan="2">E/D</th>
-                                                    <th rowspan="2">Batch/Drum</th>
-                                                    <th rowspan="2"></th>
+                                                    <th rowspan="2">Weighted By</th>
                                                 </tr>
                                                 <tr class="text-center">
                                                     <th>In</th>
@@ -1460,9 +1303,9 @@ if(isset($_POST["status"])){
                                 <td>'.$data['transaction_id'].'</td>
                                 <td>'.$data['transporter_code'].'</td>
                                 <td>'.$data['lorry_plate_no1'].'</td>
-                                <td>'.$data['agent_code'].'</td>
                                 <td>'.date("d/m/Y", strtotime($data['transaction_date'])).'</td>
                                 <td width="10%">'.$data['purchase_order'].'</td>
+                                <td width="10%">'.$data['delivery_no'].'</td>
                                 <td class="text-end">'.date("H:i", strtotime($data['gross_weight1_date'])).'</td>
                                 <td class="text-end">'.date("H:i", strtotime($data['tare_weight1_date'])).'</td>
                                 <td class="text-end">'.number_format(($data['gross_weight1']/1000),2).'</td>
@@ -1470,12 +1313,6 @@ if(isset($_POST["status"])){
                                 <td class="text-end">'.number_format(($data['nett_weight1']/1000),2).'</td>
                                 <td class="text-end">'.number_format((empty($data['supplier_weight']) ? 0 : ($data['supplier_weight'] / 1000)), 2).'</td>
                                 <td class="text-end">'.number_format((empty($data['weight_different']) ? 0 : ($data['weight_different'] / 1000)),2).'</td>
-                                <td class="text-end">'.$unitPrice.'</td>
-                                <td class="text-end">0.00</td>
-                                <td class="text-end">0.00</td>
-                                <td class="text-end">0.00</td>
-                                <td class="text-end">0.00</td>
-                                <td>'.$exDel.'</td>
                                 <td>'.searchNamebyId($data['created_by'], $db).'</td>
                             </tr>';                
                         }
@@ -1582,9 +1419,9 @@ if(isset($_POST["status"])){
                                     <td>'.$data['transaction_id'].'</td>
                                     <td>'.$data['transporter_code'].'</td>
                                     <td>'.$data['lorry_plate_no1'].'</td>
-                                    <td>'.$data['agent_code'].'</td>
                                     <td>'.date("d/m/Y", strtotime($data['transaction_date'])).'</td>
                                     <td width="10%">'.$data['purchase_order'].'</td>
+                                    <td width="10%">'.$data['delivery_no'].'</td>
                                     <td class="text-end">'.date("H:i", strtotime($data['gross_weight1_date'])).'</td>
                                     <td class="text-end">'.date("H:i", strtotime($data['tare_weight1_date'])).'</td>
                                     <td class="text-end">'.number_format(($data['gross_weight1']/1000),2).'</td>
@@ -1592,12 +1429,6 @@ if(isset($_POST["status"])){
                                     <td class="text-end">'.number_format(($data['nett_weight1']/1000),2).'</td>
                                     <td class="text-end">'.number_format((empty($data['supplier_weight']) ? 0 : ($data['supplier_weight'] / 1000)), 2).'</td>
                                     <td class="text-end">'.number_format((empty($data['weight_different']) ? 0 : ($data['weight_different'] / 1000)),2).'</td>
-                                    <td class="text-end">'.$unitPrice.'</td>
-                                    <td class="text-end">0.00</td>
-                                    <td class="text-end">0.00</td>
-                                    <td class="text-end">0.00</td>
-                                    <td class="text-end">0.00</td>
-                                    <td>'.$exDel.'</td>
                                     <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                 </tr>';                
                             }
@@ -1744,9 +1575,9 @@ if(isset($_POST["status"])){
                                         <td>'.$data['transaction_id'].'</td>
                                         <td>'.$data['transporter_code'].'</td>
                                         <td>'.$data['lorry_plate_no1'].'</td>
-                                        <td>'.$data['agent_code'].'</td>
                                         <td>'.date("d/m/Y", strtotime($data['transaction_date'])).'</td>
                                         <td width="10%">'.$data['purchase_order'].'</td>
+                                        <td width="10%">'.$data['delivery_no'].'</td>
                                         <td class="text-end">'.date("H:i", strtotime($data['gross_weight1_date'])).'</td>
                                         <td class="text-end">'.date("H:i", strtotime($data['tare_weight1_date'])).'</td>
                                         <td class="text-end">'.number_format(($data['gross_weight1']/1000),2).'</td>
@@ -1754,12 +1585,6 @@ if(isset($_POST["status"])){
                                         <td class="text-end">'.number_format(($data['nett_weight1']/1000),2).'</td>
                                         <td class="text-end">'.number_format((empty($data['supplier_weight']) ? 0 : ($data['supplier_weight'] / 1000)), 2).'</td>
                                         <td class="text-end">'.number_format((empty($data['weight_different']) ? 0 : ($data['weight_different'] / 1000)),2).'</td>
-                                        <td class="text-end">'.$unitPrice.'</td>
-                                        <td class="text-end">0.00</td>
-                                        <td class="text-end">0.00</td>
-                                        <td class="text-end">0.00</td>
-                                        <td class="text-end">0.00</td>
-                                        <td>'.$exDel.'</td>
                                         <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                     </tr>';                
                                 }
@@ -1938,9 +1763,9 @@ if(isset($_POST["status"])){
                                             <td>'.$data['transaction_id'].'</td>
                                             <td>'.$data['transporter_code'].'</td>
                                             <td>'.$data['lorry_plate_no1'].'</td>
-                                            <td>'.$data['agent_code'].'</td>
                                             <td>'.date("d/m/Y", strtotime($data['transaction_date'])).'</td>
                                             <td width="10%">'.$data['purchase_order'].'</td>
+                                            <td width="10%">'.$data['delivery_no'].'</td>
                                             <td class="text-end">'.date("H:i", strtotime($data['gross_weight1_date'])).'</td>
                                             <td class="text-end">'.date("H:i", strtotime($data['tare_weight1_date'])).'</td>
                                             <td class="text-end">'.number_format(($data['gross_weight1']/1000),2).'</td>
@@ -1948,12 +1773,6 @@ if(isset($_POST["status"])){
                                             <td class="text-end">'.number_format(($data['nett_weight1']/1000),2).'</td>
                                             <td class="text-end">'.number_format((empty($data['supplier_weight']) ? 0 : ($data['supplier_weight'] / 1000)), 2).'</td>
                                             <td class="text-end">'.number_format((empty($data['weight_different']) ? 0 : ($data['weight_different'] / 1000)),2).'</td>
-                                            <td class="text-end">'.$unitPrice.'</td>
-                                            <td class="text-end">0.00</td>
-                                            <td class="text-end">0.00</td>
-                                            <td class="text-end">0.00</td>
-                                            <td class="text-end">0.00</td>
-                                            <td>'.$exDel.'</td>
                                             <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                         </tr>';                
                                     }
@@ -2174,9 +1993,9 @@ if(isset($_POST["status"])){
                                                 <td>'.$data['transaction_id'].'</td>
                                                 <td>'.$data['transporter_code'].'</td>
                                                 <td>'.$data['lorry_plate_no1'].'</td>
-                                                <td>'.$data['agent_code'].'</td>
                                                 <td>'.date("d/m/Y", strtotime($data['transaction_date'])).'</td>
                                                 <td width="10%">'.$data['purchase_order'].'</td>
+                                                <td width="10%">'.$data['delivery_no'].'</td>
                                                 <td class="text-end">'.date("H:i", strtotime($data['gross_weight1_date'])).'</td>
                                                 <td class="text-end">'.date("H:i", strtotime($data['tare_weight1_date'])).'</td>
                                                 <td class="text-end">'.number_format(($data['gross_weight1']/1000),2).'</td>
@@ -2184,12 +2003,6 @@ if(isset($_POST["status"])){
                                                 <td class="text-end">'.number_format(($data['nett_weight1']/1000),2).'</td>
                                                 <td class="text-end">'.number_format((empty($data['supplier_weight']) ? 0 : ($data['supplier_weight'] / 1000)), 2).'</td>
                                                 <td class="text-end">'.number_format((empty($data['weight_different']) ? 0 : ($data['weight_different'] / 1000)),2).'</td>
-                                                <td class="text-end">'.$unitPrice.'</td>
-                                                <td class="text-end">0.00</td>
-                                                <td class="text-end">0.00</td>
-                                                <td class="text-end">0.00</td>
-                                                <td class="text-end">0.00</td>
-                                                <td>'.$exDel.'</td>
                                                 <td>'.searchNamebyId($data['created_by'], $db).'</td>
                                             </tr>';                
                                         }
@@ -2431,19 +2244,12 @@ if(isset($_POST["status"])){
                                                     <th rowspan="2" class="text-start">Serial No.</th>
                                                     <th rowspan="2">Transport</th>
                                                     <th rowspan="2">Vehicle No.</th>
-                                                    <th rowspan="2">Salesman</th>
                                                     <th rowspan="2">Date</th>
                                                     <th rowspan="2">P/O No</th>
+                                                    <th rowspan="2">D/O No</th>
                                                     <th colspan="2" class="pb-0 pt-0" style="border-bottom: none;">Time</th>
                                                     <th colspan="5" class="pt-0 pb-0" style="border-bottom: none;">Weight (MT)</th>
-                                                    <th rowspan="2">Price <br>/Ton</th>
-                                                    <th rowspan="2">Trans Rate</th>
-                                                    <th rowspan="2">Ex_GST <br>(RM)</th>
-                                                    <th rowspan="2">GST 0% <br>(RM)</th>
-                                                    <th rowspan="2">Amount <br>(RM)</th>
-                                                    <th rowspan="2">E/D</th>
-                                                    <th rowspan="2">Batch/Drum</th>
-                                                    <th rowspan="2"></th>
+                                                    <th rowspan="2">Weighted By</th>
                                                 </tr>
                                                 <tr class="text-center">
                                                     <th>In</th>
