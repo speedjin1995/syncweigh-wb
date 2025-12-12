@@ -6,8 +6,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_S
 }
 else{
     date_default_timezone_set('Asia/Kuala_Lumpur');
-    //$db = mysqli_connect("localhost", "u740887005_".$_SESSION['company'], "@Sync5500", "u740887005_".$_SESSION['company']);
-    $db = mysqli_connect("srv2050.hstgr.io", "u740887005_".$_SESSION['company'], "@Sync5500", "u740887005_".$_SESSION['company']);
+    $db = mysqli_connect("localhost", "u740887005_".$_SESSION['company'], "@Sync5500", "u740887005_".$_SESSION['company']);
+    //$db = mysqli_connect("srv2050.hstgr.io", "u740887005_".$_SESSION['company'], "@Sync5500", "u740887005_".$_SESSION['company']);
     
     if(mysqli_connect_errno()){
         echo 'Database connection failed with following errors: ' . mysqli_connect_error();
