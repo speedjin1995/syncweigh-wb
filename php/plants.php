@@ -12,6 +12,9 @@ $id = $_SESSION['id'];
 
 // Processing form data when form is submitted
 if (isset($_POST['plantCode'], $_POST['plantName'])) {
+    $sales = '1';
+    $purchase = '1';
+    $locals = '1';
 
     if (empty($_POST["id"])) {
         $transporterId = null;
@@ -60,14 +63,32 @@ if (isset($_POST['plantCode'], $_POST['plantName'])) {
     } else {
         $faxNo = trim($_POST["faxNo"]);
     }
+
+    if (empty($_POST["sales"])) {
+        $sales = null;
+    } else {
+        $sales = trim($_POST["sales"]);
+    }
+
+    if (empty($_POST["purchase"])) {
+       $purchase = null;
+    } else {
+        $purchase = trim($_POST["purchase"]);
+    }
+
+    if (empty($_POST["local"])) {
+        $local = null;
+    } else {
+        $local = trim($_POST["local"]);
+    }
     
     if(! empty($transporterId))
     {
         // $sql = "UPDATE Customer SET company_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, created_by=?, modified_by=? WHERE customer_code=?";
         $action = "2";
-        if ($update_stmt = $db->prepare("UPDATE Plant SET plant_code=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, created_by=?, modified_by=? WHERE id=?")) 
+        if ($update_stmt = $db->prepare("UPDATE Plant SET plant_code=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, sales=?, purchase=?, locals=?, created_by=?, modified_by=? WHERE id=?")) 
         {
-            $update_stmt->bind_param('ssssssssss', $transporterCode, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $username, $username, $transporterId);
+            $update_stmt->bind_param('sssssssssssss', $transporterCode, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $sales, $purchase, $local, $username, $username, $transporterId);
 
             // Execute the prepared query.
             if (! $update_stmt->execute()) {

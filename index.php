@@ -741,7 +741,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                                         <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
                                                                                                             <option selected="-">-</option>
                                                                                                             <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?> - <?=$rowProduct['name'] ?></option>
+                                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?> - <?=$rowRowMat['name'] ?></option>
                                                                                                             <?php } ?>
                                                                                                         </select>           
                                                                                                     </div>
@@ -1244,7 +1244,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                             <div class="col-lg-12">
                                                                 <div class="hstack gap-2 justify-content-end">
                                                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                    <button type="button" class="btn btn-success" id="submitWeightPrint">Submit & Print</button>
+                                                                    <button type="button" class="btn btn-success" id="submitWeightPrint"><?=$languageArray['submit_print_code'][$language]?></button>
                                                                     <button type="button" class="btn btn-primary" id="submitWeight"><?=$languageArray['submit_code'][$language]?></button>
                                                                 </div>
                                                             </div><!--end col-->   
@@ -1766,6 +1766,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                 <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?> (Lorry)</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                    <i class="ri-add-circle-line align-middle me-1"></i>
+                                                                    <?=$languageArray['start_weighing_code'][$language]?>
+                                                                </button>
                                                                 <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_pdf_code'][$language]?>
@@ -1773,10 +1777,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                 <button type="button" id="exportExcel" class="btn btn-info waves-effect waves-light" >
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_excel_code'][$language]?>
-                                                                </button>
-                                                                <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
-                                                                    <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                    <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
                                                             </div> 
                                                         </div> 

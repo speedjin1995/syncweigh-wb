@@ -174,7 +174,31 @@
                                                                                         <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="Fax No">
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>                                                                        
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="faxNo" class="col-sm-4 col-form-label">Sales</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="sales" name="sales" placeholder="Sales Running No.">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div> 
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="faxNo" class="col-sm-4 col-form-label">Purchase</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="purchase" name="purchase" placeholder="Purchase Running No.">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div> 
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="faxNo" class="col-sm-4 col-form-label">Public</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="local" name="local" placeholder="Public Running No.">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>                                                                     
                                                                             <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
                                                                         </div>
                                                                     </div>
@@ -434,6 +458,9 @@ $(function () {
         $('#addModal').find('#addressLine2').val("");
         $('#addModal').find('#addressLine3').val("");
         $('#addModal').find('#phoneNo').val("");
+        $('#addModal').find('#sales').val("1");
+        $('#addModal').find('#purchase').val("1");
+        $('#addModal').find('#local').val("1");
         $('#addModal').find('#faxNo').val("");
 
         // Remove Validation Error Message
@@ -604,6 +631,9 @@ function edit(id){
             $('#addModal').find('#addressLine3').val(obj.message.address_line_3);
             $('#addModal').find('#phoneNo').val(obj.message.phone_no);
             $('#addModal').find('#faxNo').val(obj.message.fax_no);
+            $('#addModal').find('#sales').val(obj.message.sales);
+            $('#addModal').find('#purchase').val(obj.message.purchase);
+            $('#addModal').find('#local').val(obj.message.locals);
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
