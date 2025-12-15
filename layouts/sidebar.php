@@ -190,6 +190,9 @@
                                         echo '
                                         <li class="nav-item">
                                             <a href="portSetup.php" class="nav-link"><b>'.$languageArray['port_setup_code'][$language].'</b></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="displaySetup.php" class="nav-link"><b>'.$languageArray['display_setup_code'][$language].'</b></a>
                                         </li>';
                                     }
                                 ?>
