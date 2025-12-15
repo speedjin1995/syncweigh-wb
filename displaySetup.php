@@ -3,8 +3,8 @@
 <?php
 require_once 'php/db_connect.php';
 
-$id = '1';
-$stmt = $db->prepare("SELECT * from Port WHERE id = ?");
+$id = $_SESSION['id'];
+$stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
 $stmt->bind_param('s', $id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -27,7 +27,7 @@ if($row = $result->fetch_assoc()){
 
     <head>
         
-        <title>Port Setup | PWS - Weighing System</title>
+        <title>Display Setup | Synctronix - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->
@@ -53,19 +53,20 @@ if($row = $result->fetch_assoc()){
                         <div class="row col-12">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <form action="php/updatePort.php" method="post">
+                                    <form action="php/updateDisplay.php" method="post">
                                         <div class="row">
-                                            <div class="col-4">
+                                            <!--div class="col-4">
                                                 <div class="form-group">
                                                     <label>Indicator</label>
                                                     <select class="form-control" style="width: 100%;" id="indicator" name="indicator" required>
-                                                        <option value="BX23" <?=$indicator == 'BX23' ? 'selected="selected"' : '';?>>BAYKON BX23</option>
+                                                        <option value="BDI" <?=$indicator == 'BDI' ? 'selected="selected"' : '';?>>BDI2001B</option>
                                                         <option value="X2S" <?=$indicator == 'X2S' ? ' selected="selected"' : '';?>>SYNCTRONIX X2S</option>
                                                         <option value="X722" <?=$indicator == 'X722' ? ' selected="selected"' : '';?>>SYNCTRONIX X722</option>
-                                                        <option value="205" <?=$indicator == '205' ? ' selected="selected"' : '';?>>CARDINAL STORM 205</option>
+                                                        <option value="EX2001" <?=$indicator == 'EX2001' ? ' selected="selected"' : '';?>>SYNCTRONIX EX2001</option>
+                                                        <option value="D2008" <?=$indicator == 'D2008' ? ' selected="selected"' : '';?>>SYNCTRONIX D2008</option>
                                                     </select>
                                                 </div>
-                                            </div>
+                                            </div-->
                                             <div class="col-4">
                                                 <div class="form-group">
                                                     <label>Serial Port</label>
@@ -179,7 +180,7 @@ if($row = $result->fetch_assoc()){
                 $.validator.setDefaults({
                     submitHandler: function () {
                         $('#spinnerLoading').show();
-                        $.post('php/updatePort.php', $('#profileForm').serialize(), function(data){
+                        $.post('php/updateDisplay.php', $('#profileForm').serialize(), function(data){
                             var obj = JSON.parse(data); 
                             
                             if(obj.status === 'success'){

@@ -4,10 +4,11 @@
 <?php
 $user = $_SESSION['id'];
 $pid = "1";
+$pid2 = "2";
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
 $allowManual = $_SESSION['allowManual'];
-$stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
+$stmt = $db->prepare("SELECT * from Port WHERE id = ?");
 $stmt->bind_param('s', $pid);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -27,6 +28,20 @@ if(($row = $result->fetch_assoc()) !== null){
     $parity = $row['parity'];
     $stopbits = $row['stop_bits'];
     $indicator = $row['indicator'];
+}
+
+$stmt2 = $db->prepare("SELECT * from Port WHERE id = ?");
+$stmt2->bind_param('s', $pid2);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
+
+if(($row2 = $result2->fetch_assoc()) !== null){
+    $port2 = $row2['com_port'];
+    $baudrate2 = $row2['bits_per_second'];
+    $databits2 = $row2['data_bits'];
+    $parity2 = $row2['parity'];
+    $stopbits2 = $row2['stop_bits'];
+    $indicator2 = $row2['indicator'];
 }
 
 $plantName = '-';
@@ -1940,6 +1955,60 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     </form>
                 </div>
             </div>
+            <div class="modal fade" id="displayModal">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                    <form role="form" id="displayForm">
+                        <div class="modal-header bg-gray-dark color-palette">
+                            <h4 class="modal-title">Setup</h4>
+                            <button type="button" class="close bg-gray-dark color-palette" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label>Serial Port</label>
+                                        <input class="form-control" type="text" id="serialPort" name="serialPort" value="<?=$port2 ?>">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label>Baud Rate</label>
+                                        <input class="form-control" type="number" id="serialPortBaudRate" name="serialPortBaudRate" value="<?=$baudrate2 ?>">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label>Data Bits</label>
+                                        <input class="form-control" type="text" id="serialPortDataBits" name="serialPortDataBits" value="<?=$databits2 ?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label>Parity</label>
+                                        <input class="form-control" type="text" id="serialPortParity" name="serialPortParity" value="<?=$parity2 ?>">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label>Stop bits</label>
+                                        <input class="form-control" type="text" id="serialPortStopBits" name="serialPortStopBits" value="<?=$stopbits2 ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between bg-gray-dark color-palette">
+                            <button type="button" class="btn btn-light" data-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                            <button type="submit" class="btn btn-primary"><?=$languageArray['submit_code'][$language]?></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div class="modal fade" id="prePrintModal">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
@@ -3272,6 +3341,19 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             else{
                 $('#indicatorConnected').removeClass('bg-primary');
                 $('#checkingConnection').addClass('bg-danger');
+                //$('#captureWeight').attr('disabled', true);
+            }
+        });
+
+        $.post('http://127.0.0.1:5002/display', $('#displayForm').serialize(), function(data){
+            if(data == "true"){
+                //$('#indicatorConnected').addClass('bg-primary');
+                //$('#checkingConnection').removeClass('bg-danger');
+                //$('#captureWeight').removeAttr('disabled');
+            }
+            else{
+               // $('#indicatorConnected').removeClass('bg-primary');
+                //$('#checkingConnection').addClass('bg-danger');
                 //$('#captureWeight').attr('disabled', true);
             }
         });
