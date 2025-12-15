@@ -777,8 +777,8 @@ if(isset($_POST["file"])){
         }
         else if ($_POST['reportType'] == 'S&PC'){
             if ($isMulti == 'Y'){
-                $id = $_POST['id'];
-                $sql = "select * from Weight WHERE id IN ($id) ORDER BY tare_weight1_date ASC";
+                //$id = $_POST['id'];
+                $sql = "select * from Weight WHERE id IN ($ids) ORDER BY tare_weight1_date ASC";
             }else{
                 $sql = "select * from Weight WHERE is_complete = 'Y' AND  is_cancel <> 'Y'".$searchQuery.' ORDER BY tare_weight1_date ASC';
             }

@@ -716,7 +716,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         <div class="row">
                                                                                             <div class="ol-xxl-12 col-lg-12 mb-3">
                                                                                                 <div class="row" id="productNameDisplay">
-                                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product Code</label>
+                                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product </label>
                                                                                                     <div class="col-sm-8">
                                                                                                         <select class="form-select select2" id="productName" name="productName" required>
                                                                                                             <option selected="-">-</option>
@@ -729,19 +729,19 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                                                     data-low="<?=$rowProduct['low'] ?>" 
                                                                                                                     data-variance="<?=$rowProduct['variance'] ?>" 
                                                                                                                     data-description="<?=$rowProduct['description'] ?>">
-                                                                                                                    <?=$rowProduct['product_code'] ?>
+                                                                                                                    <?=$rowProduct['product_code'] ?> - <?=$rowProduct['name'] ?>
                                                                                                                 </option>
                                                                                                             <?php } ?>
                                                                                                         </select>                                                                                        
                                                                                                     </div>
                                                                                                 </div>
                                                                                                 <div class="row" id="rawMaterialDisplay" style="display:none;">
-                                                                                                    <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material Code</label>
+                                                                                                    <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material</label>
                                                                                                     <div class="col-sm-8">
                                                                                                         <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
                                                                                                             <option selected="-">-</option>
                                                                                                             <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
+                                                                                                                <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?> - <?=$rowProduct['name'] ?></option>
                                                                                                             <?php } ?>
                                                                                                         </select>           
                                                                                                     </div>
@@ -1774,20 +1774,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_excel_code'][$language]?>
                                                                 </button>
-                                                                <button type="button" id="multiDeleteLorry" class="btn btn-warning waves-effect waves-light" >
-                                                                    <i class="ri-delete-bin-fill align-middle me-1"></i>
-                                                                    <?=$languageArray['delete_code'][$language]?>
-                                                                </button>
-                                                                <!--a href="/template/Weight_Template.xlsx" download>
-                                                                    <button type="button" class="btn btn-info waves-effect waves-light">
-                                                                        <i class="mdi mdi-file-import-outline align-middle me-1"></i>
-                                                                        <?=$languageArray['download_template_code'][$language]?>
-                                                                    </button>
-                                                                </a>
-                                                                <button type="button" id="uploadExccl" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal">
-                                                                    <i class="mdi mdi-file-excel align-middle me-1"></i>
-                                                                    Import Orders
-                                                                </button-->
                                                                 <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
@@ -3973,7 +3959,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     plant : plantNoI,
                     isMulti : 'Y',
                     ids : selectedIds,
-                    file : 'weight'
+                    file : 'weight',
+                    reportType: 'S&PC'
                 }, function(response){
                     var obj = JSON.parse(response);
 

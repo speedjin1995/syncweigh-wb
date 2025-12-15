@@ -87,7 +87,10 @@
                         if($_SESSION["roles"] == 'SADMIN'){
                             echo '<li class="nav-item">
                                 <a href="message.php" class="nav-link"><b>'.$languageArray['message_resource_code'][$language].'</b></a>
-                            </li>';
+                            </li>
+			    <li class="nav-item">
+                                <a href="plant.php" class="nav-link"><b>'.$languageArray['plant_code'][$language].'</b></a>
+                            </li> ';
                         }
 
                         if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
@@ -118,9 +121,6 @@
                                         <li class="nav-item">
                                             <a href="user.php" class="nav-link"><b>'.$languageArray['staff_code'][$language].'</b></a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a href="plant.php" class="nav-link"><b>'.$languageArray['plant_code'][$language].'</b></a>
-                                        </li> 
                                         <!--li class="nav-item">
                                             <a href="unit.php" class="nav-link">'.$lang['t-unit'].'</a>
                                         </li-->                           
