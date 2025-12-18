@@ -1635,16 +1635,16 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                             <div class="modal-content">
                                                 <form role="form" id="printCameraForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title">Print Slip</h4>
+                                                        <h4 class="modal-title"><?=$languageArray['print_slip_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="row">
-                                                            <label for="printSlipMode" class="col-sm-4 col-form-label">Print Slip Mode</label>
+                                                            <label for="printSlipMode" class="col-sm-4 col-form-label"><?=$languageArray['print_slip_mode_code'][$language]?></label>
                                                             <div class="col-sm-8">
                                                                 <select class="form-select" name="printSlipMode" id="printSlipMode" required>
-                                                                    <option value="Normal">Slip Without Camera</option>
-                                                                    <option value="Camera">Slip With Camera</option>
+                                                                    <option value="Normal"><?=$languageArray['slip_without_camera_code'][$language]?></option>
+                                                                    <option value="Camera"><?=$languageArray['slip_with_camera_code'][$language]?></option>
                                                                 </select>
                                                             </div>
 
