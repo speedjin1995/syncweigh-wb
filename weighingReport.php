@@ -118,7 +118,7 @@ else{
                                 <div class="card">
                                     <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" >
                                         <i class="mdi mdi-chevron-down pull-right"></i>
-                                        Search Records
+                                        <?=$languageArray['search_records_code'][$language]?>
                                     </div>
                                     <div id="collapseSearch" class="collapse" aria-labelledby="collapseSearch">                                    
                                         <div class="card-body">
@@ -126,31 +126,31 @@ else{
                                                 <div class="row">
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="fromDateSearch" class="form-label">From Date</label>
+                                                            <label for="fromDateSearch" class="form-label"><?=$languageArray['from_date_code'][$language]?></label>
                                                             <input type="date" class="form-control" data-provider="flatpickr" id="fromDateSearch">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="toDateSearch" class="form-label">To Date</label>
+                                                            <label for="toDateSearch" class="form-label"><?=$languageArray['to_date_code'][$language]?></label>
                                                             <input type="date" class="form-control" data-provider="flatpickr" id="toDateSearch">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="transactionStatusSearch" class="form-label">Transaction Status</label>
+                                                            <label for="transactionStatusSearch" class="form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
                                                             <select id="transactionStatusSearch" class="form-select">
                                                                 <option selected>-</option>
-                                                                <option value="Sales" selected>Dispatch</option>
-                                                                <option value="Purchase">Receiving</option>
-                                                                <option value="Local">Internal Transfer</option>
-                                                                <option value="Misc">Miscellaneous</option>
+                                                                <option value="Sales"><?=$languageArray['dispatch_code'][$language]?></option>
+                                                                <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
+                                                                <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
+                                                                <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3" id="customerSearchDisplay">
                                                         <div class="mb-3">
-                                                            <label for="customerNoSearch" class="form-label">Customer Name</label>
+                                                            <label for="customerNoSearch" class="form-label"><?=$languageArray['customer_name_code'][$language]?></label>
                                                             <select id="customerNoSearch" class="form-select" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowPF = mysqli_fetch_assoc($customer2)){ ?>
@@ -161,7 +161,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                         <div class="mb-3">
-                                                            <label for="supplierSearch" class="form-label">Supplier Name</label>
+                                                            <label for="supplierSearch" class="form-label"><?=$languageArray['supplier_name_code'][$language]?></label>
                                                             <select id="supplierSearch" class="form-select" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowSF=mysqli_fetch_assoc($supplier2)){ ?>
@@ -172,17 +172,17 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="vehicleNo" class="form-label">Vehicle No</label>
-                                                            <input type="text" class="form-control" placeholder="Vehicle No" id="vehicleNo">
+                                                            <label for="vehicleNo" class="form-label"><?=$languageArray['vehicle_no_code'][$language]?></label>
+                                                            <input type="text" class="form-control" placeholder="<?=$languageArray['vehicle_no_code'][$language]?>" id="vehicleNo">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="invoiceNoSearch" class="form-label">Weighing Type</label>
+                                                            <label for="invoiceNoSearch" class="form-label"><?=$languageArray['weighing_type_code'][$language]?></label>
                                                             <select id="invoiceNoSearch" class="form-select"  >
                                                                 <option selected>-</option>
-                                                                <option value="Normal">Normal Weighing</option>
-                                                                <option value="Container">Primer Mover</option>
+                                                                <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
+                                                                <option value="Container"><?=$languageArray['primer_mover_code'][$language]?></option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->                                               
@@ -198,7 +198,7 @@ else{
                                                     </div>--><!--end col-->
                                                     <div class="col-3" id="productSearchDisplay">
                                                         <div class="mb-3">
-                                                            <label for="ForminputState" class="form-label">Product Code</label>
+                                                            <label for="ForminputState" class="form-label"><?=$languageArray['product_code_code'][$language]?></label>
                                                             <select id="productSearch" class="form-select" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowProductF=mysqli_fetch_assoc($product2)){ ?>
@@ -209,7 +209,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                         <div class="mb-3">
-                                                            <label for="ForminputState" class="form-label">Raw Material Code</label>
+                                                            <label for="ForminputState" class="form-label"><?=$languageArray['raw_material_code'][$language]?></label>
                                                             <select id="rawMatSearch" class="form-select" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
@@ -220,7 +220,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="destinationSearch" class="form-label">Destination</label>
+                                                            <label for="destinationSearch" class="form-label"><?=$languageArray['destination_code'][$language]?></label>
                                                             <select id="destinationSearch" class="form-select" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
@@ -231,7 +231,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="plantSearch" class="form-label">Plant</label>
+                                                            <label for="plantSearch" class="form-label"><?=$languageArray['plant_code'][$language]?></label>
                                                             <select id="plantSearch" class="form-select">
                                                                 <option selected>-</option>
                                                                 <?php while($rowPlantF=mysqli_fetch_assoc($plant)){ ?>
@@ -242,17 +242,17 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="statusSearch" class="form-label">Status</label>
+                                                            <label for="statusSearch" class="form-label"><?=$languageArray['status_code'][$language]?></label>
                                                             <select id="statusSearch" class="form-select">
-                                                                <option value="Complete" selected>Complete</option>
-                                                                <option value="Cancelled">Cancelled</option>
+                                                                <option value="Complete" selected><?=$languageArray['complete_code'][$language]?></option>
+                                                                <option value="Cancelled"><?=$languageArray['cancelled_code'][$language]?></option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="invDelPoSearch" class="form-label">INV/DO/PO No</label>
-                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
+                                                            <label for="invDelPoSearch" class="form-label"><?=$languageArray['inv_del_po_no_code'][$language]?></label>
+                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="<?=$languageArray['inv_del_po_no_code'][$language]?>">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
@@ -384,7 +384,7 @@ else{
                                                     <div class="card-header" >
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title text-white mb-0">Weighing Records</h5>
+                                                                <h5 class="card-title text-white mb-0"><?=$languageArray['weighing_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
                                                                 <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
@@ -403,24 +403,24 @@ else{
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Transaction <br>Id</th>
-                                                                    <th>Weight <br>Type</th>
-                                                                    <th>Weight <br> Status</th>
-                                                                    <th>Customer/ <br> Supplier</th>
-                                                                    <th>Container No</th>
-                                                                    <th>Seal No</th>
-                                                                    <th>Vehicle</th>
-                                                                    <th>Gross <br>Incoming</th>
-                                                                    <th>Incoming <br>Date</th>
-                                                                    <th>Tare <br>Outgoing</th>
-                                                                    <th>Outgoing <br>Date</th>
-                                                                    <th>Nett <br>Weight</th>
-                                                                    <th>Vehicle 2</th>
-                                                                    <th>Gross <br>Incoming 2</th>
-                                                                    <th>Incoming <br>Date 2</th>
-                                                                    <th>Tare <br>Outgoing 2</th>
-                                                                    <th>Outgoing <br>Date 2</th>
-                                                                    <th>Nett <br>Weight 2</th>
+                                                                    <th><?=$languageArray['transaction_id_code'][$language]?></th>
+                                                                    <th><?=$languageArray['weight_type_code'][$language]?></th>
+                                                                    <th><?=$languageArray['weight_status_code'][$language]?></th>
+                                                                    <th><?=$languageArray['customer_supplier_code'][$language]?></th>
+                                                                    <th><?=$languageArray['container_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['seal_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['vehicle_code'][$language]?></th>
+                                                                    <th><?=$languageArray['gross_incoming_code'][$language]?></th>
+                                                                    <th><?=$languageArray['incoming_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
+                                                                    <th><?=$languageArray['outgoing_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['nett_weight_code'][$language]?></th>
+                                                                    <th><?=$languageArray['vehicle_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['gross_incoming_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['incoming_date_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['tare_outgoing_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['outgoing_date_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['nett_weight_code'][$language]?> 2</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>

@@ -352,13 +352,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="sealNoSearch" class="form-label"><?=$languageArray['seal_no_code'][$language]?></label>
-                                                            <input type="text" class="form-control" id="sealNoSearch" name="sealNoSearch" placeholder="<?=$languageArray['seal_no_code'][$language]?>">                                                                                  
+                                                            <input type="text" class="form-control" id="sealNoSearch" name="sealNoSearch" placeholder="<?=$languageArray['seal_no_code'][$language]?>">     
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="invDelPoSearch" class="form-label"><?=$languageArray['inv_del_po_no_code'][$language]?></label>
-                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="<?=$languageArray['inv_del_po_no_code'][$language]?>">                                                                                  
+                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="<?=$languageArray['inv_del_po_no_code'][$language]?>">           
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
