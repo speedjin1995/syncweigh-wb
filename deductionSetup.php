@@ -68,6 +68,10 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
             .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
                 color: #000 !important;
             }
+            
+            .hide-page #layout-wrapper {
+                display: none;
+            }
         </style>
 
     </head>
@@ -317,16 +321,17 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                     'height': 'auto'
                 });
 
+                // Hide page except modal on load
+                $('body').addClass('hide-page');
+                
                 // Check Password Logic when load screen
                 $('#passwordModal').find('#password2Div').val('').show(); // show password2 input
                 $('#passwordModal').find('#password3Div').val('').hide(); // hide password3 input
                 $("#passwordModal").modal({
                     backdrop: 'static', // disable closing by clicking outside
                     keyboard: false // disable ESC close
-                }).on('shown.bs.modal', function () {
-                    $(".page-content").hide();
                 }).on('hidden.bs.modal', function () {
-                    $(".page-content").show();
+                    $('body').removeClass('hide-page');
                 });
 
                 $("#passwordModal").modal("show");
