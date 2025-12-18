@@ -225,7 +225,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                 <div class="card">
                                     <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" style="background-color: #405189;">
                                         <i class="mdi mdi-chevron-down pull-right"></i>
-                                        Search Records
+                                        <?=$languageArray['search_records_code'][$language]?>
                                     </div>
                                     <div id="collapseSearch" class="collapse" aria-labelledby="collapseSearch">                                    
                                         <div class="card-body">
@@ -233,31 +233,31 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                 <div class="row">
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="fromDateSearch" class="form-label">From Date</label>
+                                                            <label for="fromDateSearch" class="form-label"><?=$languageArray['from_date_code'][$language]?></label>
                                                             <input type="date" class="form-control" data-provider="flatpickr" id="fromDateSearch">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="toDateSearch" class="form-label">To Date</label>
+                                                            <label for="toDateSearch" class="form-label"><?=$languageArray['to_date_code'][$language]?></label>
                                                             <input type="date" class="form-control" data-provider="flatpickr" id="toDateSearch">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="statusSearch" class="form-label">Transaction Status</label>
+                                                            <label for="statusSearch" class="form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
                                                             <select id="statusSearch" class="form-select select2">
                                                                 <option selected>-</option>
-                                                                <option value="Sales">Dispatch</option>
-                                                                <option value="Purchase">Receiving</option>
-                                                                <option value="Local">Internal Transfer</option>
-                                                                <option value="Misc">Miscellaneous</option>
+                                                                <option value="Sales"><?=$languageArray['dispatch_code'][$language]?></option>
+                                                                <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
+                                                                <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
+                                                                <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3" id="customerSearchDisplay">
                                                         <div class="mb-3">
-                                                            <label for="customerNoSearch" class="form-label">Customer No</label>
+                                                            <label for="customerNoSearch" class="form-label"><?=$languageArray['customer_code'][$language]?></label>
                                                             <select id="customerNoSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowPF = mysqli_fetch_assoc($customer2)){ ?>
@@ -268,7 +268,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                     </div><!--end col-->
                                                     <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                         <div class="mb-3">
-                                                            <label for="supplierSearch" class="form-label">Supplier No</label>
+                                                            <label for="supplierSearch" class="form-label"><?=$languageArray['supplier_code'][$language]?></label>
                                                             <select id="supplierSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowSF = mysqli_fetch_assoc($supplier2)){ ?>
@@ -279,34 +279,34 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="vehicleNo" class="form-label">Vehicle No</label>
-                                                            <input type="text" class="form-control" placeholder="Vehicle No" id="vehicleNo">
+                                                            <label for="vehicleNo" class="form-label"><?=$languageArray['vehicle_no_code'][$language]?></label>
+                                                            <input type="text" class="form-control" placeholder="<?=$languageArray['vehicle_no_code'][$language]?>" id="vehicleNo">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="invoiceNoSearch" class="form-label">Weighing Type</label>
+                                                            <label for="invoiceNoSearch" class="form-label"><?=$languageArray['weighing_type_code'][$language]?></label>
                                                             <select id="invoiceNoSearch" class="form-select select2"  >
                                                                 <option selected>-</option>
-                                                                <option value="Normal">Normal Weighing</option>
-                                                                <option value="Container">Primer Mover</option>
-                                                                <option value="Empty Container">Primer Mover + Container</option>
-                                                                <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
+                                                                <option value="Container"><?=$languageArray['primer_mover_code'][$language]?></option>
+                                                                <option value="Empty Container"><?=$languageArray['primer_mover_code'][$language]?> + <?=$languageArray['container_code'][$language]?></option>
+                                                                <option value="Different Container"><?=$languageArray['primer_mover_code'][$language]?> + <?=$languageArray['different_bins_code'][$language]?></option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="batchNoSearch" class="form-label">Status</label>
+                                                            <label for="batchNoSearch" class="form-label"><?=$languageArray['status_code'][$language]?></label>
                                                             <select id="batchNoSearch" class="form-select select2">
-                                                                <option value="N" selected>Pending</option>
-                                                                <option value="Y">Complete</option>
+                                                                <option value="N" selected><?=$languageArray['pending_code'][$language]?></option>
+                                                                <option value="Y"><?=$languageArray['complete_code'][$language]?></option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->                                                
                                                     <div class="col-3" id="productSearchDisplay">
                                                         <div class="mb-3">
-                                                            <label for="productSearch" class="form-label">Product</label>
+                                                            <label for="productSearch" class="form-label"><?=$languageArray['product_code'][$language]?></label>
                                                             <select id="productSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowProductF=mysqli_fetch_assoc($product2)){ ?>
@@ -317,7 +317,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                     </div><!--end col-->
                                                     <div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                         <div class="mb-3">
-                                                            <label for="rawMatSearch" class="form-label">Raw Material</label>
+                                                            <label for="rawMatSearch" class="form-label"><?=$languageArray['raw_material_code'][$language]?></label>
                                                             <select id="rawMatSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
@@ -328,7 +328,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                     </div><!--end col-->
                                                     <div class="col-3" id="plantSearchDisplay" style="display:none">
                                                         <div class="mb-3">
-                                                            <label for="plantSearch" class="form-label">Plant</label>
+                                                            <label for="plantSearch" class="form-label"><?=$languageArray['plant_code'][$language]?></label>
                                                             <select id="plantSearch" class="form-select select2" >
                                                                 <option selected>-</option>
                                                                 <?php while($rowPlantF=mysqli_fetch_assoc($plant2)){ ?>
@@ -339,26 +339,26 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="transactionIdSearch" class="form-label">Transaction ID</label>
-                                                            <input type="text" class="form-control" id="transactionIdSearch" name="transactionIdSearch" placeholder="Transaction ID">                                                                                  
+                                                            <label for="transactionIdSearch" class="form-label"><?=$languageArray['transaction_id_code'][$language]?></label>
+                                                            <input type="text" class="form-control" id="transactionIdSearch" name="transactionIdSearch" placeholder="<?=$languageArray['transaction_id_code'][$language]?>">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="containerNoSearch" class="form-label">Container No</label>
-                                                            <input type="text" class="form-control" id="containerNoSearch" name="containerNoSearch" placeholder="Container No">                                                                                  
+                                                            <label for="containerNoSearch" class="form-label"><?=$languageArray['container_no_code'][$language]?></label>
+                                                            <input type="text" class="form-control" id="containerNoSearch" name="containerNoSearch" placeholder="<?=$languageArray['container_no_code'][$language]?>">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="sealNoSearch" class="form-label">Seal No</label>
-                                                            <input type="text" class="form-control" id="sealNoSearch" name="sealNoSearch" placeholder="Seal No">                                                                                  
+                                                            <label for="sealNoSearch" class="form-label"><?=$languageArray['seal_no_code'][$language]?></label>
+                                                            <input type="text" class="form-control" id="sealNoSearch" name="sealNoSearch" placeholder="<?=$languageArray['seal_no_code'][$language]?>">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="invDelPoSearch" class="form-label">INV/DO/PO No</label>
-                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="INV/DO/PO No">                                                                                  
+                                                            <label for="invDelPoSearch" class="form-label"><?=$languageArray['inv_del_po_no_code'][$language]?></label>
+                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="<?=$languageArray['inv_del_po_no_code'][$language]?>">                                                                                  
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
@@ -504,7 +504,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     <div class="card-body">
                                                                                         <div class="d-flex justify-content-between">
                                                                                             <div>
-                                                                                                <h3 class="ff-secondary fw-semibold text-white">Indicator Weight</h3>
+                                                                                                <h3 class="ff-secondary fw-semibold text-white"><?=$languageArray['indicator_weight_code'][$language]?></h3>
                                                                                                 <h2 class="mt-4 ff-secondary fw-semibold display-3 text-white"><span class="counter-value" id="indicatorWeight">0</span> Kg</h2>
                                                                                             </div>
                                                                                             <div>
@@ -527,7 +527,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     <div class="card-body">
                                                                                         <div class="d-flex justify-content-between">
                                                                                             <div>
-                                                                                                <h3 class="ff-secondary fw-semibold text-white">Final Weight</h3>
+                                                                                                <h3 class="ff-secondary fw-semibold text-white"><?=$languageArray['final_weight_code'][$language]?></h3>
                                                                                                 <h2 class="mt-4 ff-secondary fw-semibold display-3 text-white"><span class="counter-value" id="currentWeight">0</span> Kg</h2>
                                                                                             </div>
                                                                                             <div>
@@ -553,9 +553,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="transactionId" class="col-sm-4 col-form-label">Transaction ID</label>
+                                                                                            <label for="transactionId" class="col-sm-4 col-form-label"><?=$languageArray['transaction_id_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
-                                                                                                <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" placeholder="Transaction ID" readonly>                                                                                  
+                                                                                                <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" placeholder="<?=$languageArray['transaction_id_code'][$language]?>" readonly>                                                                                  
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -564,19 +564,19 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             echo 'style="display:none;"';
                                                                                         }?>>
                                                                                         <div class="row">
-                                                                                            <label for="manualWeight" class="col-sm-4 col-form-label">Manual Weight</label>
+                                                                                            <label for="manualWeight" class="col-sm-4 col-form-label"><?=$languageArray['manual_weight_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="form-check align-radio mr-2">
                                                                                                     <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightYes" value="true">
                                                                                                     <label class="form-check-label" for="manualWeightYes">
-                                                                                                    Yes
+                                                                                                        <?=$languageArray['yes_code'][$language]?>
                                                                                                     </label>
                                                                                                 </div>
 
                                                                                                 <div class="form-check align-radio">
                                                                                                     <input class="form-check-input radio-manual-weight" type="radio" name="manualWeight" id="manualWeightNo" value="false" checked>
                                                                                                     <label class="form-check-label" for="manualWeightNo">
-                                                                                                    No
+                                                                                                        <?=$languageArray['no_code'][$language]?>
                                                                                                     </label>
                                                                                                 </div>
                                                                                             </div>
@@ -584,7 +584,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="purchaseOrder" class="col-sm-4 col-form-label">P/O No.</label>
+                                                                                            <label for="purchaseOrder" class="col-sm-4 col-form-label"><?=$languageArray['po_no_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder">
                                                                                             </div>
@@ -603,10 +603,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>-->
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierWeight" style="display:none;">
                                                                                         <div class="row">
-                                                                                            <label for="supplierWeight" class="col-sm-4 col-form-label">Supplier Weight</label>
+                                                                                            <label for="supplierWeight" class="col-sm-4 col-form-label"><?=$languageArray['supplier_weight_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="input-group">
-                                                                                                    <input type="number" class="form-control" id="supplierWeight" name="supplierWeight"  placeholder="Supplier Weight">
+                                                                                                    <input type="number" class="form-control" id="supplierWeight" name="supplierWeight"  placeholder="<?=$languageArray['supplier_weight_code'][$language]?>">
                                                                                                     <div class="input-group-text">Kg</div>
                                                                                                 </div>
                                                                                             </div>
@@ -616,20 +616,20 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
+                                                                                            <label for="weightType" class="col-sm-4 col-form-label"><?=$languageArray['weight_type_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select id="weightType" name="weightType" class="form-select select2">
-                                                                                                    <option value="Normal" selected>Normal Weighing</option>
-                                                                                                    <option value="Container">Primer Mover</option>
-                                                                                                    <option value="Empty Container">Primer Mover + Container</option>
-                                                                                                    <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                                                    <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
+                                                                                                    <option value="Container"><?=$languageArray['primer_mover_code'][$language]?></option>
+                                                                                                    <option value="Empty Container"><?=$languageArray['primer_mover_code'][$language]?> + <?=$languageArray['container_code'][$language]?></option>
+                                                                                                    <option value="Different Container"><?=$languageArray['primer_mover_code'][$language]?> + <?=$languageArray['different_bins_code'][$language]?></option>
                                                                                                 </select>   
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="plant" class="col-sm-4 col-form-label">Plant</label>
+                                                                                            <label for="plant" class="col-sm-4 col-form-label"><?=$languageArray['plant_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select class="form-select select2" id="plant" name="plant" required>
                                                                                                     <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
@@ -641,9 +641,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3" id="doDisplay">
                                                                                         <div class="row">
-                                                                                            <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
+                                                                                            <label for="deliveryNo" class="col-sm-4 col-form-label"><?=$languageArray['delivery_no_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
-                                                                                                <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="Delivery No">
+                                                                                                <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="<?=$languageArray['delivery_no_code'][$language]?>">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -682,20 +682,20 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
+                                                                                            <label for="transactionStatus" class="col-sm-4 col-form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select id="transactionStatus" name="transactionStatus" class="form-select select2">
-                                                                                                    <option value="Sales" selected>Dispatch</option>
-                                                                                                    <option value="Purchase">Receiving</option>
-                                                                                                    <option value="Local">Internal Transfer</option>
-                                                                                                    <option value="Misc">Miscellaneous</option>
+                                                                                                    <option value="Sales" selected><?=$languageArray['dispatch_code'][$language]?></option>
+                                                                                                    <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
+                                                                                                    <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
+                                                                                                    <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
                                                                                                 </select>  
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="destination" class="col-sm-4 col-form-label">Destination</label>
+                                                                                            <label for="destination" class="col-sm-4 col-form-label"><?=$languageArray['destination_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select class="form-select select2" id="destination" name="destination" required>
                                                                                                     <option selected="-">-</option>
@@ -708,9 +708,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="invoiceNo" class="col-sm-4 col-form-label">Invoice No</label>
+                                                                                            <label for="invoiceNo" class="col-sm-4 col-form-label"><?=$languageArray['invoice_no_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
-                                                                                                <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Invoice No">
+                                                                                                <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="<?=$languageArray['invoice_no_code'][$language]?>">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -729,7 +729,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                                                         <div class="row">
-                                                                                            <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
+                                                                                            <label for="reduceWeight" class="col-sm-4 col-form-label"><?=$languageArray['reduce_weight_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="input-group">
                                                                                                     <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
@@ -742,18 +742,18 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="transactionDate" class="col-sm-4 col-form-label">Transaction Date</label>
+                                                                                            <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['transaction_date_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
                                                                                                 <div class="invalid-feedback">
-                                                                                                    Please fill in the field.
+                                                                                                    <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                                 </div>    
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
+                                                                                            <label for="transporter" class="col-sm-4 col-form-label"><?=$languageArray['transporter_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select class="form-select select2" id="transporter" name="transporter" required>
                                                                                                     <option selected="-">-</option>
@@ -766,7 +766,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row" id="productNameDisplay">
-                                                                                            <label for="productName" class="col-sm-4 col-form-label">Product Code</label>
+                                                                                            <label for="productName" class="col-sm-4 col-form-label"><?=$languageArray['product_code_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select class="form-select select2" id="productName" name="productName" required>
                                                                                                     <option selected="-">-</option>
@@ -786,7 +786,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row" id="rawMaterialDisplay" style="display:none;">
-                                                                                            <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material Code</label>
+                                                                                            <label for="rawMaterialName" class="col-sm-4 col-form-label"><?=$languageArray['raw_material_code_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
                                                                                                     <option selected="-">-</option>
@@ -812,7 +812,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3" id="unitPriceDisplay" style="display:none;">
                                                                                         <div class="row">
-                                                                                            <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
+                                                                                            <label for="unitPrice" class="col-sm-4 col-form-label"><?=$languageArray['unit_price_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="input-group">
                                                                                                     <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
@@ -838,7 +838,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div> 
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3" id="sstDisplay" style="display:none;">
                                                                                         <div class="row">
-                                                                                            <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
+                                                                                            <label for="sstPrice" class="col-sm-4 col-form-label"><?=$languageArray['sst_code'][$language]?> (6%)</label>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="input-group">
                                                                                                     <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
@@ -851,7 +851,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3" id="divCustomerName">
                                                                                         <div class="row">
-                                                                                            <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
+                                                                                            <label for="customerName" class="col-sm-4 col-form-label"><?=$languageArray['customer_name_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select class="form-select js-choice select2" id="customerName" name="customerName" required>
                                                                                                     <option selected="-">-</option>
@@ -864,7 +864,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
+                                                                                            <label for="driverName" class="col-sm-4 col-form-label"><?=$languageArray['driver_name_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select class="form-select js-choice select2" id="driverName" name="driverName">
                                                                                                     <option selected="-">-</option>
@@ -877,15 +877,15 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="driverIc" class="col-sm-4 col-form-label">Driver Ic</label>
+                                                                                            <label for="driverIc" class="col-sm-4 col-form-label"><?=$languageArray['driver_ic_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
-                                                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
+                                                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="<?=$languageArray['driver_ic_code'][$language]?>">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3" id="divSupplierName" style="display:none;">
                                                                                         <div class="row">
-                                                                                            <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
+                                                                                            <label for="supplierName" class="col-sm-4 col-form-label"><?=$languageArray['supplier_name_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <select class="form-select select2" id="supplierName" name="supplierName" required>
                                                                                                     <option selected="-">-</option>
@@ -898,7 +898,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3" id="subTotalPriceDisplay" style="display:none;">
                                                                                         <div class="row">
-                                                                                            <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
+                                                                                            <label for="subTotalPrice" class="col-sm-4 col-form-label"><?=$languageArray['sub_total_price_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="input-group">
                                                                                                     <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
@@ -913,7 +913,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3" id="totalPriceDisplay" style="display:none;">
                                                                                         <div class="row">
-                                                                                            <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
+                                                                                            <label for="totalPrice" class="col-sm-4 col-form-label"><?=$languageArray['total_price_code'][$language]?></label>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="input-group">
                                                                                                     <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
@@ -922,9 +922,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="row">
-                                                                                    
                                                                                 </div>
                                                                                 <div class="row">
                                                                                     <!--<div class="col-xxl-6 col-lg-6 mb-3" id="replacementContainerDisplay" style="display:none">
@@ -952,9 +949,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                         <div class="row">
-                                                                                            <label for="otherRemarks" class="col-sm-2 col-form-label" style="width: 11%;">Other Remarks</label>
+                                                                                            <label for="otherRemarks" class="col-sm-2 col-form-label" style="width: 11%;"><?=$languageArray['other_remarks_code'][$language]?></label>
                                                                                             <div class="col-sm-10" style="width: 89%;">
-                                                                                                <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
+                                                                                                <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="<?=$languageArray['other_remarks_code'][$language]?>"></textarea>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -970,13 +967,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-6 col-lg-6 mb-3">
                                                                                         <div class="row" id="containerDisplay">
-                                                                                            <label for="containerNoInput" class="col-sm-3 col-form-label">Container No 1</label>
+                                                                                            <label for="containerNoInput" class="col-sm-3 col-form-label"><?=$languageArray['container_no_code'][$language]?> 1</label>
                                                                                             <div class="col-sm-9">
-                                                                                                <input type="text" class="form-control" id="containerNoInput" name="containerNoInput" placeholder="Container No">
+                                                                                                <input type="text" class="form-control" id="containerNoInput" name="containerNoInput" placeholder="<?=$languageArray['container_no_code'][$language]?> 1">
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row" id="emptyContainerDisplay" style="display:none" >
-                                                                                            <label for="emptyContainerNo" class="col-sm-3 col-form-label" id="containerNo1Label">Container No 1</label>
+                                                                                            <label for="emptyContainerNo" class="col-sm-3 col-form-label" id="containerNo1Label"><?=$languageArray['container_no_code'][$language]?> 1</label>
                                                                                             <div class="col-sm-9">
                                                                                                 <select class="form-select select2" id="emptyContainerNo" name="emptyContainerNo">
                                                                                                     <option selected="-">-</option>
@@ -990,17 +987,17 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-6 col-lg-6 mb-3" id="containerNo2Display">
                                                                                         <div class="row">
-                                                                                            <label for="containerNo2" class="col-sm-3 col-form-label">Container No 2</label>
+                                                                                            <label for="containerNo2" class="col-sm-3 col-form-label"><?=$languageArray['container_no_code'][$language]?> 2</label>
                                                                                             <div class="col-sm-9">
-                                                                                                <input type="text" class="form-control" id="containerNo2" name="containerNo2" placeholder="Container No 2">
+                                                                                                <input type="text" class="form-control" id="containerNo2" name="containerNo2" placeholder="<?=$languageArray['container_no_code'][$language]?> 2">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-xxl-6 col-lg-6 mb-3" id="replacementContainerDisplay" style="display:none">
                                                                                         <div class="row">
-                                                                                            <label for="replacementContainer" class="col-sm-3 col-form-label">New Empty Entrance Bin</label>
+                                                                                            <label for="replacementContainer" class="col-sm-3 col-form-label"><?=$languageArray['new_empty_entrance_bin_code'][$language]?></label>
                                                                                             <div class="col-sm-9">
-                                                                                                <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
+                                                                                                <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="<?=$languageArray['replacement_container_code'][$language]?>" required>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -1008,17 +1005,17 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-6 col-lg-6 mb-3" id="sealNoDisplay">
                                                                                         <div class="row">
-                                                                                            <label for="sealNo" class="col-sm-3 col-form-label">Seal No 1</label>
+                                                                                            <label for="sealNo" class="col-sm-3 col-form-label"><?=$languageArray['seal_no_code'][$language]?> 1</label>
                                                                                             <div class="col-sm-9">
-                                                                                                <input type="text" class="form-control" id="sealNo" name="sealNo" placeholder="Seal No">
+                                                                                                <input type="text" class="form-control" id="sealNo" name="sealNo" placeholder="<?=$languageArray['seal_no_code'][$language]?>">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-xxl-6 col-lg-6 mb-3" id="sealNo2Display">
                                                                                         <div class="row">
-                                                                                            <label for="sealNo2" class="col-sm-3 col-form-label">Seal No 2</label>
+                                                                                            <label for="sealNo2" class="col-sm-3 col-form-label"><?=$languageArray['seal_no_code'][$language]?> 2</label>
                                                                                             <div class="col-sm-9">
-                                                                                                <input type="text" class="form-control" id="sealNo2" name="sealNo2" placeholder="Seal No 2">
+                                                                                                <input type="text" class="form-control" id="sealNo2" name="sealNo2" placeholder="<?=$languageArray['seal_no_code'][$language]?> 2">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -1033,19 +1030,19 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                             <div class="card-body">
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                        <button type="button" class="btn btn-success add-product" id="addProduct">Add Product</button>
+                                                                                        <button type="button" class="btn btn-success add-product" id="addProduct"><?=$languageArray['add_product_code'][$language]?></button>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row">
                                                                                     <table class="table table-primary" style="text-align: center;">
                                                                                         <thead>
                                                                                             <tr>
-                                                                                                <th width="5%">No</th>
-                                                                                                <th>Product</th>
-                                                                                                <th>Packing</th>
-                                                                                                <th>Gross Weight (kg)</th>
-                                                                                                <th>Tare Weight (kg)</th>
-                                                                                                <th>Nett Weight (kg)</th>
+                                                                                                <th width="5%"><?=$languageArray['number_code'][$language]?></th>
+                                                                                                <th><?=$languageArray['product_code'][$language]?></th>
+                                                                                                <th><?=$languageArray['packing_code'][$language]?></th>
+                                                                                                <th><?=$languageArray['gross_weight_code'][$language]?> (kg)</th>
+                                                                                                <th><?=$languageArray['tare_weight_code'][$language]?> (kg)</th>
+                                                                                                <th><?=$languageArray['nett_weight_code'][$language]?> (kg)</th>
                                                                                                 <th><?=$languageArray['action_code'][$language]?></th>
                                                                                             </tr>
                                                                                         </thead>
@@ -1068,14 +1065,14 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                             <div class="card-body">
                                                                                 <div class="row mb-3">
                                                                                     <label for="vehiclePlateNo1" class="col-sm-4 col-form-label">
-                                                                                        Vehicle Plate No.
+                                                                                        <?=$languageArray['vehicle_plate_no_code'][$language]?>
                                                                                     </label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <div class="input-group-text">
                                                                                                 <input class="form-check-input mt-0" id="manualVehicle" name="manualVehicle" type="checkbox" value="0" aria-label="Checkbox for following text input">
                                                                                             </div>
-                                                                                            <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No" style="display:none" >
+                                                                                            <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="<?=$languageArray['vehicle_plate_no_code'][$language]?>" style="display:none" >
                                                                                             <div class="col-10 index-vehicle">
                                                                                                 <select class="form-select select2" id="vehiclePlateNo1" name="vehiclePlateNo1" >
                                                                                                     <option selected="-">-</option>
@@ -1098,12 +1095,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
-                                                                                    <label for="grossIncoming" class="col-sm-4 col-form-label">Incoming</label>
+                                                                                    <label for="grossIncoming" class="col-sm-4 col-form-label"><?=$languageArray['incoming_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <!-- <div class="input-group-text">
                                                                                                 <input class="form-check-input mt-0" id="manual" name="manual" type="checkbox" value="0" aria-label="Checkbox for following text input">
-                                                                                            </div>                                                                                             -->
+                                                                                            </div>-->
                                                                                             <input type="number" class="form-control input-readonly" id="grossIncoming" name="grossIncoming" placeholder="0" readonly>
                                                                                             <div class="input-group-text">Kg</div>
                                                                                             <button class="input-group-text btn btn-success fs-5" id="grossCapture" type="button"><i class="mdi mdi-sync"></i></button>
@@ -1114,7 +1111,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <!-- INCOMING PHOTOS (4 CAM) -->
                                                                                 <!-- ========================= -->
                                                                                 <div class="row mb-3">
-                                                                                    <label class="col-sm-4 col-form-label">Incoming Photos</label>
+                                                                                    <label class="col-sm-4 col-form-label"><?=$languageArray['incoming_photos_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
 
                                                                                         <!-- Preview Grid -->
@@ -1127,11 +1124,11 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
                                                                                         <div class="d-flex gap-2 mt-2">
                                                                                             <button type="button" class="btn btn-primary" onclick="captureIncomingAll()">
-                                                                                                📸 Snap All
+                                                                                                📸 <?=$languageArray['snap_all_code'][$language]?>
                                                                                             </button>
 
                                                                                             <button type="button" class="btn btn-danger" onclick="retakeIncomingAll()" id="incomingRetakeBtn" style="display:none;">
-                                                                                                🔄 Retake All
+                                                                                                🔄 <?=$languageArray['retake_all_code'][$language]?>
                                                                                             </button>
                                                                                         </div>
 
@@ -1143,7 +1140,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
-                                                                                    <label for="grossIncomingDate" class="col-sm-4 col-form-label">Incoming Date</label>
+                                                                                    <label for="grossIncomingDate" class="col-sm-4 col-form-label"><?=$languageArray['incoming_date_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control input-readonly" id="grossIncomingDate" name="grossIncomingDate">
                                                                                     </div>
@@ -1152,7 +1149,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <!-- OUTGOING PHOTOS (4 CAM) -->
                                                                                 <!-- ========================= -->
                                                                                 <div class="row mb-3">
-                                                                                    <label class="col-sm-4 col-form-label">Outgoing Photos</label>
+                                                                                    <label class="col-sm-4 col-form-label"><?=$languageArray['outgoing_photos_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
 
                                                                                         <div class="d-grid" style="grid-template-columns: repeat(4, 1fr); gap:10px;">
@@ -1164,11 +1161,11 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
                                                                                         <div class="d-flex gap-2 mt-2">
                                                                                             <button type="button" class="btn btn-primary" onclick="captureOutgoingAll()">
-                                                                                                📸 Snap All
+                                                                                                📸 <?=$languageArray['snap_all_code'][$language]?>
                                                                                             </button>
 
                                                                                             <button type="button" class="btn btn-danger" onclick="retakeOutgoingAll()" id="outgoingRetakeBtn" style="display:none;">
-                                                                                                🔄 Retake All
+                                                                                                🔄 <?=$languageArray['retake_all_code'][$language]?>
                                                                                             </button>
                                                                                         </div>
 
@@ -1179,12 +1176,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
-                                                                                    <label for="tareOutgoing" class="col-sm-4 col-form-label">Outgoing</label>
-                                                                                    <div class="col-sm-8">                                                                                     
+                                                                                    <label for="tareOutgoing" class="col-sm-4 col-form-label"><?=$languageArray['outgoing_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <!-- <div class="input-group-text">
                                                                                                 <input class="form-check-input mt-0" id="manualOutgoing" name="manualOutgoing" type="checkbox" value="0" aria-label="Checkbox for following text input">
-                                                                                            </div>                                                                                                -->
+                                                                                            </div>-->
                                                                                             <input type="number" class="form-control input-readonly" id="tareOutgoing" name="tareOutgoing" placeholder="0" readonly>
                                                                                             <div class="input-group-text">Kg</div>
                                                                                             <button class="input-group-text btn btn-success fs-5" id="tareCapture" type="button"><i class="mdi mdi-sync"></i></button>
@@ -1192,13 +1189,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
-                                                                                    <label for="tareOutgoingDate" class="col-sm-4 col-form-label">Outgoing Date</label>
+                                                                                    <label for="tareOutgoingDate" class="col-sm-4 col-form-label"><?=$languageArray['outgoing_date_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control input-readonly" id="tareOutgoingDate" name="tareOutgoingDate">
                                                                                     </div>
                                                                                 </div>                                                                        
                                                                                 <div class="row mb-3">
-                                                                                    <label for="nettWeight" class="col-sm-4 col-form-label">Nett Weight</label>
+                                                                                    <label for="nettWeight" class="col-sm-4 col-form-label"><?=$languageArray['nett_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="nettWeight" name="nettWeight" placeholder="0" readonly>
@@ -1213,13 +1210,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                         <div class="card bg-light">
                                                                             <div class="card-body">
                                                                                 <div class="row mb-3">
-                                                                                    <label for="vehiclePlateNo2" class="col-sm-4 col-form-label">Vehicle Plate No 2</label>
+                                                                                    <label for="vehiclePlateNo2" class="col-sm-4 col-form-label"><?=$languageArray['vehicle_plate_no_code'][$language]?> 2</label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <div class="input-group-text">
                                                                                                 <input class="form-check-input mt-0" id="manualVehicle2" name="manualVehicle2" type="checkbox" value="0" aria-label="Checkbox for following text input">
                                                                                             </div>
-                                                                                            <input type="text" class="form-control" id="vehicleNoTxt2" name="vehicleNoTxt2" placeholder="Vehicle Plate No" style="display:none">
+                                                                                            <input type="text" class="form-control" id="vehicleNoTxt2" name="vehicleNoTxt2" placeholder="<?=$languageArray['vehicle_plate_no_code'][$language]?>" style="display:none">
                                                                                             <div class="col-10 index-vehicle2">
                                                                                                 <select class="form-select select2" id="vehiclePlateNo2" name="vehiclePlateNo2">
                                                                                                     <option selected="-">-</option>
@@ -1229,13 +1226,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                                 </select>
                                                                                             </div>
                                                                                             <div class="invalid-feedback">
-                                                                                                Please fill in the field.
+                                                                                                <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3" id="vehicleWeight2Display" style="display:none">
-                                                                                    <label for="vehicleWeight2" class="col-sm-4 col-form-label">Vehicle Weight</label>
+                                                                                    <label for="vehicleWeight2" class="col-sm-4 col-form-label"><?=$languageArray['vehicle_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="vehicleWeight2" name="vehicleWeight2" placeholder="0" readonly>
@@ -1244,7 +1241,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
-                                                                                    <label for="grossIncoming2" class="col-sm-4 col-form-label">Incoming</label>
+                                                                                    <label for="grossIncoming2" class="col-sm-4 col-form-label"><?=$languageArray['incoming_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="grossIncoming2" name="grossIncoming2" placeholder="0" readonly>
@@ -1254,13 +1251,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
-                                                                                    <label for="grossIncomingDate2" class="col-sm-4 col-form-label">Incoming Date</label>
+                                                                                    <label for="grossIncomingDate2" class="col-sm-4 col-form-label"><?=$languageArray['incoming_date_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control input-readonly" id="grossIncomingDate2" name="grossIncomingDate2">
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3" id="container2WeightDisplay" style="display:none">
-                                                                                    <label for="emptyContainerWeight2" class="col-sm-4 col-form-label">Empty Container Weight</label>
+                                                                                    <label for="emptyContainerWeight2" class="col-sm-4 col-form-label"><?=$languageArray['empty_container_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="emptyContainerWeight2" name="emptyContainerWeight2" placeholder="0" readonly>
@@ -1271,7 +1268,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
-                                                                                    <label for="tareOutgoing2" class="col-sm-4 col-form-label">Outgoing</label>
+                                                                                    <label for="tareOutgoing2" class="col-sm-4 col-form-label"><?=$languageArray['outgoing_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="tareOutgoing2" name="tareOutgoing2" placeholder="0" readonly>
@@ -1281,13 +1278,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
-                                                                                    <label for="tareOutgoingDate2" class="col-sm-4 col-form-label">Outgoing Date</label>
+                                                                                    <label for="tareOutgoingDate2" class="col-sm-4 col-form-label"><?=$languageArray['outgoing_date_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control input-readonly" placeholder="" id="tareOutgoingDate2" name="tareOutgoingDate2">
                                                                                     </div>
                                                                                 </div>                                                                        
                                                                                 <div class="row mb-3">
-                                                                                    <label for="nettWeight2" class="col-sm-4 col-form-label">Nett Weight</label>
+                                                                                    <label for="nettWeight2" class="col-sm-4 col-form-label"><?=$languageArray['nett_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="nettWeight2" name="nettWeight2" placeholder="0" readonly>
@@ -1302,25 +1299,25 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                         <div class="card bg-light" style="min-height: 385px;">
                                                                             <div class="card-body">
                                                                                 <div class="row mb-3" id="divOrderWeight">
-                                                                                    <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
+                                                                                    <label for="orderWeight" class="col-sm-4 col-form-label"><?=$languageArray['order_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
+                                                                                            <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="<?=$languageArray['order_weight_code'][$language]?>">
                                                                                             <div class="input-group-text">Kg</div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3" id="divWeightDifference">
-                                                                                    <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
+                                                                                    <label for="weightDifference" class="col-sm-4 col-form-label"><?=$languageArray['weight_difference_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
+                                                                                            <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="<?=$languageArray['weight_difference_code'][$language]?>" readonly>
                                                                                             <div class="input-group-text">Kg</div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
-                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
+                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label"><?=$languageArray['reduce_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
@@ -1329,7 +1326,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3" id="unitPriceDisplay">
-                                                                                    <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
+                                                                                    <label for="unitPrice" class="col-sm-4 col-form-label"><?=$languageArray['unit_price_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
@@ -1338,7 +1335,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3" id="sstDisplay">
-                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
+                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label"><?=$languageArray['sst_code'][$language]?> (6%)</label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
@@ -1347,7 +1344,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3" id="subTotalPriceDisplay">
-                                                                                    <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
+                                                                                    <label for="subTotalPrice" class="col-sm-4 col-form-label"><?=$languageArray['sub_total_price_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
@@ -1356,7 +1353,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3" id="totalPriceDisplay">
-                                                                                    <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
+                                                                                    <label for="totalPrice" class="col-sm-4 col-form-label"><?=$languageArray['total_price_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
@@ -1379,7 +1376,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                             <div class="col-lg-12">
                                                                 <div class="hstack gap-2 justify-content-end">
                                                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                    <button type="button" class="btn btn-success" id="submitWeightPrint">Submit & Print</button>
+                                                                    <button type="button" class="btn btn-success" id="submitWeightPrint"><?=$languageArray['submit_print_code'][$language]?></button>
                                                                     <button type="button" class="btn btn-primary" id="submitWeight"><?=$languageArray['submit_code'][$language]?></button>
                                                                 </div>
                                                             </div><!--end col-->   
@@ -1388,7 +1385,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                         <!-- All Hidden Fields -->
                                                         <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                             <div class="row">
-                                                                <label for="customerType" class="col-sm-4 col-form-label">Customer Type</label>
+                                                                <label for="customerType" class="col-sm-4 col-form-label"><?=$languageArray['customer_type_code'][$language]?></label>
                                                                 <div class="col-sm-8">
                                                                     <select id="customerType" name="customerType" class="form-select select2">
                                                                         <option>Cash</option>
@@ -1680,13 +1677,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                             <div class="modal-content">
                                                 <form role="form" id="cancelForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title">Cancellation Reason</h4>
+                                                        <h4 class="modal-title"><?=$languageArray['cancellation_reason_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="row">
                                                             <div class="form-group">
-                                                                <label>Cancellation Reason *</label>
+                                                                <label><?=$languageArray['cancellation_reason_code'][$language]?> *</label>
                                                                 <textarea class="form-control" id="cancelReason" name="cancelReason" rows="3"></textarea>
                                                             </div>
                                                             <input type="hidden" class="form-control" id="id" name="id">                                   
@@ -1776,24 +1773,24 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Transaction <br>Id</th>
-                                                                    <th>Weight <br>Type</th>
-                                                                    <th>Weight <br> Status</th>
-                                                                    <th>Customer/ <br> Supplier</th>
-                                                                    <th>Container No</th>
-                                                                    <th>Seal No</th>
-                                                                    <th>Vehicle</th>
-                                                                    <th>Gross <br>Incoming</th>
-                                                                    <th>Incoming <br>Date</th>
-                                                                    <th>Tare <br>Outgoing</th>
-                                                                    <th>Outgoing <br>Date</th>
-                                                                    <th>Nett <br>Weight</th>
-                                                                    <th>Vehicle 2</th>
-                                                                    <th>Gross <br>Incoming 2</th>
-                                                                    <th>Incoming <br>Date 2</th>
-                                                                    <th>Tare <br>Outgoing 2</th>
-                                                                    <th>Outgoing <br>Date 2</th>
-                                                                    <th>Nett <br>Weight 2</th>
+                                                                    <th><?=$languageArray['transaction_id_code'][$language]?></th>
+                                                                    <th><?=$languageArray['weight_type_code'][$language]?></th>
+                                                                    <th><?=$languageArray['weight_status_code'][$language]?></th>
+                                                                    <th><?=$languageArray['customer_supplier_code'][$language]?></th>
+                                                                    <th><?=$languageArray['container_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['seal_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['vehicle_code'][$language]?></th>
+                                                                    <th><?=$languageArray['gross_incoming_code'][$language]?></th>
+                                                                    <th><?=$languageArray['incoming_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
+                                                                    <th><?=$languageArray['outgoing_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['nett_weight_code'][$language]?></th>
+                                                                    <th><?=$languageArray['vehicle_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['gross_incoming_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['incoming_date_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['tare_outgoing_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['outgoing_date_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['nett_weight_code'][$language]?> 2</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -1817,7 +1814,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                     <div class="card-header" style="background-color: #405189;">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title mb-0 text-white">Pending Empty Container Records</h5>
+                                                                <h5 class="card-title mb-0 text-white"><?=$languageArray['pending_empty_container_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
                                                                 <!--a href="/template/Weight_Template.xlsx" download>
@@ -1846,15 +1843,15 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllContainerCheckbox" class="selectAllContainerCheckbox"></th>
-                                                                    <th>Container <br>No</th>
-                                                                    <th>Seal <br>No</th>
-                                                                    <th>Weight <br> Status</th>
-                                                                    <th>Vehicle</th>
-                                                                    <th>Gross <br>Incoming</th>
-                                                                    <th>Incoming <br>Date</th>
-                                                                    <th>Tare <br>Outgoing</th>
-                                                                    <th>Outgoing <br>Date</th>
-                                                                    <th>Nett <br>Weight</th>
+                                                                    <th><?=$languageArray['container_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['seal_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['weight_status_code'][$language]?></th>
+                                                                    <th><?=$languageArray['vehicle_code'][$language]?></th>
+                                                                    <th><?=$languageArray['gross_incoming_code'][$language]?></th>
+                                                                    <th><?=$languageArray['incoming_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
+                                                                    <th><?=$languageArray['outgoing_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['nett_weight_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>

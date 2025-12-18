@@ -115,20 +115,20 @@
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
+                                                                                    <label for="driverName" class="col-sm-4 col-form-label"><?=$languageArray['driver_name_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="driverName" name="driverName" placeholder="Driver Name" required>
+                                                                                        <input type="text" class="form-control" id="driverName" name="driverName" placeholder="<?=$languageArray['driver_name_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="driverIc" class="col-sm-4 col-form-label">Driver Ic</label>
+                                                                                    <label for="driverIc" class="col-sm-4 col-form-label"><?=$languageArray['driver_ic_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver Ic">
+                                                                                        <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="<?=$languageArray['driver_ic_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -176,7 +176,7 @@
                                         <div class="modal-dialog modal-xl" style="max-width: 50%;">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-gray-dark color-palette">
-                                                    <h4 class="modal-title">Error Log</h4>
+                                                    <h4 class="modal-title"><?=$languageArray['error_log_code'][$language]?></h4>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -231,8 +231,8 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Driver Name</th>
-                                                                    <th>Driver Ic</th>                                                                    
+                                                                    <th><?=$languageArray['driver_name_code'][$language]?></th>
+                                                                    <th><?=$languageArray['driver_ic_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
