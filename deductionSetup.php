@@ -68,6 +68,10 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
             .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
                 color: #000 !important;
             }
+            
+            .hide-page #layout-wrapper {
+                display: none;
+            }
         </style>
 
     </head>
@@ -91,18 +95,18 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                     <form id="profileForm" action="php/updateDeduction.php" method="post">
                                         <div class="d-flex align-items-center mb-3 justify-content-between">
                                             <div class="d-flex align-items-center">
-                                                <label for="statusSwitch" class="col-form-label me-2">Mode</label>
+                                                <label for="statusSwitch" class="col-form-label me-2"><?=$languageArray['mode_code'][$language]?></label>
                                                 <select id="statusSwitch" name="statusSwitch" class="form-select">
-                                                    <option value="Manual" <?php if ($status == 'Manual') echo 'selected'; ?>>Manual</option>
-                                                    <option value="Auto" <?php if ($status == 'Auto') echo 'selected'; ?>>Auto</option>
-                                                    <option value="Default" <?php if ($status == 'Default') echo 'selected'; ?>>Default</option>
-                                                    <option value="Customer_Supplier" <?php if ($status == 'Customer_Supplier') echo 'selected'; ?>>Customer/Supplier</option>
-                                                    <option value="Disable" <?php if ($status == 'Disable') echo 'selected'; ?>>Disable</option>
+                                                    <option value="Manual" <?php if ($status == 'Manual') echo 'selected'; ?>><?=$languageArray['manual_code'][$language]?></option>
+                                                    <option value="Auto" <?php if ($status == 'Auto') echo 'selected'; ?>><?=$languageArray['auto_code'][$language]?></option>
+                                                    <option value="Default" <?php if ($status == 'Default') echo 'selected'; ?>><?=$languageArray['default_code'][$language]?></option>
+                                                    <option value="Customer_Supplier" <?php if ($status == 'Customer_Supplier') echo 'selected'; ?>><?=$languageArray['customer_supplier_code'][$language]?></option>
+                                                    <option value="Disable" <?php if ($status == 'Disable') echo 'selected'; ?>><?=$languageArray['disable_code'][$language]?></option>
                                                 </select>
                                             </div>
 
                                             <button type="button" id="autoNewBtn" class="btn btn-primary d-none">
-                                                <i class="ri-add-circle-line align-middle me-1"></i>Add New
+                                                <i class="ri-add-circle-line align-middle me-1"></i><?=$languageArray['add_new_code'][$language]?>
                                             </button>
                                         </div>
 
@@ -143,12 +147,12 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                                     <table class="table table-primary">
                                                         <thead>
                                                             <tr>
-                                                                <th width="20%">Ranges</th>
+                                                                <th width="20%"><?=$languageArray['ranges_code'][$language]?></th>
                                                                 <th>(-) kg</th>
                                                                 <th>(+) kg</th>
                                                                 <th>(-%)</th>
                                                                 <th>(+%)</th>
-                                                                <th>Action</th>
+                                                                <th><?=$languageArray['action_code'][$language]?></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="autoTable"></tbody>
@@ -162,7 +166,7 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                             <div class="card bg-light p-3">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-4">
-                                                        <label class="form-label fw-bold mb-0">Range</label>
+                                                        <label class="form-label fw-bold mb-0"><?=$languageArray['range_code'][$language]?></label>
                                                         <div class="d-flex align-items-center mt-1">
                                                             <input type="number" id="defaultRangeMin" name="defaultRangeMin" class="form-control me-2" placeholder="Min" min="0" style="width: 45%;" value="<?= htmlspecialchars($defaultRangeMin) ?>">
                                                             <span class="mx-1 fw-bold">–</span>
@@ -170,8 +174,8 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="defaultWeight" class="form-label fw-bold mb-0">Enter Weight (kg)</label>
-                                                        <input type="number" id="defaultWeight" name="defaultWeight" class="form-control mt-1" placeholder="Enter weight" value="<?= htmlspecialchars($defaultWeight) ?>">
+                                                        <label for="defaultWeight" class="form-label fw-bold mb-0"><?=$languageArray['enter_weight_code'][$language]?> (KG)</label>
+                                                        <input type="number" id="defaultWeight" name="defaultWeight" class="form-control mt-1" placeholder="<?=$languageArray['enter_weight_code'][$language]?>" value="<?= htmlspecialchars($defaultWeight) ?>">
                                                     </div>
                                                 </div>
                                             </div>
@@ -181,7 +185,7 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                         <div id="customerSupplierView" style="display: none;">
                                             <div class="row mb-3">
                                                 <div class="col-6">
-                                                    <label class="form-label fw-bold mb-0">Customer</label>
+                                                    <label class="form-label fw-bold mb-0"><?=$languageArray['customer_code'][$language]?></label>
                                                     <select id="customer" name="customer[]" class="form-select select2" multiple>
                                                         <?php while($rowPF = mysqli_fetch_assoc($customer)){ ?>
                                                             <option value="<?=$rowPF['id'] ?>" <?php if(in_array($rowPF['id'], $customers)) echo 'selected'; ?>><?=$rowPF['name'] ?></option>
@@ -189,7 +193,7 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                                     </select>
                                                 </div>
                                                 <div class="col-6">
-                                                    <label class="form-label fw-bold mb-0">Supplier</label>
+                                                    <label class="form-label fw-bold mb-0"><?=$languageArray['supplier_code'][$language]?></label>
                                                     <select id="supplier" name="supplier[]" class="form-select select2" multiple>
                                                         <?php while($rowPF = mysqli_fetch_assoc($supplier)){ ?>
                                                             <option value="<?=$rowPF['id'] ?>" <?php if(in_array($rowPF['id'], $suppliers)) echo 'selected'; ?>><?=$rowPF['name'] ?></option>
@@ -202,13 +206,13 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                         <!-- Buttons -->
                                         <div class="row mt-4">
                                             <div class="col-4 text-center">
-                                                <input type="text" class="form-control text-center text-danger fw-bold" value="ESC" readonly>
+                                                <input type="text" class="form-control text-center text-danger fw-bold" value="<?=$languageArray['escape_code'][$language]?>" readonly>
                                             </div>
                                             <div class="col-4">
-                                                <button type="reset" class="btn btn-warning w-100" id="resetZero">Reset to Zero</button>
+                                                <button type="reset" class="btn btn-warning w-100" id="resetZero"><?=$languageArray['reset_to_zero_code'][$language]?></button>
                                             </div>
                                             <div class="col-4">
-                                                <button type="submit" class="btn btn-success w-100">Update</button>
+                                                <button type="submit" class="btn btn-success w-100"><?=$languageArray['submit_code'][$language]?></button>
                                             </div>
                                         </div>
                                     </form>
@@ -317,16 +321,17 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                     'height': 'auto'
                 });
 
+                // Hide page except modal on load
+                $('body').addClass('hide-page');
+                
                 // Check Password Logic when load screen
                 $('#passwordModal').find('#password2Div').val('').show(); // show password2 input
                 $('#passwordModal').find('#password3Div').val('').hide(); // hide password3 input
                 $("#passwordModal").modal({
                     backdrop: 'static', // disable closing by clicking outside
                     keyboard: false // disable ESC close
-                }).on('shown.bs.modal', function () {
-                    $(".page-content").hide();
                 }).on('hidden.bs.modal', function () {
-                    $(".page-content").show();
+                    $('body').removeClass('hide-page');
                 });
 
                 $("#passwordModal").modal("show");

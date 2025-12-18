@@ -134,31 +134,31 @@
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="productCode" class="col-sm-4 col-form-label">Product Code</label>
+                                                                                    <label for="productCode" class="col-sm-4 col-form-label"><?=$languageArray['product_code_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="productCode" name="productCode" placeholder="Product Code" required>
+                                                                                        <input type="text" class="form-control" id="productCode" name="productCode" placeholder="<?=$languageArray['product_code_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="productName" class="col-sm-4 col-form-label">Product Name</label>
+                                                                                    <label for="productName" class="col-sm-4 col-form-label"><?=$languageArray['product_name_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="productName" name="productName" placeholder="Product Name" required>
+                                                                                        <input type="text" class="form-control" id="productName" name="productName" placeholder="<?=$languageArray['product_name_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="productPrice" class="col-sm-4 col-form-label">Product Price</label>
+                                                                                    <label for="productPrice" class="col-sm-4 col-form-label"><?=$languageArray['product_price_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="number" class="form-control" id="productPrice" name="productPrice" placeholder="Product Price">
+                                                                                        <input type="number" class="form-control" id="productPrice" name="productPrice" placeholder="<?=$languageArray['product_price_code'][$language]?>">
                                                                                         <!--div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div-->
@@ -167,15 +167,15 @@
                                                                             </div>                                                                           
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="description" class="col-sm-4 col-form-label">Description</label>
+                                                                                    <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['description_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+                                                                                        <input type="text" class="form-control" id="description" name="description" placeholder="<?=$languageArray['description_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="description" class="col-sm-4 col-form-label">Variance Type</label>
+                                                                                    <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['variance_type_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <select class="form-control select2" style="width: 100%;" id="varianceType" name="varianceType">
                                                                                             <option value="" selected disabled hidden>Please Select</option>
@@ -187,17 +187,17 @@
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="description" class="col-sm-4 col-form-label">High (+)</label>
+                                                                                    <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['high_code'][$language]?> (+)</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="high" name="high" placeholder="High" value="0">
+                                                                                        <input type="text" class="form-control" id="high" name="high" placeholder="<?=$languageArray['high_code'][$language]?>" value="0">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="description" class="col-sm-4 col-form-label">Low (-)</label>
+                                                                                    <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['low_code'][$language]?> (-)</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="low" name="low" placeholder="Low" value="0">
+                                                                                        <input type="text" class="form-control" id="low" name="low" placeholder="<?=$languageArray['low_code'][$language]?>" value="0">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -214,7 +214,7 @@
                                                                     <div class="card-header p-2">
                                                                         <div class="d-flex justify-content-end">
                                                                             <div class="flex-shrink-0">
-                                                                                <button type="button" class="btn btn-success add-material"><i class="ri-add-circle-line align-middle me-1"></i>Add Raw Material</button>
+                                                                                <button type="button" class="btn btn-success add-material"><i class="ri-add-circle-line align-middle me-1"></i><?=$languageArray['add_raw_material_code'][$language]?></button>
                                                                             </div> 
                                                                         </div>
                                                                     </div>
@@ -225,9 +225,9 @@
                                                                                 <table class="table table-primary">
                                                                                     <thead>
                                                                                         <tr>
-                                                                                            <th width="10%">No</th>
-                                                                                            <th>Raw Material</th>
-                                                                                            <th>Weight (KG)</th>
+                                                                                            <th width="10%"><?=$languageArray['number_code'][$language]?></th>
+                                                                                            <th><?=$languageArray['raw_material_code'][$language]?></th>
+                                                                                            <th><?=$languageArray['weight_code'][$language]?> KG</th>
                                                                                             <th><?=$languageArray['action_code'][$language]?></th>
                                                                                         </tr>
                                                                                     </thead>
@@ -277,7 +277,7 @@
                                         <div class="modal-dialog modal-xl" style="max-width: 50%;">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-gray-dark color-palette">
-                                                    <h4 class="modal-title">Error Log</h4>
+                                                    <h4 class="modal-title"><?=$languageArray['error_log_code'][$language]?></h4>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -332,10 +332,10 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Product Code</th>
-                                                                    <th>Product Name</th>
-                                                                    <th>Product Price</th>
-                                                                    <th>Description</th>
+                                                                    <th><?=$languageArray['product_code_code'][$language]?></th>
+                                                                    <th><?=$languageArray['product_name_code'][$language]?></th>
+                                                                    <th><?=$languageArray['product_price_code'][$language]?></th>
+                                                                    <th><?=$languageArray['description_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
