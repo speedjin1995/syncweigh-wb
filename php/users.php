@@ -37,6 +37,38 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
     $param_modified_by = $name;
 
     if($_POST['id'] != null && $_POST['id'] != ''){
+        ### Check if new username exists or not but need to exclude current user ###
+        if ($username_stmt = $db->prepare("SELECT * FROM Users WHERE username = ? AND id != ?")) {
+            $username_stmt->bind_param("si", $param_username, $_POST['id']);
+
+            // Execute the prepared query.
+            if (! $username_stmt->execute()) {
+                $username_stmt->close();
+                echo json_encode(
+                    array(
+                        "status"=> "failed", 
+                        "message"=> $username_stmt->error
+                    )
+                );
+                exit();
+            } else {
+                $username_stmt->store_result();
+
+                if($username_stmt->num_rows > 0){
+                    $username_stmt->close();
+                    echo json_encode(
+                        array(
+                            "status"=> "failed", 
+                            "message"=> "Editted Username already exists!!"
+                        )
+                    );
+                    exit();
+                }
+
+                $username_stmt->close();
+            }
+        }
+
         if ($update_stmt = $db->prepare("UPDATE Users SET username=?, name=?, useremail=?, role=?, modified_by=?, plant_id=?, employee_code=?, allow_manual=?, allow_deduct=? WHERE id=?")) {
             $update_stmt->bind_param("ssssssssss", $param_username, $param_name, $param_useremail, $param_role, $param_modified_by, $param_plant, $param_code, $param_allowmanual, $param_allowdeduct, $_POST['id']);
             $action = "2";
@@ -64,6 +96,36 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
         }
     }
     else{
+        ### Check if username already exists or not ###
+        if ($username_stmt = $db->prepare("SELECT * FROM Users WHERE username = ?")) {
+            $username_stmt->bind_param("s", $param_username);
+
+            // Execute the prepared query.
+            if (! $username_stmt->execute()) {
+                $username_stmt->close();
+                echo json_encode(
+                    array(
+                        "status"=> "failed", 
+                        "message"=> $username_stmt->error
+                    )
+                );
+                exit();
+            } else {
+                $username_stmt->store_result();
+
+                if($username_stmt->num_rows > 0){
+                    $username_stmt->close();
+                    echo json_encode(
+                        array(
+                            "status"=> "failed", 
+                            "message"=> "Username already exists!!"
+                        )
+                    );
+                    exit();
+                }
+            }
+        }
+
         ### Only default password for new user if allow deduct is enabled ###
         if ($param_allowdeduct == 'Y'){
             $param_password2 = password_hash('123456', PASSWORD_DEFAULT); // Creates a password hash
