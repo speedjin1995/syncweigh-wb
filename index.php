@@ -727,17 +727,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
-                                                                                        <div class="row">
-                                                                                            <label for="reduceWeight" class="col-sm-4 col-form-label"><?=$languageArray['reduce_weight_code'][$language]?></label>
-                                                                                            <div class="col-sm-8">
-                                                                                                <div class="input-group">
-                                                                                                    <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
-                                                                                                    <div class="input-group-text">Kg</div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
                                                                                 </div>
                                                                                 <div class="row">
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
@@ -1193,7 +1182,16 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control input-readonly" id="tareOutgoingDate" name="tareOutgoingDate">
                                                                                     </div>
-                                                                                </div>                                                                        
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label"><?=$languageArray['reduce_weight_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
+                                                                                            <div class="input-group-text">Kg</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                                 <div class="row mb-3">
                                                                                     <label for="nettWeight" class="col-sm-4 col-form-label"><?=$languageArray['nett_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
@@ -1312,15 +1310,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="<?=$languageArray['weight_difference_code'][$language]?>" readonly>
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3">
-                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label"><?=$languageArray['reduce_weight_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
                                                                                             <div class="input-group-text">Kg</div>
                                                                                         </div>
                                                                                     </div>
@@ -1646,16 +1635,16 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                             <div class="modal-content">
                                                 <form role="form" id="printCameraForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title">Print Slip</h4>
+                                                        <h4 class="modal-title"><?=$languageArray['print_slip_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="row">
-                                                            <label for="printSlipMode" class="col-sm-4 col-form-label">Print Slip Mode</label>
+                                                            <label for="printSlipMode" class="col-sm-4 col-form-label"><?=$languageArray['print_slip_mode_code'][$language]?></label>
                                                             <div class="col-sm-8">
                                                                 <select class="form-select" name="printSlipMode" id="printSlipMode" required>
-                                                                    <option value="Normal">Slip Without Camera</option>
-                                                                    <option value="Camera">Slip With Camera</option>
+                                                                    <option value="Normal"><?=$languageArray['slip_without_camera_code'][$language]?></option>
+                                                                    <option value="Camera"><?=$languageArray['slip_with_camera_code'][$language]?></option>
                                                                 </select>
                                                             </div>
 
@@ -4434,20 +4423,19 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
             $('#currentWeight').text(current.toFixed(0));
             $('#finalWeight').val(current.toFixed(0));
-            $('#reduceWeight').trigger('change');
             //$('#finalWeight').trigger('change');
         });
-        
-        $('#reduceWeight').on('change', function(){
-            var weightType = $('#weightType').val();
 
-            if (weightType == 'Different Container'){
-                var current = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-            }else{
-                var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-                var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
-                var current = Math.abs(nett1 - nett2);
-            }
+        $('#reduceWeight').on('change', function(){
+            // var weightType = $('#weightType').val();
+
+            // if (weightType == 'Different Container'){
+            //     var current = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
+            // }else{
+            //     var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
+            //     var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
+            //     var current = Math.abs(nett1 - nett2);
+            // }
 
             // Enhancement to add additional product weight
             // if ($('#productTable tr').length > 0){
@@ -4460,13 +4448,18 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             //     current = current + totalNett;
             // }
 
-            var reduce = $(this).val() ? parseFloat($(this).val()) : 0;
             //var nett1 = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
-            var final = Math.abs(current - reduce);
-            $('#currentWeight').text(final.toFixed(0));
-            $('#finalWeight').val(final.toFixed(0));
-            $('#currentWeight').trigger('change');
-            $('#finalWeight').trigger('change');
+            // var final = Math.abs(current - reduce);
+            // $('#currentWeight').text(final.toFixed(0));
+            // $('#finalWeight').val(final.toFixed(0));
+            // $('#currentWeight').trigger('change');
+            // $('#finalWeight').trigger('change');
+
+            var grossIncoming = $('#grossIncoming').val() ? parseFloat($('#grossIncoming').val()) : 0;
+            var tareOutgoing = $('#tareOutgoing').val() ? parseFloat($('#tareOutgoing').val()) : 0;
+            var reduce = $(this).val() ? parseFloat($(this).val()) : 0;
+            var nett = Math.abs(grossIncoming - tareOutgoing - reduce);
+            $('#nettWeight').val(nett.toFixed(0)).trigger('change');
         });
 
         $('#finalWeight').on('change', function(){
