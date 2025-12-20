@@ -64,7 +64,7 @@ if (mysqli_stmt_fetch($stmt2)) {
                                                 <div class="row">
                                                     <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['username_code'][$language]?></label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="username" name="userName" placeholder="<?=$languageArray['download_template_code'][$language]?>" value="<?=$username ?>" readonly>
+                                                        <input type="text" class="form-control" id="username" name="userName" placeholder="<?=$languageArray['download_template_code'][$language]?>" value="<?=$username ?>">
                                                     </div>
                                                 </div>
                                             </div>
