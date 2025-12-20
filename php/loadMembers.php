@@ -1,5 +1,8 @@
 <?php
 session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 ## Database configuration
 require_once 'db_connect.php';
 require_once 'requires/lookup.php';
@@ -22,33 +25,37 @@ if($searchValue != ''){
 }
 
 ## Total number of records without filtering
-$allQuery = "select count(*) as allcount from Users where status IN (0)";
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+$allQuery = "select count(*) as allcount from Users where status IN (0) AND role <> 'SADMIN' AND role <> 'AUTHORITY'";
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
   $username = implode("', '", $_SESSION["plant_id"]);
   $allQuery = "select count(*) as allcount from Users, roles WHERE Users.role = roles.role_code AND Users.status IN (0) and Users.plant_id IN ('$username')";
-}
+}elseif($_SESSION["roles"] == 'AUTHORITY'){
+  $allQuery = "select count(*) as allcount from Users, roles WHERE Users.role = roles.role_code AND Users.status IN (0) AND Users.role <> 'SADMIN'";
+} 
 
 $sel = mysqli_query($db, $allQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecords = $records['allcount'];
 
 ## Total number of record with filtering
-$filteredQuery = "select count(*) as allcount from Users, roles WHERE Users.role = roles.role_code AND Users.status IN (0)".$searchQuery;
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
-  $$username = implode("', '", $_SESSION["plant_id"]);
+$filteredQuery = "select count(*) as allcount from Users, roles WHERE Users.role = roles.role_code AND Users.status IN (0) AND Users.role <> 'SADMIN' AND Users.role <> 'AUTHORITY'".$searchQuery;
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
+  $username = implode("', '", $_SESSION["plant_id"]);
   $filteredQuery = "select count(*) as allcount from Users, roles WHERE Users.role = roles.role_code AND Users.status IN (0) AND Users.plant_id IN ('$username')".$searchQuery;
 }
-
+elseif($_SESSION["roles"] == 'AUTHORITY'){
+  $filteredQuery = "select count(*) as allcount from Users, roles WHERE Users.role = roles.role_code AND Users.status IN (0) AND Users.role <> 'SADMIN'".$searchQuery;
+}
 $sel = mysqli_query($db, $filteredQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
 $empQuery = "select Users.id, Users.employee_code, Users.username, Users.useremail, Users.name, roles.role_name, Users.plant_id, Users.status from Users, roles WHERE 
-Users.role = roles.role_code AND Users.status IN (0) AND Users.role <> 'SADMIN'".$searchQuery." 
+Users.role = roles.role_code AND Users.status IN (0) AND Users.role <> 'SADMIN' AND Users.role <> 'AUTHORITY'".$searchQuery." 
 order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 
-if ($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN') {
+if ($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY') {
   $plantIds = $_SESSION["plant_id"]; // Should be an array like ["26", "27"]
 
   if (!empty($plantIds) && is_array($plantIds)) {
@@ -58,17 +65,29 @@ if ($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN') {
       }
       $jsonCondition = implode(" OR ", $conditions);
 
-      $empQuery = "SELECT Users.name AS empname, Users.id, Users.employee_code, Users.username, Users.useremail, Users.name 
+      $empQuery = "SELECT Users.name AS empname, Users.id, Users.employee_code, Users.username, Users.useremail, Users.name, 
                           roles.role_name, Users.plant_id, Users.status
                    FROM Users 
                    JOIN roles ON Users.role = roles.role_code 
                    WHERE Users.status IN (0) 
                    AND Users.role <> 'SADMIN' 
+                   AND Users.role <> 'AUTHORITY'
                    AND ($jsonCondition) 
                    $searchQuery 
                    ORDER BY status ASC, $columnName $columnSortOrder 
                    LIMIT $row, $rowperpage";
   }
+}
+// If user role is AUTHORITY, allow viewing AUTHORITY users too (exclude only SADMIN)
+elseif ($_SESSION["roles"] == 'AUTHORITY') {
+  $empQuery = "SELECT Users.id, Users.employee_code, Users.username, Users.useremail, Users.name, roles.role_name, Users.plant_id, Users.status
+               FROM Users
+               JOIN roles ON Users.role = roles.role_code
+               WHERE Users.status IN (0)
+               AND Users.role <> 'SADMIN'
+               $searchQuery
+               ORDER BY status ASC, $columnName $columnSortOrder
+               LIMIT $row, $rowperpage";
 }
 
 $empRecords = mysqli_query($db, $empQuery);

@@ -1116,3 +1116,5 @@ END
 $$
 DELIMITER ;
 
+-- 20/12/2025 --
+INSERT INTO `roles` (`id`, `role_code`, `role_name`, `deleted`) VALUES (NULL, 'AUTHORITY', 'AUTHORITY', '0');

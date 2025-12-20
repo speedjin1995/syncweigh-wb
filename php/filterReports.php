@@ -86,7 +86,7 @@ if($searchValue != ''){
 }
 
 $allQuery = "select count(*) as allcount from Weight where status = '0'";
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
   $username = implode("', '", $_SESSION["plant"]);
   $allQuery = "select count(*) as allcount from Weight where status = '0' and plant_code IN ('$username')";
 }
@@ -98,7 +98,7 @@ $totalRecords = $records['allcount'];
 ## Total number of record with filtering
 
 $filteredQuery = "select count(*) as allcount from Weight where status = '0'".$searchQuery;
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
   $username = implode("', '", $_SESSION["plant"]);
   $filteredQuery = "select count(*) as allcount from Weight where status = '0' and plant_code IN ('$username')".$searchQuery;
 }
@@ -110,7 +110,7 @@ $totalRecordwithFilter = $records['allcount'];
 ## Fetch records
 $empQuery = "select * from Weight where status = '0'".$searchQuery."order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
   $username = implode("', '", $_SESSION["plant"]);
   $empQuery = "select * from Weight where status = '0' and plant_code IN ('$username')".$searchQuery."order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 }

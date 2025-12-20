@@ -71,7 +71,7 @@
                     </div>
                 </li-->
                 <?php
-                    if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
+                    if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
 
                         echo '<!--li class="nav-item">
                                 <a href="inventory.php" class="nav-link"><i class="mdi mdi-shipping-pallet"></i></i>'.$lang['t-inventory'].'</a>
@@ -84,7 +84,7 @@
                                 <div class="collapse menu-dropdown" id="sidebarMasterdata">
                                     <ul class="nav nav-sm flex-column">';
 
-                        if($_SESSION["roles"] == 'SADMIN'){
+                        if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
                             echo '<li class="nav-item">
                                 <a href="message.php" class="nav-link"><b>'.$languageArray['message_resource_code'][$language].'</b></a>
                             </li>
@@ -93,7 +93,7 @@
                             </li> ';
                         }
 
-                        if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
+                        if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
                             echo '<li class="nav-item">
                                             <a href="customer.php" class="nav-link"><b>'.$languageArray['customer_code'][$language].'</b></a>
                                         </li>
@@ -155,7 +155,7 @@
                                     <a href="purchaseReport.php" class="nav-link"><?=$lang['t-poReport']?></a>
                                 </li-->
                                 <?php
-                                    if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
+                                    if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
                                         echo '<li class="nav-item">
                                             <a href="auditLog.php" class="nav-link"><b>'.$languageArray['audit_log_code'][$language].'</b></a>
                                         </li> ';
@@ -175,7 +175,7 @@
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <?php
-                                    if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
+                                    if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
                                         echo '
                                         <li class="nav-item">
                                             <a href="companyProfile.php" class="nav-link"><b>'.$languageArray['company_profile_code'][$language].'</b></a>
@@ -186,7 +186,7 @@
                                         ';
                                     }
 
-                                    if($_SESSION["roles"] == 'SADMIN'){
+                                    if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
                                         echo '
                                         <li class="nav-item">
                                             <a href="portSetup.php" class="nav-link"><b>'.$languageArray['port_setup_code'][$language].'</b></a>

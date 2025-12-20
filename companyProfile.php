@@ -40,7 +40,7 @@ if ($user != null && $user != ''){
 
 $readonly = '';
 $hidden = false;
-if ($role != 'SADMIN'){
+if ($role != 'SADMIN' && $role != 'AUTHORITY'){
     $readonly = 'readonly';
     $hidden = true;
 }

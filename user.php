@@ -8,7 +8,7 @@ $name = $_SESSION["username"];
 $query = "SELECT role_code, role_name from roles WHERE role_code <> 'SADMIN' AND deleted = '0'";
 
 if($_SESSION["roles"] == 'ADMIN'){
-    $query = "SELECT role_code, role_name from roles WHERE role_code <> 'SADMIN' AND role_code <> 'ADMIN' AND deleted = '0'";
+    $query = "SELECT role_code, role_name from roles WHERE role_code <> 'SADMIN' AND role_code <> 'AUTHORITY' AND role_code <> 'ADMIN' AND deleted = '0'";
 }
 
 $stmt2 = $db->prepare($query);
@@ -17,7 +17,7 @@ mysqli_stmt_store_result($stmt2);
 mysqli_stmt_bind_result($stmt2, $code, $name);
 
 // Pull plants
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $query4 = "SELECT id, name FROM Plant WHERE status = '0' and plant_code IN ('$username')";
 }
@@ -444,6 +444,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                     select2Container.next('.select2-error').remove(); // Remove error message
                 }
             });
+
             if($('#memberForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/users.php', $('#memberForm').serialize(), function(data){
@@ -655,7 +656,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 $('#addModal').find('#username').val(obj.message.username);
                 $('#addModal').find('#name').val(obj.message.name);
                 $('#addModal').find('#useremail').val(obj.message.useremail);
-                $('#addModal').find('#roles').val(obj.message.role_code);
+                $('#addModal').find('#roles').val(obj.message.role_code).trigger('change');
                 $("#addModal").find("#plantId").val(JSON.parse(obj.message.plant)).trigger("change");
                 $('#addModal').find('#allowManual').val(obj.message.allow_manual);
                 $('#addModal').find('#allowDeduct').val(obj.message.allow_deduct);

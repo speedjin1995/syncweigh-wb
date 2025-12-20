@@ -15,7 +15,7 @@ if(($row = $result->fetch_assoc()) !== null){
 }
 
 $searchQuery = "";
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $searchQuery = "and plant_code IN ('$username')";
 }
@@ -165,7 +165,7 @@ if(isset($_POST['plant']) && $_POST['plant'] != null && $_POST['plant'] != '' &&
         $searchQuery .= " and count.plant_code = '".$_POST['plant']."'";
     }
 }else{
-    if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+    if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
         $username = implode("/", $_SESSION["plant"]);
         $plantSelected = $username;
     }
@@ -1213,7 +1213,7 @@ if(isset($_POST["file"])){
                                                 <th>NETT <br>(MT)</th>
                                                 <th>BALANCE <br>(MT)</th>';
 
-                                                if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'MANAGER'){
+                                                if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY' || $_SESSION["roles"] == 'MANAGER'){
                                                     $message .= '
                                                         <th>UNIT PRICE <br>(RM)</th>
                                                         <th>TOTAL PRICE <br>(RM)</th>
@@ -1285,7 +1285,7 @@ if(isset($_POST["file"])){
                                                 <th style="border:1px solid black;font-size: 11px;border:1px solid black;">'.number_format($grandTotalTare/1000, 2).'</th>
                                                 <th style="border:1px solid black;font-size: 11px;border:1px solid black;">'.number_format($grandTotalNet/1000, 2).'</th>';
 
-                                                if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'MANAGER'){
+                                                if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY' || $_SESSION["roles"] == 'MANAGER'){
                                                     $message .= '
                                                         <th></th>
                                                         <th style="border:1px solid black;font-size: 11px;border:1px solid black;">'.number_format($grandTotalUnitPrice, 2).'</th>

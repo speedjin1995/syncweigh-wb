@@ -9,7 +9,7 @@ $group2 = "";
 $group3 = "";
 $group4 = "";
 
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $searchQuery = "and plant_code IN ('$username')";
 }

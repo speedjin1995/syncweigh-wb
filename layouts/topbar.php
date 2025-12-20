@@ -2,7 +2,7 @@
 ## Fetch records
 // Lorry SQL
 $lorryWeighingSQL = "(select * from Weight where status = '0' AND is_complete = 'N' AND is_cancel='N') UNION ALL (select * from Weight_Container where status = '0' AND is_complete = 'N' AND is_cancel='N')";
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $normalWeighingSQL = "(select * from Weight where status = '0' AND is_complete = 'N' AND is_cancel='N' AND plant_code IN ('$username')) UNION ALL (select * from Weight_Container where status = '0' AND is_complete = 'N' AND is_cancel='N' AND plant_code IN ('$username'))";
 }
@@ -10,7 +10,7 @@ $normalWeighing = $db->query($lorryWeighingSQL);
 
 // Container SQL
 $containerWeighingSQL = "select * from Weight_Container where status = '0' AND is_complete = 'Y' AND is_cancel='N'";
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $normalWeighingSQL = "select * from Weight_Container where status = '0' AND is_complete = 'Y' AND is_cancel='N' AND plant_code IN ('$username'))";
 }
