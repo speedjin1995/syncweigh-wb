@@ -103,7 +103,7 @@ if ($_POST['batch'] == 'N') { //if pending
   ## Total number of records without filtering
   $allQuery = "select COUNT(*) as allcount FROM (SELECT * FROM Weight WHERE status = '0' UNION ALL SELECT * FROM Weight_Container WHERE status = '0') AS combined";
     
-  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $allQuery = "select COUNT(*) as allcount FROM (SELECT * FROM Weight WHERE status = '0' and plant_code IN ('$username') UNION ALL SELECT * FROM Weight WHERE status = '0' and plant_code IN ('$username')) AS combined";
   }
@@ -115,7 +115,7 @@ if ($_POST['batch'] == 'N') { //if pending
   ## Total number of record with filtering
   $filteredQuery = "select count(*) as allcount from (SELECT * FROM Weight where status = '0'".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0'".$searchQuery.") AS combined"; 
   $filteredQuery2 = "select * from (SELECT * FROM Weight where status = '0'".$searchQuery2." UNION ALL SELECT * FROM Weight_Container where status = '0'".$searchQuery2.") AS combined"; 
-  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != '' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $filteredQuery = "select count(*) as allcount from (SELECT * FROM Weight where status = '0' and plant_code IN ('$username')".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0' and plant_code IN ('$username')".$searchQuery.") AS combined";
     $filteredQuery2 = "select * from (SELECT * FROM Weight where status = '0' and plant_code IN ('$username')".$searchQuery2." UNION ALL SELECT * FROM Weight_Container where status = '0' and plant_code IN ('$username')".$searchQuery2.") AS combined";
@@ -165,14 +165,14 @@ if ($_POST['batch'] == 'N') { //if pending
   ## Fetch records
   $empQuery = "(select * from Weight where status = '0'".$searchQuery.") UNION ALL (select * from Weight_Container where status = '0'".$searchQuery.") order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 
-  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $empQuery = "(select * from Weight where status = '0' and plant_code IN ('$username')".$searchQuery.") UNION ALL (select * from Weight_Container where status = '0' and plant_code IN ('$username')".$searchQuery.") order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
   }
 }else{
   ## Total number of records without filtering
   $allQuery = "select count(*) as allcount from Weight where status = '0'";
-  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $allQuery = "select count(*) as allcount from Weight where status = '0' and plant_code IN ('$username')";
   } 
@@ -184,7 +184,7 @@ if ($_POST['batch'] == 'N') { //if pending
   ## Total number of record with filtering
   $filteredQuery = "select count(*) as allcount from Weight where status = '0'".$searchQuery;
   $filteredQuery2 = "select * from Weight where status = '0'".$searchQuery2;
-  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $filteredQuery = "select count(*) as allcount from Weight where status = '0' and plant_code IN ('$username')".$searchQuery;
     $filteredQuery2 = "select * from Weight where status = '0' and plant_code IN ('$username')".$searchQuery2;
@@ -234,7 +234,7 @@ if ($_POST['batch'] == 'N') { //if pending
   ## Fetch records
   $empQuery = "select * from Weight where status = '0'".$searchQuery."order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 
-  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $empQuery = "select * from Weight where status = '0' and plant_code IN ('$username')".$searchQuery."order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
   }

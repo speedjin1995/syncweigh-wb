@@ -116,7 +116,7 @@ $site = $db->query("SELECT * FROM Site WHERE status = '0' ORDER BY name ASC");
 $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
 $drivers = $db->query("SELECT * FROM Driver WHERE status = '0' ORDER BY driver_name ASC");
 
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and plant_code IN ('$username')");
 }
@@ -124,7 +124,7 @@ else{
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
 }
 
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0' and plant_code IN ('$username')");
 }
@@ -662,7 +662,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                         <div class="row">
                                                                                             <div class="col-xxl-12 col-lg-12 mb-3"  <?php 
-                                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'MANAGER' && $allowManual == 'N'){
+                                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY' && $_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'MANAGER' && $allowManual == 'N'){
                                                                                                     echo 'style="display:none;"';
                                                                                                 }?>>
                                                                                                 <div class="row">
@@ -2175,10 +2175,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
-            clickOpens: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            allowInput: <?= ($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            clickOpens: <?= ($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
             onReady: function(selectedDates, dateStr, instance) {
-                <?php if (!($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
+                <?php if (!($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
                     instance._input.setAttribute('readonly', true);
                     instance.close();
                 <?php endif; ?>
@@ -2192,10 +2192,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
-            clickOpens: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            allowInput: <?= ($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            clickOpens: <?= ($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
             onReady: function(selectedDates, dateStr, instance) {
-                <?php if (!($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
+                <?php if (!($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
                     instance._input.setAttribute('readonly', true);
                     instance.close();
                 <?php endif; ?>
@@ -2209,10 +2209,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
-            clickOpens: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            allowInput: <?= ($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            clickOpens: <?= ($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
             onReady: function(selectedDates, dateStr, instance) {
-                <?php if (!($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
+                <?php if (!($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
                     instance._input.setAttribute('readonly', true);
                     instance.close();
                 <?php endif; ?>
@@ -2226,17 +2226,17 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
-            clickOpens: <?= ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            allowInput: <?= ($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
+            clickOpens: <?= ($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y') ? 'true' : 'false' ?>,
             onReady: function(selectedDates, dateStr, instance) {
-                <?php if (!($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
+                <?php if (!($role == 'SADMIN' || $role == 'AUTHORITY' || $role == 'ADMIN' || $role == 'MANAGER' || $allowManual == 'Y')): ?>
                     instance._input.setAttribute('readonly', true);
                     instance.close();
                 <?php endif; ?>
             }
         });
 
-        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+        if (userRole == 'SADMIN' || userRole == 'AUTHORITY' || userRole == 'ADMIN' || userRole == 'MANAGER'){
             $('#plantSearchDisplay').show();
         }else{
             $('#plantSearchDisplay').hide();
@@ -2381,7 +2381,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                        if (userRole == 'SADMIN' || userRole == 'AUTHORITY' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
                             // if (row.is_complete != 'Y' ){
                             if (row.weight_type == 'Primer Mover + Container'){
                                 buttons += `
@@ -2440,7 +2440,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             </div>`;
                         }
 
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                        if(userRole == 'SADMIN' || userRole == 'AUTHORITY' || userRole == 'ADMIN' || userRole == 'MANAGER'){
                             if (row.weight_type == 'Primer Mover + Container'){
                                 buttons += `
                                 <div class="col-auto">
@@ -2540,7 +2540,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                        if (userRole == 'SADMIN' || userRole == 'AUTHORITY' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
                             if (row.is_complete != 'Y' ){
                                 buttons += `
                                 <div class="col-auto">
@@ -2567,7 +2567,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             </button>
                         </div>`;
 
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                        if(userRole == 'SADMIN' || userRole == 'AUTHORITY' || userRole == 'ADMIN' || userRole == 'MANAGER'){
                             buttons += `
                             <div class="col-auto">
                                 <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
@@ -3532,7 +3532,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         render: function (data, type, row) {
                             let buttons = `<div class="row g-1 d-flex">`;
 
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                            if (userRole == 'SADMIN' || userRole == 'AUTHORITY' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
                                 // if (row.is_complete != 'Y' ){
                                 if (row.weight_type == 'Primer Mover + Container'){
                                     buttons += `
@@ -3591,7 +3591,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                 </div>`;
                             }
 
-                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                            if(userRole == 'SADMIN' || userRole == 'AUTHORITY' || userRole == 'ADMIN' || userRole == 'MANAGER'){
                                 if (row.weight_type == 'Primer Mover + Container'){
                                     buttons += `
                                     <div class="col-auto">
@@ -3691,7 +3691,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         render: function (data, type, row) {
                             let buttons = `<div class="row g-1 d-flex">`;
 
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                            if (userRole == 'SADMIN' || userRole == 'AUTHORITY' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
                                 if (row.is_complete != 'Y' ){
                                     buttons += `
                                     <div class="col-auto">
@@ -3718,7 +3718,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                 </button>
                             </div>`;
 
-                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                            if(userRole == 'SADMIN' || userRole == 'AUTHORITY' || userRole == 'ADMIN' || userRole == 'MANAGER'){
                                 buttons += `
                                 <div class="col-auto">
                                     <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
