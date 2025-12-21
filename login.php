@@ -149,19 +149,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <!-- auth page content -->
             <div class="auth-page-content">
                 <div class="container">
-                    <!--div class="row">
+                    <div class="row">
                         <div class="col-lg-12">
                             <div class="text-center mt-sm-5 mb-4 text-white-50">
                                 <div>
                                     <a href="index.php" class="d-inline-block auth-logo">
-                                        <img src="assets/images/logo-lg.png" alt="" height="20">
+                                        <img src="assets/images/logo-lg.png" alt="" height="40%">
                                     </a>
                                 </div>
                                 <p class="mt-3 fs-15 fw-medium"> </p>
-                                <p class="mt-3 fs-15 fw-medium">Synctronix Weighing System</p>
+                                <p class="mt-3 fs-15 fw-medium">SP Weighing System</p>
                             </div>
                         </div>
-                    </div-->
+                    </div>
                     <!-- end row -->
 
                     <div class="row justify-content-center">
