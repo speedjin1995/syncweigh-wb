@@ -38,7 +38,7 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
 
     if($_POST['id'] != null && $_POST['id'] != ''){
         ### Check if new username exists or not but need to exclude current user ###
-        if ($username_stmt = $db->prepare("SELECT * FROM Users WHERE username = ? AND id != ?")) {
+        if ($username_stmt = $db->prepare("SELECT * FROM Users WHERE username = ? AND id != ? AND status = '0'")) {
             $username_stmt->bind_param("si", $param_username, $_POST['id']);
 
             // Execute the prepared query.
@@ -97,7 +97,7 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
     }
     else{
         ### Check if username already exists or not ###
-        if ($username_stmt = $db->prepare("SELECT * FROM Users WHERE username = ?")) {
+        if ($username_stmt = $db->prepare("SELECT * FROM Users WHERE username = ? AND status == '0'")) {
             $username_stmt->bind_param("s", $param_username);
 
             // Execute the prepared query.
