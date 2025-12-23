@@ -97,7 +97,7 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
     }
     else{
         ### Check if username already exists or not ###
-        if ($username_stmt = $db->prepare("SELECT * FROM Users WHERE username = ? AND status == '0'")) {
+        if ($username_stmt = $db->prepare("SELECT * FROM Users WHERE username = ? AND status = '0'")) {
             $username_stmt->bind_param("s", $param_username);
 
             // Execute the prepared query.
