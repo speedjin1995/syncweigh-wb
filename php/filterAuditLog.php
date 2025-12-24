@@ -14,7 +14,7 @@ require_once 'requires/lookup.php';
 // $searchValue = mysqli_real_escape_string($db,$_POST['search']['value']); // Search value
 
 ## Search 
-$searchQuery = " ";
+$searchQuery = " WHERE 1=1";
 
 if($_POST['fromDateSearch'] != null && $_POST['fromDateSearch'] != ''){
     $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['fromDateSearch']);
