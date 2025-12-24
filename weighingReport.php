@@ -128,7 +128,7 @@ if(($row = $result->fetch_assoc()) !== null){
 
                             <div class="col-xxl-12 col-lg-12">
                                 <div class="card">
-                                    <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" >
+                                    <div class="card-header fs-5" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" >
                                         <i class="mdi mdi-chevron-down pull-right"></i>
                                         Search Records
                                     </div>
