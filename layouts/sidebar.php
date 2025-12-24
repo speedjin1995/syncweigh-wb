@@ -147,7 +147,7 @@
                             <li class="nav-item">
                                 <li class="nav-item">
                                     <a href="weighingReport.php" class="nav-link"><b><?=$languageArray['weighing_report_code'][$language]?></b></a>
-                                </li-->
+                                </li>
                                 <!--li class="nav-item">
                                     <a href="salesReport.php" class="nav-link"><?=$lang['t-soReport']?></a>
                                 </li>
