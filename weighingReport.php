@@ -874,6 +874,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 if($('#exportPdfModal').hasClass('show')){   
                     var fromDateI = $('#fromDateSearch').val();
                     var toDateI = $('#toDateSearch').val();
+                    var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
                     var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
                     var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
                     var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
@@ -886,7 +887,7 @@ if(($row = $result->fetch_assoc()) !== null){
 
                     $('#exportPdfForm').find('#fromDate').val(fromDateI);
                     $('#exportPdfForm').find('#toDate').val(toDateI);
-                    $('#exportPdfForm').find('#status').val(statusI);
+                    $('#exportPdfForm').find('#transactionStatus').val(transactionStatusI);
                     $('#exportPdfForm').find('#customer').val(customerNoI);
                     $('#exportPdfForm').find('#supplier').val(supplierNoI);
                     $('#exportPdfForm').find('#vehicle').val(vehicleNoI);
@@ -895,6 +896,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     $('#exportPdfForm').find('#rawMat').val(rawMatI);
                     $('#exportPdfForm').find('#destination').val(destinationI);
                     $('#exportPdfForm').find('#plant').val(plantI);
+                    $('#exportPdfForm').find('#status').val(statusI);
                     $('#exportPdfForm').find('#file').val('weight');
                     $('#exportPdfModal').modal('hide');
 
@@ -1184,7 +1186,7 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#transactionStatusSearch').on('change', function(){
             var status = $(this).val();
 
-            if (status == 'Purchase' || status == 'Local'){
+            if (status == 'Purchase'){
                 $('#productSearchDisplay').hide();
                 $('#rawMatSearchDisplay').show();
                 $('#customerSearchDisplay').hide();

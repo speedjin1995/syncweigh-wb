@@ -197,7 +197,7 @@ if(isset($_POST["status"])){
 
     $sql = '';
 
-    if($_POST["status"] == 'Sales'){
+    if($_POST["status"] == 'Sales' || $_POST['status'] == 'Local'){
         if ($_POST['status'] == 'Local') {
             $reportType = "Public";
         }
