@@ -110,7 +110,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                         $transacationStatus = 'Miscellaneous';
                     }
 
-                    if($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local'){
+                    if($row['transaction_status'] == 'Purchase'){
                         $cid = $row['supplier_code'];
                         $orderSuppWeight = floatval($row['supplier_weight']);
 
@@ -329,7 +329,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                             <br>
                                             <!-- <span><b>Net Weight &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 17.5px">:&nbsp; '.($finalWeight ? formatWeight($finalWeight).' kg' : '-').'</b></span><br>-->
                                             <!-- <span>Variance &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 12.5px">:&nbsp; '.($weightDifference ? formatWeight($weightDifference).' kg' : '-').'</span><br>-->
-                                            <span>Product &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 21px">:&nbsp; '.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $row['product_code'] . ' - ' . $row['product_name'] : $row['raw_mat_code'] . ' - ' . $row['raw_mat_name']) .'</span><br>
+                                            <span>Product &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 21px">:&nbsp; '.($row['transaction_status'] == 'Purchase' ? $row['raw_mat_code'] . ' - ' . $row['raw_mat_name'] : $row['product_code'] . ' - ' . $row['product_name']) .'</span><br>
                                             <span>Driver Name / IC </span><span style="margin-left: 8px">:&nbsp; '. $row['driver_name'] .' - '. $row['driver_ic'] .'</span><br>';
 
                                             if ($row['weight_type'] == 'Different Container' && $_POST['isEmptyContainer'] == 'N'){
@@ -820,7 +820,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                         <tr style="font-size: 16px;text-align: center;">
                                             <td style="border:1px solid black;">'.$row['lorry_plate_no1'].'</td>';
 
-                                            if ($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local'){
+                                            if ($row['transaction_status'] == 'Purchase'){
                                                 $message .= '<td colspan="2" style="border:1px solid black;">'.$row['raw_mat_name'].'</td>';
                                             }else{
                                                 $message .= '<td colspan="2" style="border:1px solid black;">'.$row['product_name'].'</td>';

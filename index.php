@@ -2245,7 +2245,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         $('#statusSearch').on('change', function(){
             var status = $(this).val();
 
-            if (status == 'Purchase' || status == 'Local'){
+            if (status == 'Purchase'){
                 // Hide & reset customer then show supplier
                 $('#customerSearchDisplay').hide();
                 $('#customerSearchDisplay').find('#customerNoSearch').val('-').trigger('change');
@@ -4797,7 +4797,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 });
             }
 
-            if($(this).val() == "Purchase" || $(this).val() == "Local"){
+            if($(this).val() == "Purchase"){
                 $('#divWeightDifference').show();
                 //$('#divSupplierWeight').show();
                 $('#addModal').find('#orderWeight').val("");
@@ -5274,7 +5274,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 <p><strong>DESTINATION NAME:</strong> ${row.destination}</p>
                 <p><strong>SITE NAME:</strong> ${row.site_name}</p>
                 <p><strong>PLANT NAME:</strong> ${row.plant_name}</p>`;
-                if (row.transaction_status == 'Purchase' || row.transaction_status == 'Local'){
+                if (row.transaction_status == 'Purchase'){
                     returnString += `<p><strong>PURCHASE PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
                 }else{
                     returnString += `<p><strong>SALES PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
@@ -5455,7 +5455,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 $('#addModal').find('#driverName').val(obj.message.driver_name).trigger('change');
                 $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
-                if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
+                if(obj.message.transaction_status == "Purchase"){
                     $('#divWeightDifference').show();
                     $('#divSupplierWeight').show();
                     $('#divSupplierName').show();

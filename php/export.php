@@ -232,8 +232,6 @@ if($query->num_rows > 0){
             }
             else{
                 $transactionStatus = 'Public';
-                $productCode = $row['raw_mat_code'];
-                $productName = $row['raw_mat_name'];
             }
 
             if($row['weight_type'] == 'Container'){

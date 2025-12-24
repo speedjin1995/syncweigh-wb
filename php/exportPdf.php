@@ -904,19 +904,19 @@ if(isset($_POST["file"])){
                                                 <th>TRANSACTION <br>DATE</th>
                                                 <th>LORRY <br>NO.</th>';
                                                 
-                                                if($_POST['status'] == 'Sales'){
+                                                if($_POST['transactionStatus'] == 'Sales' || $_POST['transactionStatus'] == 'Local'){
                                                     $message .= '<th>CUSTOMER</th>';
                                                 }
                                                 else{
                                                     $message .= '<th>SUPPLIER</th>';
                                                 }
                                                     
-                                                $message .= '<th>'.($_POST['status'] == 'Sales' ? 'PRODUCT' : 'RAW MATERIAL').'</th>
+                                                $message .= '<th>'.($_POST['transactionStatus'] == 'Sales' || $_POST['transactionStatus'] == 'Local' ? 'PRODUCT' : 'RAW MATERIAL').'</th>
                                                 <th>DESTINATION</th>';
 
-                                                if($_POST['status'] == 'Sales'){
-                                                    $message .= '<th>EXQ/DEL</th>';
-                                                }
+                                                // if($_POST['transactionStatus'] == 'Sales'){
+                                                //     $message .= '<th>EXQ/DEL</th>';
+                                                // }
                                                 
                                                 $message .= '
                                                 <th>PO NO.</th>
@@ -938,7 +938,7 @@ if(isset($_POST["file"])){
                                         
                                         // Fetch data and group by product_name
                                         while ($row = $result->fetch_assoc()) {
-                                            $productName = ($row['transaction_status'] == 'Sales' ? $row['customer_name'] : $row['supplier_name']);
+                                            $productName = ($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Local' ? $row['customer_name'] : $row['supplier_name']);
                                         
                                             if (!isset($groupedData[$productName])) {
                                                 $groupedData[$productName] = [];
@@ -990,19 +990,19 @@ if(isset($_POST["file"])){
                                                     <td>' . $formattedtransactionDate . '</td>
                                                     <td>' . $row['lorry_plate_no1'] . '</td>';
                                                     
-                                                    if($_POST['status'] == 'Sales'){
+                                                    if($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Local'){
                                                         $message .= '<td>' . $row['customer_name'] . '</td>';
                                                     }
                                                     else{
                                                         $message .= '<td>' . $row['supplier_name'] . '</td>';
                                                     }
                                                     
-                                                    $message .= '<td>' . ($row['transaction_status'] == 'Sales' ? $row['product_name'] : $row['raw_mat_name']) . '</td>
+                                                    $message .= '<td>' . ($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Local' ? $row['product_name'] : $row['raw_mat_name']) . '</td>
                                                     <td>' . $row['destination'] . '</td>';
 
-                                                    if($_POST['status'] == 'Sales'){
-                                                        $message .= '<td>' . $exDel . '</td>';
-                                                    }
+                                                    // if($_POST['transactionStatus'] == 'Sales'){
+                                                    //     $message .= '<td>' . $exDel . '</td>';
+                                                    // }
                                                     
                                                     $message .= '
                                                     <td>' . $row['purchase_order'] . '</td>
@@ -1027,7 +1027,7 @@ if(isset($_POST["file"])){
                                         
                                             // Add product-wise subtotal
                                             $message .= '<tr style="font-size: 11px;">
-                                                <th colspan="'.($row['transaction_status'] == 'Sales' ? '8' : '7').'">Subtotal (' . $product . ')</th>
+                                                <th colspan="8">Subtotal (' . $product . ')</th>
                                                 <th style="border:1px solid black;">' . number_format($totalGross /1000, 2). '</th>
                                                 <th style="border:1px solid black;">' . number_format($totalTare/1000, 2) . '</th>
                                                 <th style="border:1px solid black;">' . number_format($totalNet/1000, 2) . '</th>';
@@ -1046,7 +1046,7 @@ if(isset($_POST["file"])){
                                         $message .= '</tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <th style="font-size: 11px;" colspan="'.($row['transaction_status'] == 'Sales' ? '8' : '7').'">Grand Total</th>
+                                                    <th style="font-size: 11px;" colspan="8">Grand Total</th>
                                                     <th style="border:1px solid black;font-size: 11px;border:1px solid black;">'.number_format($grandTotalGross/1000, 2).'</th>
                                                     <th style="border:1px solid black;font-size: 11px;border:1px solid black;">'.number_format($grandTotalTare/1000, 2).'</th>
                                                     <th style="border:1px solid black;font-size: 11px;border:1px solid black;">'.number_format($grandTotalNet/1000, 2).'</th>';
@@ -1641,19 +1641,19 @@ if(isset($_POST["file"])){
                                                 <th>TRANSACTION <br>DATE</th>
                                                 <th>LORRY <br>NO.</th>';
                                                 
-                                                if($_POST['status'] == 'Sales'){
+                                                if($_POST['transactionStatus'] == 'Sales' || $_POST['transactionStatus'] == 'Local'){
                                                     $message .= '<th>CUSTOMER</th>';
                                                 }
                                                 else{
                                                     $message .= '<th>SUPPLIER</th>';
                                                 }
                                                 
-                                                $message .= '<th>'.($_POST['status'] == 'Sales' ? 'PRODUCT' : 'RAW MATERIAL').'</th>
+                                                $message .= '<th>'.($_POST['transactionStatus'] == 'Sales' || $_POST['transactionStatus'] == 'Local' ? 'PRODUCT' : 'RAW MATERIAL').'</th>
                                                 <th>DESTINATION</th>';
 
-                                                if($_POST['status'] == 'Sales'){
-                                                    $message .= '<th>EXQ/DEL</th>';
-                                                }
+                                                // if($_POST['status'] == 'Sales'){
+                                                //     $message .= '<th>EXQ/DEL</th>';
+                                                // }
                                                 
                                                 $message .= '
                                                 <th>PO NO.</th>
@@ -1727,7 +1727,7 @@ if(isset($_POST["file"])){
                                                     <td>' . $formattedtransactionDate . '</td>
                                                     <td>' . $row['lorry_plate_no1'] . '</td>';
                                                     
-                                                    if($_POST['status'] == 'Sales'){
+                                                    if($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Local'){
                                                         $message .= '<td>' . $row['customer_name'] . '</td>';
                                                     }
                                                     else{
@@ -1735,12 +1735,12 @@ if(isset($_POST["file"])){
                                                     }
                                                     
                                                     
-                                                    $message .= '<td>' . ($row['transaction_status'] == 'Sales' ? $row['product_name'] : $row['raw_mat_name']) . '</td>
+                                                    $message .= '<td>' . ($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Local' ? $row['product_name'] : $row['raw_mat_name']) . '</td>
                                                     <td>' . $row['destination'] . '</td>';
 
-                                                    if($_POST['status'] == 'Sales'){
-                                                        $message .= '<td style="font-size: 10px; text-align: center;">' . $exDel . '</td>';
-                                                    }
+                                                    // if($_POST['status'] == 'Sales'){
+                                                    //     $message .= '<td style="font-size: 10px; text-align: center;">' . $exDel . '</td>';
+                                                    // }
                                                     
                                                     $message .= '
                                                     <td>' . $row['purchase_order'] . '</td>
@@ -1765,7 +1765,7 @@ if(isset($_POST["file"])){
                                         
                                             // Add product-wise subtotal
                                             $message .= '<tr>
-                                                <th style="font-size: 11px;" colspan="'.($row['transaction_status'] == 'Sales' ? '8' : '7').'">Subtotal (' . $product . ')</th>
+                                                <th style="font-size: 11px;" colspan="8">Subtotal (' . $product . ')</th>
                                                 <th style="border:1px solid black;font-size: 11px;">' . number_format($totalGross /1000, 2). '</th>
                                                 <th style="border:1px solid black;font-size: 11px;">' . number_format($totalTare/1000, 2) . '</th>
                                                 <th style="border:1px solid black;font-size: 11px;">' . number_format($totalNet/1000, 2) . '</th>';
@@ -1783,7 +1783,7 @@ if(isset($_POST["file"])){
                                         $message .= '</tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <th style="font-size: 11px;" colspan="'.($row['transaction_status'] == 'Sales' ? '8' : '7').'">Grand Total</th>
+                                                    <th style="font-size: 11px;" colspan="8">Grand Total</th>
                                                     <th style="border:1px solid black;font-size: 11px;border:1px solid black;">'.number_format($grandTotalGross/1000, 2).'</th>
                                                     <th style="border:1px solid black;font-size: 11px;border:1px solid black;">'.number_format($grandTotalTare/1000, 2).'</th>
                                                     <th style="border:1px solid black;font-size: 11px;border:1px solid black;">'.number_format($grandTotalNet/1000, 2).'</th>';

@@ -292,7 +292,7 @@ if(isset($_POST['userID'])){
                             $message['phone_no'] = '';
                             $message['fax_no'] = '';
 
-                            if ($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local'){
+                            if ($row['transaction_status'] == 'Purchase'){
                                 if ($customer_stmt = $db->prepare("SELECT * FROM Supplier WHERE supplier_code=? AND status = '0'")) {
                                     $customer_stmt->bind_param('s', $row['supplier_code']);
                                     $customer_stmt->execute();
