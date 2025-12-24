@@ -572,7 +572,7 @@ $(function () {
         $('#addModal').find('#varianceType').val("").trigger('change');
         $('#addModal').find('#high').val("0");
         $('#addModal').find('#low').val("0");
-        $('#addModal').find('#type').val("").trigger('change');
+        $('#addModal').find('#type').val("Raw Material").trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
