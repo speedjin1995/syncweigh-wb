@@ -195,7 +195,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none;">
                                                                                 <div class="row">
                                                                                     <label for="type" class="col-sm-4 col-form-label">Type</label>
                                                                                     <div class="col-sm-8"> 
@@ -313,7 +313,7 @@
                                                                     <th>Raw Material Price</th>
                                                                     <?php } ?>
                                                                     <th>Description</th>
-                                                                    <th>Type</th>
+                                                                    <!-- <th>Type</th> -->
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -424,7 +424,7 @@ $(function () {
             { data: 'price' },
             <?php endif; ?>
             { data: 'description' },
-            { data: 'type' },
+            // { data: 'type' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
