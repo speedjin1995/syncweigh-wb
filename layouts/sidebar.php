@@ -72,7 +72,6 @@
                 </li-->
                 <?php
                     if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
-
                         echo '<!--li class="nav-item">
                                 <a href="inventory.php" class="nav-link"><i class="mdi mdi-shipping-pallet"></i></i>'.$lang['t-inventory'].'</a>
                             </li--> 
@@ -84,56 +83,58 @@
                                 <div class="collapse menu-dropdown" id="sidebarMasterdata">
                                     <ul class="nav nav-sm flex-column">';
 
-                        if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
-                            echo '<li class="nav-item">
-                                <a href="message.php" class="nav-link"><b>'.$languageArray['message_resource_code'][$language].'</b></a>
-                            </li>
-			    <li class="nav-item">
-                                <a href="plant.php" class="nav-link"><b>'.$languageArray['plant_code'][$language].'</b></a>
-                            </li> ';
-                        }
+                                        if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
+                                            echo '<li class="nav-item">
+                                                <a href="message.php" class="nav-link"><b>'.$languageArray['message_resource_code'][$language].'</b></a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="plant.php" class="nav-link"><b>'.$languageArray['plant_code'][$language].'</b></a>
+                                            </li> ';
+                                        }
 
-                        if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
-                            echo '<li class="nav-item">
-                                            <a href="customer.php" class="nav-link"><b>'.$languageArray['customer_code'][$language].'</b></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="destination.php" class="nav-link"><b>'.$languageArray['destination_code'][$language].'</b></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="product.php" class="nav-link"><b>'.$languageArray['product_code'][$language].'</b></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="rawMaterial.php" class="nav-link"><b>'.$languageArray['raw_material_code'][$language].'</b></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="supplier.php" class="nav-link"><b>'.$languageArray['supplier_code'][$language].'</b></a>
-                                        </li>       
-                                        <li class="nav-item">
-                                            <a href="vehicle.php" class="nav-link"><b>'.$languageArray['vehicle_code'][$language].'</b></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="driver.php" class="nav-link"><b>'.$languageArray['driver_code'][$language].'</b></a>
-                                        </li>             
-                                        <li class="nav-item">
-                                            <a href="transporter.php" class="nav-link"><b>'.$languageArray['transporter_code'][$language].'</b></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="user.php" class="nav-link"><b>'.$languageArray['staff_code'][$language].'</b></a>
-                                        </li>
-                                        <!--li class="nav-item">
-                                            <a href="unit.php" class="nav-link">'.$lang['t-unit'].'</a>
-                                        </li-->                           
-                                        <!--li class="nav-item">
-                                            <a href="agent.php" class="nav-link">'.$lang['t-agent'].'</a>
-                                        </li-->                           
-                                        <!--li class="nav-item">
-                                            <a href="site.php" class="nav-link">'.$lang['t-site'].'</a>
-                                        </li-->    
-                                    </ul>
-                                </div>
-                            </li>';
-                        }
+                                        if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
+                                            echo '<li class="nav-item">
+                                                    <a href="customer.php" class="nav-link"><b>'.$languageArray['customer_code'][$language].'</b></a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="destination.php" class="nav-link"><b>'.$languageArray['destination_code'][$language].'</b></a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="product.php" class="nav-link"><b>'.$languageArray['product_code'][$language].'</b></a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="rawMaterial.php" class="nav-link"><b>'.$languageArray['raw_material_code'][$language].'</b></a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="supplier.php" class="nav-link"><b>'.$languageArray['supplier_code'][$language].'</b></a>
+                                                </li>       
+                                                <li class="nav-item">
+                                                    <a href="vehicle.php" class="nav-link"><b>'.$languageArray['vehicle_code'][$language].'</b></a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="driver.php" class="nav-link"><b>'.$languageArray['driver_code'][$language].'</b></a>
+                                                </li>             
+                                                <li class="nav-item">
+                                                    <a href="transporter.php" class="nav-link"><b>'.$languageArray['transporter_code'][$language].'</b></a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="user.php" class="nav-link"><b>'.$languageArray['staff_code'][$language].'</b></a>
+                                                </li>
+                                                <!--li class="nav-item">
+                                                    <a href="unit.php" class="nav-link">'.$lang['t-unit'].'</a>
+                                                </li-->                           
+                                                <!--li class="nav-item">
+                                                    <a href="agent.php" class="nav-link">'.$lang['t-agent'].'</a>
+                                                </li-->                           
+                                                <!--li class="nav-item">
+                                                    <a href="site.php" class="nav-link">'.$lang['t-site'].'</a>
+                                                </li-->    
+                                            ';
+                                        }
+
+                            echo '</ul>
+                            </div>
+                        </li>';
                     }
                 ?>
 

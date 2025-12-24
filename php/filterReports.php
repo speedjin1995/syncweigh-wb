@@ -18,7 +18,7 @@ $searchQuery = "";
 if($_POST['fromDate'] != null && $_POST['fromDate'] != ''){
   $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['fromDate']);
   $fromDateTime = $dateTime->format('Y-m-d 00:00:00');
-  $searchQuery = " and transaction_date >= '".$fromDateTime."'";
+  $searchQuery .= " and transaction_date >= '".$fromDateTime."'";
 }
 
 if($_POST['toDate'] != null && $_POST['toDate'] != ''){
