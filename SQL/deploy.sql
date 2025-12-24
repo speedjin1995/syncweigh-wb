@@ -1118,3 +1118,10 @@ DELIMITER ;
 
 -- 20/12/2025 --
 INSERT INTO `roles` (`id`, `role_code`, `role_name`, `deleted`) VALUES (NULL, 'AUTHORITY', 'AUTHORITY', '0');
+
+-- 24/12/2025 --
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'sales_code', 'Sales', '销售', 'Jualan', 'விற்பனை');
+
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'purchase_code', 'Purchase', '购买', 'Pembelian', 'கொள்முதல்');
+
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'public_code', 'Public', '公众', 'Awam', 'பொது');

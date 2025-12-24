@@ -693,27 +693,27 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab" role="tab"
                                             aria-selected="true">
-                                            <?=$languageArray['dispatch_code'][$language] ?> <?php echo (count($salesList) == 0 ? '' : '('.count($salesList).')'); ?>
+                                            <?=$languageArray['sales_code'][$language] ?> <?php echo (count($salesList) == 0 ? '' : '('.count($salesList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#messages-tab" role="tab"
                                             aria-selected="false">
-                                            <?=$languageArray['receiving_code'][$language] ?> <?php echo (count($purchaseList) == 0 ? '' : '('.count($purchaseList).')'); ?>
+                                            <?=$languageArray['purchase_code'][$language] ?> <?php echo (count($purchaseList) == 0 ? '' : '('.count($purchaseList).')'); ?>
                                         </a>
                                     </li>
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#alerts-tab" role="tab"
                                             aria-selected="false">
-                                            <?=$languageArray['internal_transfer_code'][$language] ?> <?php echo (count($localList) == 0 ? '' : '('.count($localList).')'); ?>
+                                            <?=$languageArray['public_code'][$language] ?> <?php echo (count($localList) == 0 ? '' : '('.count($localList).')'); ?>
                                         </a>
                                     </li>
-                                    <li class="nav-item waves-effect waves-light">
+                                    <!-- <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#misc-tab" role="tab"
                                             aria-selected="false">
                                             <?=$languageArray['miscellaneous_code'][$language] ?> <?php echo (count($miscList) == 0 ? '' : '('.count($miscList).')'); ?>
                                         </a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </div>
 
