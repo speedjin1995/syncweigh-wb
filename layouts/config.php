@@ -1,8 +1,8 @@
 <?php
 /* Database credentials. Assuming you are running MySQL
 server with default setting (user 'root' with no password) */
-//define('DB_SERVER', 'localhost');
-define('DB_SERVER', 'srv1637.hstgr.io');
+define('DB_SERVER', 'localhost');
+//define('DB_SERVER', 'srv1637.hstgr.io');
 define('DB_USERNAME', 'u178823648_'.$_SESSION["company"]);
 define('DB_PASSWORD', '@Sync5500');
 define('DB_NAME', 'u178823648_'.$_SESSION["company"]);
