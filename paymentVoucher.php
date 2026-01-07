@@ -152,7 +152,6 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <div class="mb-3">
                                                             <label for="weighingTypeSearch" class="form-label">Weighing Type</label>
                                                             <select id="weighingTypeSearch" class="form-select">
-                                                                <option selected>-</option>
                                                                 <option value="Normal">Normal Weighing</option>
                                                                 <?php if($includeContainer == 'Y'): ?>
                                                                 <option value="Container">Primer Mover</option>
@@ -164,7 +163,6 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <div class="mb-3">
                                                             <label for="transactionStatusSearch" class="form-label">Transaction Status</label>
                                                             <select id="transactionStatusSearch" class="form-select">
-                                                                <option selected>-</option>
                                                                 <option value="Sales" selected>Sales</option>
                                                                 <option value="Purchase">Purchase</option>
                                                                 <option value="Local">Public</option>
@@ -266,66 +264,55 @@ if(($row = $result->fetch_assoc()) !== null){
     </div>
     <!-- END layout-wrapper -->
     
-    <div class="modal fade" id="exportPdfModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal fade" id="pricingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable custom-xxl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalScrollableTitle">Export Weighing Records</h5>
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Payment Voucher Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form id="exportPdfForm" class="needs-validation" novalidate autocomplete="off">
-                        <div class="row col-12">
-                            <div class="col-12">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <input type="hidden" class="form-control" id="id" name="id"> 
-                                            <div class="col-12">
-                                                <div class="row">
-                                                    <label for="reportType" class="col-sm-4 col-form-label">Report Type *</label>
-                                                    <div class="col-sm-8">
-                                                        <select id="reportType" name="reportType" class="form-select" required>
-                                                            <!-- <option value="CUSTOMER">Customer Report</option> -->
-                                                            <!--option value="SUMMARY">Summary Report - Date</option-->
-                                                            <!--option value="PRODUCT">Product Report</option-->
-                                                            <option value="S&P">Summary Report - By Product</option>
-                                                            <option value="S&PC">Summary Report - By Customer</option>
-                                                        </select>   
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <input type="hidden" class="form-control" id="fromDate" name="fromDate">                                   
-                                            <input type="hidden" class="form-control" id="toDate" name="toDate">                                   
-                                            <input type="hidden" class="form-control" id="transactionStatus" name="transactionStatus">                                   
-                                            <input type="hidden" class="form-control" id="customer" name="customer">     
-                                            <input type="hidden" class="form-control" id="supplier" name="supplier"> 
-                                            <input type="hidden" class="form-control" id="vehicle" name="vehicle">     
-                                            <input type="hidden" class="form-control" id="weighingType" name="weighingType">     
-                                            <input type="hidden" class="form-control" id="customerType" name="customerType">     
-                                            <input type="hidden" class="form-control" id="product" name="product">  
-                                            <input type="hidden" class="form-control" id="rawMat" name="rawMat">   
-                                            <input type="hidden" class="form-control" id="destination" name="destination">     
-                                            <input type="hidden" class="form-control" id="plant" name="plant">   
-                                            <input type="hidden" class="form-control" id="status" name="status">                                     
-                                            <input type="hidden" class="form-control" id="file" name="file">     
-                                            <input type="hidden" class="form-control" id="isMulti" name="isMulti">     
-                                            <input type="hidden" class="form-control" id="ids" name="ids">     
-                                        </div>
-                                    </div>
-                                </div>
+                <form id="pricingForm">
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <label class="form-label">Unit Price (RM)</label>
+                                <input type="number" class="form-control" id="unitPrice" step="0.01" required>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Total Nett Weight (MT)</label>
+                                <input type="number" class="form-control" id="totalNettWeight" readonly>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Total Amount (RM)</label>
+                                <input type="number" class="form-control" id="totalAmount" readonly>
                             </div>
                         </div>
-                        
-                        <div class="col-lg-12">
-                            <div class="hstack gap-2 justify-content-end">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                <button type="submit" class="btn btn-success" id="submit"><?=$languageArray['submit_code'][$language]?></button>
-                            </div>
-                        </div><!--end col-->                                                               
-                    </form>
-                </div>
+                        <table class="table table-bordered nowrap table-striped align-middle" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Customer/Supplier Code</th>
+                                    <th>Customer/Supplier Name</th>
+                                    <th>Weight Type</th>
+                                    <th>Invoice No</th>
+                                    <th>Gross Incoming (MT)</th>
+                                    <th>Incoming Date</th>
+                                    <th>Tare Outgoing (MT)</th>
+                                    <th>Outgoing Date</th>
+                                    <th>Nett Weight (MT)</th>
+                                    <th>Nett Amount (RM)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentDetailsTable">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                        <button type="submit" class="btn btn-success">Update Pricing</button>
+                    </div>
+                </form>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
@@ -376,7 +363,6 @@ if(($row = $result->fetch_assoc()) !== null){
             defaultDate: today
         });
 
-
         $('#selectAllCheckbox').on('change', function() {
             var checkboxes = $('#weightTable tbody input[type="checkbox"]');
             checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
@@ -426,10 +412,23 @@ if(($row = $result->fetch_assoc()) !== null){
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
-                        // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
-                        return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                        '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li></ul></div>';
+                        return '<div class="dropdown d-inline-block">' +
+                            '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+                                '<i class="ri-more-fill align-middle"></i>' +
+                            '</button>' +
+                            '<ul class="dropdown-menu dropdown-menu-end">' +
+                                '<li>' +
+                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
+                                        '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
+                                    '</a>' +
+                                '</li>' +
+                                '<li>' +
+                                    '<a class="dropdown-item apply-unit-price-btn" id="updatePricing'+data+'" onclick="updatePricing(\'' + row.customer + '\', \'' + row.invoice_no + '\')">' +
+                                        '<i class="ri-calculator-fill align-bottom me-2 text-muted"></i> Update Pricing' +
+                                    '</a>' +
+                                '</li>' +
+                            '</ul>' +
+                        '</div>';
                     }
                 }
             ],
@@ -490,19 +489,26 @@ if(($row = $result->fetch_assoc()) !== null){
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {
-                            // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></div>';
-                            return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                            '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                            '<li><a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li></ul></div>';
+                            return '<div class="dropdown d-inline-block">' +
+                                '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+                                    '<i class="ri-more-fill align-middle"></i>' +
+                                '</button>' +
+                                '<ul class="dropdown-menu dropdown-menu-end">' +
+                                    '<li>' +
+                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
+                                            '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
+                                        '</a>' +
+                                    '</li>' +
+                                    '<li>' +
+                                        '<a class="dropdown-item apply-unit-price-btn" onclick="updatePricing(\'' + row.customer + '\', \'' + row.invoice_no + '\')">' +
+                                            '<i class="ri-calculator-fill align-bottom me-2 text-muted"></i> Update Pricing' +
+                                        '</a>' +
+                                    '</li>' +
+                                '</ul>' +
+                            '</div>';
                         }
                     }
-                ],
-                "drawCallback": function(settings) {
-                    $('#salesInfo').text(settings.json.salesTotal);
-                    $('#purchaseInfo').text(settings.json.purchaseTotal);
-                    $('#localInfo').text(settings.json.localTotal);
-                    $('#miscInfo').text(settings.json.miscTotal);
-                }   
+                ]   
             });
         });
 
@@ -681,116 +687,104 @@ if(($row = $result->fetch_assoc()) !== null){
             var status = $(this).val();
 
             if (status == 'Purchase'){
-                $('#productSearchDisplay').hide();
-                $('#rawMatSearchDisplay').show();
                 $('#customerSearchDisplay').hide();
                 $('#supplierSearchDisplay').show();
             }else{
-                $('#productSearchDisplay').show();
-                $('#rawMatSearchDisplay').hide();
                 $('#customerSearchDisplay').show();
                 $('#supplierSearchDisplay').hide();
             }
         });
+
+        $('#unitPrice').on('input', function() {
+            var unitPrice = parseFloat($(this).val()) || 0;
+            var totalAmount = 0;
+            
+            $('#paymentDetailsTable tr').each(function() {
+                var nettWeight = parseFloat($(this).find('td:eq(9)').text()) || 0; // Get 10th column text
+                var rowAmount = (unitPrice * nettWeight).toFixed(2);
+                $(this).find('input[name="nett_amount[]"]').val(rowAmount);
+                totalAmount += parseFloat(rowAmount);
+            });
+            
+            $('#totalAmount').val(totalAmount.toFixed(2));
+        });
     });
 
-    function edit(id){
-        $('#spinnerLoading').show();
-        $.post('php/getWeight.php', {userID: id}, function(data)
-        {
-            var obj = JSON.parse(data);
-            if(obj.status === 'success'){
-                $('#addModal').find('#id').val(obj.message.id);
-                $('#addModal').find('#transactionId').val(obj.message.transaction_id);
-                $('#addModal').find('#transactionStatus').val(obj.message.transaction_status);
-                $('#addModal').find('#weightType').val(obj.message.weight_type);
-                $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
-                $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1);
+    function updatePricing(customerSupplier, invoiceNo) {
+        var fromDateI = $('#fromDateSearch').val();
+        var toDateI = $('#toDateSearch').val();
+        var transactionStatus = $('#transactionStatusSearch').val();
+        var weightType = $('#weighingTypeSearch').val();
 
-                if(obj.message.vehicleNoTxt != null)
-                {
-                    $('#addModal').find('#vehicleNoTxt').val(obj.message.vehicleNoTxt);
-                }
+        $.post('php/getPaymentWeight.php', {
+            fromDate: fromDateI,
+            toDate: toDateI,
+            transactionStatus: transactionStatus,
+            weightType: weightType,
+            customerSupplier: customerSupplier,
+            invoiceNo: invoiceNo
+        }, function(response){
+            var obj = JSON.parse(response);
 
-                $('#addModal').find('#vehiclePlateNo2').val(obj.message.lorry_plate_no2);
-                $('#addModal').find('#supplierWeight').val(obj.message.supplier_weight);
-                $('#addModal').find('#customerCode').val(obj.message.customer_code);
-                $('#addModal').find('#customerName').val(obj.message.customer_name);
-                $('#addModal').find('#supplierCode').val(obj.message.supplier_code);
-                $('#addModal').find('#supplierName').val(obj.message.supplier_name);
-                $('#addModal').find('#productCode').val(obj.message.product_code);
-                $('#addModal').find('#containerNo').val(obj.message.container_no);
-                $('#addModal').find('#invoiceNo').val(obj.message.invoice_no);
-                $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
-                $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
-                $('#addModal').find('#transporterCode').val(obj.message.transporter_code);
-                $('#addModal').find('#transporter').val(obj.message.transporter);
-                $('#addModal').find('#destinationCode').val(obj.message.destination_code);
-                $('#addModal').find('#destination').val(obj.message.destination);
-                $('#addModal').find('#otherRemarks').val(obj.message.remarks);
-                $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
-                $('#addModal').find('#grossIncomingDate').val(formatDate2(new Date(obj.message.gross_weight1_date)));
-                $('#addModal').find('#tareOutgoing').val(obj.message.tare_weight1);
-                $('#addModal').find('#tareOutgoingDate').val(obj.message.tare_weight1_date != null ? formatDate2(new Date(obj.message.tare_weight1_date)) : '');
-                $('#addModal').find('#nettWeight').val(obj.message.nett_weight1);
-                $('#addModal').find('#grossIncoming2').val(obj.message.gross_weight2);
-                $('#addModal').find('#grossIncomingDate2').val(obj.message.gross_weight2_date != null ? formatDate2(new Date(obj.message.gross_weight2_date)) : '');
-                $('#addModal').find('#tareOutgoing2').val(obj.message.tare_weight2);
-                $('#addModal').find('#tareOutgoingDate2').val(obj.message.tare_weight2_date != null ? formatDate2(new Date(obj.message.tare_weight2_date)) : '');
-                $('#addModal').find('#nettWeight2').val(obj.message.nett_weight2);
-                $('#addModal').find('#reduceWeight').val(obj.message.reduce_weight);
-                // $('#addModal').find('#vehicleNo').val(obj.message.final_weight);
-                $('#addModal').find('#weightDifference').val(obj.message.weight_different);
-                // $('#addModal').find('#id').val(obj.message.is_complete);
-                // $('#addModal').find('#vehicleNo').val(obj.message.is_cancel);
-                //$('#addModal').find('#manualWeight').val(obj.message.manual_weight);
-                if(obj.message.manual_weight == 'true'){
-                    $("#manualWeightYes").prop("checked", true);
-                    $("#manualWeightNo").prop("checked", false);
-                }
-                else{
-                    $("#manualWeightYes").prop("checked", false);
-                    $("#manualWeightNo").prop("checked", true);
-                }
-
-                $('#addModal').find('#indicatorId').val(obj.message.indicator_id);
-                $('#addModal').find('#weighbridge').val(obj.message.weighbridge_id);
-                $('#addModal').find('#indicatorId2').val(obj.message.indicator_id_2);
-                $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
-                $('#addModal').find('#productDescription').val(obj.message.product_description);
-                $('#addModal').find('#subTotalPrice').val(obj.message.product_description);
-                $('#addModal').find('#sstPrice').val(obj.message.product_description);
-                $('#addModal').find('#totalPrice').val(obj.message.total_price);
-                $('#addModal').find('#finalWeight').val(obj.message.final_weight);
-                $('#addModal').modal('show');
-            
-                $('#weightForm').validate({
-                    errorElement: 'span',
-                    errorPlacement: function (error, element) {
-                        error.addClass('invalid-feedback');
-                        element.closest('.form-group').append(error);
-                    },
-                    highlight: function (element, errorClass, validClass) {
-                        $(element).addClass('is-invalid');
-                    },
-                    unhighlight: function (element, errorClass, validClass) {
-                        $(element).removeClass('is-invalid');
-                    }
-                });
+            if (obj.status == 'success'){
+                loadPricingModal(obj.message);
+                $('#pricingModal').modal('show');
             }
             else if(obj.status === 'failed'){
-                $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
             else{
-                $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"]("Something went wrong", "Failed:");
             }
-            $('#spinnerLoading').hide();
         });
     }
+
+    function loadPricingModal(data) {
+        var tableBody = $('#paymentDetailsTable');
+        tableBody.empty();
+        
+        data.weights.forEach(function(weight, index) {
+            var row = '<tr>' +
+                '<td>' + weight.transaction_id + '</td>' +
+                '<td>' + weight.cust_supp_code + '</td>' +
+                '<td>' + weight.cust_supp_name + '</td>' +
+                '<td>' + weight.weight_type + '</td>' +
+                '<td>' + weight.invoice_no + '</td>' +
+                '<td>' + (parseFloat(weight.gross_weight1)/1000).toFixed(2) + '</td>' +
+                '<td>' + weight.gross_weight1_date + '</td>' +
+                '<td>' + (parseFloat(weight.tare_weight1)/1000).toFixed(2) + '</td>' +
+                '<td>' + weight.tare_weight1_date + '</td>' +
+                '<td>' + (parseFloat(weight.nett_weight1)/1000).toFixed(2) + '</td>' +
+                '<td>' +
+                '<input type="hidden" name="id[]" value="' + weight.id + '">'+
+                '<input type="text" name="nett_amount[]" value="" readonly class="form-control-plaintext"></td>' +
+                '</tr>';
+            tableBody.append(row);
+        });
+        
+        $('#totalNettWeight').val((data.totalNettWeight).toFixed(2));
+    }
+
+    $('#pricingForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        var unitPrice = $('#unitPrice').val();
+        var totalAmount = $('#totalAmount').val();
+        
+        $.post('php/updatePaymentPricing.php', {
+            unitPrice: unitPrice,
+            totalAmount: totalAmount
+        }, function(response) {
+            var obj = JSON.parse(response);
+            if (obj.status === 'success') {
+                toastr["success"]("Pricing updated successfully", "Success:");
+                $('#pricingModal').modal('hide');
+                $('#weightTable').DataTable().ajax.reload();
+            } else {
+                toastr["error"](obj.message, "Failed:");
+            }
+        });
+    });
 
     function print(id) {
         $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N'}, function(data){
