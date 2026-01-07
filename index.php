@@ -686,7 +686,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3" id="divCustomerName">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3" id="divCustomerName">
                                                                                                 <div class="row">
                                                                                                     <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
                                                                                                     <div class="col-sm-8">
@@ -699,7 +699,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3" id="divSupplierName" style="display:none;">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3" id="divSupplierName" style="display:none;">
                                                                                                 <div class="row">
                                                                                                     <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
                                                                                                     <div class="col-sm-8">
@@ -714,7 +714,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                                 <div class="row" id="productNameDisplay">
                                                                                                     <label for="productName" class="col-sm-4 col-form-label">Product </label>
                                                                                                     <div class="col-sm-8">
@@ -749,7 +749,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                                 <div class="row">
                                                                                                     <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
                                                                                                     <div class="col-sm-8">
@@ -764,7 +764,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                                 <div class="row">
                                                                                                     <label for="destination" class="col-sm-4 col-form-label">Destination</label>
                                                                                                     <div class="col-sm-8">
@@ -779,7 +779,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3" id="doDisplay">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3" id="doDisplay">
                                                                                                 <div class="row">
                                                                                                     <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
                                                                                                     <div class="col-sm-8">
@@ -789,7 +789,17 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                                <div class="row">
+                                                                                                    <label for="invoiceNo" class="col-sm-4 col-form-label">Invoice No</label>
+                                                                                                    <div class="col-sm-8">
+                                                                                                        <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Invoice No">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                                 <div class="row">
                                                                                                     <label for="purchaseOrder" class="col-sm-4 col-form-label">P/O No.</label>
                                                                                                     <div class="col-sm-8">
@@ -1434,14 +1444,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                     </div>
                                                                 </div>
                                                             </div> -->
-                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                <div class="row">
-                                                                    <label for="invoiceNo" class="col-sm-4 col-form-label">Invoice No</label>
-                                                                    <div class="col-sm-8">
-                                                                        <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Invoice No">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
                                                             <!--<div class="col-xxl-6 col-lg-6 mb-3" id="replacementContainerDisplay" style="display:none">
                                                                 <div class="row">
                                                                     <label for="replacementContainer" class="col-sm-3 col-form-label">New Empty Entrance Bin</label>
@@ -3749,6 +3751,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#addModal').find('#customerType').val("Normal").trigger('change');
             $('#addModal').find('#transactionDate').val(formatDate2(today));
             $('#addModal').find('#vehiclePlateNo1').val("").trigger('change');
+            $('#addModal').find('#driverName').val("").trigger('change');
             $('#addModal').find('#vehiclePlateNo2').val("").trigger('change');
             $('#addModal').find('#supplierWeight').val("");
             $('#addModal').find('#bypassReason').val("");
@@ -5451,7 +5454,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
                 $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
-                console.log(obj.message.driver_name);
                 $('#addModal').find('#driverName').val(obj.message.driver_name).trigger('change');
                 $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
