@@ -38,6 +38,9 @@
                 <li class="nav-item">
                     <a href="index.php" class="nav-link"><b><i class="mdi mdi-weight"></i> <span><?=$languageArray['daily_weighing_code'][$language]?></span></b></a>
                 </li>              
+                <li class="nav-item">
+                    <a href="paymentVoucher.php" class="nav-link"><b><i class="mdi mdi-receipt"></i> <span><?=$languageArray['payment_voucher_code'][$language]?></span></span></b></a>
+                </li>              
                 <!--li class="nav-item">
                     <a href="bitumen.php" class="nav-link"><i class="mdi mdi-domain"></i></i><?=$lang['t-bitumen']?></a>
                 </li-->         

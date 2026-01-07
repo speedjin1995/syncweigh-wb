@@ -1125,3 +1125,8 @@ INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'purchase_code', 'Purchase', '购买', 'Pembelian', 'கொள்முதல்');
 
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'public_code', 'Public', '公众', 'Awam', 'பொது');
+
+-- 07/01/2026 --
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'payment_voucher_code', 'Payment Voucher', '付款凭证', 'Baucar Pembayaran', 'கட்டண வவுச்சர்');
+
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'start_weighing_code', 'Start Weighing', '开始称重', 'Mula Menimbang', 'துவக்க எடை');
