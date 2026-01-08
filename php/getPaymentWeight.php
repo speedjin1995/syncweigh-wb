@@ -48,6 +48,10 @@ if(isset($_POST['fromDate']) && isset($_POST['toDate']) && isset($_POST['transac
                     "tare_weight1" => $row['tare_weight1'],
                     "tare_weight1_date"=> $row['tare_weight1_date'],
                     "nett_weight1" => $row['nett_weight1'],
+                    "unit_price" => $row['unit_price'],
+                    "sub_total" => $row['sub_total'],
+                    "sst" => $row['sst'],
+                    "total_price" => $row['total_price'],
                     "invoice_no" => $row['invoice_no'],
                 );
         

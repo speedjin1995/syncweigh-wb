@@ -4,39 +4,8 @@
 <?php
 $plantId = $_SESSION['plant'];
 
-$vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
-$vehicles2 = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
-$customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $customer2 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
-$supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
-$product = $db->query("SELECT * FROM Product WHERE status = '0'");
-$product2 = $db->query("SELECT * FROM Product WHERE status = '0'");
-$transporter = $db->query("SELECT * FROM Transporter WHERE status = '0'");
-$destination = $db->query("SELECT * FROM Destination WHERE status = '0'");
-$unit = $db->query("SELECT * FROM Unit WHERE status = '0'");
-$rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0'");
-
-$plantName = '-';
-
-if($plantId != null && count($plantId) > 0){
-    $stmt2 = $db->prepare("SELECT * from Plant WHERE plant_code = ?");
-    $stmt2->bind_param('s', $plantId[0]);
-    $stmt2->execute();
-    $result2 = $stmt2->get_result();
-        
-    if(($row2 = $result2->fetch_assoc()) !== null){
-        $plantName = $row2['name'];
-    }
-}
-
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
-    $username = implode("', '", $_SESSION["plant"]);
-    $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and plant_code IN ('$username')");
-}
-else{
-    $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
-}
 
 // Get Company Detail
 $stmt = $db->prepare("SELECT * from Company WHERE id = 1");
@@ -86,11 +55,11 @@ if(($row = $result->fetch_assoc()) !== null){
 
 <?php include 'layouts/body.php'; ?>
 
-<!-- <div class="loading" id="spinnerLoading" style="display:none">
+<div class="loading" id="spinnerLoading" style="display:none">
   <div class='mdi mdi-loading' style='transform:scale(0.79);'>
     <div></div>
   </div>
-</div> -->
+</div>
 
 <!-- Begin page -->
 <div id="layout-wrapper">
@@ -275,33 +244,40 @@ if(($row = $result->fetch_assoc()) !== null){
                 <form id="pricingForm">
                     <div class="modal-body">
                         <div class="row mb-3">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <label class="form-label">Unit Price (RM)</label>
-                                <input type="number" class="form-control" id="unitPrice" step="0.01" required>
+                                <input type="number" class="form-control" id="unitPrice" name="unitPrice" step="0.01" required>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
+                                <label class="form-label">Tax (%)</label>
+                                <input type="number" class="form-control" id="tax" name="tax" step="0.01" min="0" max="100" value="0" required>
+                            </div>
+                            <div class="col-3">
                                 <label class="form-label">Total Nett Weight (MT)</label>
-                                <input type="number" class="form-control" id="totalNettWeight" readonly>
+                                <input type="number" class="form-control" id="totalNettWeight" name="totalNettWeight" readonly>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <label class="form-label">Total Amount (RM)</label>
-                                <input type="number" class="form-control" id="totalAmount" readonly>
+                                <input type="number" class="form-control" id="totalAmount" name="totalAmount" readonly>
                             </div>
                         </div>
                         <table class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Transaction ID</th>
-                                    <th>Customer/Supplier Code</th>
-                                    <th>Customer/Supplier Name</th>
-                                    <th>Weight Type</th>
-                                    <th>Invoice No</th>
-                                    <th>Gross Incoming (MT)</th>
+                                    <th>Transaction <br>ID</th>
+                                    <th>Customer/Supplier <br>Code</th>
+                                    <th>Customer/Supplier <br>Name</th>
+                                    <th>Weight <br>Type</th>
+                                    <th>Invoice <br>No</th>
+                                    <th>Gross <br>Incoming (MT)</th>
                                     <th>Incoming Date</th>
-                                    <th>Tare Outgoing (MT)</th>
+                                    <th>Tare <br>Outgoing (MT)</th>
                                     <th>Outgoing Date</th>
-                                    <th>Nett Weight (MT)</th>
-                                    <th>Nett Amount (RM)</th>
+                                    <th>Nett <br>Weight (MT)</th>
+                                    <th>Unit <br>Price (RM)</th>
+                                    <th>Nett <br>Amount (RM)</th>
+                                    <th>SST <br>(RM)</th>
+                                    <th>Total <br>Price (RM)</th>
                                 </tr>
                             </thead>
                             <tbody id="paymentDetailsTable">
@@ -695,15 +671,23 @@ if(($row = $result->fetch_assoc()) !== null){
             }
         });
 
-        $('#unitPrice').on('input', function() {
-            var unitPrice = parseFloat($(this).val()) || 0;
+        $('#unitPrice, #tax').on('input', function() {
+            var unitPrice = parseFloat($('#unitPrice').val()) || 0;
+            var taxRate = parseFloat($('#tax').val()) || 0;
             var totalAmount = 0;
             
             $('#paymentDetailsTable tr').each(function() {
-                var nettWeight = parseFloat($(this).find('td:eq(9)').text()) || 0; // Get 10th column text
-                var rowAmount = (unitPrice * nettWeight).toFixed(2);
-                $(this).find('input[name="nett_amount[]"]').val(rowAmount);
-                totalAmount += parseFloat(rowAmount);
+                var nettWeight = parseFloat($(this).find('td:eq(9)').text()) || 0;
+                var subTotal = (unitPrice * nettWeight);
+                var taxAmount = (subTotal * taxRate);
+                var rowTotal = (subTotal + taxAmount);
+                
+                $(this).find('input[name="unit_price[]"]').val(unitPrice.toFixed(2));
+                $(this).find('input[name="sub_total[]"]').val(subTotal.toFixed(2));
+                $(this).find('input[name="sst[]"]').val(taxAmount.toFixed(2));
+                $(this).find('input[name="total_price[]"]').val(rowTotal.toFixed(2));
+                
+                totalAmount += rowTotal;
             });
             
             $('#totalAmount').val(totalAmount.toFixed(2));
@@ -755,33 +739,48 @@ if(($row = $result->fetch_assoc()) !== null){
                 '<td>' + (parseFloat(weight.tare_weight1)/1000).toFixed(2) + '</td>' +
                 '<td>' + weight.tare_weight1_date + '</td>' +
                 '<td>' + (parseFloat(weight.nett_weight1)/1000).toFixed(2) + '</td>' +
-                '<td>' +
-                '<input type="hidden" name="id[]" value="' + weight.id + '">'+
-                '<input type="text" name="nett_amount[]" value="" readonly class="form-control-plaintext"></td>' +
+                '<td><input type="text" name="unit_price[]" value="' + (parseFloat(weight.unit_price).toFixed(2)) + '" readonly class="form-control-plaintext"></td>' +
+                '<td><input type="text" name="sub_total[]" value="' + (parseFloat(weight.sub_total).toFixed(2)) + '" readonly class="form-control-plaintext"></td>' +
+                '<td><input type="text" name="sst[]" value="' + (parseFloat(weight.sst).toFixed(2)) + '" readonly class="form-control-plaintext"></td>' +
+                '<td><input type="text" name="total_price[]" value="' + (parseFloat(weight.total_price).toFixed(2)) + '" readonly class="form-control-plaintext"></td>' +
+                '<td style="display:none;"><input type="hidden" name="id[]" value="' + weight.id + '"></td>' +
                 '</tr>';
             tableBody.append(row);
         });
         
+        $('#unitPrice').val(0.00);
+        $('#tax').val(0);
+        $('#totalAmount').val(0.00);
         $('#totalNettWeight').val((data.totalNettWeight).toFixed(2));
     }
 
     $('#pricingForm').on('submit', function(e) {
         e.preventDefault();
+        $('#spinnerLoading').show();
+
+        var formData = new FormData(this);
         
-        var unitPrice = $('#unitPrice').val();
-        var totalAmount = $('#totalAmount').val();
-        
-        $.post('php/updatePaymentPricing.php', {
-            unitPrice: unitPrice,
-            totalAmount: totalAmount
-        }, function(response) {
-            var obj = JSON.parse(response);
-            if (obj.status === 'success') {
-                toastr["success"]("Pricing updated successfully", "Success:");
-                $('#pricingModal').modal('hide');
-                $('#weightTable').DataTable().ajax.reload();
-            } else {
-                toastr["error"](obj.message, "Failed:");
+        $.ajax({
+            url: 'php/updatePaymentPricing.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                var obj = JSON.parse(response);
+                if(obj.status === 'success'){
+                    $('#weightTable').DataTable().ajax.reload();
+                    $('#spinnerLoading').hide();
+                    $('#pricingModal').modal('hide');
+                }
+                else if(obj.status === 'failed'){
+                    $('#spinnerLoading').hide();
+                    alert(obj.message);
+                }
+                else{
+                    $('#spinnerLoading').hide();
+                    alert(obj.message);
+                }
             }
         });
     });
