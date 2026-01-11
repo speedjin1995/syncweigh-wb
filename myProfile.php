@@ -77,6 +77,7 @@ if (mysqli_stmt_fetch($stmt2)) {
                                                             <option value="zh" <?= ($language == 'zh') ? 'selected' : '' ?>>Chinese</option>
                                                             <option value="my" <?= ($language == 'my') ? 'selected' : '' ?>>Bahasa Malaysia</option>
                                                             <option value="ne" <?= ($language == 'ne') ? 'selected' : '' ?>>नेपाली</option>
+                                                            <option value="ja" <?= ($language == 'ja') ? 'selected' : '' ?>>日本語</option>
                                                         </select>
                                                     </div>
                                                 </div>

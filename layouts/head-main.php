@@ -7,11 +7,12 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     $language = $_SESSION['language'];
 
     // Load message
+    $db->set_charset("utf8mb4");
     $message_resource = $db->query("SELECT * FROM message_resource");
     $languageArray = Array();
 
     while($row=mysqli_fetch_assoc($message_resource)){
-        $languageArray[$row['message_key_code']] = array("en"=>$row['en'],"zh"=>$row['zh'],"my"=>$row['my'],"ne"=>$row['ne']);
+        $languageArray[$row['message_key_code']] = array("en"=>$row['en'],"zh"=>$row['zh'],"my"=>$row['my'],"ne"=>$row['ne'], "ja"=>$row['ja']);
     }
 
     $_SESSION['languageArray'] = $languageArray;
