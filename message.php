@@ -128,7 +128,15 @@
                                                                                         <input type="text" class="form-control" id="nepaliDecs" name="nepaliDecs" placeholder="नेपाली">
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>                                                                      
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="japaneseDecs" class="col-sm-4 col-form-label">日本語</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="japaneseDecs" name="japaneseDecs" placeholder="日本語">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                             <input type="hidden" class="form-control" id="keyId" name="keyId">                                                                                                                                                         
                                                                         </div>
                                                                     </div>
@@ -181,6 +189,7 @@
                                                                     <th>中文</th>
                                                                     <th>Bahasa Malaysia</th>
                                                                     <th>नेपाली</th>
+                                                                    <th>日本語</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -266,6 +275,7 @@ $(function () {
             { data: 'zh' },
             { data: 'my' },
             { data: 'ne' },
+            { data: 'ja' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
@@ -314,6 +324,7 @@ $(function () {
         $('#messageModal').find('#chineseDecs').val('');
         $('#messageModal').find('#malayDecs').val('');
         $('#messageModal').find('#nepaliDecs').val('');
+        $('#messageModal').find('#japaneseDecs').val('');
         $('#messageModal').modal('show');
 
         // Remove Validation Error Message
@@ -348,6 +359,7 @@ function edit(id){
             $('#messageModal').find('#chineseDecs').val(decode.message.zh);
             $('#messageModal').find('#malayDecs').val(decode.message.my);
             $('#messageModal').find('#nepaliDecs').val(decode.message.ne);
+            $('#messageModal').find('#japaneseDecs').val(decode.message.ja);
 
             // Remove Validation Error Message
             $('#messageModal .is-invalid').removeClass('is-invalid');
