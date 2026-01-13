@@ -778,8 +778,12 @@ else{
                                                                                     <label for="reduceWeight" class="col-sm-4 col-form-label"><?=$languageArray['reduce_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
-                                                                                            <div class="input-group-text">Kg</div>
+                                                                                            <input type="number" class="form-control" id="reduceWeightInput" name="reduceWeightInput" placeholder="0">      
+                                                                                            <input type="hidden" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
+                                                                                            <select class="form-select" id="reduceWeightType" name="reduceWeightType" style="max-width: 80px;">
+                                                                                                <option value="kg">Kg</option>
+                                                                                                <option value="%">%</option>
+                                                                                            </select>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -3130,6 +3134,8 @@ else{
             $('#addModal').find('#tareOutgoing2').val("");
             tareOutgoingDatePicker2.clear();
             $('#addModal').find('#nettWeight2').val("");
+            $('#addModal').find('#reduceWeightInput').val("");
+            $('#addModal').find('#reduceWeightType').val("kg");
             $('#addModal').find('#reduceWeight').val("");
             // $('#addModal').find('#vehicleNo').val(obj.message.final_weight);
             $('#addModal').find('#weightDifference').val("");
@@ -3875,6 +3881,34 @@ else{
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
             //$('#finalWeight').trigger('change');
+        });
+
+        $('#reduceWeightType').on('change', function(){
+            var reduceWeightInput = $('#reduceWeightInput').val() ? parseFloat($('#reduceWeightInput').val()) : 0;
+            if($(this).val() == '%' && reduceWeightInput > 100){
+                alert('Percentage cannot be more than 100%');
+                $('#reduceWeightInput').val(0);
+            }
+
+            $('#reduceWeightInput').trigger('change');
+        });
+
+        $('#reduceWeightInput').on('change', function(){
+            var reduceWeightType = $('#reduceWeightType').val();
+            var reduceWeightInput = $(this).val() ? parseFloat($(this).val()) : 0;
+            var nettWeight = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
+
+            if (reduceWeightType == 'kg'){
+                $('#reduceWeight').val(reduceWeightInput).trigger('change');
+            }else if (reduceWeightType == '%'){
+                if (reduceWeightInput > 100){
+                    alert('Percentage cannot be more than 100%');
+                    $('#reduceWeightInput').val(0);
+                    return;
+                }
+                var reduce = (reduceWeightInput/100) * nettWeight;
+                $('#reduceWeight').val(reduce).trigger('change');
+            }
         });
         
         $('#reduceWeight').on('change', function(){
@@ -4826,6 +4860,8 @@ else{
                 tareOutgoingDatePicker2.setDate(obj.message.tare_weight2_date != null ? new Date(obj.message.tare_weight2_date) : null);
                 $('#addModal').find('#tareWeightBy2').val(obj.message.tare_weight_by2);
                 $('#addModal').find('#nettWeight2').val(obj.message.nett_weight2);
+                $('#addModal').find('#reduceWeightType').val(obj.message.reduce_weight_type);
+                $('#addModal').find('#reduceWeightInput').val(obj.message.reduce_weight_input);
                 $('#addModal').find('#reduceWeight').val(obj.message.reduce_weight);
                 $('#addModal').find('#weightDifference').val(obj.message.weight_different);
                 $('#addModal').find('#weightDifferencePerc').val(obj.message.weight_different_perc);
