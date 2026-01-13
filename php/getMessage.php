@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "db_connect.php";
+$db->set_charset("utf8mb4");
 
 if(isset($_POST['messageId'])){
 	$id = filter_input(INPUT_POST, 'messageId', FILTER_SANITIZE_STRING);
@@ -27,6 +28,7 @@ if(isset($_POST['messageId'])){
                 $message['zh'] = $row['zh'];
                 $message['my'] = $row['my'];
                 $message['ne'] = $row['ne'];
+                $message['ja'] = $row['ja'];
             }
             
             echo json_encode(

@@ -778,8 +778,12 @@ else{
                                                                                     <label for="reduceWeight" class="col-sm-4 col-form-label"><?=$languageArray['reduce_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
-                                                                                            <div class="input-group-text">Kg</div>
+                                                                                            <input type="number" class="form-control" id="reduceWeightInput" name="reduceWeightInput" placeholder="0">      
+                                                                                            <input type="hidden" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
+                                                                                            <select class="form-select" id="reduceWeightType" name="reduceWeightType" style="max-width: 80px;">
+                                                                                                <option value="kg">Kg</option>
+                                                                                                <option value="%">%</option>
+                                                                                            </select>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -1325,21 +1329,33 @@ else{
                                             <div class="modal-content">
                                                 <form role="form" id="prePrintForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title"><?=$languageArray['language_code'][$language]?></h4>
+                                                        <h4 class="modal-title"><?=$languageArray['print_slip_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="row mb-3">
                                                             <label for="prePrint" class="col-sm-4 col-form-label"><?=$languageArray['language_code'][$language]?></label>
                                                             <div class="col-sm-8">
-                                                                <div class="input-group">
-                                                                    <div class="col-12">
-                                                                        <select class="form-select select2" id="prePrint" name="prePrint" >
-                                                                            <option value="en">English</option>
-                                                                            <option value="zh">Chinese</option>
-                                                                            <option value="my">Bahasa Malaysia</option>
-                                                                            <option value="ne">नेपाली</option>
-                                                                        </select>
+                                                                <select class="form-select select2" id="prePrint" name="prePrint">
+                                                                    <option value="en">English</option>
+                                                                    <option value="zh">Chinese</option>
+                                                                    <option value="my">Bahasa Malaysia</option>
+                                                                    <option value="ne">नेपाली</option>
+                                                                    <option value="ja">日本語</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-sm-4 col-form-label"></div>
+                                                            <div class="col-sm-8">
+                                                                <div class="d-flex flex-column">
+                                                                    <div class="form-check mb-2">
+                                                                        <input class="form-check-input" type="radio" id="prePrintHeaderWith" name="prePrintHeader" value="with" checked>
+                                                                        <label class="form-check-label" for="prePrintHeaderWith"><?=$languageArray['print_with_letter_header_code'][$language]?></label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" id="prePrintHeaderWithout" name="prePrintHeader" value="without">
+                                                                        <label class="form-check-label" for="prePrintHeaderWithout"><?=$languageArray['print_without_letter_header_code'][$language]?></label>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2663,9 +2679,10 @@ else{
                 $('#spinnerLoading').show();
                 var id = $('#prePrintModal').find('#id').val();
                 var prePrintStatus = $('#prePrintModal').find('#prePrint').val();
+                var prePrintHeader = $('#prePrintModal').find('input[name="prePrintHeader"]:checked').val();
                 var isEmptyContainer = $('#prePrintModal').find('#isEmptyContainer').val();
 
-                $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+                $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, prePrintHeader: prePrintHeader, isEmptyContainer: isEmptyContainer}, function(data){
                     var obj = JSON.parse(data);
 
                     if(obj.status === 'success'){
@@ -3130,6 +3147,8 @@ else{
             $('#addModal').find('#tareOutgoing2').val("");
             tareOutgoingDatePicker2.clear();
             $('#addModal').find('#nettWeight2').val("");
+            $('#addModal').find('#reduceWeightInput').val("");
+            $('#addModal').find('#reduceWeightType').val("kg");
             $('#addModal').find('#reduceWeight').val("");
             // $('#addModal').find('#vehicleNo').val(obj.message.final_weight);
             $('#addModal').find('#weightDifference').val("");
@@ -3875,6 +3894,34 @@ else{
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
             //$('#finalWeight').trigger('change');
+        });
+
+        $('#reduceWeightType').on('change', function(){
+            var reduceWeightInput = $('#reduceWeightInput').val() ? parseFloat($('#reduceWeightInput').val()) : 0;
+            if($(this).val() == '%' && reduceWeightInput > 100){
+                alert('Percentage cannot be more than 100%');
+                $('#reduceWeightInput').val(0);
+            }
+
+            $('#reduceWeightInput').trigger('change');
+        });
+
+        $('#reduceWeightInput').on('change', function(){
+            var reduceWeightType = $('#reduceWeightType').val();
+            var reduceWeightInput = $(this).val() ? parseFloat($(this).val()) : 0;
+            var nettWeight = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
+
+            if (reduceWeightType == 'kg'){
+                $('#reduceWeight').val(reduceWeightInput).trigger('change');
+            }else if (reduceWeightType == '%'){
+                if (reduceWeightInput > 100){
+                    alert('Percentage cannot be more than 100%');
+                    $('#reduceWeightInput').val(0);
+                    return;
+                }
+                var reduce = (reduceWeightInput/100) * nettWeight;
+                $('#reduceWeight').val(reduce).trigger('change');
+            }
         });
         
         $('#reduceWeight').on('change', function(){
@@ -4826,6 +4873,8 @@ else{
                 tareOutgoingDatePicker2.setDate(obj.message.tare_weight2_date != null ? new Date(obj.message.tare_weight2_date) : null);
                 $('#addModal').find('#tareWeightBy2').val(obj.message.tare_weight_by2);
                 $('#addModal').find('#nettWeight2').val(obj.message.nett_weight2);
+                $('#addModal').find('#reduceWeightType').val(obj.message.reduce_weight_type);
+                $('#addModal').find('#reduceWeightInput').val(obj.message.reduce_weight_input);
                 $('#addModal').find('#reduceWeight').val(obj.message.reduce_weight);
                 $('#addModal').find('#weightDifference').val(obj.message.weight_different);
                 $('#addModal').find('#weightDifferencePerc').val(obj.message.weight_different_perc);

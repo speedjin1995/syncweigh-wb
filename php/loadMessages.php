@@ -2,6 +2,7 @@
 session_start();
 ## Database configuration
 require_once 'db_connect.php';
+$db->set_charset("utf8mb4");
 
 ## Read value
 $draw = $_POST['draw'];
@@ -42,7 +43,8 @@ while($row = mysqli_fetch_assoc($empRecords)) {
       "en"=>$row['en'],
       "zh"=>$row['zh'],
       "my"=>$row['my'],
-      "ne"=>$row['ne']
+      "ne"=>$row['ne'],
+      "ja"=>$row['ja'],
     );
 
     $counter++;

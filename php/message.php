@@ -1,17 +1,19 @@
 <?php
 session_start();
 require_once "db_connect.php";
+$db->set_charset("utf8mb4");
 
-if(isset($_POST['keyCode'], $_POST['englishDecs'], $_POST['chineseDecs'], $_POST['malayDecs'], $_POST['nepaliDecs'])){
+if(isset($_POST['keyCode'], $_POST['englishDecs'], $_POST['chineseDecs'], $_POST['malayDecs'], $_POST['nepaliDecs'], $_POST['japaneseDecs'])){
 	$keyCode = filter_input(INPUT_POST, 'keyCode', FILTER_SANITIZE_STRING);
 	$englishDecs = filter_input(INPUT_POST, 'englishDecs', FILTER_SANITIZE_STRING);
 	$chineseDecs = filter_input(INPUT_POST, 'chineseDecs', FILTER_SANITIZE_STRING);
     $malayDecs = filter_input(INPUT_POST, 'malayDecs', FILTER_SANITIZE_STRING);
 	$nepaliDecs = filter_input(INPUT_POST, 'nepaliDecs', FILTER_SANITIZE_STRING);
+    $japaneseDecs = filter_input(INPUT_POST, 'japaneseDecs', FILTER_SANITIZE_STRING);
 
     if($_POST['keyId'] != null && $_POST['keyId'] != ''){
-        if ($update_stmt = $db->prepare("UPDATE message_resource SET message_key_code=?, en=?, zh=?, my=?, ne=? WHERE id=?")) {
-            $update_stmt->bind_param('ssssss', $keyCode, $englishDecs, $chineseDecs, $malayDecs, $nepaliDecs, $_POST['keyId']);
+        if ($update_stmt = $db->prepare("UPDATE message_resource SET message_key_code=?, en=?, zh=?, my=?, ne=?, ja=? WHERE id=?")) {
+            $update_stmt->bind_param('sssssss', $keyCode, $englishDecs, $chineseDecs, $malayDecs, $nepaliDecs, $japaneseDecs, $_POST['keyId']);
             
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
@@ -36,8 +38,8 @@ if(isset($_POST['keyCode'], $_POST['englishDecs'], $_POST['chineseDecs'], $_POST
         }
     }
     else{
-        if ($insert_stmt = $db->prepare("INSERT INTO message_resource (message_key_code, en, zh, my, ne) VALUES (?, ?, ?, ?, ?)")) {
-            $insert_stmt->bind_param('sssss', $keyCode, $englishDecs, $chineseDecs, $malayDecs, $nepaliDecs);
+        if ($insert_stmt = $db->prepare("INSERT INTO message_resource (message_key_code, en, zh, my, ne, ja) VALUES (?, ?, ?, ?, ?, ?)")) {
+            $insert_stmt->bind_param('ssssss', $keyCode, $englishDecs, $chineseDecs, $malayDecs, $nepaliDecs, $japaneseDecs);
             
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {
