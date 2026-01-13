@@ -33,12 +33,13 @@ function formatWeight($weight){
     return $formatted;
 }
 
-if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
+if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['prePrintHeader'])) {
     $stmt = $db->prepare("SELECT * FROM Company WHERE id=?");
     $stmt->bind_param('s', $compids);
     $stmt->execute();
     $result1 = $stmt->get_result();
     $id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
+    $prePrintHeader = filter_input(INPUT_POST, 'prePrintHeader', FILTER_SANITIZE_STRING);
             
     if ($row = $result1->fetch_assoc()) {
         $compname = $row['name'];
@@ -48,6 +49,11 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
         $compaddress3 = $row['address_line_3'];
         $compphone = $row['phone_no'];
         $compiemail = $row['fax_no'];
+    }
+
+    $hideHeaderStyle = '';
+    if ($prePrintHeader == 'without'){
+        $hideHeaderStyle = "style='visibility:hidden;'";
     }
 
     if($_POST["file"] == 'weight'){
@@ -293,7 +299,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                         </head>
                         <body>
                             <table style="width:100%;">
-                                <tr>
+                                <tr '.$hideHeaderStyle.'>
                                     <td style="width: 70%;">
                                         <p style="font-size: 14px;">
                                             <span style="font-weight: bold;font-size: 16px; margin-bottom: 10px; display: inline-block;">'.$compname.'</span><br>

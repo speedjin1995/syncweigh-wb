@@ -1329,21 +1329,33 @@ else{
                                             <div class="modal-content">
                                                 <form role="form" id="prePrintForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title"><?=$languageArray['language_code'][$language]?></h4>
+                                                        <h4 class="modal-title"><?=$languageArray['print_slip_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="row mb-3">
                                                             <label for="prePrint" class="col-sm-4 col-form-label"><?=$languageArray['language_code'][$language]?></label>
                                                             <div class="col-sm-8">
-                                                                <div class="input-group">
-                                                                    <div class="col-12">
-                                                                        <select class="form-select select2" id="prePrint" name="prePrint" >
-                                                                            <option value="en">English</option>
-                                                                            <option value="zh">Chinese</option>
-                                                                            <option value="my">Bahasa Malaysia</option>
-                                                                            <option value="ne">नेपाली</option>
-                                                                        </select>
+                                                                <select class="form-select select2" id="prePrint" name="prePrint">
+                                                                    <option value="en">English</option>
+                                                                    <option value="zh">Chinese</option>
+                                                                    <option value="my">Bahasa Malaysia</option>
+                                                                    <option value="ne">नेपाली</option>
+                                                                    <option value="ja">日本語</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-sm-4 col-form-label"></div>
+                                                            <div class="col-sm-8">
+                                                                <div class="d-flex flex-column">
+                                                                    <div class="form-check mb-2">
+                                                                        <input class="form-check-input" type="radio" id="prePrintHeaderWith" name="prePrintHeader" value="with" checked>
+                                                                        <label class="form-check-label" for="prePrintHeaderWith"><?=$languageArray['print_with_letter_header_code'][$language]?></label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" id="prePrintHeaderWithout" name="prePrintHeader" value="without">
+                                                                        <label class="form-check-label" for="prePrintHeaderWithout"><?=$languageArray['print_without_letter_header_code'][$language]?></label>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2667,9 +2679,10 @@ else{
                 $('#spinnerLoading').show();
                 var id = $('#prePrintModal').find('#id').val();
                 var prePrintStatus = $('#prePrintModal').find('#prePrint').val();
+                var prePrintHeader = $('#prePrintModal').find('input[name="prePrintHeader"]:checked').val();
                 var isEmptyContainer = $('#prePrintModal').find('#isEmptyContainer').val();
 
-                $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+                $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, prePrintHeader: prePrintHeader, isEmptyContainer: isEmptyContainer}, function(data){
                     var obj = JSON.parse(data);
 
                     if(obj.status === 'success'){
