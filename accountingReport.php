@@ -789,6 +789,21 @@ if(($row = $result->fetch_assoc()) !== null){
                     $('#exportPdfForm').find('#file').val('weight');
                     $('#exportPdfModal').modal('hide');
 
+                    if ($('#reportType').val() == 'DR') {
+                        // Check if date range is only 1 day
+                        if (fromDateI && toDateI) {
+                            var fromDate = new Date(fromDateI);
+                            var toDate = new Date(toDateI);
+                            var timeDiff = toDate.getTime() - fromDate.getTime();
+                            var dayDiff = timeDiff / (1000 * 3600 * 24);
+                            
+                            if (dayDiff > 1) {
+                                alert('Date range cannot exceed 1 day for Daily Report.');
+                                return;
+                            }
+                        }
+                    }
+
                     $.post('php/exportAccountingPdf.php', $('#exportPdfForm').serialize(), function(response){
                         var obj = JSON.parse(response);
 
@@ -990,22 +1005,6 @@ if(($row = $result->fetch_assoc()) !== null){
         });
 
         $('#exportSummaryPdf').on('click', function(){
-            var fromDateI = $('#fromDateSearch').val();
-            var toDateI = $('#toDateSearch').val();
-
-            // Check if date range is only 1 day
-            if (fromDateI && toDateI) {
-                var fromDate = new Date(fromDateI);
-                var toDate = new Date(toDateI);
-                var timeDiff = toDate.getTime() - fromDate.getTime();
-                var dayDiff = timeDiff / (1000 * 3600 * 24);
-                
-                if (dayDiff > 1) {
-                    alert('Date range cannot exceed 1 day for PDF export.');
-                    return;
-                }
-            }
-            
             $("#exportPdfModal").find('#reportType').val('');
             $("#exportPdfModal").modal("show");
 
