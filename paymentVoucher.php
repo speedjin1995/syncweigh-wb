@@ -132,13 +132,13 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <div class="mb-3">
                                                             <label for="transactionStatusSearch" class="form-label">Transaction Status</label>
                                                             <select id="transactionStatusSearch" class="form-select">
-                                                                <option value="Sales" selected>Sales</option>
-                                                                <option value="Purchase">Purchase</option>
-                                                                <option value="Local">Public</option>
+                                                                <!-- <option value="Sales">Sales</option> -->
+                                                                <option value="Purchase" selected>Purchase</option>
+                                                                <!-- <option value="Local">Public</option> -->
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
-                                                    <div class="col-3" id="customerSearchDisplay">
+                                                    <div class="col-3" id="customerSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="customerNoSearch" class="form-label">Customer Name</label>
                                                             <select id="customerNoSearch" class="form-select" >
@@ -149,7 +149,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
-                                                    <div class="col-3" id="supplierSearchDisplay" style="display:none">
+                                                    <div class="col-3" id="supplierSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="supplierSearch" class="form-label">Supplier Name</label>
                                                             <select id="supplierSearch" class="form-select" >
@@ -205,7 +205,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['weighing_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['transaction_status_code'][$language]?></th>
-                                                                    <th><?=$languageArray['customer_supplier_code'][$language]?></th>
+                                                                    <th><?=$languageArray['supplier_code'][$language]?></th>
                                                                     <th><?=$languageArray['invoice_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -265,8 +265,8 @@ if(($row = $result->fetch_assoc()) !== null){
                             <thead>
                                 <tr>
                                     <th>Transaction <br>ID</th>
-                                    <th>Customer/Supplier <br>Code</th>
-                                    <th>Customer/Supplier <br>Name</th>
+                                    <th>Supplier <br>Code</th>
+                                    <th>Supplier <br>Name</th>
                                     <th>Weight <br>Type</th>
                                     <th>Invoice <br>No</th>
                                     <th>Gross <br>Incoming (MT)</th>
