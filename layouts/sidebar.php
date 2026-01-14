@@ -37,10 +37,7 @@
                 </li-->
                 <li class="nav-item">
                     <a href="index.php" class="nav-link"><b><i class="mdi mdi-weight"></i> <span><?=$languageArray['daily_weighing_code'][$language]?></span></b></a>
-                </li>              
-                <li class="nav-item">
-                    <a href="paymentVoucher.php" class="nav-link"><b><i class="mdi mdi-receipt"></i> <span><?=$languageArray['payment_voucher_code'][$language]?></span></span></b></a>
-                </li>              
+                </li>
                 <!--li class="nav-item">
                     <a href="bitumen.php" class="nav-link"><i class="mdi mdi-domain"></i></i><?=$lang['t-bitumen']?></a>
                 </li-->         
@@ -63,7 +60,10 @@
                         <b><i class="ri-pages-line"></i> <span><?=$lang['t-accounting']?></b></span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarAccounting">
-                        <ul class="nav nav-sm flex-column">
+                        <ul class="nav nav-sm flex-column">              
+                            <li class="nav-item">
+                                <a href="paymentVoucher.php" class="nav-link"><b><?=$languageArray['payment_voucher_code'][$language]?></b></a>
+                            </li>
                             <li class="nav-item">
                                 <a href="accountingReport.php" class="nav-link"><b><?=$lang['t-report']?></b></a>
                             </li>          
