@@ -4,6 +4,7 @@
 <?php
 $role = $_SESSION["roles"];
 $allowDeduct = $_SESSION["allowDeduct"];
+$customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 ?>
 
 <head>
@@ -244,6 +245,19 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                                                         <select id="paymentTerm" name="paymentTerm" class="form-select select2">
                                                                                             <option value="Term"><?=$languageArray['term_code'][$language]?></option>
                                                                                             <option value="Cash"><?=$languageArray['cash_code'][$language]?></option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="customer" class="col-sm-4 col-form-label"><?=$languageArray['customer_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="customer" name="customer" class="form-select select2">
+                                                                                            <option selected>-</option>
+                                                                                            <?php while($rowCustomer = mysqli_fetch_assoc($customer)){ ?>
+                                                                                                <option value="<?=$rowCustomer['id'] ?>"><?=$rowCustomer['name'] ?></option>
+                                                                                            <?php } ?>
                                                                                         </select>
                                                                                     </div>
                                                                                 </div>
@@ -770,6 +784,7 @@ $(function () {
         $('#addModal').find('#tinNo').val("");
         $('#addModal').find('#mpob').val("");
         $('#addModal').find('#paymentTerm').val("").trigger('change');
+        $('#addModal').find('#customer').val("").trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -1195,6 +1210,7 @@ function edit(id){
             $('#addModal').find('#tinNo').val(obj.message.tin_no);
             $('#addModal').find('#mpob').val(obj.message.mpob);
             $('#addModal').find('#paymentTerm').val(obj.message.payment_term).trigger('change');
+            $('#addModal').find('#customer').val(obj.message.customer_id).trigger('change');
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');

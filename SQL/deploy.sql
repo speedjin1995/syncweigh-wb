@@ -1169,14 +1169,16 @@ DELIMITER ;
 
 ALTER TABLE `Supplier` ADD `payment_term` VARCHAR(10) NULL AFTER `mpob`;
 ALTER TABLE `Supplier_Log` ADD `payment_term` VARCHAR(10) NULL AFTER `mpob`;
+ALTER TABLE `Supplier` ADD `customer_id` INT(11) NULL AFTER `payment_term`;
+ALTER TABLE `Supplier_Log` ADD `customer_id` INT(11) NULL AFTER `payment_term`;
 
 DELIMITER $$
 CREATE OR REPLACE TRIGGER `TRG_INS_SUPPLIER` AFTER INSERT ON `Supplier` FOR EACH ROW 
 INSERT INTO Supplier_Log (
-    supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, payment_term, action_id, action_by, event_date
+    supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, payment_term, customer_id, action_id, action_by, event_date
 ) 
 VALUES (
-    NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.payment_term, 1, NEW.created_by, NEW.created_date
+    NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.payment_term, NEW.customer_id, 1, NEW.created_by, NEW.created_date
 )
 $$
 DELIMITER ;
@@ -1193,10 +1195,10 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_SUPPLIER` BEFORE UPDATE ON `Supplier` FOR EAC
 
     -- Insert into Supplier_Log table
     INSERT INTO Supplier_Log (
-        supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, payment_term, action_id, action_by, event_date
+        supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, payment_term, customer_id, action_id, action_by, event_date
     ) 
     VALUES (
-        NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.payment_term, action_value, NEW.modified_by, NEW.modified_date
+        NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.payment_term, NEW.customer_id, action_value, NEW.modified_by, NEW.modified_date
     );
 END
 $$
