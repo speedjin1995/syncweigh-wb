@@ -57,7 +57,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAccounting" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarAccounting">
-                        <b><i class="ri-pages-line"></i> <span><?=$lang['t-accounting']?></b></span>
+                        <b><i class="ri-pages-line"></i> <span><?=$languageArray['accounting_code'][$language]?></b></span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarAccounting">
                         <ul class="nav nav-sm flex-column">              
@@ -65,7 +65,7 @@
                                 <a href="paymentVoucher.php" class="nav-link"><b><?=$languageArray['payment_voucher_code'][$language]?></b></a>
                             </li>
                             <li class="nav-item">
-                                <a href="accountingReport.php" class="nav-link"><b><?=$lang['t-report']?></b></a>
+                                <a href="accountingReport.php" class="nav-link"><b><?=$languageArray['report_code'][$language]?></b></a>
                             </li>          
                         </ul>
                     </div>
