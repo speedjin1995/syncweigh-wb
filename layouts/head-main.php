@@ -7,6 +7,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     $language = $_SESSION['language'];
 
     // Load message
+    $db->set_charset("utf8mb4");
     $message_resource = $db->query("SELECT * FROM message_resource");
     $languageArray = Array();
 

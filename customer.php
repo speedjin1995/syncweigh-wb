@@ -237,7 +237,18 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="paymentTerm" class="col-sm-4 col-form-label"><?=$languageArray['payment_term_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="paymentTerm" name="paymentTerm" class="form-select select2">
+                                                                                            <option value="Term"><?=$languageArray['term_code'][$language]?></option>
+                                                                                            <option value="Cash"><?=$languageArray['cash_code'][$language]?></option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <input type="hidden" class="form-control" id="id" name="id">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -562,7 +573,6 @@ var allowDeduct = '<?=$allowDeduct?>';
 var rowCount = 0;
 
 $(function () {
-
     // Initialize all Select2 elements in the modal
     $('#addModal .select2').select2({
         allowClear: true,
@@ -767,6 +777,7 @@ $(function () {
         $('#addModal').find('#icNo').val("");
         $('#addModal').find('#tinNo').val("");
         $('#addModal').find('#mpob').val("");
+        $('#addModal').find('#paymentTerm').val("").trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -1121,6 +1132,7 @@ function edit(id){
             $('#addModal').find('#icNo').val(obj.message.ic_no);
             $('#addModal').find('#tinNo').val(obj.message.tin_no);
             $('#addModal').find('#mpob').val(obj.message.mpob);
+            $('#addModal').find('#paymentTerm').val(obj.message.payment_term).trigger('change');
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');

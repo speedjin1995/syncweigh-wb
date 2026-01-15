@@ -1201,3 +1201,8 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_SUPPLIER` BEFORE UPDATE ON `Supplier` FOR EAC
 END
 $$
 DELIMITER ;
+
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'payment_term_code', 'Payment Term', '付款期限', 'Tempoh Pembayaran', 'கட்டண காலம்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'term_code', 'Term', '期限', 'Tempoh', 'காலம்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_code', 'Cash', '现金', 'Tunai', 'பணம்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'supplier_code_code', 'Supplier Code', '供应商代码', 'Kod Pembekal', 'சப்ளையர் குறியீடு');
