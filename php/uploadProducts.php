@@ -30,12 +30,6 @@ if (!empty($data)) {
                     $insert_stmt->execute();
                     $invid = $insert_stmt->insert_id; // Get the inserted reseller ID
                     $insert_stmt->close();
-
-                    if ($insert_log = $db->prepare("INSERT INTO Product_Log (product_id, product_code, name, description, price, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('sssssss', $invid, $Code, $Name, $Description, $Price, $action, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }            
                 }
             }else{
                 $errMsg = "Product: ". $Name ." already exist in master data.";

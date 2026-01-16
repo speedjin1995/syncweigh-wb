@@ -28,13 +28,6 @@ if (!empty($data)) {
                 $insert_stmt->execute();
                 $desId = $insert_stmt->insert_id; // Get the inserted destination ID
                 $insert_stmt->close();
-    
-                $action = "1";
-                if ($insert_log = $db->prepare("INSERT INTO Destination_Log (destination_id, destination_code, name, description, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?)")) {
-                    $insert_log->bind_param('ssssss', $desId, $DestinationCode, $DestinationName, $description, $action, $uid);
-                    $insert_log->execute();
-                    $insert_log->close();
-                }            
             }
         }else{
             $errMsg = "Destination: ". $DestinationName ." already exist in master data.";

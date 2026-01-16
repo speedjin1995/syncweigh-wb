@@ -3,7 +3,6 @@ session_start();
 require_once 'db_connect.php';
 require_once 'requires/lookup.php';
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
 $uid = $_SESSION['username'];
 
 // Read the JSON data from the request body
@@ -40,12 +39,6 @@ if (!empty($data)) {
                     $insert_stmt->execute();
                     $invid = $insert_stmt->insert_id; // Get the inserted reseller ID
                     $insert_stmt->close();
-                
-                    if ($insert_log = $db->prepare("INSERT INTO Customer_Log (customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('sssssssssssssss', $invid, $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $uid, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }            
                 }
             }else{
                 $errMsg = "Customer: ". $Name ." already exist in master data.";
