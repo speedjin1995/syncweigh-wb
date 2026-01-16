@@ -5074,14 +5074,15 @@ else{
 
     function loadContainerData(callback) {
         var transactionStatus = $('#transactionStatus').val();
+        
         $.post('php/getContainers.php', {userID: transactionStatus}, function (data){
             var obj = JSON.parse(data);
 
             if (obj.status == 'success'){
+                $('#addModal').find('#emptyContainerNo').empty();
+                $('#addModal').find('#emptyContainerNo').append('<option selected="-">-</option>');
+                
                 if (obj.message.length > 0){
-                    $('#addModal').find('#emptyContainerNo').empty();
-                    $('#addModal').find('#emptyContainerNo').append('<option selected="-">-</option>');
-
                     // Populate container numbers
                     for (var i = 0; i < obj.message.length; i++) {
                         var id = obj.message[i].id;
@@ -5091,11 +5092,11 @@ else{
                             '<option value="'+container_no+'">'+container_no+'</option>'
                         );
                     }
-
-                    // Execute the callback to finalize the process
-                    if (callback) {
-                        callback();
-                    }
+                }
+                
+                // Execute callback regardless of data length
+                if (callback) {
+                    callback();
                 }
             } else {
                 $('#spinnerLoading').hide();
