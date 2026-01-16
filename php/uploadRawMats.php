@@ -28,13 +28,7 @@ if (!empty($data)) {
                     $insert_stmt->bind_param('ssssss', $Code, $Name, $Description, $Price, $uid, $uid);
                     $insert_stmt->execute();
                     $invid = $insert_stmt->insert_id; // Get the inserted reseller ID
-                    $insert_stmt->close();
-
-                    if ($insert_log = $db->prepare("INSERT INTO Raw_Mat_Log (raw_mat_id, raw_mat_code, name, description, price, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('sssssss', $invid, $Code, $Name, $Description, $Price, $action, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }            
+                    $insert_stmt->close();    
                 }
             }else{
                 $errMsg = "Raw Material: ". $Name ." already exist in master data.";

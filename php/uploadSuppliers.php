@@ -38,13 +38,7 @@ if (!empty($data)) {
                     $insert_stmt->bind_param('sssssssssssssss', $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Address4, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $uid, $uid);
                     $insert_stmt->execute();
                     $invid = $insert_stmt->insert_id; // Get the inserted reseller ID
-                    $insert_stmt->close();
-
-                    if ($insert_log = $db->prepare("INSERT INTO Supplier_Log (supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('ssssssssssssssss', $invid, $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Address4, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $action, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }            
+                    $insert_stmt->close();    
                 }
             }else{
                 $errMsg = "Supplier: ". $Name ." already exist in master data.";
