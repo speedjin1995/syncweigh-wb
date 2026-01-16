@@ -1054,12 +1054,12 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="row mb-3">
+                                                                        <!-- <div class="row mb-3">
                                                                             <label for="grossIncomingDate2" class="col-sm-4 col-form-label"><?=$languageArray['incoming_date_code'][$language]?></label>
                                                                             <div class="col-sm-8">
                                                                                 <input type="text" class="form-control input-readonly" id="grossIncomingDate2" name="grossIncomingDate2">
                                                                             </div>
-                                                                        </div>
+                                                                        </div> -->
                                                                         <div class="row mb-3" id="totalPriceDisplay">
                                                                             <label for="totalPrice" class="col-sm-4 col-form-label"><?=$languageArray['total_price_code'][$language]?></label>
                                                                             <div class="col-sm-8">
