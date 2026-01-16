@@ -233,9 +233,9 @@ else{
                                                             <select id="invoiceNoSearch" class="form-select select2"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
-                                                                <!-- <option value="Container">Primer Mover</option>
+                                                                <option value="Container">Primer Mover</option>
                                                                 <option value="Empty Container">Primer Mover + Container</option>
-                                                                <option value="Different Container">Primer Mover + Different Bins</option> -->
+                                                                <option value="Different Container">Primer Mover + Different Bins</option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -554,9 +554,9 @@ else{
                                                                                     <div class="col-sm-8">
                                                                                         <select id="weightType" name="weightType" class="form-select select2">
                                                                                             <option value="Normal" selected><?=$languageArray['normal_weighing_code'][$language]?></option>
-                                                                                            <!-- <option value="Container">Primer Mover</option>
+                                                                                            <option value="Container">Primer Mover</option>
                                                                                             <option value="Empty Container">Primer Mover + Container</option>
-                                                                                            <option value="Different Container">Primer Mover + Different Bins</option> -->
+                                                                                            <option value="Different Container">Primer Mover + Different Bins</option>
                                                                                         </select>   
                                                                                     </div>
                                                                                 </div>
