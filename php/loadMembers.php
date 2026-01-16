@@ -58,8 +58,7 @@ if ($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN') {
       }
       $jsonCondition = implode(" OR ", $conditions);
 
-      $empQuery = "SELECT Users.name AS empname, Users.id, Users.employee_code, Users.username, Users.useremail, Users.name 
-                          roles.role_name, Users.plant_id, Users.status
+      $empQuery = "SELECT Users.name AS empname, Users.id, Users.employee_code, Users.username, Users.useremail, Users.name, roles.role_name, Users.plant_id, Users.status
                    FROM Users 
                    JOIN roles ON Users.role = roles.role_code 
                    WHERE Users.status IN (0) 
