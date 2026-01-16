@@ -72,7 +72,8 @@
                     </div>
                 </li-->
                 <?php
-                    echo '<!--li class="nav-item">
+                    if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
+                        echo '<!--li class="nav-item">
                             <a href="inventory.php" class="nav-link"><i class="mdi mdi-shipping-pallet"></i></i>'.$lang['t-inventory'].'</a>
                         </li--> 
                         <li class="nav-item">
@@ -83,14 +84,13 @@
                             <div class="collapse menu-dropdown" id="sidebarMasterdata">
                                 <ul class="nav nav-sm flex-column">';
 
-                    if($_SESSION["roles"] == 'SADMIN'){
-                        echo '<li class="nav-item">
-                            <a href="message.php" class="nav-link">'.$languageArray['message_resource_code'][$language].'</a>
-                        </li>';
-                    }
+                                    if($_SESSION["roles"] == 'SADMIN'){
+                                        echo '<li class="nav-item">
+                                            <a href="message.php" class="nav-link">'.$languageArray['message_resource_code'][$language].'</a>
+                                        </li>';
+                                    }
 
-                    if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
-                        echo '<li class="nav-item">
+                                    echo '<li class="nav-item">
                                         <a href="customer.php" class="nav-link">'.$languageArray['customer_code'][$language].'</a>
                                     </li>
                                     <li class="nav-item">
