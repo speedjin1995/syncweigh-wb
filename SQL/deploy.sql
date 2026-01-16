@@ -1183,3 +1183,7 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`, `ja`
 ('print_slip_code', 'Print Slip', '打印单据', 'Cetak Slip', 'ஸ்லிப் அச்சிடு', '伝票印刷');
 ('print_with_letter_header_code', 'Print With Letter Header', '打印（含信头）', 'Cetak Dengan Kepala Surat', 'கடிதத் தலைப்புடன் அச்சிடு', 'レターヘッダー付き印刷'),
 ('print_without_letter_header_code', 'Print Without Letter Header', '打印（不含信头）', 'Cetak Tanpa Kepala Surat', 'கடிதத் தலைப்பின்றி அச்சிடு', 'レターヘッダーなし印刷');
+
+-- 16/01/2026 --
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`, `ja`) VALUES
+('supply_weight_code', 'Supply Weight', '供应重量', 'Berat Bekalan', 'விநியோக எடை', '供給重量');
