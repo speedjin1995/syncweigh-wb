@@ -1187,3 +1187,25 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`, `ja`
 -- 16/01/2026 --
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`, `ja`) VALUES
 ('supply_weight_code', 'Supply Weight', '供应重量', 'Berat Bekalan', 'விநியோக எடை', '供給重量');
+
+ALTER TABLE `Company` ADD `include_price` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `mobile_no`, ADD `include_container` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_price`, ADD `include_different_bin` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_container`;
+
+ALTER TABLE `Company_Log` ADD `include_price` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `mobile_no`, ADD `include_container` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_price`, ADD `include_different_bin` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_container`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Always set action_id = 2 for update
+    SET action_value = 2;
+
+    -- Insert into Company_Log table
+    INSERT INTO Company_Log (
+        company_id, company_code, company_reg_no, new_reg_no, `name`, address_line_1, address_line_2, address_line_3, phone_no, fax_no, tin_no, mobile_no, include_price, include_container, include_different_bin, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.company_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.tin_no, NEW.mobile_no, NEW.include_price, NEW.include_container, NEW.include_different_bin, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
