@@ -88,6 +88,19 @@ if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
 else{
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0'");
 }
+
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$includePrice = '';
+$includeContainer = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $includePrice = $row['include_price'];
+    $includeContainer = $row['include_container'];
+    $includeDifferentBin = $row['include_different_bin'];
+}
 ?>
 
 <head>
@@ -233,9 +246,15 @@ else{
                                                             <select id="invoiceNoSearch" class="form-select select2"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
-                                                                <option value="Container">Primer Mover</option>
-                                                                <option value="Empty Container">Primer Mover + Container</option>
-                                                                <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                <?php if($includeContainer == 'Y'){ ?>
+                                                                <option value="Container"><?=$languageArray['primer_mover_code'][$language]?></option>
+                                                                <?php } ?>
+                                                                <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
+                                                                <option value="Empty Container"><?=$languageArray['primer_mover_container_code'][$language]?></option>
+                                                                <?php } ?>
+                                                                <?php if($includeDifferentBin == 'Y'){ ?>
+                                                                <option value="Different Container"><?=$languageArray['primer_mover_different_bin_code'][$language]?></option>
+                                                                <?php } ?>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -554,9 +573,15 @@ else{
                                                                                     <div class="col-sm-8">
                                                                                         <select id="weightType" name="weightType" class="form-select select2">
                                                                                             <option value="Normal" selected><?=$languageArray['normal_weighing_code'][$language]?></option>
-                                                                                            <option value="Container">Primer Mover</option>
-                                                                                            <option value="Empty Container">Primer Mover + Container</option>
-                                                                                            <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                                            <?php if($includeContainer == 'Y'){ ?>
+                                                                                            <option value="Container"><?=$languageArray['primer_mover_code'][$language]?></option>
+                                                                                            <?php } ?>
+                                                                                            <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
+                                                                                            <option value="Empty Container"><?=$languageArray['primer_mover_container_code'][$language]?></option>
+                                                                                            <?php } ?>
+                                                                                            <?php if($includeDifferentBin == 'Y'){ ?>
+                                                                                            <option value="Different Container"><?=$languageArray['primer_mover_different_bin_code'][$language]?></option>
+                                                                                            <?php } ?>
                                                                                         </select>   
                                                                                     </div>
                                                                                 </div>
@@ -656,7 +681,7 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3" <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ echo 'style="display:block;"'; } else { echo 'style="display:none;"'; } ?>>
                                                                                 <div class="row" id="containerDisplay">
                                                                                     <label for="containerNoInput" class="col-sm-4 col-form-label"><?=$languageArray['container_no1_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
@@ -719,7 +744,7 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoDisplay">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNoDisplay" <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ echo 'style="display:block;"'; } else { echo 'style="display:none;"'; } ?>>
                                                                                 <div class="row">
                                                                                     <label for="sealNo" class="col-sm-4 col-form-label"><?=$languageArray['seal_no_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
@@ -750,7 +775,7 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2Display">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="containerNo2Display" <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ echo 'style="display:block;"'; } else { echo 'style="display:none;"'; } ?>>
                                                                                 <div class="row">
                                                                                     <label for="containerNo2" class="col-sm-4 col-form-label"><?=$languageArray['container_no2_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
@@ -788,7 +813,7 @@ else{
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2Display">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="sealNo2Display" <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ echo 'style="display:block;"'; } else { echo 'style="display:none;"'; } ?>>
                                                                                 <div class="row">
                                                                                     <label for="sealNo2" class="col-sm-4 col-form-label"><?=$languageArray['seal_no2_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
@@ -798,7 +823,7 @@ else{
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="replacementContainerDisplay" style="display:none">
                                                                                 <div class="row">
-                                                                                    <label for="replacementContainer" class="col-sm-4 col-form-label"><?=$languageArray['new_empty_entrance_bin_code'][$language]?>New Empty Entrance Bin</label>
+                                                                                    <label for="replacementContainer" class="col-sm-4 col-form-label"><?=$languageArray['new_empty_entrance_bin_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
                                                                                     </div>
@@ -1477,20 +1502,24 @@ else{
                                                                     <th><?=$languageArray['weight_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['weight_status_code'][$language]?></th>
                                                                     <th><?=$languageArray['customer_supplier_code'][$language]?></th>
+                                                                    <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
                                                                     <th><?=$languageArray['container_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['seal_no_code'][$language]?></th>
+                                                                    <?php } ?>
                                                                     <th><?=$languageArray['vehicle_code'][$language]?></th>
                                                                     <th><?=$languageArray['gross_incoming_code'][$language]?></th>
                                                                     <th><?=$languageArray['incoming_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
                                                                     <th><?=$languageArray['outgoing_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['nett_weight_code'][$language]?></th>
+                                                                    <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
                                                                     <th><?=$languageArray['vehicle_code'][$language]?>2</th>
                                                                     <th><?=$languageArray['gross_incoming_code'][$language]?>2</th>
                                                                     <th><?=$languageArray['incoming_date_code'][$language]?>2</th>
                                                                     <th><?=$languageArray['tare_outgoing_code'][$language]?>2</th>
                                                                     <th><?=$languageArray['outgoing_date_code'][$language]?>2</th>
                                                                     <th><?=$languageArray['nett_weight_code'][$language]?>2</th>
+                                                                    <?php } ?>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -1504,6 +1533,7 @@ else{
                             </div><!-- container-fluid -->
 
                             <!-- Second Card for Empty Container -->
+                            <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
                             <div class="row">
                                 <div class="col">
                                     <div class="h-100">
@@ -1563,6 +1593,7 @@ else{
                                     </div> <!-- end .h-100-->
                                 </div> <!-- end col -->
                             </div><!-- container-fluid -->
+                            <?php } ?>
                         </div> <!-- end .h-100-->
 
                     </div> <!-- end col -->
@@ -1936,20 +1967,24 @@ else{
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
+                <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
                 { data: 'container_no' },
                 { data: 'seal_no' },
+                <?php } ?>
                 { data: 'lorry_plate_no1' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
                 { data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
+                <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
                 { data: 'lorry_plate_no2' },
                 { data: 'gross_weight2' },
                 { data: 'gross_weight2_date' },
                 { data: 'tare_weight2' },
                 { data: 'tare_weight2_date' },
                 { data: 'nett_weight2' },
+                <?php } ?>
                 { 
                     data: 'id',
                     class: 'action-button',
@@ -2873,20 +2908,24 @@ else{
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
+                    <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
                     { data: 'container_no' },
                     { data: 'seal_no' },
+                    <?php } ?>
                     { data: 'lorry_plate_no1' },
                     { data: 'gross_weight1' },
                     { data: 'gross_weight1_date' },
                     { data: 'tare_weight1' },
                     { data: 'tare_weight1_date' },
                     { data: 'nett_weight1' },
+                    <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
                     { data: 'lorry_plate_no2' },
                     { data: 'gross_weight2' },
                     { data: 'gross_weight2_date' },
                     { data: 'tare_weight2' },
                     { data: 'tare_weight2_date' },
                     { data: 'nett_weight2' },
+                    <?php } ?>
                     { 
                         data: 'id',
                         class: 'action-button',
@@ -3598,13 +3637,20 @@ else{
                 $('#addModal').find('#replacementContainerDisplay').hide();
                 $('#addModal').find('#vehicleWeight2Display').hide();
                 $('#addModal').find('#container2WeightDisplay').hide();
+                <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
                 $('#addModal').find('#containerNo2Display').show();
-                $('#addModal').find('#containerNo2ReplaceDisplay').hide();
                 $('#addModal').find('#sealNoDisplay').show();
-                $('#addModal').find('#sealNoReplaceDisplay').hide();
                 $('#addModal').find('#sealNo2Display').show();
-                $('#addModal').find('#sealNo2ReplaceDisplay').hide();
                 $('#addModal').find('#containerDisplay').show();
+                <?php } else { ?>
+                $('#addModal').find('#containerNo2Display').hide();
+                $('#addModal').find('#sealNoDisplay').hide();
+                $('#addModal').find('#sealNo2Display').hide();
+                $('#addModal').find('#containerDisplay').hide();
+                <?php } ?>
+                $('#addModal').find('#containerNo2ReplaceDisplay').hide();
+                $('#addModal').find('#sealNoReplaceDisplay').hide();
+                $('#addModal').find('#sealNo2ReplaceDisplay').hide();
                 $('#addModal').find('#containerNoInput').attr('required', false);
                 $('#addModal').find('#emptyContainerNo').attr('required', false);
             }

@@ -2,6 +2,18 @@
 session_start();
 ## Database configuration
 require_once 'db_connect.php';
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$includePrice = '';
+$includeContainer = '';
+if(($row = $result->fetch_assoc()) !== null){
+  $includePrice = $row['include_price'];
+  $includeContainer = $row['include_container'];
+  $includeDifferentBin = $row['include_different_bin'];
+}
 
 ## Read value
 $draw = $_POST['draw'];
@@ -45,6 +57,13 @@ if($_POST['vehicle'] != null && $_POST['vehicle'] != '' && $_POST['vehicle'] != 
 
 if($_POST['invoice'] != null && $_POST['invoice'] != '' && $_POST['invoice'] != '-'){
 	$searchQuery .= " and weight_type = '".$_POST['invoice']."'";
+}else{
+  $allowedTypes = [];
+  if ($includeContainer == 'Y') $allowedTypes[] = "'Container'";
+  if ($includeDifferentBin == 'Y') $allowedTypes[] = "'Different Container'";
+  $allowedTypes[] = "'Normal'";
+  
+  $searchQuery .= " and weight_type IN (" . implode(',', $allowedTypes) . ")";
 }
 
 if($_POST['batch'] != null && $_POST['batch'] != '' && $_POST['batch'] != '-'){
