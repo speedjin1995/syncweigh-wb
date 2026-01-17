@@ -2,7 +2,20 @@
 session_start();
 // Load the database configuration file 
 require_once 'db_connect.php';
- 
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$includePrice = '';
+$includeContainer = '';
+$includeDifferentBin = '';
+if(($row = $result->fetch_assoc()) !== null){
+  $includePrice = $row['include_price'];
+  $includeContainer = $row['include_container'];
+  $includeDifferentBin = $row['include_different_bin'];
+}
+
 // Filter the excel data 
 function filterData(&$str){ 
     $str = preg_replace("/\t/", "\\t", $str); 
@@ -100,6 +113,18 @@ if($_GET['weighingType'] != null && $_GET['weighingType'] != '' && $_GET['weighi
     else{
         $searchQuery .= " and count.weight_type like '%".$_GET['weighingType']."%'";
     }
+}else{
+    $allowedTypes = [];
+    if ($includeContainer == 'Y') $allowedTypes[] = "'Container'";
+    if ($includeDifferentBin == 'Y') $allowedTypes[] = "'Different Container'";
+    $allowedTypes[] = "'Normal'";
+
+    if($_GET["file"] == 'weight'){
+        $searchQuery .= " and Weight.weight_type IN (" . implode(',', $allowedTypes) . ")";
+    }
+    else{
+        $searchQuery .= " and count.weight_type IN (" . implode(',', $allowedTypes) . ")";
+    }
 }
 
 if($_GET['product'] != null && $_GET['product'] != '' && $_GET['product'] != '-'){
@@ -162,13 +187,19 @@ if($_GET['isMulti'] != null && $_GET['isMulti'] != '' && $_GET['isMulti'] != '-'
     }
 }
 
-
 // Column names 
-$fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'CUSTOMER CODE', 'CUSTOMER NAME', 
+if ($includeContainer == 'Y' || $includeDifferentBin == 'Y'){
+    $fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'CUSTOMER CODE', 'CUSTOMER NAME', 
     'SUPPLIER CODE', 'SUPPLIER NAME', 'PRODUCT CODE', 'PRODUCT NAME', 'PRODUCT DESCRIPTION', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 
     'DELIVERED BY', 'PO NO.', 'DO NO.', 'CONTAINER NO', 'SEAL NO', 'CONTAINER NO 2', 'SEAL NO 2', 'ORDER WEIGHT', 'SUPPLIER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME',
     'GROSS WEIGHT 2', 'TARE WEIGHT 2', 'NET WEIGHT 2', 'IN TIME2', 'OUT TIME2', 'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT',  'MANUAL', 'CANCELLED', 'PLANT CODE', 
-    'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
+    'PLANT NAME', 'WEIGHTED BY', 'REMARK');
+}else{
+    $fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'CUSTOMER CODE', 'CUSTOMER NAME', 
+    'SUPPLIER CODE', 'SUPPLIER NAME', 'PRODUCT CODE', 'PRODUCT NAME', 'PRODUCT DESCRIPTION', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 
+    'DELIVERED BY', 'PO NO.', 'DO NO.', 'ORDER WEIGHT', 'SUPPLIER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME',
+    'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT',  'MANUAL', 'CANCELLED', 'PLANT CODE', 'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
+}
 
 // Display column names as first row 
 $excelData = implode("\t", array_values($fields)) . "\n";
@@ -228,13 +259,22 @@ if($query->num_rows > 0){
                 $weightType = $row['weight_type'];
             }
 
-            $lineData = array($row['transaction_id'], $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['customer_code'],
-            $row['customer_name'], $row['supplier_code'], $row['supplier_name'], $productCode, $productName, $row['product_description'], $row['destination_code'], 
-            $row['destination'], $row['transporter_code'], $row['transporter'], $row['purchase_order'], $row['delivery_no'], $row['container_no'], $row['seal_no'], 
-            $row['container_no2'], $row['seal_no2'], $row['order_weight'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], $row['nett_weight1'], $row['gross_weight1_date'], 
-            $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], $row['tare_weight2_date'],
-            $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], 
-            $row['created_by'], $row['remarks']);
+            if ($includeContainer == 'Y' || $includeDifferentBin == 'Y'){
+                $lineData = array($row['transaction_id'], $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['customer_code'],
+                $row['customer_name'], $row['supplier_code'], $row['supplier_name'], $productCode, $productName, $row['product_description'], $row['destination_code'], 
+                $row['destination'], $row['transporter_code'], $row['transporter'], $row['purchase_order'], $row['delivery_no'], $row['container_no'], $row['seal_no'], 
+                $row['container_no2'], $row['seal_no2'], $row['order_weight'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], $row['nett_weight1'], 
+                $row['gross_weight1_date'], $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], 
+                $row['tare_weight2_date'], $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], 
+                $row['plant_name'], $row['created_by'], $row['remarks']);
+            }else{
+                $lineData = array($row['transaction_id'], $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['customer_code'],
+                $row['customer_name'], $row['supplier_code'], $row['supplier_name'], $productCode, $productName, $row['product_description'], $row['destination_code'], 
+                $row['destination'], $row['transporter_code'], $row['transporter'], $row['purchase_order'], $row['delivery_no'], $row['order_weight'], $row['supplier_weight'], 
+                $row['gross_weight1'], $row['tare_weight1'], $row['nett_weight1'], $row['gross_weight1_date'], $row['tare_weight1_date'], $row['reduce_weight'], 
+                $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], 
+                $row['created_by'], $row['remarks']);
+            }
         }
         else{
             $lineData = array($row['serialNo'], $row['product_name'], $row['units'], $row['unitWeight'], $row['tare'], $row['currentWeight'], $row['actualWeight'],

@@ -3,6 +3,20 @@ session_start();
 ## Database configuration
 require_once 'db_connect.php';
 
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$includePrice = '';
+$includeContainer = '';
+$includeDifferentBin = '';
+if(($row = $result->fetch_assoc()) !== null){
+  $includePrice = $row['include_price'];
+  $includeContainer = $row['include_container'];
+  $includeDifferentBin = $row['include_different_bin'];
+}
+
 ## Read value
 $draw = $_POST['draw'];
 $row = $_POST['start'];
@@ -49,6 +63,13 @@ if($_POST['customerType'] != null && $_POST['customerType'] != '' && $_POST['cus
 
 if($_POST['weightType'] != null && $_POST['weightType'] != '' && $_POST['weightType'] != '-'){
 	$searchQuery .= " and weight_type = '".$_POST['weightType']."'";
+}else{
+  $allowedTypes = [];
+  if ($includeContainer == 'Y') $allowedTypes[] = "'Container'";
+  if ($includeDifferentBin == 'Y') $allowedTypes[] = "'Different Container'";
+  $allowedTypes[] = "'Normal'";
+  
+  $searchQuery .= " and weight_type IN (" . implode(',', $allowedTypes) . ")";
 }
 
 if($_POST['product'] != null && $_POST['product'] != '' && $_POST['product'] != '-'){
