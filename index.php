@@ -96,6 +96,7 @@ $result = $stmt->get_result();
 
 $includePrice = '';
 $includeContainer = '';
+$includeDifferentBin = '';
 if(($row = $result->fetch_assoc()) !== null){
     $includePrice = $row['include_price'];
     $includeContainer = $row['include_container'];
