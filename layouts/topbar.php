@@ -161,9 +161,14 @@ $stmtComp->bind_param('s', $compids);
 $stmtComp->execute();
 $resultC = $stmtComp->get_result();
 $compname = '';
-        
+$includePrice = '';
+$includeContainer = '';
+$includeDifferentBin = '';
 if ($rowc = $resultC->fetch_assoc()) {
     $compname = $rowc['name'];
+    $includePrice = $rowc['include_price'];
+    $includeContainer = $rowc['include_container'];
+    $includeDifferentBin = $rowc['include_different_bin'];
 }
 
 $count = count($salesList) + count($purchaseList) + count($localList) + count($miscList);
@@ -796,7 +801,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                     </div>
                 </div>
 
-                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="cwNotificationDropdown">
+                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="cwNotificationDropdown" style="<?= ($includeContainer == 'Y' || $includeDifferentBin == 'Y') ? '' : 'display:none' ?>">
                     <span class="fw-bold">CW</span>
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
                         id="page-header-cw-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"

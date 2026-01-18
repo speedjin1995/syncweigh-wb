@@ -37,6 +37,20 @@ if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
 else{
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
 }
+
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$includePrice = '';
+$includeContainer = '';
+$includeDifferentBin = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $includePrice = $row['include_price'];
+    $includeContainer = $row['include_container'];
+    $includeDifferentBin = $row['include_different_bin'];
+}
 ?>
 
 <head>
@@ -182,7 +196,12 @@ else{
                                                             <select id="invoiceNoSearch" class="form-select"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
-                                                                <!-- <option value="Container">Primer Mover</option> -->
+                                                                <?php if($includeContainer == 'Y'){ ?>
+                                                                <option value="Empty Container"><?=$languageArray['primer_mover_container_code'][$language]?></option>
+                                                                <?php } ?>
+                                                                <?php if($includeDifferentBin == 'Y'){ ?>
+                                                                <option value="Different Container"><?=$languageArray['primer_mover_different_bin_code'][$language]?></option>
+                                                                <?php } ?>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->                                               
@@ -407,20 +426,24 @@ else{
                                                                     <th><?=$languageArray['weight_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['weight_status_code'][$language]?></th>
                                                                     <th><?=$languageArray['customer_supplier_code'][$language]?></th>
+                                                                    <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
                                                                     <th><?=$languageArray['container_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['seal_no_code'][$language]?></th>
+                                                                    <?php } ?>
                                                                     <th><?=$languageArray['vehicle_code'][$language]?></th>
                                                                     <th><?=$languageArray['gross_incoming_code'][$language]?></th>
                                                                     <th><?=$languageArray['incoming_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
                                                                     <th><?=$languageArray['outgoing_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['nett_weight_code'][$language]?></th>
+                                                                    <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
                                                                     <th><?=$languageArray['vehicle_code'][$language]?>2</th>
                                                                     <th><?=$languageArray['gross_incoming_code'][$language]?>2</th>
                                                                     <th><?=$languageArray['incoming_date_code'][$language]?>2</th>
                                                                     <th><?=$languageArray['tare_outgoing_code'][$language]?>2</th>
                                                                     <th><?=$languageArray['outgoing_date_code'][$language]?>2</th>
                                                                     <th><?=$languageArray['nett_weight_code'][$language]?>2</th>
+                                                                    <?php } ?>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -622,20 +645,24 @@ else{
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
+                <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'): ?>
                 { data: 'container_no' },
                 { data: 'seal_no' },
+                <?php endif; ?>
                 { data: 'lorry_plate_no1' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
                 { data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
+                <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'): ?>
                 { data: 'lorry_plate_no2' },
                 { data: 'gross_weight2' },
                 { data: 'gross_weight2_date' },
                 { data: 'tare_weight2' },
                 { data: 'tare_weight2_date' },
                 { data: 'nett_weight2' },
+                <?php endif; ?>
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -714,20 +741,24 @@ else{
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
+                    <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'): ?>
                     { data: 'container_no' },
                     { data: 'seal_no' },
+                    <?php endif; ?>
                     { data: 'lorry_plate_no1' },
                     { data: 'gross_weight1' },
                     { data: 'gross_weight1_date' },
                     { data: 'tare_weight1' },
                     { data: 'tare_weight1_date' },
                     { data: 'nett_weight1' },
+                    <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'): ?>
                     { data: 'lorry_plate_no2' },
                     { data: 'gross_weight2' },
                     { data: 'gross_weight2_date' },
                     { data: 'tare_weight2' },
                     { data: 'tare_weight2_date' },
                     { data: 'nett_weight2' },
+                    <?php endif; ?>
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {

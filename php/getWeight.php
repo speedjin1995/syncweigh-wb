@@ -363,7 +363,12 @@ if(isset($_POST['userID'])){
                             $message['tare_weight2_date'] = !empty($row['tare_weight2_date']) ? date("d/m/Y - h:i:sa", strtotime($row['tare_weight2_date'])) : '';
                             $message['tare_weight_by2'] = $row['tare_weight_by2'] ?? '';
                             $message['nett_weight2'] = $row['nett_weight2'] ?? '';
-                            $message['reduce_weight'] = $row['reduce_weight'] ?? '';
+                            $message['reduce_weight_type'] = $row['reduce_weight_type'];
+                            $message['reduce_weight_input'] = $row['reduce_weight_input'];
+                            $message['reduce_weight'] = $row['reduce_weight'];
+                            $message['tare_weight_type'] = $row['tare_weight_type'];
+                            $message['tare_weight_input'] = $row['tare_weight_input'];
+                            $message['tare_weight'] = $row['tare_weight'];
                             $message['final_weight'] = $row['final_weight'] ?? '';
                         }else{
                             $message['id'] = $row['id'];
@@ -423,6 +428,9 @@ if(isset($_POST['userID'])){
                             $message['reduce_weight_type'] = $row['reduce_weight_type'];
                             $message['reduce_weight_input'] = $row['reduce_weight_input'];
                             $message['reduce_weight'] = $row['reduce_weight'];
+                            $message['tare_weight_type'] = $row['tare_weight_type'];
+                            $message['tare_weight_input'] = $row['tare_weight_input'];
+                            $message['tare_weight'] = $row['tare_weight'];
                             $message['final_weight'] = $row['final_weight'];
                             $message['weight_different'] = $row['weight_different'];
                             $message['weight_different_perc'] = $row['weight_different_perc'];

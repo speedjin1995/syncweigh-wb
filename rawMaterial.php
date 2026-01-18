@@ -1,6 +1,20 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 
+<?php
+    // Get Company Detail
+    $stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $includePrice = '';
+    $includeContainer = '';
+    if(($row = $result->fetch_assoc()) !== null){
+        $includePrice = $row['include_price'];
+        $includeContainer = $row['include_container'];
+    }
+?>
+
 <head>
     <title>Weighing | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
@@ -135,7 +149,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3" <?php if($includePrice == 'N'){ echo 'style="display:none;"'; } ?>>
                                                                                 <div class="row">
                                                                                     <label for="productPrice" class="col-sm-4 col-form-label"><?=$languageArray['raw_material_price_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
@@ -296,7 +310,9 @@
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['raw_material_code_code'][$language]?></th>
                                                                     <th><?=$languageArray['raw_material_name_code'][$language]?></th>
+                                                                    <?php if($includePrice == 'Y'){ ?>
                                                                     <th><?=$languageArray['raw_material_price_code'][$language]?></th>
+                                                                    <?php } ?>
                                                                     <th><?=$languageArray['description_code'][$language]?></th>
                                                                     <th><?=$languageArray['type_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
@@ -405,7 +421,9 @@ $(function () {
             },
             { data: 'raw_mat_code' },
             { data: 'name' },
+            <?php if($includePrice == 'Y'){ ?>
             { data: 'price' },
+            <?php } ?>
             { data: 'description' },
             { data: 'type' },
             { 
