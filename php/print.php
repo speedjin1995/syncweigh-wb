@@ -506,8 +506,13 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                                             <td style="border:1px solid black;">'.$languageArray['reduce_code'][$language].($row['reduce_weight_type'] == '%' ? '<br> (%)' : '').'</td>
                                             <td style="border:1px solid black;">'.($row['reduce_weight_type'] == '%' ? $row['reduce_weight_input'].'% <br> ('.formatWeight($row['reduce_weight']).' kg)' : formatWeight($row['reduce_weight']).' kg').'</td>
                                         </tr>
+                                        <tr style="font-size: 14px;text-align: center;">
+                                            <td colspan="4" style="text-align: left;">R<b>emarks &nbsp&nbsp&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;</b> <span style="margin-left: 10px">'.$row['remarks'].'</span></td>
+                                            <td style="border:1px solid black;">'.$languageArray['tare_code'][$language].($row['tare_weight_type'] == '%' ? '<br> (%)' : '').'</td>
+                                            <td style="border:1px solid black;">'.($row['tare_weight_type'] == '%' ? $row['tare_weight_input'].'% <br> ('.formatWeight($row['tare_weight']).' kg)' : formatWeight($row['tare_weight']).' kg').'</td>
+                                        </tr>
                                         <tr style="font-size: 14px;text-align: center;font-weight:bold;">
-                                            <td colspan="4" style="text-align: left;">Remarks &nbsp&nbsp&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; <span style="margin-left: 10px">'.$row['remarks'].'</span></td>
+                                            <td colspan="4" style="text-align: left;"></td>
                                             <td style="border:1px solid black;">Nett Weight</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['final_weight']).' kg</td>
                                         </tr>
@@ -850,6 +855,11 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                                             <td colspan="4">'.$languageArray['remarks_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; <span style="margin-left: 10px">'.$row['remarks'].'</span></td>
                                             <td style="border:1px solid black;font-size: 16px;text-align: center;">'.$languageArray['reduce_code'][$language].($row['reduce_weight_type'] == '%' ? '<br> (%)' : '').'</td>
                                             <td style="border:1px solid black;font-size: 16px;text-align: center;">'.($row['reduce_weight_type'] == '%' ? $row['reduce_weight_input'].'% <br> ('.formatWeight($row['reduce_weight']).' kg)' : formatWeight($row['reduce_weight']).' kg').'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td style="border:1px solid black;font-size: 16px;text-align: center;">'.$languageArray['tare_code'][$language].($row['tare_weight_type'] == '%' ? '<br> (%)' : '').'</td>
+                                            <td style="border:1px solid black;font-size: 16px;text-align: center;">'.($row['tare_weight_type'] == '%' ? $row['tare_weight_input'].'% <br> ('.formatWeight($row['tare_weight']).' kg)' : formatWeight($row['tare_weight']).' kg').'</td>
                                         </tr>
                                         <tr>
                                             <td colspan="4"></td>

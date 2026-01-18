@@ -1189,7 +1189,8 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`, `ja`
 ('supply_weight_code', 'Supply Weight', '供应重量', 'Berat Bekalan', 'விநியோக எடை', '供給重量'),
 ('primer_mover_code','Primer Mover','牵引车','Kenderaan Penarik','பிரைமர் மூவர்','トラクターヘッド'),
 ('primer_mover_container_code','Primer Mover + Container','牵引车 + 集装箱','Kenderaan Penarik + Kontena','பிரைமர் மூவர் + கண்டெய்னர்','トラクターヘッド＋コンテナ'),
-('primer_mover_different_bin_code','Primer Mover + Different Bins','牵引车 + 不同料斗','Kenderaan Penarik + Tong Berbeza','பிரைமர் மூவர் + வேறு தொட்டிகள்','トラクターヘッド＋異なるビン');
+('primer_mover_different_bin_code','Primer Mover + Different Bins','牵引车 + 不同料斗','Kenderaan Penarik + Tong Berbeza','பிரைமர் மூவர் + வேறு தொட்டிகள்','トラクターヘッド＋異なるビン'),
+('tare_code','Tare','皮重','Berat Tara','டேர் எடை','風袋重量');
 
 ALTER TABLE `Company` ADD `include_price` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `mobile_no`, ADD `include_container` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_price`, ADD `include_different_bin` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_container`;
 
