@@ -535,36 +535,13 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
+                                                                        </div>
+                                                                        <div class="row">
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="transactionId" class="col-sm-4 col-form-label"><?=$languageArray['transaction_id_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" placeholder="<?=$languageArray['transaction_id_code'][$language]?>" readonly>                                                                                  
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['transaction_date_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            Please fill in the field.
-                                                                                        </div>    
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="plant" class="col-sm-4 col-form-label"><?=$languageArray['plant_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="plant" name="plant" required>
-                                                                                            <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
-                                                                                                <option value="<?=$rowPlant['name'] ?>" data-code="<?=$rowPlant['plant_code'] ?>"><?=$rowPlant['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>        
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -589,14 +566,12 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="transactionStatus" class="col-sm-4 col-form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
+                                                                                    <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['transaction_date_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <select id="transactionStatus" name="transactionStatus" class="form-select select2">
-                                                                                            <option value="Sales" selected><?=$languageArray['dispatch_code'][$language]?></option>
-                                                                                            <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
-                                                                                            <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
-                                                                                            <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
-                                                                                        </select>  
+                                                                                        <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
+                                                                                        <div class="invalid-feedback">
+                                                                                            Please fill in the field.
+                                                                                        </div>    
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -623,7 +598,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div> 
+                                                                            </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifference">
                                                                                 <div class="row">
                                                                                     <label for="weightDifference" class="col-sm-4 col-form-label"><?=$languageArray['weight_difference_code'][$language]?></label>
@@ -634,7 +609,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div> 
+                                                                            </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifferencePerc">
                                                                                 <div class="row">
                                                                                     <label for="weightDifferencePerc" class="col-sm-4 col-form-label">% <?=$languageArray['variance_code'][$language]?></label>
@@ -646,6 +621,41 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                     </div>
                                                                                 </div>
                                                                             </div> 
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="plant" class="col-sm-4 col-form-label"><?=$languageArray['plant_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="plant" name="plant" required>
+                                                                                            <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
+                                                                                                <option value="<?=$rowPlant['name'] ?>" data-code="<?=$rowPlant['plant_code'] ?>"><?=$rowPlant['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>        
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="purchaseOrder" class="col-sm-4 col-form-label"><?=$languageArray['po_no_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="transactionStatus" class="col-sm-4 col-form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="transactionStatus" name="transactionStatus" class="form-select select2">
+                                                                                            <option value="Sales" selected><?=$languageArray['dispatch_code'][$language]?></option>
+                                                                                            <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
+                                                                                            <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
+                                                                                            <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
+                                                                                        </select>  
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="divCustomerName">
@@ -674,11 +684,11 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="doDisplay">
                                                                                 <div class="row">
-                                                                                    <label for="purchaseOrder" class="col-sm-4 col-form-label"><?=$languageArray['po_no_code'][$language]?></label>
+                                                                                    <label for="deliveryNo" class="col-sm-4 col-form-label"><?=$languageArray['delivery_no_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="purchaseOrder" name="purchaseOrder">
+                                                                                        <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="<?=$languageArray['delivery_no_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -737,11 +747,11 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3" id="doDisplay">
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="deliveryNo" class="col-sm-4 col-form-label"><?=$languageArray['delivery_no_code'][$language]?></label>
+                                                                                    <label for="invoiceNo" class="col-sm-4 col-form-label"><?=$languageArray['invoice_no_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="deliveryNo" name="deliveryNo" placeholder="<?=$languageArray['delivery_no_code'][$language]?>">
+                                                                                        <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="<?=$languageArray['invoice_no_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -770,9 +780,16 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="invoiceNo" class="col-sm-4 col-form-label"><?=$languageArray['invoice_no_code'][$language]?></label>
+                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label"><?=$languageArray['reduce_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="<?=$languageArray['invoice_no_code'][$language]?>">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control" id="reduceWeightInput" name="reduceWeightInput" placeholder="0">      
+                                                                                            <input type="hidden" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
+                                                                                            <select class="form-select" id="reduceWeightType" name="reduceWeightType" style="max-width: 80px;">
+                                                                                                <option value="kg">Kg</option>
+                                                                                                <option value="%">%</option>
+                                                                                            </select>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -801,12 +818,12 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label"><?=$languageArray['reduce_weight_code'][$language]?></label>
+                                                                                    <label for="tareWeight" class="col-sm-4 col-form-label"><?=$languageArray['tare_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="reduceWeightInput" name="reduceWeightInput" placeholder="0">      
-                                                                                            <input type="hidden" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
-                                                                                            <select class="form-select" id="reduceWeightType" name="reduceWeightType" style="max-width: 80px;">
+                                                                                            <input type="number" class="form-control" id="tareWeightInput" name="tareWeightInput" placeholder="0">      
+                                                                                            <input type="hidden" class="form-control" id="tareWeight" name="tareWeight" placeholder="0">
+                                                                                            <select class="form-select" id="tareWeightType" name="tareWeightType" style="max-width: 80px;">
                                                                                                 <option value="kg">Kg</option>
                                                                                                 <option value="%">%</option>
                                                                                             </select>
@@ -3190,6 +3207,9 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#addModal').find('#reduceWeightInput').val("");
             $('#addModal').find('#reduceWeightType').val("kg");
             $('#addModal').find('#reduceWeight').val("");
+            $('#addModal').find('#tareWeightInput').val("");
+            $('#addModal').find('#tareWeightType').val("kg");
+            $('#addModal').find('#tareWeight').val("");
             // $('#addModal').find('#vehicleNo').val(obj.message.final_weight);
             $('#addModal').find('#weightDifference').val("");
             $('#addModal').find('#weightDifferencePerc').val("");
@@ -3940,6 +3960,7 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#currentWeight').text(current.toFixed(0));
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
+            $('#tareWeight').trigger('change');
             //$('#finalWeight').trigger('change');
         });
 
@@ -3956,7 +3977,7 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#reduceWeightInput').on('change', function(){
             var reduceWeightType = $('#reduceWeightType').val();
             var reduceWeightInput = $(this).val() ? parseFloat($(this).val()) : 0;
-            var nettWeight = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
+            var finalWeight = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
 
             if (reduceWeightType == 'kg'){
                 $('#reduceWeight').val(reduceWeightInput).trigger('change');
@@ -3966,21 +3987,21 @@ if(($row = $result->fetch_assoc()) !== null){
                     $('#reduceWeightInput').val(0);
                     return;
                 }
-                var reduce = (reduceWeightInput/100) * nettWeight;
+                var reduce = (reduceWeightInput/100) * finalWeight;
                 $('#reduceWeight').val(reduce).trigger('change');
             }
         });
         
         $('#reduceWeight').on('change', function(){
-            var weightType = $('#weightType').val();
+            // var weightType = $('#weightType').val();
 
-            if (weightType == 'Different Container'){
-                var current = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-            }else{
-                var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
-                var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
-                var current = Math.abs(nett1 - nett2);
-            }
+            // if (weightType == 'Different Container'){
+            //     var current = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
+            // }else{
+            //     var nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
+            //     var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
+            //     var current = Math.abs(nett1 - nett2);
+            // }
 
             // Enhancement to add additional product weight
             // if ($('#productTable tr').length > 0){
@@ -3993,33 +4014,80 @@ if(($row = $result->fetch_assoc()) !== null){
             //     current = current + totalNett;
             // }
 
-            var reduce = $(this).val() ? parseFloat($(this).val()) : 0;
+            //var reduce = $(this).val() ? parseFloat($(this).val()) : 0;
             //var nett1 = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
-            var final = Math.abs(current - reduce);
-            $('#currentWeight').text(final.toFixed(0));
-            $('#finalWeight').val(final.toFixed(0));
+            //var final = Math.abs(current - reduce);
+            // $('#currentWeight').text(final.toFixed(0));
+            // $('#finalWeight').val(final.toFixed(0));
+            $('#currentWeight').trigger('change');
+            $('#finalWeight').trigger('change');
+        });
+
+        $('#tareWeightType').on('change', function(){
+            var tareWeightInput = $('#tareWeightInput').val() ? parseFloat($('#tareWeightInput').val()) : 0;
+            if($(this).val() == '%' && tareWeightInput > 100){
+                alert('Percentage cannot be more than 100%');
+                $('#tareWeightInput').val(0);
+            }
+
+            $('#tareWeightInput').trigger('change');
+        });
+
+        $('#tareWeightInput').on('change', function(){
+            var tareWeightType = $('#tareWeightType').val();
+            var tareWeightInput = $(this).val() ? parseFloat($(this).val()) : 0;
+            var finalWeight = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
+
+            if (tareWeightType == 'kg'){
+                $('#tareWeight').val(tareWeightInput).trigger('change');
+            }else if (tareWeightType == '%'){
+                if (tareWeightInput > 100){
+                    alert('Percentage cannot be more than 100%');
+                    $('#tareWeightInput').val(0);
+                    return;
+                }
+                var tareWeight = (tareWeightInput/100) * finalWeight;
+                $('#tareWeight').val(tareWeight).trigger('change');
+            }
+        });
+        
+        $('#tareWeight').on('change', function(){
             $('#currentWeight').trigger('change');
             $('#finalWeight').trigger('change');
         });
 
         $('#finalWeight').on('change', function(){
-            var nett1 = $(this).val() ? parseFloat($(this).val()) : 0;
-            var nett2 = 0;
+            var weightType = $('#weightType').val();
+            var nett1, nett2, reduce, tare, current, finalWeight;
 
+            if (weightType == 'Different Container'){
+                current = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
+            }else{
+                nett2 = $('#nettWeight2').val() ? parseFloat($('#nettWeight2').val()) : 0;
+                nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
+                current = Math.abs(nett1 - nett2);
+            }
+
+            reduce = $('#reduceWeight').val() ? parseFloat($('#reduceWeight').val()) : 0;
+            tare = $('#tareWeight').val() ? parseFloat($('#tareWeight').val()) : 0;
+            finalWeight = Math.abs(current - reduce - tare);
+            
+            $('#currentWeight').text(finalWeight.toFixed(0));
+            $(this).val(finalWeight.toFixed(0));
+
+            var orderWeight = 0;
             if($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local"){
-                nett2 = parseFloat($('#addModal').find('#supplierWeight').val());
+                orderWeight = $('#addModal').find('#supplierWeight').val() ? parseFloat($('#addModal').find('#supplierWeight').val()) : 0;
             }
             else{
-                nett2 = parseFloat($('#addModal').find('#orderWeight').val());
+                orderWeight = $('#addModal').find('#orderWeight').val() ? parseFloat($('#addModal').find('#orderWeight').val()) : 0;
             }
             
-            var current = nett1 - nett2;
-            $('#weightDifference').val(current.toFixed(0));
+            var difference = finalWeight - orderWeight;
+            $('#weightDifference').val(difference.toFixed(0));
 
-            // Processing for variance %
-            var variancePercent = (current / parseFloat($(this).val())) * 100;
+            var variancePercent = orderWeight > 0 ? (difference / orderWeight) * 100 : 0;
             $('#weightDifferencePerc').val(variancePercent.toFixed(2));
-
         });
 
         $('#orderWeight').on('change', function(){
@@ -4708,25 +4776,47 @@ if(($row = $result->fetch_assoc()) !== null){
             <!-- Normal -->
             <div class="col-6">
                 <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
-                <p><strong>IN WEIGHT:</strong> ${row.gross_weight1}</p>
+                <p><strong>IN WEIGHT:</strong> ${row.gross_weight1 || 0} kg</p>
                 <p><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
                 <p><strong>IN WEIGH BY:</strong> ${row.gross_weight_by1}</p>
-                <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1}</p>
+                <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1 || 0} kg</p>
                 <p><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
                 <p><strong>OUT WEIGH BY:</strong> ${row.tare_weight_by1}</p>
-                <p><strong>NETT WEIGHT:</strong> ${row.nett_weight1}</p>
-                <p><strong>SUB TOTAL WEIGHT:</strong> ${row.final_weight}</p>
+                <p><strong>NETT WEIGHT:</strong> ${row.nett_weight1 || 0} kg</p>`;
+
+                if (row.reduce_weight_type == '%'){
+                    returnString += `
+                        <p><strong>REDUCE WEIGHT %:</strong> ${row.reduce_weight_input}% (${row.reduce_weight || 0} kg)</p>
+                    `;
+                }else{
+                    returnString += `
+                        <p><strong>REDUCE WEIGHT:</strong> ${row.reduce_weight || 0} kg</p>                    
+                    `;
+                }
+
+                if (row.tare_weight_type == '%'){
+                    returnString += `
+                        <p><strong>TARE WEIGHT %:</strong> ${row.tare_weight_input}% (${row.tare_weight || 0} kg)</p>
+                    `;
+                }else{
+                    returnString += `
+                        <p><strong>TARE WEIGHT:</strong> ${row.tare_weight || 0} kg</p>                    
+                    `;
+                }
+
+        returnString += `
+                <p><strong>SUB TOTAL WEIGHT:</strong> ${row.final_weight || 0} kg</p>
             </div>
             <!-- Container -->
             <div class="col-6">
                 <p><strong>VEHICLE PLATE 2:</strong> ${row.lorry_plate_no2}</p>
-                <p><strong>IN WEIGHT 2:</strong> ${row.gross_weight2}</p>
+                <p><strong>IN WEIGHT 2:</strong> ${row.gross_weight2 || 0} kg</p>
                 <p><strong>IN DATE / TIME 2:</strong> ${row.gross_weight2_date}</p>
                 <p><strong>IN WEIGH BY 2:</strong> ${row.gross_weight_by2}</p>
-                <p><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2}</p>
+                <p><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2 || 0} kg</p>
                 <p><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
                 <p><strong>OUT WEIGH BY 2:</strong> ${row.tare_weight_by2}</p>
-                <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2}</p>            
+                <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2 || 0} kg</p>            
                 </div>
         </div>
         `;
@@ -4923,6 +5013,9 @@ if(($row = $result->fetch_assoc()) !== null){
                 $('#addModal').find('#reduceWeightType').val(obj.message.reduce_weight_type);
                 $('#addModal').find('#reduceWeightInput').val(obj.message.reduce_weight_input);
                 $('#addModal').find('#reduceWeight').val(obj.message.reduce_weight);
+                $('#addModal').find('#tareWeightType').val(obj.message.tare_weight_type);
+                $('#addModal').find('#tareWeightInput').val(obj.message.tare_weight_input);
+                $('#addModal').find('#tareWeight').val(obj.message.tare_weight);
                 $('#addModal').find('#weightDifference').val(obj.message.weight_different);
                 $('#addModal').find('#weightDifferencePerc').val(obj.message.weight_different_perc);
                 $('#addModal').find('#currentWeight').text(obj.message.final_weight);
