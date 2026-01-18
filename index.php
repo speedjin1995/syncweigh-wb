@@ -4754,18 +4754,30 @@ if(($row = $result->fetch_assoc()) !== null){
                     returnString += `<p><strong>SALES PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
                 }
         
-            returnString += `
+            <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
+                returnString += `
                 <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
                 <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
+                `;
+            <?php } ?>
+
+            returnString += `
             </div>
             <div class="col-6">
                 <p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
                 <p><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
                 <p><strong>WEIGHT TYPE:</strong> ${weightType}</p>
                 <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p>
-                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
+                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>`;
+            
+            <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
+                returnString += `
                 <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
                 <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>
+                `;
+            <?php } ?>
+
+            returnString += `
             </div>
         </div>
         <hr>
@@ -4806,7 +4818,11 @@ if(($row = $result->fetch_assoc()) !== null){
 
         returnString += `
                 <p><strong>SUB TOTAL WEIGHT:</strong> ${row.final_weight || 0} kg</p>
-            </div>
+            </div>`;
+
+
+        <?php if($includeContainer == 'Y' || $includeDifferentBin == 'Y'){ ?>
+            returnString += `
             <!-- Container -->
             <div class="col-6">
                 <p><strong>VEHICLE PLATE 2:</strong> ${row.lorry_plate_no2}</p>
@@ -4817,7 +4833,10 @@ if(($row = $result->fetch_assoc()) !== null){
                 <p><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
                 <p><strong>OUT WEIGH BY 2:</strong> ${row.tare_weight_by2}</p>
                 <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2 || 0} kg</p>            
-                </div>
+            </div>`;
+        <?php } ?>
+
+        returnString += `
         </div>
         `;
         
