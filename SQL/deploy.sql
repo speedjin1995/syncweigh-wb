@@ -1210,3 +1210,5 @@ INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'supplier_code_code', 'Supplier Code', '供应商代码', 'Kod Pembekal', 'சப்ளையர் குறியீடு');
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'accounting_code', 'Accounting', '账期', 'Tempoh Akaun', 'கணக்குக் காலம்');
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'report_code', 'Report', '报告', 'Laporan', 'அறிக்கை');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'daily_cash_report_code', 'Daily Cash Report', '每日现金报告', 'Laporan Tunai Harian', 'தினசரி பண அறிக்கை');
+

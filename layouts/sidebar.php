@@ -65,7 +65,7 @@
                                 <a href="paymentVoucher.php" class="nav-link"><b><?=$languageArray['payment_voucher_code'][$language]?></b></a>
                             </li>
                             <li class="nav-item">
-                                <a href="accountingReport.php" class="nav-link"><b><?=$languageArray['report_code'][$language]?></b></a>
+                                <a href="accountingReport.php" class="nav-link"><b><?=$languageArray['daily_cash_report_code'][$language]?></b></a>
                             </li>          
                         </ul>
                     </div>
