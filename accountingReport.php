@@ -320,6 +320,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
                                                                     <th>Customer/ <br> Supplier</th>
+                                                                    <th>Product/ <br> Raw Material</th>
                                                                     <?php if($includeContainer == 'Y'): ?>
                                                                     <th>Container No</th>
                                                                     <th>Seal No</th>
@@ -552,7 +553,7 @@ if(($row = $result->fetch_assoc()) !== null){
         //Date picker
         $('#fromDateSearch').flatpickr({
             dateFormat: "d-m-Y",
-            defaultDate: yesterday
+            defaultDate: today
         });
 
         $('#toDateSearch').flatpickr({
@@ -625,6 +626,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
+                { data: 'product_code' },
                 <?php if($includeContainer == 'Y'): ?>
                 { data: 'container_no' },
                 { data: 'seal_no' },
@@ -721,6 +723,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
+                    { data: 'product_code' },
                     <?php if($includeContainer == 'Y'): ?>
                     { data: 'container_no' },
                     { data: 'seal_no' },
@@ -789,20 +792,20 @@ if(($row = $result->fetch_assoc()) !== null){
                     $('#exportPdfForm').find('#file').val('weight');
                     $('#exportPdfModal').modal('hide');
 
-                    if ($('#reportType').val() == 'DR') {
+                    // if ($('#reportType').val() == 'DR') {
                         // Check if date range is only 1 day
                         if (fromDateI && toDateI) {
-                            var fromDate = new Date(fromDateI);
-                            var toDate = new Date(toDateI);
-                            var timeDiff = toDate.getTime() - fromDate.getTime();
-                            var dayDiff = timeDiff / (1000 * 3600 * 24);
+                            var fromParts = fromDateI.split('-');
+                            var toParts = toDateI.split('-');
+                            var fromDate = new Date(fromParts[2], fromParts[1] - 1, fromParts[0]);
+                            var toDate = new Date(toParts[2], toParts[1] - 1, toParts[0]);
                             
-                            if (dayDiff > 1) {
+                            if (fromDate.getTime() !== toDate.getTime()) {
                                 alert('Date range cannot exceed 1 day for Daily Report.');
                                 return;
                             }
                         }
-                    }
+                    // }
 
                     $.post('php/exportAccountingPdf.php', $('#exportPdfForm').serialize(), function(response){
                         var obj = JSON.parse(response);
