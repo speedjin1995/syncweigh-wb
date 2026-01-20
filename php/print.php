@@ -130,7 +130,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                     $customerA2 = $row2['address_line_2'];
                                     $customerA3 = $row2['address_line_3'];
                                     $customerE = $row2['fax_no'] ?? '-';
-                                    $paymentTerm = $row2['payment_term'] ?? '0';
+                                    $paymentTerm = $row2['payment_term'] ?? '';
                                 }
                             }
                         }
@@ -173,7 +173,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                     $customerA2 = $row2['address_line_2'];
                                     $customerA3 = $row2['address_line_3'];
                                     $customerE = $row2['fax_no'] ?? '-';
-                                    $paymentTerm = $row2['payment_term'] ?? '0';
+                                    $paymentTerm = $row2['payment_term'] ?? '';
                                 }
                             }
                         }
