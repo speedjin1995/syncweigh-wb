@@ -1322,3 +1322,23 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Co
 END
 $$
 DELIMITER ;
+
+CREATE TABLE `Payment_Voucher` (
+  `id` int(11) NOT NULL,
+  `customer_supplier` varchar(100) NOT NULL,
+  `invoice_no` varchar(100) NOT NULL,
+  `unit_price` varchar(100) NOT NULL DEFAULT '0',
+  `tax` varchar(3) NOT NULL DEFAULT '0',
+  `total_nett_weight` varchar(100) DEFAULT NULL,
+  `total_amount` varchar(100) DEFAULT NULL,
+  `deduction_amount` varchar(100) DEFAULT NULL,
+  `addition_amount` varchar(100) DEFAULT NULL,
+  `final_amount` varchar(100) DEFAULT NULL,
+  `deduction_details` text DEFAULT NULL,
+  `addition_details` text DEFAULT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE `Payment_Voucher` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Payment_Voucher`  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

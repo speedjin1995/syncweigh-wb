@@ -261,6 +261,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                 <input type="number" class="form-control" id="totalAmount" name="totalAmount" readonly>
                             </div>
                         </div>
+                        <h6 class="mb-2">Transaction Details</h6>
                         <table class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
@@ -283,6 +284,66 @@ if(($row = $result->fetch_assoc()) !== null){
                             <tbody id="paymentDetailsTable">
                             </tbody>
                         </table>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6 class="mb-2">Deductions (-)</h6>
+                                <table class="table table-bordered align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th width="50">BIL</th>
+                                            <th>Description</th>
+                                            <th width="150">Amount (RM)</th>
+                                            <th width="50"><button type="button" class="btn btn-sm btn-success" id="addDeductionRow"><i class="bx bx-plus"></i></button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="deductionsTable">
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="2" class="text-end">Total:</th>
+                                            <th><input type="number" class="form-control form-control-sm" id="totalDeductions" readonly></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-2">Additions (+)</h6>
+                                <table class="table table-bordered align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th width="50">BIL</th>
+                                            <th>Description</th>
+                                            <th width="150">Amount (RM)</th>
+                                            <th width="50"><button type="button" class="btn btn-sm btn-success" id="addAdditionRow"><i class="bx bx-plus"></i></button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="additionsTable">
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="2" class="text-end">Total:</th>
+                                            <th><input type="number" class="form-control form-control-sm" id="totalAdditions" readonly></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <div class="alert alert-info mb-0">
+                                    <div class="row">
+                                        <div class="col-4"><strong>Subtotal:</strong> <span id="displaySubtotal">RM 0.00</span></div>
+                                        <div class="col-4"><strong>Deductions:</strong> <span id="displayDeductions" class="text-danger">RM 0.00</span></div>
+                                        <div class="col-4"><strong>Additions:</strong> <span id="displayAdditions" class="text-success">RM 0.00</span></div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="text-center"><h5 class="mb-0"><strong>Final Amount:</strong> <span id="displayFinalAmount">RM 0.00</span></h5></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
@@ -321,6 +382,9 @@ if(($row = $result->fetch_assoc()) !== null){
     <script src="assets/js/additional.js"></script>
 
     <script type="text/javascript">
+    
+    var deductionRowCount = 0;
+    var additionRowCount = 0;
     $(function () {
         const today = new Date();
         const tomorrow = new Date(today);
@@ -691,7 +755,85 @@ if(($row = $result->fetch_assoc()) !== null){
             });
             
             $('#totalAmount').val(totalAmount.toFixed(2));
+            calculateTotals();
         });
+
+        $('#pricingForm').on('submit', function(e) {
+            e.preventDefault();
+            $('#spinnerLoading').show();
+
+            var formData = new FormData(this);
+            
+            $.ajax({
+                url: 'php/updatePaymentPricing.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var obj = JSON.parse(response);
+                    if(obj.status === 'success'){
+                        $('#weightTable').DataTable().ajax.reload();
+                        $('#spinnerLoading').hide();
+                        $('#pricingModal').modal('hide');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        alert(obj.message);
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        alert(obj.message);
+                    }
+                }
+            });
+        });
+
+        $('#addDeductionRow').on('click', function() {
+            var newRow = `<tr>
+                <td>${++deductionRowCount}</td>
+                <td><input type="text" class="form-control form-control-sm" name="deduction_desc[]"></td>
+                <td><input type="number" class="form-control form-control-sm deduction-amount" name="deduction_amount[]" step="0.01" value="0"></td>
+                <td><button type="button" class="btn btn-sm btn-danger removeDeductionRow"><i class="bx bx-trash"></i></button></td>
+            </tr>`;
+            $('#deductionsTable').append(newRow);
+        });
+
+        $(document).on('click', '.removeDeductionRow', function() {
+            $(this).closest('tr').remove();
+            $('#deductionsTable tr').each(function(i) {
+                $(this).find('td:first').text(i + 1);
+            });
+            deductionRowCount = $('#deductionsTable tr').length;
+            calculateTotals();
+        });
+
+        $('#addAdditionRow').on('click', function() {
+            var newRow = `<tr>
+                <td>${++additionRowCount}</td>
+                <td><input type="text" class="form-control form-control-sm" name="addition_desc[]"></td>
+                <td><input type="number" class="form-control form-control-sm addition-amount" name="addition_amount[]" step="0.01" value="0"></td>
+                <td><button type="button" class="btn btn-sm btn-danger removeAdditionRow"><i class="bx bx-trash"></i></button></td>
+            </tr>`;
+            $('#additionsTable').append(newRow);
+        });
+
+        $(document).on('click', '.removeAdditionRow', function() {
+            $(this).closest('tr').remove();
+            $('#additionsTable tr').each(function(i) {
+                $(this).find('td:first').text(i + 1);
+            });
+            additionRowCount = $('#additionsTable tr').length;
+            calculateTotals();
+        });
+
+        $(document).on('input', '.deduction-amount, .addition-amount', calculateTotals);
+        
+        $('#unitPrice, #tax').on('input', function() {
+            setTimeout(calculateTotals, 100);
+        });
+        
+        $('#pricingModal').on('shown.bs.modal', calculateTotals);
     });
 
     function updatePricing(customerSupplier, invoiceNo) {
@@ -721,6 +863,23 @@ if(($row = $result->fetch_assoc()) !== null){
                 toastr["error"]("Something went wrong", "Failed:");
             }
         });
+    }
+
+    function calculateTotals() {
+        var totalDeductions = 0
+        var totalAdditions = 0;
+        $('.deduction-amount').each(function() { totalDeductions += parseFloat($(this).val()) || 0; });
+        $('.addition-amount').each(function() { totalAdditions += parseFloat($(this).val()) || 0; });
+        
+        var subtotal = parseFloat($('#totalAmount').val()) || 0;
+        var finalAmount = subtotal - totalDeductions + totalAdditions;
+
+        $('#totalDeductions').val(totalDeductions.toFixed(2));
+        $('#totalAdditions').val(totalAdditions.toFixed(2));
+        $('#displaySubtotal').text('RM ' + subtotal.toFixed(2));
+        $('#displayDeductions').text('RM ' + totalDeductions.toFixed(2));
+        $('#displayAdditions').text('RM ' + totalAdditions.toFixed(2));
+        $('#displayFinalAmount').text('RM ' + finalAmount.toFixed(2));
     }
 
     function loadPricingModal(data) {
@@ -753,37 +912,6 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#totalAmount').val(0.00);
         $('#totalNettWeight').val((data.totalNettWeight).toFixed(2));
     }
-
-    $('#pricingForm').on('submit', function(e) {
-        e.preventDefault();
-        $('#spinnerLoading').show();
-
-        var formData = new FormData(this);
-        
-        $.ajax({
-            url: 'php/updatePaymentPricing.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                var obj = JSON.parse(response);
-                if(obj.status === 'success'){
-                    $('#weightTable').DataTable().ajax.reload();
-                    $('#spinnerLoading').hide();
-                    $('#pricingModal').modal('hide');
-                }
-                else if(obj.status === 'failed'){
-                    $('#spinnerLoading').hide();
-                    alert(obj.message);
-                }
-                else{
-                    $('#spinnerLoading').hide();
-                    alert(obj.message);
-                }
-            }
-        });
-    });
 
     function print(id) {
         $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N'}, function(data){
