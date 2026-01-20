@@ -82,6 +82,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                     $customerA2 = '';
                     $customerA3 = '';
                     $customerE = '';
+                    $paymentTerm = '';
 
                     $product = '';
                     $price = '';
@@ -129,6 +130,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                     $customerA2 = $row2['address_line_2'];
                                     $customerA3 = $row2['address_line_3'];
                                     $customerE = $row2['fax_no'] ?? '-';
+                                    $paymentTerm = $row2['payment_term'] ?? '0';
                                 }
                             }
                         }
@@ -171,6 +173,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                     $customerA2 = $row2['address_line_2'];
                                     $customerA3 = $row2['address_line_3'];
                                     $customerE = $row2['fax_no'] ?? '-';
+                                    $paymentTerm = $row2['payment_term'] ?? '0';
                                 }
                             }
                         }
@@ -330,6 +333,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                             <!-- <span><b>Net Weight &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 17.5px">:&nbsp; '.($finalWeight ? formatWeight($finalWeight).' kg' : '-').'</b></span><br>-->
                                             <!-- <span>Variance &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 12.5px">:&nbsp; '.($weightDifference ? formatWeight($weightDifference).' kg' : '-').'</span><br>-->
                                             <span>Product &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 21px">:&nbsp; '.($row['transaction_status'] == 'Purchase' ? $row['raw_mat_code'] . ' - ' . $row['raw_mat_name'] : $row['product_code'] . ' - ' . $row['product_name']) .'</span><br>
+                                            <span>Payment Term </span><span style="margin-left: 25px">:&nbsp; '. $paymentTerm .'</span><br>
                                             <span>Driver Name / IC </span><span style="margin-left: 8px">:&nbsp; '. $row['driver_name'] .' - '. $row['driver_ic'] .'</span><br>';
 
                                             if ($row['weight_type'] == 'Different Container' && $_POST['isEmptyContainer'] == 'N'){
@@ -491,7 +495,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                         </tr>
                                         <tr style="font-size: 14px;text-align: center;">
                                             <td colspan="4" style="text-align: left;"><b>Destination &nbsp&nbsp;:&nbsp;</b> <span style="margin-left: 10px">'.$row['destination'].'</span></td>
-                                            <td style="border:1px solid black;">Reduce Weight</td>
+                                            <td style="border:1px solid black;">Deduct Weight</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['reduce_weight']).' kg</td>
                                         </tr>
                                         <tr style="font-size: 14px;text-align: center;font-weight:bold;">
@@ -844,7 +848,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                         </tr>
                                         <tr>
                                             <td colspan="4">Remarks &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; <span style="margin-left: 10px">'.$row['remarks'].'</span></td>
-                                            <td style="border:1px solid black;font-size: 16px;text-align: center;">Reduce</td>
+                                            <td style="border:1px solid black;font-size: 16px;text-align: center;">Deduct</td>
                                             <td style="border:1px solid black;font-size: 16px;text-align: center;">'.formatWeight($row['reduce_weight']).' kg</td>
                                         </tr>
                                         <tr>
