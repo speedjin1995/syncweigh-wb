@@ -59,7 +59,19 @@ if(isset($_POST['fromDate']) && isset($_POST['toDate']) && isset($_POST['transac
             }
 
             $message['weights'] = $weighingData;
+
+            // Get payment voucher details
+            $paymentVoucherData = array();
+            if ($payment_check_stmt = $db->prepare("SELECT * FROM Payment_Voucher WHERE customer_supplier=? AND invoice_no=? AND deleted=0")) {
+                $payment_check_stmt->bind_param('ss', $customerSupplier, $invoiceNo);
+                $payment_check_stmt->execute();
+                $payment_check_result = $payment_check_stmt->get_result();
+                $paymentVoucherData = $payment_check_result->fetch_assoc();
+                $payment_check_stmt->close();
+            }
+
             $message['totalNettWeight'] = $totalNettWeight;
+            $message['paymentVoucher'] = $paymentVoucherData;
 
             echo json_encode(
                 array(

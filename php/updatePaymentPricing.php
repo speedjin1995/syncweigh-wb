@@ -102,6 +102,31 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo']) && !emp
     }
     
     if ($success) {
+        // Build JSON objects for each deduction record
+        $deductionRecords = [];
+        if (!empty($deductionDesc)){
+            foreach ($deductionDesc as $key => $desc) {
+                if (!empty($desc) && isset($deductionAmount[$key])) {
+                    $deductionRecords[] = [
+                        "deduction_desc" => $desc,
+                        "deduction_amount" => $deductionAmount[$key]
+                    ];
+                }
+            }
+        }
+
+        $additionRecords = [];
+        if (!empty($additionDesc)){
+            foreach ($additionDesc as $key => $desc) {
+                if (!empty($desc) && isset($additionAmount[$key])) {
+                    $additionRecords[] = [
+                        "addition_desc" => $desc,
+                        "addition_amount" => $additionAmount[$key]
+                    ];
+                }
+            }
+        }
+
         // Checking to see if there are existing payment voucher record
         if ($payment_check_stmt = $db->prepare("SELECT id FROM Payment_Voucher WHERE customer_supplier=? AND invoice_no=? AND deleted=0")) {
             $payment_check_stmt->bind_param('ss', $_POST['customerSupplier'], $_POST['invoiceNo']);
@@ -111,16 +136,14 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo']) && !emp
             if ($payment_check_result->num_rows > 0) {
                 // Update existing record
                 $payment_row = $payment_check_result->fetch_assoc();
-                $payment_id = $payment_row['id'];
+                $paymentId = $payment_row['id'];
                 $payment_check_stmt->close();
                 
-                if ($update_payment_stmt = $db->prepare("UPDATE Payment_Voucher SET unit_price=?, tax=?, total_nett_weight=?, total_amount=?, total_deductions=?, total_additions=?, final_amount=?, deduction_desc=?, deduction_amount=?, addition_desc=?, addition_amount=?, modified_by=? WHERE id=?")) {
-                    $deduction_desc_json = json_encode($deductionDesc);
-                    $deduction_amount_json = json_encode($deductionAmount);
-                    $addition_desc_json = json_encode($additionDesc);
-                    $addition_amount_json = json_encode($additionAmount);
+                if ($update_payment_stmt = $db->prepare("UPDATE Payment_Voucher SET unit_price=?, tax=?, total_nett_weight=?, total_amount=?, deduction_amount=?, addition_amount=?, final_amount=?, deduction_details=?, addition_details=? WHERE id=?")) {
+                    $deductionsJson = json_encode($deductionRecords);
+                    $additionJson = json_encode($additionRecords);
                     
-                    $update_payment_stmt->bind_param('ddddddssssssi', $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deduction_desc_json, $deduction_amount_json, $addition_desc_json, $addition_amount_json, $username, $payment_id);
+                    $update_payment_stmt->bind_param('ssssssssss', $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deductionsJson, $additionJson, $paymentId);
                     $update_payment_stmt->execute();
                     $update_payment_stmt->close();
                 }
@@ -128,13 +151,11 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo']) && !emp
                 // Insert new record
                 $payment_check_stmt->close();
                 
-                if ($insert_payment_stmt = $db->prepare("INSERT INTO Payment_Voucher (customer_supplier, invoice_no, unit_price, tax, total_nett_weight, total_amount, total_deductions, total_additions, final_amount, deduction_desc, deduction_amount, addition_desc, addition_amount, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                    $deduction_desc_json = json_encode($deductionDesc);
-                    $deduction_amount_json = json_encode($deductionAmount);
-                    $addition_desc_json = json_encode($additionDesc);
-                    $addition_amount_json = json_encode($additionAmount);
+                if ($insert_payment_stmt = $db->prepare("INSERT INTO Payment_Voucher (customer_supplier, invoice_no, unit_price, tax, total_nett_weight, total_amount, deduction_amount, addition_amount, final_amount, deduction_details, addition_details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $deductionsJson = json_encode($deductionRecords);
+                    $additionJson = json_encode($additionRecords);
                     
-                    $insert_payment_stmt->bind_param('ssdddddddsssss', $_POST['customerSupplier'], $_POST['invoiceNo'], $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deduction_desc_json, $deduction_amount_json, $addition_desc_json, $addition_amount_json, $username);
+                    $insert_payment_stmt->bind_param('sssssssssss', $_POST['customerSupplier'], $_POST['invoiceNo'], $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deductionsJson, $additionJson);
                     $insert_payment_stmt->execute();
                     $insert_payment_stmt->close();
                 }

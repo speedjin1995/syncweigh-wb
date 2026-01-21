@@ -917,9 +917,33 @@ if(($row = $result->fetch_assoc()) !== null){
             tableBody.append(row);
         });
         
-        $('#unitPrice').val(0.00);
-        $('#tax').val(0);
-        $('#totalAmount').val(0.00);
+        // Load existing payment data if available
+        if (data.paymentVoucher) {
+            $('#unitPrice').val(data.paymentVoucher.unit_price);
+            $('#tax').val(data.paymentVoucher.tax);
+            $('#totalAmount').val(data.paymentVoucher.total_amount.replace('RM ', ''));
+            
+            // Load deductions
+            $('#deductionsTable').empty();
+            var deductions = JSON.parse(data.paymentVoucher.deduction_details);
+            deductions.forEach(function(deduction, index) {
+                var row = '<tr><td>' + (index + 1) + '</td><td><input type="text" class="form-control form-control-sm" name="deduction_desc[]" value="' + deduction.deduction_desc + '"></td><td><input type="number" class="form-control form-control-sm deduction-amount" name="deduction_amount[]" step="0.01" value="' + deduction.deduction_amount + '"></td><td><button type="button" class="btn btn-sm btn-danger removeDeductionRow"><i class="bx bx-trash"></i></button></td></tr>';
+                $('#deductionsTable').append(row);
+            });
+            
+            // Load additions
+            $('#additionsTable').empty();
+            var additions = JSON.parse(data.paymentVoucher.addition_details);
+            additions.forEach(function(addition, index) {
+                var row = '<tr><td>' + (index + 1) + '</td><td><input type="text" class="form-control form-control-sm" name="addition_desc[]" value="' + addition.addition_desc + '"></td><td><input type="number" class="form-control form-control-sm addition-amount" name="addition_amount[]" step="0.01" value="' + addition.addition_amount + '"></td><td><button type="button" class="btn btn-sm btn-danger removeAdditionRow"><i class="bx bx-trash"></i></button></td></tr>';
+                $('#additionsTable').append(row);
+            });
+        } else {
+            $('#unitPrice').val(0.00);
+            $('#tax').val(0);
+            $('#totalAmount').val(0.00);
+        }
+        
         $('#totalNettWeight').val((data.totalNettWeight).toFixed(2));
     }
 
