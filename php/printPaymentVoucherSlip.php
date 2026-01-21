@@ -43,6 +43,7 @@ if(isset($_POST['customerSupplier'], $_POST['invoiceNo'])) {
             $formatVoucherDate = $malayMonths[$month] . ' ' . $year;
             
             $supplierName = $row['customer_supplier'];
+            $invoiceNo = $row['invoice_no'] ?? '';
             $accountNo = $row['account_no'] ?? '';
             $deductions = json_decode($row['deduction_details'], true);
             $additions = json_decode($row['addition_details'], true);
@@ -179,7 +180,7 @@ if(isset($_POST['customerSupplier'], $_POST['invoiceNo'])) {
                 <div class="info-row">
                     <div class="info-item">
                         <span class="info-label">NO AKAUN :</span>
-                        <span class="info-value">'.$accountNo.'</span>
+                        <span class="info-value">'.$invoiceNo.'</span>
                     </div>
                     <div class="info-item" style="visibility: hidden;">
                         <span class="info-label">TARIKH :</span>
