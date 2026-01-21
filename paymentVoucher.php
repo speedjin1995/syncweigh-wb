@@ -282,12 +282,12 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     <div class="col-xxl-12 col-lg-12">
                                                                         <div class="alert alert-info mb-0">
                                                                             <div class="row">
-                                                                                <div class="col-xxl-4 col-lg-4"><strong>Subtotal:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto" id="displaySubtotal" name="subtotal" value="0.00" readonly></div>
+                                                                                <div class="col-xxl-4 col-lg-4"><strong>Subtotal:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto" id="subtotal" name="subtotal" value="0.00" readonly></div>
                                                                                 <div class="col-xxl-4 col-lg-4"><strong>Deductions:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto text-danger" id="displayDeductions" name="deductions" value="0.00" readonly></div>
                                                                                 <div class="col-xxl-4 col-lg-4"><strong>Additions:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto text-success" id="displayAdditions" name="additions" value="0.00" readonly></div>
                                                                             </div>
                                                                             <hr class="my-2">
-                                                                            <div class="text-center"><h5 class="mb-0"><strong>Final Amount:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto" id="displayFinalAmount" name="finalAmount" value="0.00" readonly></h5></div>
+                                                                            <div class="text-center"><h5 class="mb-0"><strong>Final Amount:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto" id="finalAmount" name="finalAmount" value="0.00" readonly></h5></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -896,10 +896,10 @@ if(($row = $result->fetch_assoc()) !== null){
 
         $('#totalDeductions').val(totalDeductions.toFixed(2));
         $('#totalAdditions').val(totalAdditions.toFixed(2));
-        $('#displaySubtotal').val('RM ' + subtotal.toFixed(2));
+        $('#subtotal').val(subtotal.toFixed(2));
         $('#displayDeductions').val('RM ' + totalDeductions.toFixed(2));
         $('#displayAdditions').val('RM ' + totalAdditions.toFixed(2));
-        $('#displayFinalAmount').val('RM ' + finalAmount.toFixed(2));
+        $('#finalAmount').val(finalAmount.toFixed(2));
     }
 
     function loadPricingModal(data) {
