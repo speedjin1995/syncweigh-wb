@@ -42,15 +42,6 @@ if(($row = $result->fetch_assoc()) !== null){
     <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
 
     <?php include 'layouts/head-css.php'; ?>
-    <style>
-        .mb-3 {
-            margin-bottom: 0.5rem !important;
-        }
-
-        .modal-header {
-            padding: var(1rem, 1rem) !important;
-        }
-    </style>
 </head>
 
 <?php include 'layouts/body.php'; ?>
@@ -179,6 +170,142 @@ if(($row = $result->fetch_assoc()) !== null){
                             </div>
 
                             <div class="row">
+                                <div class="col-xl-3 col-md-6">
+                                    <!-- /.modal-dialog -->
+                                    <div class="modal fade" id="pricingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Payment Voucher Details</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form role="form" id="pricingForm" class="needs-validation" novalidate autocomplete="off">
+                                                        <div class=" row col-12">
+                                                            <div class="col-xxl-12 col-lg-12">
+                                                                <div class="row mb-3">
+                                                                    <div class="col-3">
+                                                                        <label class="form-label">Unit Price (RM)</label>
+                                                                        <input type="number" class="form-control" id="unitPrice" name="unitPrice" step="0.01" required>
+                                                                    </div>
+                                                                    <div class="col-3">
+                                                                        <label class="form-label">Tax (%)</label>
+                                                                        <input type="number" class="form-control" id="tax" name="tax" step="0.01" min="0" max="100" value="0" required>
+                                                                    </div>
+                                                                    <div class="col-3">
+                                                                        <label class="form-label">Total Nett Weight (MT)</label>
+                                                                        <input type="number" class="form-control" id="totalNettWeight" name="totalNettWeight" readonly>
+                                                                    </div>
+                                                                    <div class="col-3">
+                                                                        <label class="form-label">Total Amount (RM)</label>
+                                                                        <input type="number" class="form-control" id="totalAmount" name="totalAmount" readonly>
+                                                                    </div>
+                                                                </div>
+                                                                <h6 class="mb-2">Transaction Details</h6>
+                                                                <table class="table table-bordered nowrap table-striped align-middle" style="width:100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Transaction <br>ID</th>
+                                                                            <th>Supplier <br>Code</th>
+                                                                            <th>Supplier <br>Name</th>
+                                                                            <th>Weight <br>Type</th>
+                                                                            <th>Invoice <br>No</th>
+                                                                            <th>Gross <br>Incoming (MT)</th>
+                                                                            <th>Incoming Date</th>
+                                                                            <th>Tare <br>Outgoing (MT)</th>
+                                                                            <th>Outgoing Date</th>
+                                                                            <th>Nett <br>Weight (MT)</th>
+                                                                            <th>Unit <br>Price (RM)</th>
+                                                                            <th>Nett <br>Amount (RM)</th>
+                                                                            <th>SST <br>(RM)</th>
+                                                                            <th>Total <br>Price (RM)</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="paymentDetailsTable">
+                                                                    </tbody>
+                                                                </table>
+
+                                                                <div class="row mt-4">
+                                                                    <div class="col-md-6">
+                                                                        <h6 class="mb-2">Deductions (-)</h6>
+                                                                        <table class="table table-bordered align-middle">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th width="50">BIL</th>
+                                                                                    <th>Description</th>
+                                                                                    <th width="150">Amount (RM)</th>
+                                                                                    <th width="50"><button type="button" class="btn btn-sm btn-success" id="addDeductionRow"><i class="bx bx-plus"></i></button></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="deductionsTable">
+                                                                            </tbody>
+                                                                            <tfoot>
+                                                                                <tr>
+                                                                                    <th colspan="2" class="text-end">Total:</th>
+                                                                                    <th><input type="number" class="form-control form-control-sm" id="totalDeductions" name="totalDeductions" readonly></th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </tfoot>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <h6 class="mb-2">Additions (+)</h6>
+                                                                        <table class="table table-bordered align-middle">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th width="50">BIL</th>
+                                                                                    <th>Description</th>
+                                                                                    <th width="150">Amount (RM)</th>
+                                                                                    <th width="50"><button type="button" class="btn btn-sm btn-success" id="addAdditionRow"><i class="bx bx-plus"></i></button></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="additionsTable">
+                                                                            </tbody>
+                                                                            <tfoot>
+                                                                                <tr>
+                                                                                    <th colspan="2" class="text-end">Total:</th>
+                                                                                    <th><input type="number" class="form-control form-control-sm" id="totalAdditions" name="totalAdditions" readonly></th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </tfoot>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-3 mb-3">
+                                                                    <div class="col-md-12">
+                                                                        <div class="alert alert-info mb-0">
+                                                                            <div class="row">
+                                                                                <div class="col-4"><strong>Subtotal:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto" id="displaySubtotal" name="subtotal" value="0.00" readonly></div>
+                                                                                <div class="col-4"><strong>Deductions:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto text-danger" id="displayDeductions" name="deductions" value="0.00" readonly></div>
+                                                                                <div class="col-4"><strong>Additions:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto text-success" id="displayAdditions" name="additions" value="0.00" readonly></div>
+                                                                            </div>
+                                                                            <hr class="my-2">
+                                                                            <div class="text-center"><h5 class="mb-0"><strong>Final Amount:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto" id="displayFinalAmount" name="finalAmount" value="0.00" readonly></h5></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <input type="hidden" id="customerSupplier" name="customerSupplier">
+                                                                <input type="hidden" id="invoiceNo" name="invoiceNo">
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="col-lg-12">
+                                                            <div class="hstack gap-2 justify-content-end">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                <button type="submit" class="btn btn-success"><?=$languageArray['submit_code'][$language]?></button>
+                                                            </div>
+                                                        </div><!--end col-->                                                               
+                                                    </form>
+                                                </div>
+                                            </div><!-- /.modal-content -->
+                                        </div><!-- /.modal-dialog -->
+                                    </div><!-- /.modal -->
+                                </div>
+                            </div> <!-- end row-->
+
+                            <div class="row">
                                 <div class="col">
                                     <div class="h-100">
                                         <!--datatable--> 
@@ -233,126 +360,6 @@ if(($row = $result->fetch_assoc()) !== null){
     </div>
     <!-- END layout-wrapper -->
     
-    <div class="modal fade" id="pricingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalScrollableTitle">Payment Voucher Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <form id="pricingForm">
-                    <div class="modal-body">
-                        <div class="row mb-3">
-                            <div class="col-3">
-                                <label class="form-label">Unit Price (RM)</label>
-                                <input type="number" class="form-control" id="unitPrice" name="unitPrice" step="0.01" required>
-                            </div>
-                            <div class="col-3">
-                                <label class="form-label">Tax (%)</label>
-                                <input type="number" class="form-control" id="tax" name="tax" step="0.01" min="0" max="100" value="0" required>
-                            </div>
-                            <div class="col-3">
-                                <label class="form-label">Total Nett Weight (MT)</label>
-                                <input type="number" class="form-control" id="totalNettWeight" name="totalNettWeight" readonly>
-                            </div>
-                            <div class="col-3">
-                                <label class="form-label">Total Amount (RM)</label>
-                                <input type="number" class="form-control" id="totalAmount" name="totalAmount" readonly>
-                            </div>
-                        </div>
-                        <h6 class="mb-2">Transaction Details</h6>
-                        <table class="table table-bordered nowrap table-striped align-middle" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Transaction <br>ID</th>
-                                    <th>Supplier <br>Code</th>
-                                    <th>Supplier <br>Name</th>
-                                    <th>Weight <br>Type</th>
-                                    <th>Invoice <br>No</th>
-                                    <th>Gross <br>Incoming (MT)</th>
-                                    <th>Incoming Date</th>
-                                    <th>Tare <br>Outgoing (MT)</th>
-                                    <th>Outgoing Date</th>
-                                    <th>Nett <br>Weight (MT)</th>
-                                    <th>Unit <br>Price (RM)</th>
-                                    <th>Nett <br>Amount (RM)</th>
-                                    <th>SST <br>(RM)</th>
-                                    <th>Total <br>Price (RM)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="paymentDetailsTable">
-                            </tbody>
-                        </table>
-
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <h6 class="mb-2">Deductions (-)</h6>
-                                <table class="table table-bordered align-middle">
-                                    <thead>
-                                        <tr>
-                                            <th width="50">BIL</th>
-                                            <th>Description</th>
-                                            <th width="150">Amount (RM)</th>
-                                            <th width="50"><button type="button" class="btn btn-sm btn-success" id="addDeductionRow"><i class="bx bx-plus"></i></button></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="deductionsTable">
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="2" class="text-end">Total:</th>
-                                            <th><input type="number" class="form-control form-control-sm" id="totalDeductions" readonly></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="mb-2">Additions (+)</h6>
-                                <table class="table table-bordered align-middle">
-                                    <thead>
-                                        <tr>
-                                            <th width="50">BIL</th>
-                                            <th>Description</th>
-                                            <th width="150">Amount (RM)</th>
-                                            <th width="50"><button type="button" class="btn btn-sm btn-success" id="addAdditionRow"><i class="bx bx-plus"></i></button></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="additionsTable">
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="2" class="text-end">Total:</th>
-                                            <th><input type="number" class="form-control form-control-sm" id="totalAdditions" readonly></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="alert alert-info mb-0">
-                                    <div class="row">
-                                        <div class="col-4"><strong>Subtotal:</strong> <span id="displaySubtotal">RM 0.00</span></div>
-                                        <div class="col-4"><strong>Deductions:</strong> <span id="displayDeductions" class="text-danger">RM 0.00</span></div>
-                                        <div class="col-4"><strong>Additions:</strong> <span id="displayAdditions" class="text-success">RM 0.00</span></div>
-                                    </div>
-                                    <hr class="my-2">
-                                    <div class="text-center"><h5 class="mb-0"><strong>Final Amount:</strong> <span id="displayFinalAmount">RM 0.00</span></h5></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                        <button type="submit" class="btn btn-success">Update Pricing</button>
-                    </div>
-                </form>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
 
     <?php include 'layouts/customizer.php'; ?>
     <?php include 'layouts/vendor-scripts.php'; ?>
@@ -743,7 +750,7 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#paymentDetailsTable tr').each(function() {
                 var nettWeight = parseFloat($(this).find('td:eq(9)').text()) || 0;
                 var subTotal = (unitPrice * nettWeight);
-                var taxAmount = (subTotal * taxRate);
+                var taxAmount = (subTotal * (taxRate/100));
                 var rowTotal = (subTotal + taxAmount);
                 
                 $(this).find('input[name="unit_price[]"]').val(unitPrice.toFixed(2));
@@ -842,6 +849,9 @@ if(($row = $result->fetch_assoc()) !== null){
         var transactionStatus = $('#transactionStatusSearch').val();
         var weightType = $('#weighingTypeSearch').val();
 
+        $('#pricingModal').find('#customerSupplier').val(customerSupplier);
+        $('#pricingModal').find('#invoiceNo').val(invoiceNo);
+
         $.post('php/getPaymentWeight.php', {
             fromDate: fromDateI,
             toDate: toDateI,
@@ -876,10 +886,10 @@ if(($row = $result->fetch_assoc()) !== null){
 
         $('#totalDeductions').val(totalDeductions.toFixed(2));
         $('#totalAdditions').val(totalAdditions.toFixed(2));
-        $('#displaySubtotal').text('RM ' + subtotal.toFixed(2));
-        $('#displayDeductions').text('RM ' + totalDeductions.toFixed(2));
-        $('#displayAdditions').text('RM ' + totalAdditions.toFixed(2));
-        $('#displayFinalAmount').text('RM ' + finalAmount.toFixed(2));
+        $('#displaySubtotal').val('RM ' + subtotal.toFixed(2));
+        $('#displayDeductions').val('RM ' + totalDeductions.toFixed(2));
+        $('#displayAdditions').val('RM ' + totalAdditions.toFixed(2));
+        $('#displayFinalAmount').val('RM ' + finalAmount.toFixed(2));
     }
 
     function loadPricingModal(data) {
