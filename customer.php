@@ -777,7 +777,7 @@ $(function () {
         $('#addModal').find('#icNo').val("");
         $('#addModal').find('#tinNo').val("");
         $('#addModal').find('#mpob').val("");
-        $('#addModal').find('#paymentTerm').val("").trigger('change');
+        $('#addModal').find('#paymentTerm').val("Term").trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
