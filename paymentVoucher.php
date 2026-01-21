@@ -185,19 +185,25 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <div class=" row col-12">
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="row mb-3">
-                                                                    <div class="col-3">
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Voucher Date</label>
+                                                                        <input type="text" class="form-control" id="voucherDate" name="voucherDate" required>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
                                                                         <label class="form-label">Unit Price (RM)</label>
                                                                         <input type="number" class="form-control" id="unitPrice" name="unitPrice" step="0.01" required>
                                                                     </div>
-                                                                    <div class="col-3">
+                                                                    <div class="col-xxl-4 col-lg-4">
                                                                         <label class="form-label">Tax (%)</label>
                                                                         <input type="number" class="form-control" id="tax" name="tax" step="0.01" min="0" max="100" value="0" required>
                                                                     </div>
-                                                                    <div class="col-3">
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-xxl-4 col-lg-4">
                                                                         <label class="form-label">Total Nett Weight (MT)</label>
                                                                         <input type="number" class="form-control" id="totalNettWeight" name="totalNettWeight" readonly>
                                                                     </div>
-                                                                    <div class="col-3">
+                                                                    <div class="col-xxl-4 col-lg-4">
                                                                         <label class="form-label">Total Amount (RM)</label>
                                                                         <input type="number" class="form-control" id="totalAmount" name="totalAmount" readonly>
                                                                     </div>
@@ -227,7 +233,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                 </table>
 
                                                                 <div class="row mt-4">
-                                                                    <div class="col-md-6">
+                                                                    <div class="col-xxl-6 col-lg-6">
                                                                         <h6 class="mb-2">Deductions (-)</h6>
                                                                         <table class="table table-bordered align-middle">
                                                                             <thead>
@@ -249,7 +255,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                             </tfoot>
                                                                         </table>
                                                                     </div>
-                                                                    <div class="col-md-6">
+                                                                    <div class="col-xxl-6 col-lg-6">
                                                                         <h6 class="mb-2">Additions (+)</h6>
                                                                         <table class="table table-bordered align-middle">
                                                                             <thead>
@@ -273,12 +279,12 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     </div>
                                                                 </div>
                                                                 <div class="row mt-3 mb-3">
-                                                                    <div class="col-md-12">
+                                                                    <div class="col-xxl-12 col-lg-12">
                                                                         <div class="alert alert-info mb-0">
                                                                             <div class="row">
-                                                                                <div class="col-4"><strong>Subtotal:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto" id="displaySubtotal" name="subtotal" value="0.00" readonly></div>
-                                                                                <div class="col-4"><strong>Deductions:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto text-danger" id="displayDeductions" name="deductions" value="0.00" readonly></div>
-                                                                                <div class="col-4"><strong>Additions:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto text-success" id="displayAdditions" name="additions" value="0.00" readonly></div>
+                                                                                <div class="col-xxl-4 col-lg-4"><strong>Subtotal:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto" id="displaySubtotal" name="subtotal" value="0.00" readonly></div>
+                                                                                <div class="col-xxl-4 col-lg-4"><strong>Deductions:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto text-danger" id="displayDeductions" name="deductions" value="0.00" readonly></div>
+                                                                                <div class="col-xxl-4 col-lg-4"><strong>Additions:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto text-success" id="displayAdditions" name="additions" value="0.00" readonly></div>
                                                                             </div>
                                                                             <hr class="my-2">
                                                                             <div class="text-center"><h5 class="mb-0"><strong>Final Amount:</strong> RM <input type="text" class="form-control-plaintext d-inline-block w-auto" id="displayFinalAmount" name="finalAmount" value="0.00" readonly></h5></div>
@@ -291,7 +297,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             </div>
                                                         </div>
                                                         
-                                                        <div class="col-lg-12">
+                                                        <div class="col-xxl-12 col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
                                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
                                                                 <button type="submit" class="btn btn-success"><?=$languageArray['submit_code'][$language]?></button>
@@ -392,13 +398,12 @@ if(($row = $result->fetch_assoc()) !== null){
     
     var deductionRowCount = 0;
     var additionRowCount = 0;
+    const today = new Date();
+    const tomorrow = new Date(today);
+    const yesterday = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    yesterday.setDate(yesterday.getDate() - 1);
     $(function () {
-        const today = new Date();
-        const tomorrow = new Date(today);
-        const yesterday = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        yesterday.setDate(yesterday.getDate() - 1);
-
         //Date picker
         $('#fromDateSearch').flatpickr({
             dateFormat: "d-m-Y",
@@ -406,6 +411,11 @@ if(($row = $result->fetch_assoc()) !== null){
         });
 
         $('#toDateSearch').flatpickr({
+            dateFormat: "d-m-Y",
+            defaultDate: today
+        });
+
+        $('#voucherDate').flatpickr({
             dateFormat: "d-m-Y",
             defaultDate: today
         });
@@ -919,6 +929,7 @@ if(($row = $result->fetch_assoc()) !== null){
         
         // Load existing payment data if available
         if (data.paymentVoucher) {
+            $('#voucherDate').val(formatDate2(new Date(data.paymentVoucher.voucher_date)));
             $('#unitPrice').val(data.paymentVoucher.unit_price);
             $('#tax').val(data.paymentVoucher.tax);
             $('#totalAmount').val(data.paymentVoucher.total_amount.replace('RM ', ''));
@@ -939,6 +950,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 $('#additionsTable').append(row);
             });
         } else {
+            $('#voucherDate').val(formatDate2(today));
             $('#unitPrice').val(0.00);
             $('#tax').val(0);
             $('#totalAmount').val(0.00);
@@ -947,8 +959,8 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#totalNettWeight').val((data.totalNettWeight).toFixed(2));
     }
 
-    function print(id) {
-        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N'}, function(data){
+    function print(customerSupplier, invoiceNo) {
+        $.post('php/printPaymentVoucher.php', {customerSupplier: customerSupplier, invoiceNo: invoiceNo}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

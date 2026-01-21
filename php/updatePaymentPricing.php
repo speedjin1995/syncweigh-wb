@@ -7,11 +7,17 @@ if(!isset($_SESSION['id'])){
 } else{
 	$username = $_SESSION["username"];
 }
+
 // Check if the user is already logged in, if yes then redirect him to index page
 $id = $_SESSION['id'];
 // Processing form data when form is submitted
-if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo']) && !empty($_POST['id']) && !empty($_POST['customerSupplier']) && !empty($_POST['invoiceNo'])) {
+if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo'], $_POST['voucherDate']) && !empty($_POST['id']) && !empty($_POST['customerSupplier']) && !empty($_POST['invoiceNo']) && !empty($_POST['voucherDate'])) {
     $ids = $_POST['id'];
+    if (empty($_POST["voucherDate"])) {
+        $voucherDate = null;
+    } else {
+        $voucherDate = DateTime::createFromFormat('d-m-Y', $_POST["voucherDate"])->format('Y-m-d H:i:s');
+    }
 
     if (empty($_POST["unitPrice"])) {
         $unitPrice = 0;
@@ -139,11 +145,11 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo']) && !emp
                 $paymentId = $payment_row['id'];
                 $payment_check_stmt->close();
                 
-                if ($update_payment_stmt = $db->prepare("UPDATE Payment_Voucher SET unit_price=?, tax=?, total_nett_weight=?, total_amount=?, deduction_amount=?, addition_amount=?, final_amount=?, deduction_details=?, addition_details=? WHERE id=?")) {
+                if ($update_payment_stmt = $db->prepare("UPDATE Payment_Voucher SET voucher_date=?, unit_price=?, tax=?, total_nett_weight=?, total_amount=?, deduction_amount=?, addition_amount=?, final_amount=?, deduction_details=?, addition_details=?, modified_by=? WHERE id=?")) {
                     $deductionsJson = json_encode($deductionRecords);
                     $additionJson = json_encode($additionRecords);
                     
-                    $update_payment_stmt->bind_param('ssssssssss', $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deductionsJson, $additionJson, $paymentId);
+                    $update_payment_stmt->bind_param('ssssssssssss', $voucherDate, $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deductionsJson, $additionJson, $username, $paymentId);
                     $update_payment_stmt->execute();
                     $update_payment_stmt->close();
                 }
@@ -151,11 +157,11 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo']) && !emp
                 // Insert new record
                 $payment_check_stmt->close();
                 
-                if ($insert_payment_stmt = $db->prepare("INSERT INTO Payment_Voucher (customer_supplier, invoice_no, unit_price, tax, total_nett_weight, total_amount, deduction_amount, addition_amount, final_amount, deduction_details, addition_details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                if ($insert_payment_stmt = $db->prepare("INSERT INTO Payment_Voucher (customer_supplier, invoice_no, voucher_date, unit_price, tax, total_nett_weight, total_amount, deduction_amount, addition_amount, final_amount, deduction_details, addition_details, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                     $deductionsJson = json_encode($deductionRecords);
                     $additionJson = json_encode($additionRecords);
                     
-                    $insert_payment_stmt->bind_param('sssssssssss', $_POST['customerSupplier'], $_POST['invoiceNo'], $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deductionsJson, $additionJson);
+                    $insert_payment_stmt->bind_param('ssssssssssssss', $_POST['customerSupplier'], $_POST['invoiceNo'], $voucherDate, $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deductionsJson, $additionJson, $username, $username);
                     $insert_payment_stmt->execute();
                     $insert_payment_stmt->close();
                 }
