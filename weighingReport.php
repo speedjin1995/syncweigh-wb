@@ -625,6 +625,38 @@ if(($row = $result->fetch_assoc()) !== null){
         </div><!-- /.modal-dialog -->
     </div>
 
+    <div class="modal fade" id="prePrintModal">
+        <div class="modal-dialog" style="max-width: 500px;">
+            <div class="modal-content">
+                <form role="form" id="prePrintForm">
+                    <div class="modal-header bg-gray-dark color-palette">
+                        <h4 class="modal-title"><?=$languageArray['print_slip_code'][$language]?></h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex gap-3 justify-content-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="prePrintHeaderWith" name="prePrintHeader" value="with" checked>
+                                <label class="form-check-label" for="prePrintHeaderWith"><?=$languageArray['print_with_letter_header_code'][$language]?></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="prePrintHeaderWithout" name="prePrintHeader" value="without">
+                                <label class="form-check-label" for="prePrintHeaderWithout"><?=$languageArray['print_without_letter_header_code'][$language]?></label>
+                            </div>
+                        </div>
+                        <input type="hidden" class="form-control" id="userID" name="userID">                                   
+                        <input type="hidden" class="form-control" id="file" name="file">                                   
+                        <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">                                   
+                    </div>
+                    <div class="modal-footer justify-content-between bg-gray-dark color-palette">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                        <button type="button" class="btn btn-success" id="submitPrePrint"><?=$languageArray['submit_code'][$language]?></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <?php include 'layouts/customizer.php'; ?>
     <?php include 'layouts/vendor-scripts.php'; ?>
     <!-- apexcharts -->
@@ -1342,26 +1374,50 @@ if(($row = $result->fetch_assoc()) !== null){
     }
 
     function print(id) {
-        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N'}, function(data){
-            var obj = JSON.parse(data);
-
-            if(obj.status === 'success'){
-                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                printWindow.document.write(obj.message);
-                printWindow.document.close();
-                setTimeout(function(){
-                    printWindow.print();
-                    printWindow.close();
-                }, 500);
-            }
-            else if(obj.status === 'failed'){
-                toastr["error"](obj.message, "Failed:");
-            }
-            else{
-                toastr["error"]("Something wrong when activate", "Failed:");
-            }
-        });
+        $('#prePrintModal').find('#userID').val(id);
+        $('#prePrintModal').find('#file').val('weight');
+        $('#prePrintModal').find('#isEmptyContainer').val('N');
+        $('#prePrintModal').modal('show');
     }
+
+    $('#submitPrePrint').on('click', function(){
+        if($('#prePrintForm').valid()){
+            $('#spinnerLoading').show();
+            var formData = new FormData($('#prePrintForm')[0]);
+
+            $.ajax({
+                url: 'php/print.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    var obj = JSON.parse(data);
+
+                    if(obj.status === 'success'){
+                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                        printWindow.document.write(obj.message);
+                        printWindow.document.close();
+                        setTimeout(function(){
+                            printWindow.print();
+                            printWindow.close();
+                        }, 500);
+
+                        $('#spinnerLoading').hide();
+                        $('#prePrintModal').modal('hide');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        toastr["error"](obj.message, "Failed:");
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        toastr["error"]("Something wrong when print", "Failed:");
+                    }
+                }
+            });
+        }
+    });
     </script>
 </body>
 </html>
