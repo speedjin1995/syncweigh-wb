@@ -474,11 +474,11 @@ if(($row = $result->fetch_assoc()) !== null){
                                 '<i class="ri-more-fill align-middle"></i>' +
                             '</button>' +
                             '<ul class="dropdown-menu dropdown-menu-end">' +
-                                // '<li>' +
-                                //     '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
-                                //         '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
-                                //     '</a>' +
-                                // '</li>' +
+                                '<li>' +
+                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.invoice_no + '\')">' +
+                                        '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
+                                    '</a>' +
+                                '</li>' +
                                 '<li>' +
                                     '<a class="dropdown-item apply-unit-price-btn" id="updatePricing'+data+'" onclick="updatePricing(\'' + row.customer + '\', \'' + row.invoice_no + '\')">' +
                                         '<i class="ri-calculator-fill align-bottom me-2 text-muted"></i> Update Pricing' +
@@ -551,11 +551,11 @@ if(($row = $result->fetch_assoc()) !== null){
                                     '<i class="ri-more-fill align-middle"></i>' +
                                 '</button>' +
                                 '<ul class="dropdown-menu dropdown-menu-end">' +
-                                    // '<li>' +
-                                    //     '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
-                                    //         '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
-                                    //     '</a>' +
-                                    // '</li>' +
+                                    '<li>' +
+                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
+                                            '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
+                                        '</a>' +
+                                    '</li>' +
                                     '<li>' +
                                         '<a class="dropdown-item apply-unit-price-btn" onclick="updatePricing(\'' + row.customer + '\', \'' + row.invoice_no + '\')">' +
                                             '<i class="ri-calculator-fill align-bottom me-2 text-muted"></i> Update Pricing' +
@@ -960,7 +960,7 @@ if(($row = $result->fetch_assoc()) !== null){
     }
 
     function print(customerSupplier, invoiceNo) {
-        $.post('php/printPaymentVoucher.php', {customerSupplier: customerSupplier, invoiceNo: invoiceNo}, function(data){
+        $.post('php/printPaymentVoucherSlip.php', {customerSupplier: customerSupplier, invoiceNo: invoiceNo}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){
