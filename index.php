@@ -1641,25 +1641,27 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                     </div>
 
                                     <div class="modal fade" id="prePrintModal">
-                                        <div class="modal-dialog modal-xl" style="max-width: 90%;">
+                                        <div class="modal-dialog" style="max-width: 500px;">
                                             <div class="modal-content">
                                                 <form role="form" id="prePrintForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title">Pre-print Sales Slip</h4>
+                                                        <h4 class="modal-title"><?=$languageArray['print_slip_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div class="row">
-                                                            <label for="prePrint" class="col-sm-4 col-form-label">Pre-print Sales Slip</label>
-                                                            <div class="col-sm-8">
-                                                                <select id="prePrint" name="prePrint" class="form-select" required>
-                                                                    <option value="Y" selected>Yes</option>
-                                                                    <option value="N">No</option>
-                                                                </select>  
+                                                        <div class="d-flex gap-3 justify-content-center">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" id="prePrintHeaderWith" name="prePrintHeader" value="with" checked>
+                                                                <label class="form-check-label" for="prePrintHeaderWith"><?=$languageArray['print_with_letter_header_code'][$language]?></label>
                                                             </div>
-
-                                                            <input type="hidden" class="form-control" id="id" name="id">                                   
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" id="prePrintHeaderWithout" name="prePrintHeader" value="without">
+                                                                <label class="form-check-label" for="prePrintHeaderWithout"><?=$languageArray['print_without_letter_header_code'][$language]?></label>
+                                                            </div>
                                                         </div>
+                                                        <input type="hidden" class="form-control" id="userID" name="userID">                                   
+                                                        <input type="hidden" class="form-control" id="file" name="file">                                   
+                                                        <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">                                   
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
                                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
@@ -1997,7 +1999,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     </form>
                 </div>
             </div>
-            <div class="modal fade" id="prePrintModal">
+            <!-- <div class="modal fade" id="prePrintModal">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                     <form role="form" id="prePrintForm">
@@ -2028,7 +2030,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         </div>
                     </form>
                 </div>
-            </div>
+            </div> -->
             <?php include 'layouts/footer.php'; ?>
         </div>
         <!-- end main content-->
@@ -3144,30 +3146,37 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         $('#submitPrePrint').on('click', function(){
             if($('#prePrintForm').valid()){
                 $('#spinnerLoading').show();
-                var id = $('#prePrintModal').find('#id').val();
-                var prePrintStatus = $('#prePrintModal').find('#prePrint').val();
+                var formData = new FormData($('#prePrintForm')[0]);
+                formData.append('file', 'weight');
 
-                $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus}, function(data){
-                    var obj = JSON.parse(data);
+                $.ajax({
+                    url: 'php/print.php',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data){
+                        var obj = JSON.parse(data);
 
-                    if(obj.status === 'success'){
-                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        printWindow.document.write(obj.message);
-                        printWindow.document.close();
-                        setTimeout(function(){
-                            printWindow.print();
-                            printWindow.close();
-                        }, 500);
+                        if(obj.status === 'success'){
+                            var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                            printWindow.document.write(obj.message);
+                            printWindow.document.close();
+                            setTimeout(function(){
+                                printWindow.print();
+                                printWindow.close();
+                            }, 500);
 
-                        $('#spinnerLoading').hide();
-                    }
-                    else if(obj.status === 'failed'){
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                        $("#failBtn").click();
+                            $('#spinnerLoading').hide();
+                        }
+                        else if(obj.status === 'failed'){
+                            $("#failBtn").attr('data-toast-text', obj.message );
+                            $("#failBtn").click();
+                        }
+                        else{
+                            $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                            $("#failBtn").click();
+                        }
                     }
                 });
             }
@@ -5867,6 +5876,25 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     // }
 
     function print(id, transactionStatus, isEmptyContainer = 'N') {
+        $('#prePrintModal').find('#userID').val(id);
+        $('#prePrintModal').find('#file').val('weight');
+        $('#prePrintModal').find('#isEmptyContainer').val(isEmptyContainer);
+        // $('#prePrintModal').find('#prePrint').val("<?=$language ?>");
+        $("#prePrintModal").modal("show");
+
+        $('#prePrintForm').validate({
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
         /*if (transactionStatus == "Sales"){
             $('#prePrintModal').find('#id').val(id);
             $('#prePrintModal').find('#prePrint').val("");
@@ -5886,27 +5914,27 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 }
             });
         }else{*/
-        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-            var obj = JSON.parse(data);
+        // $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+        //     var obj = JSON.parse(data);
 
-            if(obj.status === 'success'){
-                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                printWindow.document.write(obj.message);
-                printWindow.document.close();
-                setTimeout(function(){
-                    printWindow.print();
-                    printWindow.close();
-                }, 500);
-            }
-            else if(obj.status === 'failed'){
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-            else{
-                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                $("#failBtn").click();
-            }
-        });
+        //     if(obj.status === 'success'){
+        //         var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+        //         printWindow.document.write(obj.message);
+        //         printWindow.document.close();
+        //         setTimeout(function(){
+        //             printWindow.print();
+        //             printWindow.close();
+        //         }, 500);
+        //     }
+        //     else if(obj.status === 'failed'){
+        //         $("#failBtn").attr('data-toast-text', obj.message );
+        //         $("#failBtn").click();
+        //     }
+        //     else{
+        //         $("#failBtn").attr('data-toast-text', "Something wrong when print");
+        //         $("#failBtn").click();
+        //     }
+        // });
         //}
         //var id = $('#prePrintModal').find('#id').val();
         /*$('#printCameraModal').find('#id').val(id);
