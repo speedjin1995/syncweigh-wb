@@ -862,7 +862,7 @@ if(($row = $result->fetch_assoc()) !== null){
 
         $('#pricingModal').find('#customerSupplier').val(customerSupplier);
         $('#pricingModal').find('#voucherDate').val(transactionDate);
-        $('#pricingModal').find('#invoiceNo').val(invoiceNo);
+        $('#pricingModal').find('#invoiceNo').val(invoiceNo == 'null' ? '' : invoiceNo);
 
         $.post('php/getPaymentWeight.php', {
             transactionStatus: transactionStatus,
@@ -973,10 +973,10 @@ if(($row = $result->fetch_assoc()) !== null){
                 }, 500);
             }
             else if(obj.status === 'failed'){
-                toastr["error"](obj.message, "Failed:");
+                alert(obj.message);
             }
             else{
-                toastr["error"]("Something wrong when activate", "Failed:");
+                alert("Something wrong when printing");
             }
         });
     }

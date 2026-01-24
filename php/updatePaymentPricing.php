@@ -87,10 +87,10 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['voucherDate']) && !e
     $totalPrices = $_POST['total_price'];
 
     // Deduction and Addition Calculation
-    $deductionDesc = $_POST['deduction_desc'];
-    $deductionAmount = $_POST['deduction_amount'];
-    $additionDesc = $_POST['addition_desc'];
-    $additionAmount = $_POST['addition_amount'];
+    $deductionDesc = isset($_POST['deduction_desc']) ? $_POST['deduction_desc'] : [];
+    $deductionAmount = isset($_POST['deduction_amount']) ? $_POST['deduction_amount'] : [];
+    $additionDesc = isset($_POST['addition_desc']) ? $_POST['addition_desc'] : [];
+    $additionAmount = isset($_POST['addition_amount']) ? $_POST['addition_amount'] : [];
     $success = true;
     
     for ($i = 0; $i < count($ids); $i++) {

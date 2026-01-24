@@ -2,9 +2,26 @@
 session_start();
 require_once 'db_connect.php';
 
-if(isset($_POST['customerSupplier'], $_POST['invoiceNo'])) {
+if(isset($_POST['customerSupplier'], $_POST['transactionDate'])) {
     $customerSupplier = $_POST['customerSupplier'];
-    $invoiceNo = mysqli_real_escape_string($db, $_POST['invoiceNo']);
+    $transactionDate = DateTime::createFromFormat('d-m-Y', $_POST['transactionDate'])->format('Y-m-d');
+    
+    // Check if payment voucher exists
+    $check_sql = "SELECT id FROM Payment_Voucher WHERE customer_supplier=? AND DATE(voucher_date)=? AND deleted=0";
+    if ($check_stmt = $db->prepare($check_sql)) {
+        $check_stmt->bind_param('ss', $customerSupplier, $transactionDate);
+        $check_stmt->execute();
+        $check_result = $check_stmt->get_result();
+        
+        if ($check_result->num_rows === 0) {
+            echo json_encode(array(
+                "status" => "failed",
+                "message" => "No payment voucher found for this date and supplier"
+            ));
+            exit;
+        }
+        $check_stmt->close();
+    }
     
     // Get company details
     $compname = 'SYNCTRONIX TECHNOLOGY (M) SDN BHD';
@@ -23,9 +40,9 @@ if(isset($_POST['customerSupplier'], $_POST['invoiceNo'])) {
     }
     
     // Get payment voucher details
-    $sql = "SELECT * FROM Payment_Voucher WHERE customer_supplier=? AND invoice_no=? AND deleted=0";
+    $sql = "SELECT * FROM Payment_Voucher WHERE customer_supplier=? AND DATE(voucher_date)=? AND deleted=0";
     if ($stmt = $db->prepare($sql)) {
-        $stmt->bind_param('ss', $customerSupplier, $invoiceNo);
+        $stmt->bind_param('ss', $customerSupplier, $transactionDate);
         $stmt->execute();
         $result = $stmt->get_result();
         
@@ -43,6 +60,7 @@ if(isset($_POST['customerSupplier'], $_POST['invoiceNo'])) {
             $formatVoucherDate = $malayMonths[$month] . ' ' . $year;
             
             $supplierName = $row['customer_supplier'];
+            $voucherDate = date('d/m/Y', strtotime($row['voucher_date']));
             $invoiceNo = $row['invoice_no'] ?? '';
             $accountNo = $row['account_no'] ?? '';
             $deductions = json_decode($row['deduction_details'], true);
