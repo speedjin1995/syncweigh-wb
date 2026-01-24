@@ -52,11 +52,11 @@
         }
         
         .main-table th {
-            background-color: #000;
-            color: #fff;
+            color: #000;
             padding: 5px;
             text-align: left;
             font-size: 9pt;
+            font-weight: bold;
             border: 1px solid #000;
         }
         
@@ -76,8 +76,7 @@
         }
         
         .section-header {
-            background-color: #000 !important;
-            color: #fff !important;
+            color: #000;
             font-weight: bold;
         }
         
