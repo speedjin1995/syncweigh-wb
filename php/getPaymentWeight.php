@@ -2,27 +2,24 @@
 session_start();
 require_once "db_connect.php";
 
-if(isset($_POST['fromDate']) && isset($_POST['toDate']) && isset($_POST['transactionStatus']) && isset($_POST['weightType']) && isset($_POST['customerSupplier']) && isset($_POST['invoiceNo'])){
-    $fromDate = DateTime::createFromFormat('d-m-Y', $_POST['fromDate']);
-    $fromDateTime = $fromDate->format('Y-m-d 00:00:00');
-    $toDate = DateTime::createFromFormat('d-m-Y', $_POST['toDate']);
-    $toDateTime = $toDate->format('Y-m-d 23:59:59');
+if(isset($_POST['transactionStatus']) && isset($_POST['weightType']) && isset($_POST['customerSupplier']) && isset($_POST['transactionDate'])){
     $transactionStatus = $_POST['transactionStatus'];
     $weightType = $_POST['weightType'];
     $customerSupplier = $_POST['customerSupplier'];
-    $invoiceNo = mysqli_real_escape_string($db, $_POST['invoiceNo']);
+    $transactionDate = DateTime::createFromFormat('d-m-Y', $_POST['transactionDate']);
+    $transactionDateFormatted = $transactionDate->format('Y-m-d');
     $weighingData = array();
     $message = array();
     $totalNettWeight = 0;
 
     if ($transactionStatus == 'Sales' || $transactionStatus == 'Local'){
-        $sql = "SELECT * FROM Weight WHERE transaction_date >= ?  AND transaction_date <= ? AND transaction_status = ? AND weight_type = ? AND customer_name = ? AND  invoice_no = ? AND is_complete = 'Y' AND is_cancel <> 'Y' AND status = '0'";
+        $sql = "SELECT * FROM Weight WHERE transaction_status = ? AND weight_type = ? AND customer_name = ? AND DATE(transaction_date) = ? AND is_complete = 'Y' AND is_cancel <> 'Y' AND status = '0'";
     }else{
-        $sql = "SELECT * FROM Weight WHERE transaction_date >= ?  AND transaction_date <= ? AND transaction_status = ? AND weight_type = ? AND supplier_name = ? AND  invoice_no = ? AND is_complete = 'Y' AND is_cancel <> 'Y' AND status = '0'";
+        $sql = "SELECT * FROM Weight WHERE transaction_status = ? AND weight_type = ? AND supplier_name = ? AND DATE(transaction_date) = ? AND is_complete = 'Y' AND is_cancel <> 'Y' AND status = '0'";
     }
 
     if ($stmt = $db->prepare($sql)) {
-        $stmt->bind_param('ssssss', $fromDateTime, $toDateTime, $transactionStatus, $weightType, $customerSupplier, $invoiceNo);
+        $stmt->bind_param('ssss', $transactionStatus, $weightType, $customerSupplier, $transactionDateFormatted);
         
         // Execute the prepared query.
         if (! $stmt->execute()) {
@@ -62,8 +59,8 @@ if(isset($_POST['fromDate']) && isset($_POST['toDate']) && isset($_POST['transac
 
             // Get payment voucher details
             $paymentVoucherData = array();
-            if ($payment_check_stmt = $db->prepare("SELECT * FROM Payment_Voucher WHERE customer_supplier=? AND invoice_no=? AND deleted=0")) {
-                $payment_check_stmt->bind_param('ss', $customerSupplier, $invoiceNo);
+            if ($payment_check_stmt = $db->prepare("SELECT * FROM Payment_Voucher WHERE customer_supplier=? AND DATE(voucher_date)=? AND deleted=0")) {
+                $payment_check_stmt->bind_param('ss', $customerSupplier, $transactionDateFormatted);
                 $payment_check_stmt->execute();
                 $payment_check_result = $payment_check_stmt->get_result();
                 $paymentVoucherData = $payment_check_result->fetch_assoc();

@@ -1410,3 +1410,6 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALU
 
 -- 24/01/2026 --
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'mpob_code', 'MPOB', '马棕局', 'MPOB', 'எம்.பி.ஓ.பி');
+
+ALTER TABLE `Payment_Voucher` CHANGE `invoice_no` `invoice_no` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;
+ALTER TABLE `Payment_Voucher_Log` CHANGE `invoice_no` `invoice_no` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;

@@ -50,25 +50,25 @@ if($searchValue != ''){
   $searchQuery = " and (transaction_id like '%".$searchValue."%' or lorry_plate_no1 like '%".$searchValue."%')";
 }
 
-$allQuery = "select * from Weight where is_complete = 'Y' AND  is_cancel <> 'Y' AND transaction_status = '".$_POST['transactionStatus']."' group by invoice_no, customer_code";
+$allQuery = "select * from Weight where is_complete = 'Y' AND  is_cancel <> 'Y' AND transaction_status = '".$_POST['transactionStatus']."' AND customer_code IS NOT NULL AND transaction_date IS NOT NULL group by DATE(transaction_date), customer_code";
 if($_POST['transactionStatus'] == 'Purchase'){
-	$allQuery = "select * from Weight where is_complete = 'Y' AND  is_cancel <> 'Y' AND transaction_status = '".$_POST['transactionStatus']."' group by invoice_no, supplier_code";
+	$allQuery = "select * from Weight where is_complete = 'Y' AND  is_cancel <> 'Y' AND transaction_status = '".$_POST['transactionStatus']."' AND supplier_code IS NOT NULL AND transaction_date IS NOT NULL group by DATE(transaction_date), supplier_code";
 }
 $sel = mysqli_query($db, $allQuery); 
 $totalRecords = mysqli_num_rows($sel);
 ## Total number of record with filtering
-$filteredQuery = "select * from Weight where is_complete = 'Y' AND is_cancel <> 'Y'".$searchQuery." group by invoice_no, customer_code";
+$filteredQuery = "select * from Weight where is_complete = 'Y' AND is_cancel <> 'Y' AND customer_code IS NOT NULL AND transaction_date IS NOT NULL".$searchQuery." group by DATE(transaction_date), customer_code";
 if($_POST['transactionStatus'] == 'Purchase'){
-	$filteredQuery = "select * from Weight where is_complete = 'Y' AND is_cancel <> 'Y'".$searchQuery." group by invoice_no, supplier_code";
+	$filteredQuery = "select * from Weight where is_complete = 'Y' AND is_cancel <> 'Y' AND supplier_code IS NOT NULL AND transaction_date IS NOT NULL".$searchQuery." group by DATE(transaction_date), supplier_code";
 }
 $sel = mysqli_query($db, $filteredQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = mysqli_num_rows($sel);
 
 ## Fetch records
-$empQuery = "select * from Weight where is_complete = 'Y' AND is_cancel <> 'Y'".$searchQuery." group by invoice_no, customer_code order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+$empQuery = "select * from Weight where is_complete = 'Y' AND is_cancel <> 'Y' AND customer_code IS NOT NULL AND transaction_date IS NOT NULL".$searchQuery." group by DATE(transaction_date), customer_code order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 if($_POST['transactionStatus'] == 'Purchase'){
-	$empQuery = "select * from Weight where is_complete = 'Y' AND is_cancel <> 'Y'".$searchQuery." group by invoice_no, supplier_code order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+	$empQuery = "select * from Weight where is_complete = 'Y' AND is_cancel <> 'Y' AND supplier_code IS NOT NULL AND transaction_date IS NOT NULL".$searchQuery." group by DATE(transaction_date), supplier_code order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 }
 $empRecords = mysqli_query($db, $empQuery); 
 $data = array();
@@ -80,6 +80,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     "weight_type"=>$row['weight_type'],
     "customer"=>($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Local' ? $row['customer_name'] : $row['supplier_name']),
     "invoice_no"=>$row['invoice_no'],
+    "transaction_date"=>date('d-m-Y', strtotime($row['transaction_date'])),
   );
 }
 
