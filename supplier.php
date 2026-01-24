@@ -4,6 +4,7 @@
 <?php
 $role = $_SESSION["roles"];
 $allowDeduct = $_SESSION["allowDeduct"];
+$customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 ?>
 
 <head>
@@ -120,9 +121,9 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="supplierCode" class="col-sm-4 col-form-label">Supplier Code</label>
+                                                                                    <label for="supplierCode" class="col-sm-4 col-form-label"><?=$languageArray['supplier_code_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="supplierCode" name="supplierCode" placeholder="Supplier Code" required>
+                                                                                        <input type="text" class="form-control" id="supplierCode" name="supplierCode" placeholder="<?=$languageArray['supplier_code_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div>
@@ -131,7 +132,7 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="companyRegNo" class="col-sm-4 col-form-label">Company Reg No</label>
+                                                                                    <label for="companyRegNo" class="col-sm-4 col-form-label"><?=$languageArray['reg_no_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="row">
                                                                                             <div class="col-sm-4">
@@ -139,7 +140,7 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                                                             </div>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="row">
-                                                                                                    <label for="newRegNo" class="col-sm-4 col-form-label">New Reg No</label>
+                                                                                                    <label for="newRegNo" class="col-sm-4 col-form-label"><?=$languageArray['new_reg_no_code'][$language]?></label>
                                                                                                     <div class="col-sm-8">
                                                                                                         <input type="text" class="form-control" id="newRegNo" name="newRegNo" required>
                                                                                                     </div>
@@ -151,33 +152,33 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="companyName" class="col-sm-4 col-form-label">Company Name</label>
+                                                                                    <label for="companyName" class="col-sm-4 col-form-label"><?=$languageArray['supplier_name_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="companyName" name="companyName" placeholder="Customer Code">
+                                                                                        <input type="text" class="form-control" id="companyName" name="companyName" placeholder="<?=$languageArray['supplier_name_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label">Address Line 1</label>
+                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 1</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="Address Line 1">
+                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="<?=$languageArray['address_code'][$language]?> 1">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label">Address Line 2</label>
+                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 2</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="Address Line 2">
+                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="<?=$languageArray['address_code'][$language]?> 2">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label">Address Line 3</label>
+                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 3</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="Address Line 3">
+                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="<?=$languageArray['address_code'][$language]?> 3">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -191,41 +192,41 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                                             </div> -->
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="phoneNo" class="col-sm-4 col-form-label">Phone No</label>
+                                                                                    <label for="phoneNo" class="col-sm-4 col-form-label"><?=$languageArray['phone_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="Phone No">
+                                                                                        <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?=$languageArray['phone_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="faxNo" class="col-sm-4 col-form-label">Fax No</label>
+                                                                                    <label for="faxNo" class="col-sm-4 col-form-label"><?=$languageArray['fax_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="Fax No">
+                                                                                        <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="<?=$languageArray['fax_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="contactName" class="col-sm-4 col-form-label">Contact Name</label>
+                                                                                    <label for="contactName" class="col-sm-4 col-form-label"><?=$languageArray['pic_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="contactName" name="contactName" placeholder="Contact Name">
+                                                                                        <input type="text" class="form-control" id="contactName" name="contactName" placeholder="<?=$languageArray['pic_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="icNo" class="col-sm-4 col-form-label">I/C No</label>
+                                                                                    <label for="icNo" class="col-sm-4 col-form-label"><?=$languageArray['ic_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="icNo" name="icNo" placeholder="I/C No">
+                                                                                        <input type="text" class="form-control" id="icNo" name="icNo" placeholder="<?=$languageArray['ic_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="tinNo" class="col-sm-4 col-form-label">Tin No</label>
+                                                                                    <label for="tinNo" class="col-sm-4 col-form-label"><?=$languageArray['tin_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="Tin No">
+                                                                                        <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="<?=$languageArray['tin_code'][$language]?>">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -234,6 +235,30 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                                                     <label for="mpob" class="col-sm-4 col-form-label"><?=$languageArray['mpob_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="mpob" name="mpob" placeholder="<?=$languageArray['mpob_code'][$language]?>">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="paymentTerm" class="col-sm-4 col-form-label"><?=$languageArray['payment_term_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="paymentTerm" name="paymentTerm" class="form-select select2">
+                                                                                            <option value="Term"><?=$languageArray['term_code'][$language]?></option>
+                                                                                            <option value="Cash"><?=$languageArray['cash_code'][$language]?></option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="customer" class="col-sm-4 col-form-label"><?=$languageArray['customer_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select id="customer" name="customer" class="form-select select2">
+                                                                                            <option selected>-</option>
+                                                                                            <?php while($rowCustomer = mysqli_fetch_assoc($customer)){ ?>
+                                                                                                <option value="<?=$rowCustomer['id'] ?>"><?=$rowCustomer['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -458,18 +483,18 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Supplier Code</th>
-                                                                    <th>Company Reg No</th>
-                                                                    <th>New Reg No</th>
-                                                                    <th>Company Name</th>
-                                                                    <th>Address Line 1</th>
-                                                                    <th>Address Line 2</th>
-                                                                    <th>Address Line 3</th>
-                                                                    <th>Phone No</th>
-                                                                    <th>Fax No</th>
-                                                                    <th>Contact Name</th>
-                                                                    <th>I/C No</th>
-                                                                    <th>Tin No</th>
+                                                                    <th><?=$languageArray['supplier_code_code'][$language]?></th>
+                                                                    <th><?=$languageArray['reg_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['new_reg_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['supplier_name_code'][$language]?></th>
+                                                                    <th><?=$languageArray['address_code'][$language]?> 1</th>
+                                                                    <th><?=$languageArray['address_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['address_code'][$language]?> 3</th>
+                                                                    <th><?=$languageArray['phone_code'][$language]?></th>
+                                                                    <th><?=$languageArray['fax_code'][$language]?></th>
+                                                                    <th><?=$languageArray['pic_code'][$language]?></th>
+                                                                    <th><?=$languageArray['ic_code'][$language]?></th>
+                                                                    <th><?=$languageArray['tin_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -562,6 +587,24 @@ var allowDeduct = '<?=$allowDeduct?>';
 var rowCount = 0;
 
 $(function () {
+    // Initialize all Select2 elements in the modal
+    $('#addModal .select2').select2({
+        allowClear: true,
+        placeholder: "Please Select",
+        dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+    });
+
+    // Apply custom styling to Select2 elements in addModal
+    $('#addModal .select2-container .select2-selection--single').css({
+        'padding-top': '4px',
+        'padding-bottom': '4px',
+        'height': 'auto'
+    });
+
+    $('#addModal .select2-container .select2-selection__arrow').css({
+        'padding-top': '33px',
+        'height': 'auto'
+    });
 
     table = $("#supplierTable").DataTable({
         "responsive": true,
@@ -740,6 +783,8 @@ $(function () {
         $('#addModal').find('#icNo').val("");
         $('#addModal').find('#tinNo').val("");
         $('#addModal').find('#mpob').val("");
+        $('#addModal').find('#paymentTerm').val("Term").trigger('change');
+        $('#addModal').find('#customer').val("").trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -1164,6 +1209,8 @@ function edit(id){
             $('#addModal').find('#icNo').val(obj.message.ic_no);
             $('#addModal').find('#tinNo').val(obj.message.tin_no);
             $('#addModal').find('#mpob').val(obj.message.mpob);
+            $('#addModal').find('#paymentTerm').val(obj.message.payment_term).trigger('change');
+            $('#addModal').find('#customer').val(obj.message.customer_id).trigger('change');
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');

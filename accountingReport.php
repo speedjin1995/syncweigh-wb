@@ -152,7 +152,6 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <div class="mb-3">
                                                             <label for="transactionStatusSearch" class="form-label">Transaction Status</label>
                                                             <select id="transactionStatusSearch" class="form-select">
-                                                                <option selected>-</option>
                                                                 <option value="Sales" selected>Sales</option>
                                                                 <option value="Purchase">Purchase</option>
                                                                 <option value="Local">Public</option>
@@ -279,113 +278,6 @@ if(($row = $result->fetch_assoc()) !== null){
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="row">
-                                <!-- <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #4CAF50;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Dispatch
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="salesInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-success rounded fs-3">
-                                                        <i class="bx bx-dollar-circle text-success"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #FFC107;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Receiving
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="purchaseInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-info rounded fs-3">
-                                                        <i class="bx bx-shopping-bag text-info"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #81D4FA;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Internal Transfer
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="localInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
-                                                        <i class="bx bx-user-circle text-warning"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #9C27B0;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-white text-uppercase fw-medium text-truncate mb-0">
-                                                        Miscellaneous
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="miscInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
-                                                        <i class="bx bx-user-circle text-warning"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-                            </div> <!-- end row-->
-
 
                             <div class="row">
                                 <div class="col">
@@ -402,16 +294,16 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             <div class="flex-shrink-0">
                                                                 <button type="button" id="exportSummaryPdf" class="btn btn-info waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
-                                                                    Export Summary Report
+                                                                    Export Report
                                                                 </button>
-                                                                <button type="button" id="exportSalesPdf" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                <!-- <button type="button" id="exportSalesPdf" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     Export Details Report
-                                                                </button>
-                                                                <!--button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                </button> -->
+                                                                <!-- <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_pdf_code'][$language]?>
-                                                                </button-->
+                                                                </button> -->
                                                                 <button type="button" id="exportExcel" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_excel_code'][$language]?>
@@ -428,6 +320,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     <th>Weight <br>Type</th>
                                                                     <th>Weight <br> Status</th>
                                                                     <th>Customer/ <br> Supplier</th>
+                                                                    <th>Product/ <br> Raw Material</th>
                                                                     <?php if($includeContainer == 'Y'): ?>
                                                                     <th>Container No</th>
                                                                     <th>Seal No</th>
@@ -493,11 +386,8 @@ if(($row = $result->fetch_assoc()) !== null){
                                                     <label for="reportType" class="col-sm-4 col-form-label">Report Type *</label>
                                                     <div class="col-sm-8">
                                                         <select id="reportType" name="reportType" class="form-select" required>
-                                                            <!-- <option value="CUSTOMER">Customer Report</option> -->
-                                                            <!--option value="SUMMARY">Summary Report - Date</option-->
-                                                            <!--option value="PRODUCT">Product Report</option-->
-                                                            <option value="S&P">Summary Report - By Product</option>
-                                                            <option value="S&PC">Summary Report - By Customer</option>
+                                                            <option value="DR">Daily Report</option>
+                                                            <option value="DMR">Daily Management Report</option>
                                                         </select>   
                                                     </div>
                                                 </div>
@@ -625,38 +515,6 @@ if(($row = $result->fetch_assoc()) !== null){
         </div><!-- /.modal-dialog -->
     </div>
 
-    <div class="modal fade" id="prePrintModal">
-        <div class="modal-dialog" style="max-width: 500px;">
-            <div class="modal-content">
-                <form role="form" id="prePrintForm">
-                    <div class="modal-header bg-gray-dark color-palette">
-                        <h4 class="modal-title"><?=$languageArray['print_slip_code'][$language]?></h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="d-flex gap-3 justify-content-center">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="prePrintHeaderWith" name="prePrintHeader" value="with" checked>
-                                <label class="form-check-label" for="prePrintHeaderWith"><?=$languageArray['print_with_letter_header_code'][$language]?></label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="prePrintHeaderWithout" name="prePrintHeader" value="without">
-                                <label class="form-check-label" for="prePrintHeaderWithout"><?=$languageArray['print_without_letter_header_code'][$language]?></label>
-                            </div>
-                        </div>
-                        <input type="hidden" class="form-control" id="userID" name="userID">                                   
-                        <input type="hidden" class="form-control" id="file" name="file">                                   
-                        <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">                                   
-                    </div>
-                    <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                        <button type="button" class="btn btn-success" id="submitPrePrint"><?=$languageArray['submit_code'][$language]?></button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <?php include 'layouts/customizer.php'; ?>
     <?php include 'layouts/vendor-scripts.php'; ?>
     <!-- apexcharts -->
@@ -695,7 +553,7 @@ if(($row = $result->fetch_assoc()) !== null){
         //Date picker
         $('#fromDateSearch').flatpickr({
             dateFormat: "d-m-Y",
-            defaultDate: yesterday
+            defaultDate: today
         });
 
         $('#toDateSearch').flatpickr({
@@ -768,6 +626,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
+                { data: 'product_code' },
                 <?php if($includeContainer == 'Y'): ?>
                 { data: 'container_no' },
                 { data: 'seal_no' },
@@ -864,6 +723,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
+                    { data: 'product_code' },
                     <?php if($includeContainer == 'Y'): ?>
                     { data: 'container_no' },
                     { data: 'seal_no' },
@@ -932,7 +792,22 @@ if(($row = $result->fetch_assoc()) !== null){
                     $('#exportPdfForm').find('#file').val('weight');
                     $('#exportPdfModal').modal('hide');
 
-                    $.post('php/exportPdf.php', $('#exportPdfForm').serialize(), function(response){
+                    // if ($('#reportType').val() == 'DR') {
+                        // Check if date range is only 1 day
+                        if (fromDateI && toDateI) {
+                            var fromParts = fromDateI.split('-');
+                            var toParts = toDateI.split('-');
+                            var fromDate = new Date(fromParts[2], fromParts[1] - 1, fromParts[0]);
+                            var toDate = new Date(toParts[2], toParts[1] - 1, toParts[0]);
+                            
+                            if (fromDate.getTime() !== toDate.getTime()) {
+                                alert('Date range cannot exceed 1 day for Daily Report.');
+                                return;
+                            }
+                        }
+                    // }
+
+                    $.post('php/exportAccountingPdf.php', $('#exportPdfForm').serialize(), function(response){
                         var obj = JSON.parse(response);
 
                         if(obj.status === 'success'){
@@ -1374,50 +1249,26 @@ if(($row = $result->fetch_assoc()) !== null){
     }
 
     function print(id) {
-        $('#prePrintModal').find('#userID').val(id);
-        $('#prePrintModal').find('#file').val('weight');
-        $('#prePrintModal').find('#isEmptyContainer').val('N');
-        $('#prePrintModal').modal('show');
+        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N'}, function(data){
+            var obj = JSON.parse(data);
+
+            if(obj.status === 'success'){
+                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                printWindow.document.write(obj.message);
+                printWindow.document.close();
+                setTimeout(function(){
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
+            }
+            else if(obj.status === 'failed'){
+                toastr["error"](obj.message, "Failed:");
+            }
+            else{
+                toastr["error"]("Something wrong when activate", "Failed:");
+            }
+        });
     }
-
-    $('#submitPrePrint').on('click', function(){
-        if($('#prePrintForm').valid()){
-            $('#spinnerLoading').show();
-            var formData = new FormData($('#prePrintForm')[0]);
-
-            $.ajax({
-                url: 'php/print.php',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(data){
-                    var obj = JSON.parse(data);
-
-                    if(obj.status === 'success'){
-                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        printWindow.document.write(obj.message);
-                        printWindow.document.close();
-                        setTimeout(function(){
-                            printWindow.print();
-                            printWindow.close();
-                        }, 500);
-
-                        $('#spinnerLoading').hide();
-                        $('#prePrintModal').modal('hide');
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        toastr["error"](obj.message, "Failed:");
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        toastr["error"]("Something wrong when print", "Failed:");
-                    }
-                }
-            });
-        }
-    });
     </script>
 </body>
 </html>

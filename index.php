@@ -686,7 +686,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3" id="divCustomerName">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3" id="divCustomerName">
                                                                                                 <div class="row">
                                                                                                     <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
                                                                                                     <div class="col-sm-8">
@@ -699,7 +699,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3" id="divSupplierName" style="display:none;">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3" id="divSupplierName" style="display:none;">
                                                                                                 <div class="row">
                                                                                                     <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
                                                                                                     <div class="col-sm-8">
@@ -714,7 +714,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                                 <div class="row" id="productNameDisplay">
                                                                                                     <label for="productName" class="col-sm-4 col-form-label">Product </label>
                                                                                                     <div class="col-sm-8">
@@ -749,7 +749,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                                 <div class="row">
                                                                                                     <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
                                                                                                     <div class="col-sm-8">
@@ -764,7 +764,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                                 <div class="row">
                                                                                                     <label for="destination" class="col-sm-4 col-form-label">Destination</label>
                                                                                                     <div class="col-sm-8">
@@ -779,7 +779,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3" id="doDisplay">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3" id="doDisplay">
                                                                                                 <div class="row">
                                                                                                     <label for="deliveryNo" class="col-sm-4 col-form-label">Delivery No</label>
                                                                                                     <div class="col-sm-8">
@@ -789,7 +789,17 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
-                                                                                            <div class="ol-xxl-12 col-lg-12 mb-3">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                                <div class="row">
+                                                                                                    <label for="invoiceNo" class="col-sm-4 col-form-label">Invoice No</label>
+                                                                                                    <div class="col-sm-8">
+                                                                                                        <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Invoice No">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row">
+                                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                                 <div class="row">
                                                                                                     <label for="purchaseOrder" class="col-sm-4 col-form-label">P/O No.</label>
                                                                                                     <div class="col-sm-8">
@@ -1434,14 +1444,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                     </div>
                                                                 </div>
                                                             </div> -->
-                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                <div class="row">
-                                                                    <label for="invoiceNo" class="col-sm-4 col-form-label">Invoice No</label>
-                                                                    <div class="col-sm-8">
-                                                                        <input type="text" class="form-control" id="invoiceNo" name="invoiceNo" placeholder="Invoice No">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
                                                             <!--<div class="col-xxl-6 col-lg-6 mb-3" id="replacementContainerDisplay" style="display:none">
                                                                 <div class="row">
                                                                     <label for="replacementContainer" class="col-sm-3 col-form-label">New Empty Entrance Bin</label>
@@ -1639,25 +1641,27 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                     </div>
 
                                     <div class="modal fade" id="prePrintModal">
-                                        <div class="modal-dialog modal-xl" style="max-width: 90%;">
+                                        <div class="modal-dialog" style="max-width: 500px;">
                                             <div class="modal-content">
                                                 <form role="form" id="prePrintForm">
                                                     <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title">Pre-print Sales Slip</h4>
+                                                        <h4 class="modal-title"><?=$languageArray['print_slip_code'][$language]?></h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div class="row">
-                                                            <label for="prePrint" class="col-sm-4 col-form-label">Pre-print Sales Slip</label>
-                                                            <div class="col-sm-8">
-                                                                <select id="prePrint" name="prePrint" class="form-select" required>
-                                                                    <option value="Y" selected>Yes</option>
-                                                                    <option value="N">No</option>
-                                                                </select>  
+                                                        <div class="d-flex gap-3 justify-content-center">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" id="prePrintHeaderWith" name="prePrintHeader" value="with" checked>
+                                                                <label class="form-check-label" for="prePrintHeaderWith"><?=$languageArray['print_with_letter_header_code'][$language]?></label>
                                                             </div>
-
-                                                            <input type="hidden" class="form-control" id="id" name="id">                                   
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" id="prePrintHeaderWithout" name="prePrintHeader" value="without">
+                                                                <label class="form-check-label" for="prePrintHeaderWithout"><?=$languageArray['print_without_letter_header_code'][$language]?></label>
+                                                            </div>
                                                         </div>
+                                                        <input type="hidden" class="form-control" id="userID" name="userID">                                   
+                                                        <input type="hidden" class="form-control" id="file" name="file">                                   
+                                                        <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">                                   
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
                                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
@@ -1995,7 +1999,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     </form>
                 </div>
             </div>
-            <div class="modal fade" id="prePrintModal">
+            <!-- <div class="modal fade" id="prePrintModal">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                     <form role="form" id="prePrintForm">
@@ -2026,7 +2030,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         </div>
                     </form>
                 </div>
-            </div>
+            </div> -->
             <?php include 'layouts/footer.php'; ?>
         </div>
         <!-- end main content-->
@@ -3142,30 +3146,37 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         $('#submitPrePrint').on('click', function(){
             if($('#prePrintForm').valid()){
                 $('#spinnerLoading').show();
-                var id = $('#prePrintModal').find('#id').val();
-                var prePrintStatus = $('#prePrintModal').find('#prePrint').val();
+                var formData = new FormData($('#prePrintForm')[0]);
+                formData.append('file', 'weight');
 
-                $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus}, function(data){
-                    var obj = JSON.parse(data);
+                $.ajax({
+                    url: 'php/print.php',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data){
+                        var obj = JSON.parse(data);
 
-                    if(obj.status === 'success'){
-                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        printWindow.document.write(obj.message);
-                        printWindow.document.close();
-                        setTimeout(function(){
-                            printWindow.print();
-                            printWindow.close();
-                        }, 500);
+                        if(obj.status === 'success'){
+                            var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                            printWindow.document.write(obj.message);
+                            printWindow.document.close();
+                            setTimeout(function(){
+                                printWindow.print();
+                                printWindow.close();
+                            }, 500);
 
-                        $('#spinnerLoading').hide();
-                    }
-                    else if(obj.status === 'failed'){
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                        $("#failBtn").click();
+                            $('#spinnerLoading').hide();
+                        }
+                        else if(obj.status === 'failed'){
+                            $("#failBtn").attr('data-toast-text', obj.message );
+                            $("#failBtn").click();
+                        }
+                        else{
+                            $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                            $("#failBtn").click();
+                        }
                     }
                 });
             }
@@ -3749,6 +3760,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#addModal').find('#customerType').val("Normal").trigger('change');
             $('#addModal').find('#transactionDate').val(formatDate2(today));
             $('#addModal').find('#vehiclePlateNo1').val("").trigger('change');
+            $('#addModal').find('#driverName').val("").trigger('change');
             $('#addModal').find('#vehiclePlateNo2').val("").trigger('change');
             $('#addModal').find('#supplierWeight').val("");
             $('#addModal').find('#bypassReason').val("");
@@ -5451,7 +5463,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
                 $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
-                console.log(obj.message.driver_name);
                 $('#addModal').find('#driverName').val(obj.message.driver_name).trigger('change');
                 $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
 
@@ -5865,6 +5876,25 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     // }
 
     function print(id, transactionStatus, isEmptyContainer = 'N') {
+        $('#prePrintModal').find('#userID').val(id);
+        $('#prePrintModal').find('#file').val('weight');
+        $('#prePrintModal').find('#isEmptyContainer').val(isEmptyContainer);
+        // $('#prePrintModal').find('#prePrint').val("<?=$language ?>");
+        $("#prePrintModal").modal("show");
+
+        $('#prePrintForm').validate({
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
         /*if (transactionStatus == "Sales"){
             $('#prePrintModal').find('#id').val(id);
             $('#prePrintModal').find('#prePrint').val("");
@@ -5884,27 +5914,27 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 }
             });
         }else{*/
-        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-            var obj = JSON.parse(data);
+        // $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+        //     var obj = JSON.parse(data);
 
-            if(obj.status === 'success'){
-                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                printWindow.document.write(obj.message);
-                printWindow.document.close();
-                setTimeout(function(){
-                    printWindow.print();
-                    printWindow.close();
-                }, 500);
-            }
-            else if(obj.status === 'failed'){
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-            else{
-                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                $("#failBtn").click();
-            }
-        });
+        //     if(obj.status === 'success'){
+        //         var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+        //         printWindow.document.write(obj.message);
+        //         printWindow.document.close();
+        //         setTimeout(function(){
+        //             printWindow.print();
+        //             printWindow.close();
+        //         }, 500);
+        //     }
+        //     else if(obj.status === 'failed'){
+        //         $("#failBtn").attr('data-toast-text', obj.message );
+        //         $("#failBtn").click();
+        //     }
+        //     else{
+        //         $("#failBtn").attr('data-toast-text', "Something wrong when print");
+        //         $("#failBtn").click();
+        //     }
+        // });
         //}
         //var id = $('#prePrintModal').find('#id').val();
         /*$('#printCameraModal').find('#id').val(id);

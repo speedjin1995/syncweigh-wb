@@ -37,7 +37,7 @@
                 </li-->
                 <li class="nav-item">
                     <a href="index.php" class="nav-link"><b><i class="mdi mdi-weight"></i> <span><?=$languageArray['daily_weighing_code'][$language]?></span></b></a>
-                </li>              
+                </li>
                 <!--li class="nav-item">
                     <a href="bitumen.php" class="nav-link"><i class="mdi mdi-domain"></i></i><?=$lang['t-bitumen']?></a>
                 </li-->         
@@ -54,22 +54,22 @@
                         </ul>
                     </div>
                 </li> -->
-                <!--li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAccounting" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarAccounting">
-                        <i class="ri-pages-line"></i> <span><?=$lang['t-accounting']?></span>
+                        <b><i class="ri-pages-line"></i> <span><?=$languageArray['accounting_code'][$language]?></b></span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarAccounting">
-                        <ul class="nav nav-sm flex-column">
+                        <ul class="nav nav-sm flex-column">              
                             <li class="nav-item">
-                                <a href="salesOrder.php" class="nav-link"><?=$lang['t-so']?></a>
+                                <a href="paymentVoucher.php" class="nav-link"><b><?=$languageArray['payment_voucher_code'][$language]?></b></a>
                             </li>
                             <li class="nav-item">
-                                <a href="purchaseOrder.php" class="nav-link"><?=$lang['t-po']?></a>
-                            </li>               
+                                <a href="accountingReport.php" class="nav-link"><b><?=$languageArray['daily_cash_report_code'][$language]?></b></a>
+                            </li>          
                         </ul>
                     </div>
-                </li-->
+                </li>
                 <?php
                     if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
                         echo '<!--li class="nav-item">
