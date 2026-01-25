@@ -336,6 +336,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
+                                                                    <th>Transaction Date</th>
                                                                     <th><?=$languageArray['weighing_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['transaction_status_code'][$language]?></th>
                                                                     <th><?=$languageArray['supplier_code'][$language]?></th>
@@ -462,6 +463,7 @@ if(($row = $result->fetch_assoc()) !== null){
                         return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                     }
                 },
+                { data: 'transaction_date' },
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
@@ -475,12 +477,12 @@ if(($row = $result->fetch_assoc()) !== null){
                             '</button>' +
                             '<ul class="dropdown-menu dropdown-menu-end">' +
                                 '<li>' +
-                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.invoice_no + '\')">' +
+                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.transaction_date + '\')">' +
                                         '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
                                     '</a>' +
                                 '</li>' +
                                 '<li>' +
-                                    '<a class="dropdown-item apply-unit-price-btn" id="updatePricing'+data+'" onclick="updatePricing(\'' + row.customer + '\', \'' + row.invoice_no + '\')">' +
+                                    '<a class="dropdown-item apply-unit-price-btn" id="updatePricing'+data+'" onclick="updatePricing(\'' + row.customer + '\', \'' + row.transaction_date + '\', \'' + row.invoice_no + '\')">' +
                                         '<i class="ri-calculator-fill align-bottom me-2 text-muted"></i> Update Pricing' +
                                     '</a>' +
                                 '</li>' +
@@ -539,6 +541,7 @@ if(($row = $result->fetch_assoc()) !== null){
                             return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                         }
                     },
+                    { data: 'transaction_date' },
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
@@ -557,7 +560,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                         '</a>' +
                                     '</li>' +
                                     '<li>' +
-                                        '<a class="dropdown-item apply-unit-price-btn" onclick="updatePricing(\'' + row.customer + '\', \'' + row.invoice_no + '\')">' +
+                                        '<a class="dropdown-item apply-unit-price-btn" onclick="updatePricing(\'' + row.customer + '\', \'' + row.transaction_date + '\', \'' + row.invoice_no + '\')">' +
                                             '<i class="ri-calculator-fill align-bottom me-2 text-muted"></i> Update Pricing' +
                                         '</a>' +
                                     '</li>' +
@@ -853,21 +856,19 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#pricingModal').on('shown.bs.modal', calculateTotals);
     });
 
-    function updatePricing(customerSupplier, invoiceNo) {
-        var fromDateI = $('#fromDateSearch').val();
-        var toDateI = $('#toDateSearch').val();
+    function updatePricing(customerSupplier, transactionDate, invoiceNo) {
         var transactionStatus = $('#transactionStatusSearch').val();
         var weightType = $('#weighingTypeSearch').val();
 
         $('#pricingModal').find('#customerSupplier').val(customerSupplier);
-        $('#pricingModal').find('#invoiceNo').val(invoiceNo);
+        $('#pricingModal').find('#voucherDate').val(transactionDate);
+        $('#pricingModal').find('#invoiceNo').val(invoiceNo == 'null' ? '' : invoiceNo);
 
         $.post('php/getPaymentWeight.php', {
-            fromDate: fromDateI,
-            toDate: toDateI,
             transactionStatus: transactionStatus,
             weightType: weightType,
             customerSupplier: customerSupplier,
+            transactionDate: transactionDate,
             invoiceNo: invoiceNo
         }, function(response){
             var obj = JSON.parse(response);
@@ -950,7 +951,6 @@ if(($row = $result->fetch_assoc()) !== null){
                 $('#additionsTable').append(row);
             });
         } else {
-            $('#voucherDate').val(formatDate2(today));
             $('#unitPrice').val(0.00);
             $('#tax').val(0);
             $('#totalAmount').val(0.00);
@@ -959,8 +959,8 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#totalNettWeight').val((data.totalNettWeight).toFixed(2));
     }
 
-    function print(customerSupplier, invoiceNo) {
-        $.post('php/printPaymentVoucherSlip.php', {customerSupplier: customerSupplier, invoiceNo: invoiceNo}, function(data){
+    function print(customerSupplier, transactionDate) {
+        $.post('php/printPaymentVoucherSlip.php', {customerSupplier: customerSupplier, transactionDate: transactionDate}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){
@@ -973,10 +973,10 @@ if(($row = $result->fetch_assoc()) !== null){
                 }, 500);
             }
             else if(obj.status === 'failed'){
-                toastr["error"](obj.message, "Failed:");
+                alert(obj.message);
             }
             else{
-                toastr["error"]("Something wrong when activate", "Failed:");
+                alert("Something wrong when printing");
             }
         });
     }

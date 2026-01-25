@@ -388,6 +388,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <select id="reportType" name="reportType" class="form-select" required>
                                                             <option value="DR">Daily Report</option>
                                                             <option value="DMR">Daily Management Report</option>
+                                                            <option value="ER">Expense Report</option>
                                                         </select>   
                                                     </div>
                                                 </div>
@@ -801,7 +802,7 @@ if(($row = $result->fetch_assoc()) !== null){
                             var toDate = new Date(toParts[2], toParts[1] - 1, toParts[0]);
                             
                             if (fromDate.getTime() !== toDate.getTime()) {
-                                alert('Date range cannot exceed 1 day for Daily Report.');
+                                alert('Date range cannot exceed 1 day.');
                                 return;
                             }
                         }

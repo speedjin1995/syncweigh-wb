@@ -11,12 +11,19 @@ if(!isset($_SESSION['id'])){
 // Check if the user is already logged in, if yes then redirect him to index page
 $id = $_SESSION['id'];
 // Processing form data when form is submitted
-if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo'], $_POST['voucherDate']) && !empty($_POST['id']) && !empty($_POST['customerSupplier']) && !empty($_POST['invoiceNo']) && !empty($_POST['voucherDate'])) {
+if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['voucherDate']) && !empty($_POST['id']) && !empty($_POST['customerSupplier']) && !empty($_POST['voucherDate'])) {
     $ids = $_POST['id'];
     if (empty($_POST["voucherDate"])) {
         $voucherDate = null;
     } else {
         $voucherDate = DateTime::createFromFormat('d-m-Y', $_POST["voucherDate"])->format('Y-m-d H:i:s');
+        $voucherDateOnly = DateTime::createFromFormat('d-m-Y', $_POST["voucherDate"])->format('Y-m-d');
+    }
+
+    if (empty($_POST["invoiceNo"])) {
+        $invoiceNo = null;
+    } else {
+        $invoiceNo = trim($_POST["invoiceNo"]);
     }
 
     if (empty($_POST["unitPrice"])) {
@@ -80,10 +87,10 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo'], $_POST[
     $totalPrices = $_POST['total_price'];
 
     // Deduction and Addition Calculation
-    $deductionDesc = $_POST['deduction_desc'];
-    $deductionAmount = $_POST['deduction_amount'];
-    $additionDesc = $_POST['addition_desc'];
-    $additionAmount = $_POST['addition_amount'];
+    $deductionDesc = isset($_POST['deduction_desc']) ? $_POST['deduction_desc'] : [];
+    $deductionAmount = isset($_POST['deduction_amount']) ? $_POST['deduction_amount'] : [];
+    $additionDesc = isset($_POST['addition_desc']) ? $_POST['addition_desc'] : [];
+    $additionAmount = isset($_POST['addition_amount']) ? $_POST['addition_amount'] : [];
     $success = true;
     
     for ($i = 0; $i < count($ids); $i++) {
@@ -134,8 +141,8 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo'], $_POST[
         }
 
         // Checking to see if there are existing payment voucher record
-        if ($payment_check_stmt = $db->prepare("SELECT id FROM Payment_Voucher WHERE customer_supplier=? AND invoice_no=? AND deleted=0")) {
-            $payment_check_stmt->bind_param('ss', $_POST['customerSupplier'], $_POST['invoiceNo']);
+        if ($payment_check_stmt = $db->prepare("SELECT id FROM Payment_Voucher WHERE customer_supplier=? AND DATE(voucher_date)=? AND deleted=0")) {
+            $payment_check_stmt->bind_param('ss', $_POST['customerSupplier'], $voucherDateOnly);
             $payment_check_stmt->execute();
             $payment_check_result = $payment_check_stmt->get_result();
             
@@ -161,7 +168,7 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['invoiceNo'], $_POST[
                     $deductionsJson = json_encode($deductionRecords);
                     $additionJson = json_encode($additionRecords);
                     
-                    $insert_payment_stmt->bind_param('ssssssssssssss', $_POST['customerSupplier'], $_POST['invoiceNo'], $voucherDate, $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deductionsJson, $additionJson, $username, $username);
+                    $insert_payment_stmt->bind_param('ssssssssssssss', $_POST['customerSupplier'], $invoiceNo, $voucherDate, $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deductionsJson, $additionJson, $username, $username);
                     $insert_payment_stmt->execute();
                     $insert_payment_stmt->close();
                 }

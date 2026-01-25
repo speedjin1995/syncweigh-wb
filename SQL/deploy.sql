@@ -1407,3 +1407,9 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALU
 ('print_slip_code', 'Print Slip', '打印单据', 'Cetak Slip', 'ஸ்லிப் அச்சிடு'),
 ('print_with_letter_header_code', 'Print With Letter Header', '打印（含信头）', 'Cetak Dengan Kepala Surat', 'கடிதத் தலைப்புடன் அச்சிடு'),
 ('print_without_letter_header_code', 'Print Without Letter Header', '打印（不含信头）', 'Cetak Tanpa Kepala Surat', 'கடிதத் தலைப்பின்றி அச்சிடு');
+
+-- 24/01/2026 --
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'mpob_code', 'MPOB', '马棕局', 'MPOB', 'எம்.பி.ஓ.பி');
+
+ALTER TABLE `Payment_Voucher` CHANGE `invoice_no` `invoice_no` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;
+ALTER TABLE `Payment_Voucher_Log` CHANGE `invoice_no` `invoice_no` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;
