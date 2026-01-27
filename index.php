@@ -3417,6 +3417,16 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#checkingConnection').removeClass('bg-danger');
                         }
                     }
+                    else if (ind === 'FS8000') {
+                        if(data.includes("ST,NT")){
+                            var text = data.split(",");
+                            var text2 = text[text.length - 1];
+                            debugger;
+                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "").replace(" ", "");
+                            $('#indicatorWeight').html(parseInt(text2).toString());
+                            $('#indicatorConnected').addClass('bg-primary');
+                        }
+                    }
                 }
                 else{
                     $('#indicatorWeight').html('0');
@@ -3424,7 +3434,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     $('#checkingConnection').addClass('bg-danger');
                 }
             });
-        }, 500);
+        }, 100);
 
         if(dstatus === "Enable"){
             $(document).on('keydown', function(e) {
