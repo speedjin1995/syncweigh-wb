@@ -8,7 +8,7 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
 ?>
 
 <head>
-    <title>Supplier | PWS - Weighing System</title>
+    <title>Supplier | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->

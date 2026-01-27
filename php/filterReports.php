@@ -69,12 +69,12 @@ if($_POST['plant'] != null && $_POST['plant'] != '' && $_POST['plant'] != '-'){
 
 if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
   if ($_POST['status'] == 'Complete'){
-    $searchQuery .= " and is_complete = 'Y'";
+    $searchQuery .= " and is_complete = 'Y' AND is_cancel = 'N'";
   }elseif ($_POST['status'] == 'Cancelled'){
     $searchQuery .= " and is_cancel = 'Y'";
   }
 }else{
-  $searchQuery .= " and is_complete = 'Y'";
+  $searchQuery .= " and is_complete = 'Y' AND is_cancel = 'N'";
 }
 
 if($_POST['invDelPo'] != null && $_POST['invDelPo'] != '' && $_POST['invDelPo'] != '-'){

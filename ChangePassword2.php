@@ -3,7 +3,7 @@
 
     <head>
         
-        <title>Change Password | PWS - Weighing System</title>
+        <title>Change Password | SPMT - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->

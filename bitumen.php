@@ -14,7 +14,7 @@ else{
 
 <head>
 
-    <title>Bitumen | PWS - Weighing System</title>
+    <title>Bitumen | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
