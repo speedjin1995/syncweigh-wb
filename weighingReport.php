@@ -1180,6 +1180,29 @@ if(($row = $result->fetch_assoc()) !== null){
             });
         });
 
+        // Handle group selection changes to disable selected options in other groups
+        $('#exportSoRepModal').on('change', 'select[id^="group"]', function() {
+            var selectedValues = [];
+            $('#exportSoRepModal select[id^="group"]').each(function() {
+                var val = $(this).val();
+                if (val) selectedValues.push(val);
+            });
+            
+            $('#exportSoRepModal select[id^="group"]').each(function() {
+                var currentSelect = $(this);
+                var currentValue = currentSelect.val();
+                
+                currentSelect.find('option').each(function() {
+                    var optionValue = $(this).val();
+                    if (optionValue && optionValue !== currentValue && selectedValues.includes(optionValue)) {
+                        $(this).prop('disabled', true);
+                    } else {
+                        $(this).prop('disabled', false);
+                    }
+                });
+            });
+        });
+
         $('#exportExcel').on('click', function(){
             var fromDateI = $('#fromDateSearch').val();
             var toDateI = $('#toDateSearch').val();
