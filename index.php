@@ -810,18 +810,31 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-xxl-8 col-lg-8">
-                                                                                        <div class="col-xxl-6 col-lg-6 mb-3">
-                                                                                            <div class="row">
-                                                                                                <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
-                                                                                                <div class="col-sm-8">
-                                                                                                    <select id="weightType" name="weightType" class="form-select select2">
-                                                                                                        <option value="Normal" selected>Normal Weighing</option>
-                                                                                                        <?php if($includeContainer == 'Y'): ?>
-                                                                                                        <option value="Container">Primer Mover</option>
-                                                                                                        <option value="Empty Container">Primer Mover + Container</option>
-                                                                                                        <option value="Different Container">Primer Mover + Different Bins</option>
-                                                                                                        <?php endif; ?>
-                                                                                                    </select>   
+                                                                                        <div class="row">
+                                                                                            <div class="col-xxl-6 col-lg-6 mb-3">
+                                                                                                <div class="row">
+                                                                                                    <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
+                                                                                                    <div class="col-sm-8">
+                                                                                                        <select id="weightType" name="weightType" class="form-select select2">
+                                                                                                            <option value="Normal" selected>Normal Weighing</option>
+                                                                                                            <?php if($includeContainer == 'Y'): ?>
+                                                                                                            <option value="Container">Primer Mover</option>
+                                                                                                            <option value="Empty Container">Primer Mover + Container</option>
+                                                                                                            <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                                                            <?php endif; ?>
+                                                                                                        </select>   
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-xxl-6 col-lg-6 mb-3" style="display: <?php if($includePrice == 'N'): ?>none<?php else: ?>block<?php endif; ?>">
+                                                                                                <div class="row">
+                                                                                                    <label for="customerType" class="col-sm-4 col-form-label">Customer Type</label>
+                                                                                                    <div class="col-sm-8">
+                                                                                                        <select id="customerType" name="customerType" class="form-select select2">
+                                                                                                            <option>Cash</option>
+                                                                                                            <option selected>Normal</option>
+                                                                                                        </select>   
+                                                                                                    </div>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
@@ -1262,17 +1275,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
                                                         <!-- All Hidden Fields -->
                                                         <div style="display:none;">
-                                                            <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
-                                                                <div class="row">
-                                                                    <label for="customerType" class="col-sm-4 col-form-label">Customer Type</label>
-                                                                    <div class="col-sm-8">
-                                                                        <select id="customerType" name="customerType" class="form-select select2">
-                                                                            <option>Cash</option>
-                                                                            <option selected>Normal</option>
-                                                                        </select>   
-                                                                    </div>
-                                                                </div>
-                                                            </div>
                                                             <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                                 <div class="row">
                                                                     <label for="poSupplyWeight" class="col-sm-4 col-form-label">P/O Supply Weight</label>
@@ -4312,9 +4314,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#replaceContainerText').text(replacementContainer);
         });
 
-        /*$('#customerType').on('change', function(){
+        $('#customerType').on('change', function(){
             var transactionStatus = $('#addModal').find('#transactionStatus').val();
             if (transactionStatus == 'Purchase'){
+                $('#priceCard').hide();
                 $('#unitPriceDisplay').hide();
                 $('#subTotalPriceDisplay').hide();
                 $('#sstDisplay').hide();
@@ -4322,6 +4325,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             }else{
                 if($(this).val() == "Cash")
                 {
+                    $('#priceCard').show();
                     $('#unitPriceDisplay').show();
                     $('#subTotalPriceDisplay').show();
                     $('#sstDisplay').show();
@@ -4329,13 +4333,14 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 }
                 else
                 {
+                    $('#priceCard').hide();
                     $('#unitPriceDisplay').hide();
                     $('#subTotalPriceDisplay').hide();
                     $('#sstDisplay').hide();
                     $('#totalPriceDisplay').hide();
                 }
             }
-        });*/
+        });
 
         $('#manualVehicle').on('change', function(){
             if($(this).is(':checked')){
@@ -4637,6 +4642,16 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             
             var current = nett1 - nett2;
             $('#weightDifference').val(current.toFixed(0));
+
+            // Update Price
+            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()).toFixed(2) : 0.00;
+            var weight = nett1;
+            var subTotalPrice = price * weight;
+            var sstPrice = subTotalPrice * 0.06;
+            var totalPrice = subTotalPrice + sstPrice;
+            $('#subTotalPrice').val(subTotalPrice.toFixed(2));
+            $('#sstPrice').val(sstPrice.toFixed(2));
+            $('#totalPrice').val(totalPrice.toFixed(2));
         });
 
         $('#orderWeight').on('change', function(){
@@ -4825,6 +4840,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             }
 
             if($(this).val() == "Purchase"){
+                $('#customerType').val('Normal').trigger('change');
                 $('#divWeightDifference').show();
                 //$('#divSupplierWeight').show();
                 $('#addModal').find('#orderWeight').val("");
@@ -4868,15 +4884,16 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#productVariance').val($('#productName :selected').data('variance'));
 
             var price = $('#productPrice').val() ? parseFloat($('#productPrice').val()).toFixed(2) : 0.00;
-            var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;
-            var subTotalPrice = price * weight;
-            var sstPrice = subTotalPrice * 0.08;
-            var totalPrice = subTotalPrice + sstPrice;
+            // var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;
+            // var subTotalPrice = price * weight;
+            // var sstPrice = subTotalPrice * 0.08;
+            // var totalPrice = subTotalPrice + sstPrice;
 
             $('#unitPrice').val(price);
-            $('#subTotalPrice').val(subTotalPrice.toFixed(2));
-            $('#sstPrice').val(sstPrice.toFixed(2));
-            $('#totalPrice').val(totalPrice.toFixed(2));
+            $('#finalWeight').trigger('change');
+            // $('#subTotalPrice').val(subTotalPrice.toFixed(2));
+            // $('#sstPrice').val(sstPrice.toFixed(2));
+            // $('#totalPrice').val(totalPrice.toFixed(2));
         });
 
         //supplierName
