@@ -3421,7 +3421,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         if(data.includes("ST,NT")){
                             var text = data.split(",");
                             var text2 = text[text.length - 1];
-                            debugger;
                             text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "").replace(" ", "");
                             $('#indicatorWeight').html(parseInt(text2).toString());
                             $('#indicatorConnected').addClass('bg-primary');
