@@ -1,22 +1,22 @@
-<div class="app-menu navbar-menu" style="background: #dc3545;">
+<div class="app-menu navbar-menu" style="background: #103268;">
     <!-- LOGO -->
     <div class="navbar-brand-box">
         <!-- Dark Logo-->
         <a href="index.php" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="assets/images/logo/favicon.png" alt="" height="40">
+                <img src="assets/images/logo-sm.png" alt="" height="70">
             </span>
             <span class="logo-lg">
-                <img src="assets/images/logo/logo1.png" alt="" height="110">
+                <img src="assets/images/logo-lg.png" alt="" height="100">
             </span>
         </a>
         <!-- Light Logo-->
         <a href="index.php" class="logo logo-light">
             <span class="logo-sm">
-                <img src="assets/images/logo/favicon.png" alt="" height="40">
+                <img src="assets/images/logo-sm.png" alt="" height="70">
             </span>
             <span class="logo-lg">
-                <img src="assets/images/logo/logo1.png" alt="" height="110">
+                <img src="assets/images/logo-lg.png" alt="" height="100">
             </span>
         </a>
         <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
