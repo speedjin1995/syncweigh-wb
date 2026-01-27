@@ -532,7 +532,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                             <div class="col-lg-4">
                                                                                 <div class="hstack gap-2 justify-content-center">
                                                                                     <div class="col-xl-12 col-md-12 col-md-12">
-                                                                                        <div class="card bg-danger">
+                                                                                        <div class="card bg-primary">
                                                                                             <div class="card-body">
                                                                                                 <div class="d-flex justify-content-between">
                                                                                                     <div>
