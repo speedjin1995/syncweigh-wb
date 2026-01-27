@@ -147,15 +147,15 @@ if(isset($_GET['plant']) && $_GET['plant'] != null && $_GET['plant'] != '' && $_
 if(isset($_GET['status']) && $_GET['status'] != null && $_GET['status'] != '' && $_GET['status'] != '-'){
     if($_GET["file"] == 'weight'){
         if ($_GET['status'] == 'Complete'){
-            $searchQuery .= " and Weight.is_complete = 'Y'";
+            $searchQuery .= " and Weight.is_complete = 'Y' AND Weight.is_cancel = 'N'";
             // $searchContainerQuery .= " and is_complete='Y' and is_cancel='Y'";
         }elseif ($_GET['status'] == 'Cancelled'){
             $searchQuery .= " and Weight.is_cancel = 'Y'";
         }elseif ($_GET['status'] == 'Pending'){
-            $searchQuery .= " and is_complete='N' AND is_cancel='N'";
+            $searchQuery .= " and Weight.is_complete='N' AND Weight.is_cancel='N'";
             // $searchContainerQuery .= " and is_complete='Y'";
         }else{
-            $searchQuery .= " and Weight.is_complete = 'Y'";
+            $searchQuery .= " and Weight.is_complete = 'Y' AND Weight.is_cancel = 'N'";
         }
     }
 }
