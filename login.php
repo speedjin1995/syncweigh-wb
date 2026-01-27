@@ -136,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="auth-page-wrapper pt-5">
             <!-- auth page bg -->
             <div class="auth-one-bg-position auth-one-bg"  id="auth-particles">
-                <div class="bg-overlay" style="background: #ff0000;opacity: 1;"></div>
+                <div class="bg-overlay" style="background: #103268;opacity: 1;"></div>
                 
                 <div class="shape">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
@@ -148,7 +148,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <!-- auth page content -->
             <div class="auth-page-content">
                 <div class="container">
-                    <!--div class="row">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="text-center mt-sm-5 mb-4 text-white-50" style="margin-bottom: 5px !important;">
+                                <div>
+                                    <a href="index.php" class="d-inline-block auth-logo">
+                                        <img src="assets/images/logo-lg.png" alt="" height="20" style="width: 50%; height: 100%;">
+                                    </a>
+                                </div>
+                                <p class="mt-3 fs-15 fw-medium" style="display: none;"> </p>
+                                <p class="mt-3 fs-15 fw-medium" style="display: none;">Synctronix Weighing System</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
                         <div class="col-lg-12">
                             <div class="text-center mt-sm-5 mb-4 text-white-50">
                                 <div>
@@ -160,7 +173,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <p class="mt-3 fs-15 fw-medium">Synctronix Weighing System</p>
                             </div>
                         </div>
-                    </div-->
+                    </div> -->
                     <!-- end row -->
 
                     <div class="row justify-content-center">
@@ -168,11 +181,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="card mt-4">
                             
                                 <div class="card-body p-4"> 
-                                    <div class="text-center mt-2">
+                                    <!-- <div class="text-center mt-2">
                                         <img src="assets/images/logo-lg.png" alt="" width="100%">
                                         <h5 class="text-primary"><br>Welcome Back !</h5>
                                         <p class="text-muted">Sign in to continue to weighing.</p>
-                                    </div>
+                                    </div> -->
                                     <div class="p-2 mt-4">
                                         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                             <div class="mb-3">
@@ -210,7 +223,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             </div-->
                                             
                                             <div class="mt-4">
-                                                <button class="btn btn-danger w-100" type="submit">Sign In</button>
+                                                <button class="btn btn-primary w-100" type="submit">Sign In</button>
                                             </div>
 
                                             <!--div class="mt-4 text-center">
