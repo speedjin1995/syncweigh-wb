@@ -62,7 +62,7 @@ if($row = $result->fetch_assoc()){
                                                         <option value="FS8000" <?=$indicator == 'FS8000' ? 'selected="selected"' : '';?>>FINE FS8000</option>
                                                         <option value="X2S" <?=$indicator == 'X2S' ? ' selected="selected"' : '';?>>SYNCTRONIX X2S</option>
                                                         <option value="X722" <?=$indicator == 'X722' ? ' selected="selected"' : '';?>>SYNCTRONIX X722</option>
-                                                        <option value="205" <?=$indicator == '205' ? ' selected="selected"' : '';?>>CARDINAL STORM 205</option>
+                                                        <option value="D2008" <?=$indicator == 'D2008' ? ' selected="selected"' : '';?>>SYNCTRONIX D2008</option>
                                                     </select>
                                                 </div>
                                             </div>
