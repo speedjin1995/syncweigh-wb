@@ -51,7 +51,7 @@ if($_POST['invoice'] != null && $_POST['invoice'] != '' && $_POST['invoice'] != 
 }
 
 if($_POST['batch'] != null && $_POST['batch'] != '' && $_POST['batch'] != '-'){
-	$searchQuery .= " and is_complete = '".$_POST['batch']."'";
+	$searchQuery .= " and is_complete = '".$_POST['batch']."' AND is_cancel = 'N'";
 }
 
 if($_POST['product'] != null && $_POST['product'] != '' && $_POST['product'] != '-'){
