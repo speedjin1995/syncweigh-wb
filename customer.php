@@ -7,7 +7,7 @@ $allowDeduct = $_SESSION["allowDeduct"];
 ?>
 
 <head>
-    <title>Customer | PWS - Weighing System</title>
+    <title>Customer | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->

@@ -126,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php include 'layouts/head-main.php'; ?>
 
     <head>
-        <title>Sign In | PWS - Weighing System</title>
+        <title>Sign In | SPMT - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
         <?php include 'layouts/head-css.php'; ?>
     </head>

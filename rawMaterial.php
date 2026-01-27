@@ -15,7 +15,7 @@
     }
 ?>
 <head>
-    <title>Raw Material | PWS - Weighing System</title>
+    <title>Raw Material | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->

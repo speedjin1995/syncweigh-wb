@@ -8,7 +8,7 @@
 ?>
 
 <head>
-    <title>Vehicle | PWS - Weighing System</title>
+    <title>Vehicle | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->

@@ -53,7 +53,7 @@ if(($row = $result->fetch_assoc()) !== null){
 
 <head>
 
-    <title>Reports | PWS - Weighing System</title>
+    <title>Reports | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->

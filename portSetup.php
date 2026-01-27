@@ -27,7 +27,7 @@ if($row = $result->fetch_assoc()){
 
     <head>
         
-        <title>Port Setup | PWS - Weighing System</title>
+        <title>Port Setup | SPMT - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->

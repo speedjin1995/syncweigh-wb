@@ -33,7 +33,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
 <head>
 
-    <title>Users | PWS - Weighing System</title>
+    <title>Users | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->

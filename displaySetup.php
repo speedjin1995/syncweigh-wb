@@ -27,7 +27,7 @@ if($row = $result->fetch_assoc()){
 
     <head>
         
-        <title>Display Setup | Synctronix - Weighing System</title>
+        <title>Display Setup | SPMT - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->
