@@ -163,7 +163,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
 <head>
 
-    <title>Weighing | PWS - Weighing System</title>
+    <title>Weighing | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -3929,20 +3929,25 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         $('#exportPdf').on('click', function(){
             var fromDateI = $('#fromDateSearch').val();
             var toDateI = $('#toDateSearch').val();
-            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+            var transactionStatusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
             var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
             var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
             var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
             var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-            var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
+            var statusI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
             var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
 
-            if (batchNoI == 'N'){
-                batchNoI = 'Pending';
-            }else if (batchNoI == 'Y'){
-                batchNoI = 'Complete';
+            if (transactionStatusI == '-'){
+                alert("Please select valid Transaction Status");
+                return;
+            }
+
+            if (statusI == 'N'){
+                statusI = 'Pending';
+            }else if (statusI == 'Y'){
+                statusI = 'Complete';
             }
 
             var selectedIds = []; // An array to store the selected 'id' values
@@ -3959,13 +3964,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             if (selectedIds.length > 0) {
                 $.post('php/exportPdf.php', {
                     fromDate : fromDateI,
-                    toDate : fromDateI,
-                    transactionStatus : statusI,
+                    toDate : toDateI,
+                    transactionStatus : transactionStatusI,
                     customer : customerNoI,
                     supplier : supplierNoI,
                     vehicle : vehicleNoI,
                     weighingType : invoiceNoI,
-                    status : batchNoI,
+                    status : statusI,
                     product : productSearchI,
                     rawMat : rawMaterialI,
                     plant : plantNoI,
@@ -3998,18 +4003,19 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             }else{
                 $.post('php/exportPdf.php', {
                     fromDate : fromDateI,
-                    toDate : fromDateI,
-                    transactionStatus : statusI,
+                    toDate : toDateI,
+                    transactionStatus : transactionStatusI,
                     customer : customerNoI,
                     supplier : supplierNoI,
                     vehicle : vehicleNoI,
                     weighingType : invoiceNoI,
-                    status : batchNoI,
+                    status : statusI,
                     product : productSearchI,
                     rawMat : rawMaterialI,
                     plant : plantNoI,
                     isMulti : 'N',
-                    file : 'weight'
+                    file : 'weight',
+                    reportType: 'S&PC'
                 }, function(response){
                     var obj = JSON.parse(response);
 

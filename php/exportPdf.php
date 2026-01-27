@@ -1519,9 +1519,9 @@ if(isset($_POST["file"])){
         else{
             if ($isMulti == 'Y'){
                 $id = $_POST['id'];
-                $sql = "select * from Weight WHERE id IN ($id) ORDER BY tare_weight1_date ASC";
+                $sql = "select * from Weight WHERE id IN ($id) ORDER BY transaction_date ASC";
             }else{
-                $sql = "select * from Weight WHERE is_complete = 'Y' ".$searchQuery.' ORDER BY tare_weight1_date ASC';
+                $sql = "select * from Weight WHERE is_complete = 'Y' ".$searchQuery.' ORDER BY transaction_date ASC';
             }
 
             if ($select_stmt = $db->prepare($sql)) {
