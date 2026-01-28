@@ -2993,29 +2993,32 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $('#printCameraModal').find('#isEmptyContainer').val(isEmptyContainer);
                         $("#printCameraModal").modal("show");*/
 
-                        $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-                            var obj2 = JSON.parse(data);
+                        var transactionStatus = $('#transactionStatus').val();
+                        print(obj.id, transactionStatus, isEmptyContainer);
 
-                            if(obj2.status === 'success'){
-                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                printWindow.document.write(obj2.message);
-                                printWindow.document.close();
-                                setTimeout(function(){
-                                    printWindow.print();
-                                    printWindow.close();
-                                    table.ajax.reload();
-                                    window.location = 'index.php';
-                                }, 500);
-                            }
-                            else if(obj.status === 'failed'){
-                                $("#failBtn").attr('data-toast-text', obj.message );
-                                $("#failBtn").click();
-                            }
-                            else{
-                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                                $("#failBtn").click();
-                            }
-                        });
+                        // $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+                        //     var obj2 = JSON.parse(data);
+
+                        //     if(obj2.status === 'success'){
+                        //         var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                        //         printWindow.document.write(obj2.message);
+                        //         printWindow.document.close();
+                        //         setTimeout(function(){
+                        //             printWindow.print();
+                        //             printWindow.close();
+                        //             table.ajax.reload();
+                        //             window.location = 'index.php';
+                        //         }, 500);
+                        //     }
+                        //     else if(obj.status === 'failed'){
+                        //         $("#failBtn").attr('data-toast-text', obj.message );
+                        //         $("#failBtn").click();
+                        //     }
+                        //     else{
+                        //         $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                        //         $("#failBtn").click();
+                        //     }
+                        // });
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -3165,6 +3168,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             setTimeout(function(){
                                 printWindow.print();
                                 printWindow.close();
+                                location.reload();
                             }, 500);
 
                             $('#spinnerLoading').hide();
