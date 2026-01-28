@@ -3424,7 +3424,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     $('#checkingConnection').addClass('bg-danger');
                 }
             });
-        }, 500);
+        }, 200);
 
         if(dstatus === "Enable"){
             $(document).on('keydown', function(e) {
