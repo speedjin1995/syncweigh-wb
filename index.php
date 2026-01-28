@@ -2995,29 +2995,32 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $('#printCameraModal').find('#isEmptyContainer').val(isEmptyContainer);
                         $("#printCameraModal").modal("show");*/
 
-                        $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-                            var obj2 = JSON.parse(data);
+                        var transactionStatus = $('#transactionStatus').val();
+                        print(obj.id, transactionStatus, isEmptyContainer);
 
-                            if(obj2.status === 'success'){
-                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                printWindow.document.write(obj2.message);
-                                printWindow.document.close();
-                                setTimeout(function(){
-                                    printWindow.print();
-                                    printWindow.close();
-                                    table.ajax.reload();
-                                    window.location = 'index.php';
-                                }, 500);
-                            }
-                            else if(obj.status === 'failed'){
-                                $("#failBtn").attr('data-toast-text', obj.message );
-                                $("#failBtn").click();
-                            }
-                            else{
-                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                                $("#failBtn").click();
-                            }
-                        });
+                        // $.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+                        //     var obj2 = JSON.parse(data);
+
+                        //     if(obj2.status === 'success'){
+                        //         var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                        //         printWindow.document.write(obj2.message);
+                        //         printWindow.document.close();
+                        //         setTimeout(function(){
+                        //             printWindow.print();
+                        //             printWindow.close();
+                        //             table.ajax.reload();
+                        //             window.location = 'index.php';
+                        //         }, 500);
+                        //     }
+                        //     else if(obj.status === 'failed'){
+                        //         $("#failBtn").attr('data-toast-text', obj.message );
+                        //         $("#failBtn").click();
+                        //     }
+                        //     else{
+                        //         $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                        //         $("#failBtn").click();
+                        //     }
+                        // });
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -3167,6 +3170,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             setTimeout(function(){
                                 printWindow.print();
                                 printWindow.close();
+                                location.reload();
                             }, 500);
 
                             $('#spinnerLoading').hide();
@@ -3435,7 +3439,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     $('#checkingConnection').addClass('bg-danger');
                 }
             });
-        }, 100);
+        }, 200);
 
         if(dstatus === "Enable"){
             $(document).on('keydown', function(e) {
@@ -4362,6 +4366,29 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             x = x.toUpperCase();
             $('#vehicleNoTxt').val(x);
             var transactionStatus = $('#transactionStatus').val();
+            if (x){
+                $.post('php/getVehicle.php', {userID: x, type: 'lookup'}, function (data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                    }
+                    else if(obj.status === 'error'){
+                        alert(obj.message);
+                        //$('#vehicleNoTxt').val('');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
 
             /*if (x){
                 $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
@@ -4402,6 +4429,30 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         $('#vehiclePlateNo1').on('change', function(){
             var vehiclePlateNo1 = $(this).val();
             var transactionStatus = $('#transactionStatus').val();
+            if (vehiclePlateNo1){
+                $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'lookup'}, function (data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                    }
+                    else if(obj.status === 'error'){
+                        alert(obj.message);
+                        $('#vehicleNoTxt').val('');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
+
             /*if (vehiclePlateNo1){
                 $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
