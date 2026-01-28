@@ -55,7 +55,7 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' AND status = '
 $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '0' ORDER BY name ASC");
 ?>
     <head>
-        <title><?=$languageArray['deduction_setup_code'][$language]?> | PWS - Weighing System</title>
+        <title><?=$languageArray['deduction_setup_code'][$language]?> | SPMT - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->

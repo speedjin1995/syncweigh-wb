@@ -82,7 +82,7 @@ else{
 
 <head>
 
-    <title>Weighing | PWS - Weighing System</title>
+    <title>Weighing | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->

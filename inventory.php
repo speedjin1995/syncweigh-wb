@@ -14,7 +14,7 @@ else{
 
 <head>
 
-    <title>Inventory | PWS - Weighing System</title>
+    <title>Inventory | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->

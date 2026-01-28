@@ -48,7 +48,7 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
 
     <head>
         
-        <title>Company Profile | PWS - Weighing System</title>
+        <title>Company Profile | SPMT - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->

@@ -3,7 +3,7 @@
 
     <head>
         
-        <title>Purge Data | PWS - Weighing System</title>
+        <title>Purge Data | SPMT - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->

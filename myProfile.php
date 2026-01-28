@@ -23,7 +23,7 @@ if (mysqli_stmt_fetch($stmt2)) {
 
     <head>
         
-        <title>My Profile | PWS - Weighing System</title>
+        <title>My Profile | SPMT - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
         <!-- swiper css -->

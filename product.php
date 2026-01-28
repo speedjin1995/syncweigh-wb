@@ -19,7 +19,7 @@
 ?>
 
 <head>
-    <title>Product | PWS - Weighing System</title>
+    <title>Product | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->

@@ -53,7 +53,7 @@ if(($row = $result->fetch_assoc()) !== null){
 
 <head>
 
-    <title>Reports | PWS - Weighing System</title>
+    <title>Reports | SPMT - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -152,7 +152,6 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <div class="mb-3">
                                                             <label for="transactionStatusSearch" class="form-label">Transaction Status</label>
                                                             <select id="transactionStatusSearch" class="form-select">
-                                                                <option selected>-</option>
                                                                 <option value="Sales" selected>Sales</option>
                                                                 <option value="Purchase">Purchase</option>
                                                                 <option value="Local">Public</option>
@@ -595,6 +594,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                             <input type="hidden" class="form-control" id="fromDate" name="fromDate">                                   
                                             <input type="hidden" class="form-control" id="toDate" name="toDate">                                   
                                             <input type="hidden" class="form-control" id="status" name="status">                                   
+                                            <input type="hidden" class="form-control" id="transactionStatus" name="transactionStatus">                                   
                                             <input type="hidden" class="form-control" id="customer" name="customer">     
                                             <input type="hidden" class="form-control" id="supplier" name="supplier"> 
                                             <input type="hidden" class="form-control" id="vehicle" name="vehicle">     
@@ -1001,7 +1001,8 @@ if(($row = $result->fetch_assoc()) !== null){
 
                     $('#exportSoRepForm').find('#fromDate').val(fromDateI);
                     $('#exportSoRepForm').find('#toDate').val(toDateI);
-                    $('#exportSoRepForm').find('#status').val(transactionStatusI);
+                    $('#exportSoRepForm').find('#status').val(statusI);
+                    $('#exportSoRepForm').find('#transactionStatus').val(transactionStatusI);
                     $('#exportSoRepForm').find('#customer').val(customerNoI);
                     $('#exportSoRepForm').find('#supplier').val(supplierNoI);
                     $('#exportSoRepForm').find('#vehicle').val(vehicleNoI);
@@ -1176,6 +1177,29 @@ if(($row = $result->fetch_assoc()) !== null){
                 unhighlight: function (element, errorClass, validClass) {
                     $(element).removeClass('is-invalid');
                 }
+            });
+        });
+
+        // Handle group selection changes to disable selected options in other groups
+        $('#exportSoRepModal').on('change', 'select[id^="group"]', function() {
+            var selectedValues = [];
+            $('#exportSoRepModal select[id^="group"]').each(function() {
+                var val = $(this).val();
+                if (val) selectedValues.push(val);
+            });
+            
+            $('#exportSoRepModal select[id^="group"]').each(function() {
+                var currentSelect = $(this);
+                var currentValue = currentSelect.val();
+                
+                currentSelect.find('option').each(function() {
+                    var optionValue = $(this).val();
+                    if (optionValue && optionValue !== currentValue && selectedValues.includes(optionValue)) {
+                        $(this).prop('disabled', true);
+                    } else {
+                        $(this).prop('disabled', false);
+                    }
+                });
             });
         });
 
