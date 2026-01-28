@@ -145,14 +145,14 @@ if(isset($_POST['plant']) && $_POST['plant'] != null && $_POST['plant'] != '' &&
 
 if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
     if ($_POST['status'] == 'Complete'){
-        $searchQuery .= " and is_complete = 'Y'";
+        $searchQuery .= " and is_complete = 'Y' AND is_cancel = 'N'";
     }elseif ($_POST['status'] == 'Cancelled'){
         $searchQuery .= " and is_cancel = 'Y'";
     }elseif ($_POST['status'] == 'Pending'){
         $searchQuery .= " and is_complete='N' AND is_cancel='N'";
     }
     else{
-        $searchQuery .= " and is_complete = 'Y'";
+        $searchQuery .= " and is_complete = 'Y' AND is_cancel = 'N'";
     }
 }
 
@@ -778,9 +778,9 @@ if(isset($_POST["file"])){
         else if ($_POST['reportType'] == 'S&PC'){
             if ($isMulti == 'Y'){
                 //$id = $_POST['id'];
-                $sql = "select * from Weight WHERE id IN ($ids) ORDER BY tare_weight1_date ASC";
+                $sql = "select * from Weight WHERE id IN ($ids) ORDER BY transaction_date ASC";
             }else{
-                $sql = "select * from Weight WHERE is_complete = 'Y' AND  is_cancel <> 'Y'".$searchQuery.' ORDER BY tare_weight1_date ASC';
+                $sql = "select * from Weight WHERE is_complete = 'Y'".$searchQuery.' ORDER BY transaction_date ASC';
             }
 
             if ($select_stmt = $db->prepare($sql)){
@@ -1519,9 +1519,9 @@ if(isset($_POST["file"])){
         else{
             if ($isMulti == 'Y'){
                 $id = $_POST['id'];
-                $sql = "select * from Weight WHERE id IN ($id) ORDER BY tare_weight1_date ASC";
+                $sql = "select * from Weight WHERE id IN ($id) ORDER BY transaction_date ASC";
             }else{
-                $sql = "select * from Weight WHERE is_complete = 'Y' AND  is_cancel <> 'Y'".$searchQuery.' ORDER BY tare_weight1_date ASC';
+                $sql = "select * from Weight WHERE is_complete = 'Y' ".$searchQuery.' ORDER BY transaction_date ASC';
             }
 
             if ($select_stmt = $db->prepare($sql)) {
