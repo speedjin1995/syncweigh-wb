@@ -1413,3 +1413,85 @@ INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`
 
 ALTER TABLE `Payment_Voucher` CHANGE `invoice_no` `invoice_no` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;
 ALTER TABLE `Payment_Voucher_Log` CHANGE `invoice_no` `invoice_no` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;
+
+-- 09/02/2026 --
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_book_payment_code', 'Cash Book Payment', '现金簿付款', 'Pembayaran Buku Tunai', 'பணம் புத்தக கட்டணம்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_book_code', 'Cash Book', '现金簿', 'Buku Tunai', 'பணப்பதிவு புத்தகம்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'number_short_code', 'No.', '编号', 'No.', 'எண்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'amount_code', 'Amount', '金额', 'Jumlah', 'தொகை');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'total_code', 'Total', '总计', 'Jumlah Keseluruhan', 'மொத்தம்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'total_deduction_code', 'Total Deduction', '总扣除', 'Jumlah Potongan', 'மொத்த கழிவு');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'total_addition_code', 'Total Addition', '总增加', 'Jumlah Penambahan', 'மொத்த சேர்க்கை');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_book_no_code', 'Cash Book No.', '现金簿编号', 'No. Buku Tunai', 'பணப்பதிவு புத்தகம் எண்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'delete_reason_code', 'Delete Reason', '删除原因', 'Sebab Padam', 'அழிக்கும் காரணம்');
+
+CREATE TABLE `Cash_Book` (
+  `id` int(11) NOT NULL,
+  `cash_book_no` varchar(100) NOT NULL,
+  `date` datetime NOT NULL,
+  `deduction_details` text DEFAULT NULL,
+  `addition_details` text DEFAULT NULL,
+  `total_deduction` varchar(100) DEFAULT NULL,
+  `total_addition` varchar(100) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `created_by` varchar(50) NOT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT 0,
+  `delete_reason` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE `Cash_Book` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Cash_Book` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `Cash_Book_Log` (
+  `id` int(11) NOT NULL,
+  `cash_book_id` int(11) NOT NULL,
+  `cash_book_no` varchar(100) NOT NULL,
+  `date` datetime NOT NULL,
+  `deduction_details` text DEFAULT NULL,
+  `addition_details` text DEFAULT NULL,
+  `total_deduction` varchar(100) DEFAULT NULL,
+  `total_addition` varchar(100) DEFAULT NULL,
+  `action_id` int(11) NOT NULL,
+  `action_by` varchar(50) NOT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE `Cash_Book_Log` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Cash_Book_Log` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_CASH_BOOK` AFTER INSERT ON `Cash_Book` FOR EACH ROW INSERT INTO Cash_Book_Log (
+    cash_book_id, cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.cash_book_no, NEW.date, NEW.deduction_details, NEW.addition_details, NEW.total_deduction, NEW.total_addition, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_CASH_BOOK` BEFORE UPDATE ON `Cash_Book` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if deleted = 1, set action_id to 3, otherwise set to 2
+    IF NEW.deleted = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Cash_Book_Log table
+    INSERT INTO Cash_Book_Log (
+        cash_book_id, cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.cash_book_no, NEW.date, NEW.deduction_details, NEW.addition_details, NEW.total_deduction, NEW.total_addition, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('cash_book', 1);
