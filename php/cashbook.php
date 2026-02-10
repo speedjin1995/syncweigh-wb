@@ -108,14 +108,101 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
         }
     }
 
+    // Query Previous Record to get accumulated values
+    $accumDeduction = [];
+    $accumAddition = [];
+    
+    $dateObj = new DateTime($date);
+    $dateOnly = $dateObj->format('Y-m-d');
+    
+    // Check for duplicate date
+    if (empty($cashbookId)) {
+        $checkSql = "SELECT id FROM Cash_Book WHERE DATE(date) = ? AND deleted = 0";
+        if ($check_stmt = $db->prepare($checkSql)) {
+            $check_stmt->bind_param('s', $dateOnly);
+            if ($check_stmt->execute()) {
+                $check_result = $check_stmt->get_result();
+                if ($check_result->num_rows > 0) {
+                    echo json_encode([
+                        "status" => "failed",
+                        "message" => "Cash book entry for this date already exists"
+                    ]);
+                    $check_stmt->close();
+                    $db->close();
+                    exit;
+                }
+            }
+            $check_stmt->close();
+        }
+    }
+    
+    if ($dateObj->format('d') == '01') {
+        // Start of month - use current values as base
+        $accumDeduction = $deductionRecords;
+        $accumAddition = $additionRecords;
+    } else {
+        // Get previous record
+        $sql = "SELECT accum_deduction, accum_addition FROM Cash_Book WHERE DATE(date) < ? AND deleted = 0 ORDER BY date DESC LIMIT 1";
+        if ($select_stmt = $db->prepare($sql)) {
+            $dateOnly = $dateObj->format('Y-m-d');
+            $select_stmt->bind_param('s', $dateOnly);
+            if ($select_stmt->execute()) {
+                $result = $select_stmt->get_result();
+                if ($row = $result->fetch_assoc()) {
+                    $prevDeduction = json_decode($row['accum_deduction'], true) ?: [];
+                    $prevAddition = json_decode($row['accum_addition'], true) ?: [];
+                    
+                    // Build lookup arrays by type
+                    $prevDeductionMap = [];
+                    foreach ($prevDeduction as $item) {
+                        $prevDeductionMap[$item['type']] = floatval($item['amount']);
+                    }
+                    
+                    $prevAdditionMap = [];
+                    foreach ($prevAddition as $item) {
+                        $prevAdditionMap[$item['type']] = floatval($item['amount']);
+                    }
+                    
+                    // Accumulate deductions
+                    foreach ($deductionRecords as $record) {
+                        $prevAmount = isset($prevDeductionMap[$record['type']]) ? $prevDeductionMap[$record['type']] : 0;
+                        $accumDeduction[] = [
+                            'no' => $record['no'],
+                            'type' => $record['type'],
+                            'desc' => $record['desc'],
+                            'amount' => $prevAmount + floatval($record['amount'])
+                        ];
+                    }
+                    
+                    // Accumulate additions
+                    foreach ($additionRecords as $record) {
+                        $prevAmount = isset($prevAdditionMap[$record['type']]) ? $prevAdditionMap[$record['type']] : 0;
+                        $accumAddition[] = [
+                            'no' => $record['no'],
+                            'type' => $record['type'],
+                            'desc' => $record['desc'],
+                            'amount' => $prevAmount + floatval($record['amount'])
+                        ];
+                    }
+                } else {
+                    // No previous record - use current values
+                    $accumDeduction = $deductionRecords;
+                    $accumAddition = $additionRecords;
+                }
+            }
+            $select_stmt->close();
+        }
+    }
+
     if(!empty($cashbookId))
     {
-        if ($update_stmt = $db->prepare("UPDATE Cash_Book SET cash_book_no=?, date=?, deduction_details=?, addition_details=?, total_deduction=?, total_addition=?, created_by=?, modified_by=? WHERE id=?")) 
+        if ($update_stmt = $db->prepare("UPDATE Cash_Book SET cash_book_no=?, date=?, deduction_details=?, addition_details=?, total_deduction=?, total_addition=?, accum_deduction=?, accum_addition=?, created_by=?, modified_by=? WHERE id=?")) 
         {
             $deductionJson = json_encode($deductionRecords);
             $additionJson = json_encode($additionRecords);
-            $update_stmt->bind_param('sssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $username, $username, $cashbookId);
-
+            $accumDeductionJson = json_encode($accumDeduction);
+            $accumAdditionJson = json_encode($accumAddition);
+            $update_stmt->bind_param('sssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $username, $username, $cashbookId);
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
                 echo json_encode(
@@ -139,10 +226,12 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
     }
     else
     {
-        if ($insert_stmt = $db->prepare("INSERT INTO Cash_Book (cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+        if ($insert_stmt = $db->prepare("INSERT INTO Cash_Book (cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, accum_deduction, accum_addition, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             $deductionJson = json_encode($deductionRecords);
             $additionJson = json_encode($additionRecords);
-            $insert_stmt->bind_param('ssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $username, $username);
+            $accumDeductionJson = json_encode($accumDeduction);
+            $accumAdditionJson = json_encode($accumAddition);
+            $insert_stmt->bind_param('ssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $username, $username);
 
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {

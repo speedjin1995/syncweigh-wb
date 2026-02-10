@@ -306,6 +306,8 @@ if(($row = $result->fetch_assoc()) !== null){
             </td>
             <td>
                 <select class="form-select" id="deductionType" name="deductionType" required>
+                    <option value="CASHOUT">Cash Out</option>
+                    <option value="CREDITNOTE">Credit Note</option>
                     <option value="CREDITFFBRAM">Credit FFB Advance (Ramp)</option>
                     <option value="CREDITFFBHQ">Credit FFB Advance (HQ)</option>
                     <option value="CREDITFFBADV">Credit FFB Advance</option>
@@ -481,6 +483,11 @@ if(($row = $result->fetch_assoc()) !== null){
                             '</button>' +
                             '<ul class="dropdown-menu dropdown-menu-end">' +
                                 '<li>' +
+                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
+                                        '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
+                                    '</a>' +
+                                '</li>' +
+                                '<li>' +
                                     '<a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')">' +
                                         '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
                                     '</a>' +
@@ -548,6 +555,11 @@ if(($row = $result->fetch_assoc()) !== null){
                                 '</button>' +
                                 '<ul class="dropdown-menu dropdown-menu-end">' +
                                     '<li>' +
+                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
+                                            '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
+                                        '</a>' +
+                                    '</li>' +
+                                    '<li>' +
                                         '<a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')">' +
                                             '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
                                         '</a>' +
@@ -569,6 +581,7 @@ if(($row = $result->fetch_assoc()) !== null){
             // Show Capture Buttons When Add New
             $('#addModal').find('#id').val("");
             $('#addModal').find('#date').val(formatDate2(today));
+            $('#addModal').find('#date')[0]._flatpickr.set('clickOpens', true);
             $('#addModal').find('#cashBookNo').val("");
             $('#addModal').find('#totalDeduction').val("0");
             $('#addModal').find('#totalAddition').val("0");
@@ -737,6 +750,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 $('#addModal').find('#id').val(obj.message.id);
                 $('#addModal').find('#cashBookNo').val(obj.message.cash_book_no);
                 $('#addModal').find('#date').val(formatDate2(new Date(obj.message.date)));
+                $('#addModal').find('#date')[0]._flatpickr.set('clickOpens', false);
                 $('#addModal').find('#totalDeduction').val(obj.message.total_deduction);
                 $('#addModal').find('#totalAddition').val(obj.message.total_addition);
 
@@ -858,6 +872,31 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#totalAddition').val(totalAdditions.toFixed(2));
     }
 
+    function print(id) {
+        $.post('php/printExpenseReport.php', { userID: id }, function(response){
+            var obj = JSON.parse(response);
+
+            if(obj.status === 'success'){
+                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                printWindow.document.write(obj.message);
+                printWindow.document.close();
+                setTimeout(function(){
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
+            }
+            else if(obj.status === 'failed'){
+                toastr["error"](obj.message, "Failed:");
+            }
+            else{
+                toastr["error"]("Something wrong when activate", "Failed:");
+            }
+        }).fail(function(error){
+            console.error("Error exporting PDF:", error);
+            alert("An error occurred while generating the PDF.");
+        });
+    }
+    
     function deactivate(id) {
         if (confirm('Are you sure you want to cancel this item?')) {
             $('#cancelModal').find('#id').val(id);

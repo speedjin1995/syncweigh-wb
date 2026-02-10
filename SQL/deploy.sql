@@ -1433,6 +1433,8 @@ CREATE TABLE `Cash_Book` (
   `addition_details` text DEFAULT NULL,
   `total_deduction` varchar(100) DEFAULT NULL,
   `total_addition` varchar(100) DEFAULT NULL,
+  `accum_deduction` text DEFAULT NULL,
+  `accum_addition` text DEFAULT NULL,
   `created_date` datetime NOT NULL DEFAULT current_timestamp(),
   `created_by` varchar(50) NOT NULL,
   `modified_date` datetime NOT NULL DEFAULT current_timestamp(),
@@ -1454,6 +1456,8 @@ CREATE TABLE `Cash_Book_Log` (
   `addition_details` text DEFAULT NULL,
   `total_deduction` varchar(100) DEFAULT NULL,
   `total_addition` varchar(100) DEFAULT NULL,
+  `accum_deduction` text DEFAULT NULL,
+  `accum_addition` text DEFAULT NULL,
   `action_id` int(11) NOT NULL,
   `action_by` varchar(50) NOT NULL,
   `event_date` datetime NOT NULL DEFAULT current_timestamp()
@@ -1465,10 +1469,10 @@ ALTER TABLE `Cash_Book_Log` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 DELIMITER $$
 CREATE OR REPLACE TRIGGER `TRG_INS_CASH_BOOK` AFTER INSERT ON `Cash_Book` FOR EACH ROW INSERT INTO Cash_Book_Log (
-    cash_book_id, cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, action_id, action_by, event_date
+    cash_book_id, cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, accum_deduction, accum_addition, action_id, action_by, event_date
 ) 
 VALUES (
-    NEW.id, NEW.cash_book_no, NEW.date, NEW.deduction_details, NEW.addition_details, NEW.total_deduction, NEW.total_addition, 1, NEW.created_by, NEW.created_date
+    NEW.id, NEW.cash_book_no, NEW.date, NEW.deduction_details, NEW.addition_details, NEW.total_deduction, NEW.total_addition, NEW.accum_deduction, NEW.accum_addition, 1, NEW.created_by, NEW.created_date
 )
 $$
 DELIMITER ;
@@ -1485,10 +1489,10 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_CASH_BOOK` BEFORE UPDATE ON `Cash_Book` FOR E
 
     -- Insert into Cash_Book_Log table
     INSERT INTO Cash_Book_Log (
-        cash_book_id, cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, action_id, action_by, event_date
+        cash_book_id, cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, accum_deduction, accum_addition, action_id, action_by, event_date
     ) 
     VALUES (
-        NEW.id, NEW.cash_book_no, NEW.date, NEW.deduction_details, NEW.addition_details, NEW.total_deduction, NEW.total_addition, action_value, NEW.modified_by, NEW.modified_date
+        NEW.id, NEW.cash_book_no, NEW.date, NEW.deduction_details, NEW.addition_details, NEW.total_deduction, NEW.total_addition, NEW.accum_deduction, NEW.accum_addition, action_value, NEW.modified_by, NEW.modified_date
     );
 END
 $$
