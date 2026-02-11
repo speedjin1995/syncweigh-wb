@@ -555,7 +555,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                 '</button>' +
                                 '<ul class="dropdown-menu dropdown-menu-end">' +
                                     '<li>' +
-                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
+                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.transaction_date + '\')">' +
                                             '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
                                         '</a>' +
                                     '</li>' +
