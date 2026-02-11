@@ -625,6 +625,33 @@ if(($row = $result->fetch_assoc()) !== null){
         </div><!-- /.modal-dialog -->
     </div>
 
+    <div class="modal fade" id="exportExcelModal" tabindex="-1" role="dialog" aria-labelledby="exportExcelModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportExcelModalTitle">Select Report to Export</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="exportExcelForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exportReportType" class="form-label">Report Type *</label>
+                            <select id="exportReportType" name="exportReportType" class="form-select" required>
+                                <option value="weight">Weighing Records</option>
+                                <option value="purchase_grading">Purchase Grading (MPOB)</option>
+                            </select>
+                        </div>
+                    </div> 
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Export</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="prePrintModal">
         <div class="modal-dialog" style="max-width: 500px;">
             <div class="modal-content">
@@ -1034,6 +1061,42 @@ if(($row = $result->fetch_assoc()) !== null){
                         alert("An error occurred while generating the PDF.");
                     });
                 }
+                else if($('#exportExcelModal').hasClass('show')){
+                    var reportType = $('#exportReportType').val();
+                    var fromDateI = $('#fromDateSearch').val();
+                    var toDateI = $('#toDateSearch').val();
+                    var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
+                    var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+                    var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+                    var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+                    var weightTypeI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
+                    var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
+                    var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
+                    var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+                    var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
+                    var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+                    var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+
+                    var selectedIds = []; // An array to store the selected 'id' values
+
+                    $("#weightTable tbody input[type='checkbox']").each(function () {
+                        if (this.checked) {
+                            selectedIds.push($(this).val());
+                        }
+                    });
+
+                    if (selectedIds.length > 0) {
+                        window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                        "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
+                        "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+"&destination="+destinationI+"&plant="+plantI+
+                        "&status="+statusI+"&reportType="+reportType+"&isMulti=Y&ids="+selectedIds);
+                    } else {
+                        window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                        "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
+                        "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+"&destination="+destinationI+"&plant="+plantI+
+                        "&status="+statusI+"&reportType="+reportType+"&isMulti=N");
+                    }
+                }
             }
         });
 
@@ -1204,40 +1267,60 @@ if(($row = $result->fetch_assoc()) !== null){
         });
 
         $('#exportExcel').on('click', function(){
-            var fromDateI = $('#fromDateSearch').val();
-            var toDateI = $('#toDateSearch').val();
-            var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
-            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-            var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-            var weightTypeI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-            var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
-            var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
-            var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-            var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
-            var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-            
-            var selectedIds = []; // An array to store the selected 'id' values
+            $('#exportReportType').val('weight');
+            $('#exportExcelModal').modal('show');
 
-            $("#weightTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
-                    selectedIds.push($(this).val());
+            $('#exportExcelForm').validate({
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
                 }
             });
-
-            if (selectedIds.length > 0) {
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
-                "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
-                "&destination="+destinationI+"&plant="+plantI+"&status="+statusI+"&isMulti=Y&ids="+selectedIds);
-            } else {
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
-                "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
-                "&destination="+destinationI+"&plant="+plantI+"&status="+statusI+"&isMulti=N");
-            }
         });
+
+        // $('#exportExcelForm').on('submit', function(e){
+        //     e.preventDefault();
+        //     var reportType = $('#exportReportType').val();
+        //     var fromDateI = $('#fromDateSearch').val();
+        //     var toDateI = $('#toDateSearch').val();
+        //     var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
+        //     var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+        //     var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+        //     var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+        //     var weightTypeI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
+        //     var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
+        //     var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
+        //     var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+        //     var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
+        //     var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+        //     var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+            
+        //     var selectedIds = [];
+        //     $("#weightTable tbody input[type='checkbox']").each(function () {
+        //         if (this.checked) selectedIds.push($(this).val());
+        //     });
+
+        //     var url = "php/export.php?file="+reportType+"&fromDate="+fromDateI+"&toDate="+toDateI+
+        //         "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
+        //         "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
+        //         "&destination="+destinationI+"&plant="+plantI+"&status="+statusI;
+
+        //     if (selectedIds.length > 0) {
+        //         url += "&isMulti=Y&ids="+selectedIds;
+        //     } else {
+        //         url += "&isMulti=N";
+        //     }
+
+        //     $('#exportExcelModal').modal('hide');
+        //     window.open(url);
+        // });
 
         $('#transactionStatusSearch').on('change', function(){
             var status = $(this).val();

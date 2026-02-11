@@ -23,7 +23,9 @@ if(($row = $result->fetch_assoc()) !== null){
 }
  
 // Excel file name for download 
-if($_GET["file"] == 'weight'){
+if(isset($_GET['reportType']) && $_GET['reportType'] == 'purchase_grading'){
+    $fileName = "Purchase-Grading_" . date('Y-m-d') . ".xls";
+}elseif($_GET["file"] == 'weight'){
     $fileName = "Weight-data_" . date('Y-m-d') . ".xls";
 }else{
     $fileName = "Count-data_" . date('Y-m-d') . ".xls";
@@ -174,22 +176,46 @@ if($_GET['isMulti'] != null && $_GET['isMulti'] != '' && $_GET['isMulti'] != '-'
     }
 }
 
+$reportType = 'weight';
+if(isset($_GET['reportType']) && $_GET['reportType'] != null && $_GET['reportType'] != '' && $_GET['reportType'] != '-'){
+    $reportType = $_GET['reportType'];
+}
+
 // Column names 
-if ($includeContainer == 'Y') {
-    $fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'CUSTOMER CODE', 'CUSTOMER NAME', 
-        'SUPPLIER CODE', 'SUPPLIER NAME', 'PRODUCT CODE', 'PRODUCT NAME', 'PRODUCT DESCRIPTION', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 'TRANSPORTER',
-        'PO NO.', 'DO NO.', 'CONTAINER NO', 'SEAL NO', 'CONTAINER NO 2', 'SEAL NO 2', 'ORDER WEIGHT', 'SUPPLIER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME',
-        'GROSS WEIGHT 2', 'TARE WEIGHT 2', 'NET WEIGHT 2', 'IN TIME2', 'OUT TIME2', 'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT',  'MANUAL', 'CANCELLED', 'PLANT CODE', 
-        'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
-}else{
-    $fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'CUSTOMER CODE', 'CUSTOMER NAME', 
+if ($reportType == 'purchase_grading') {
+    $fields = array('Nama Penjual', 'No. Lesen MPOB Penjual', 'No. Kad Pengenalan /SSM Penjual', 'Nama Pembekal', 'No. Lesen MPOB Pembekal', 
+        'No. Kad Pengenalan Rakan Kongsi', 'No. Kontrak (Jika ada)', 'No. Tiket Timbang', 'No. E-Hantar (Jika ada)', 'No. Kend. (Jika ada)', 
+        'Berat Bersih (mt)', 'BKS Muda/ Peram (Tandan)', 'KPA (%)', 'Konsignan Basah - tidak segar', 'Konsignan Basah - P', 'Masak - J', 
+        'Mengkal - J', 'Mengkal - P', 'Busuk - J', 'Busuk - P', 'Kosong - J', 'Kosong - P', 'Kotor - J', 'Kotor - P', 'Lama - J', 
+        'Lama - P', 'Dura - J', 'Dura - P', 'Tangkai Panjang - J', 'Tangkai Panjang - P', 'Jumlah Penalti (%)', 'KPG (%)', 
+        'Harga Belian 1% - Harian', 'Harga Belian/mt (KPG x Harga 1%)');
+} elseif ($reportType == 'weight') {
+    if ($includeContainer == 'Y') {
+        $fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'CUSTOMER CODE', 'CUSTOMER NAME', 
+            'SUPPLIER CODE', 'SUPPLIER NAME', 'PRODUCT CODE', 'PRODUCT NAME', 'PRODUCT DESCRIPTION', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 'TRANSPORTER',
+            'PO NO.', 'DO NO.', 'CONTAINER NO', 'SEAL NO', 'CONTAINER NO 2', 'SEAL NO 2', 'ORDER WEIGHT', 'SUPPLIER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME',
+            'GROSS WEIGHT 2', 'TARE WEIGHT 2', 'NET WEIGHT 2', 'IN TIME2', 'OUT TIME2', 'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT',  'MANUAL', 'CANCELLED', 'PLANT CODE', 
+            'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
+    }else{
+        $fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'CUSTOMER CODE', 'CUSTOMER NAME', 
         'SUPPLIER CODE', 'SUPPLIER NAME', 'PRODUCT CODE', 'PRODUCT NAME', 'PRODUCT DESCRIPTION', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 'TRANSPORTER',
         'PO NO.', 'DO NO.', 'ORDER WEIGHT', 'SUPPLIER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME',
         'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT',  'MANUAL', 'CANCELLED', 'PLANT CODE', 'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
+    }
 }
 
 // Display column names as first row 
-$excelData = implode("\t", array_values($fields)) . "\n";
+if ($reportType == 'purchase_grading') {
+    $excelData = "<table border='1'><tr><td colspan='34' style='font-weight:bold;'>Pembelian/Penerimaan Buah Kelapa Sawit</td></tr>";
+    $excelData .= "<tr><td colspan='34'>Arahan: Untuk muatnaik pelaporan, jangan edit di 3 baris pertama.</td></tr>";
+    $excelData .= "<tr>";
+    foreach($fields as $field) {
+        $excelData .= "<td style='border:1px solid black;font-weight:bold;'>" . $field . "</td>";
+    }
+    $excelData .= "</tr>";
+} else {
+    $excelData = implode("\t", array_values($fields)) . "\n";
+}
 
 // Fetch records from database
 if($_GET["file"] == 'weight'){
@@ -215,66 +241,114 @@ if($query->num_rows > 0){
     while($row = $query->fetch_assoc()){
         $lineData = []; // Ensure it starts as an empty array each iteration
 
-        if($_GET["file"] == 'weight'){
-            $productCode = $row['product_code'];
-            $productName = $row['product_name'];
+        if($reportType == 'purchase_grading'){
+            $customerSupplierNewRegNo = '';
 
-            if($row['transaction_status'] == 'Sales'){
-                $transactionStatus = 'Sales';
+            if ($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc'){
+                $sql = "SELECT * FROM Customer WHERE customer_code = ? AND status = 0";
+
+                if ($stmt = $db->prepare($sql)) {
+                    $stmt->bind_param("s", $row['customer_code']);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
+                    if ($customerRow = $result->fetch_assoc()) {
+                        $customerSupplierNewRegNo = $customerRow['new_reg_no'];
+                    }
+                    $stmt->close();
+                }
+            }else{
+                $sql = "SELECT * FROM Supplier WHERE supplier_code = ? AND status = 0";
+
+                if ($stmt = $db->prepare($sql)) {
+                    $stmt->bind_param("s", $row['supplier_code']);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
+                    if ($supplierRow = $result->fetch_assoc()) {
+                        $customerSupplierNewRegNo = $supplierRow['new_reg_no'];
+                    }
+                    $stmt->close();
+                }
             }
-            else if($row['transaction_status'] == 'Purchase'){
-                $transactionStatus = 'Purchase';
-                $productCode = $row['raw_mat_code'];
-                $productName = $row['raw_mat_name'];
+
+            $lineData = array(
+                ($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc') ? $row['customer_name'] : $row['supplier_name'], 
+                '', $customerSupplierNewRegNo, '', '', '', $row['purchase_order'], $row['transaction_id'], $row['delivery_no'] ?? '', $row['lorry_plate_no1'] ?? '',
+                (float) $row['final_weight'] /1000 ?? '0', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+            );
+            $excelData .= "<tr>";
+            foreach($lineData as $data) {
+                $excelData .= "<td style='border:1px solid black;'>" . $data . "</td>";
             }
-            else if($row['transaction_status'] == 'Misc'){
-                $transactionStatus = 'Miscellaneous';
+            $excelData .= "</tr>";
+        }
+        elseif($reportType == 'weight') {
+            if($_GET["file"] == 'weight'){
+                $productCode = $row['product_code'];
+                $productName = $row['product_name'];
+
+                if($row['transaction_status'] == 'Sales'){
+                    $transactionStatus = 'Sales';
+                }
+                else if($row['transaction_status'] == 'Purchase'){
+                    $transactionStatus = 'Purchase';
+                    $productCode = $row['raw_mat_code'];
+                    $productName = $row['raw_mat_name'];
+                }
+                else if($row['transaction_status'] == 'Misc'){
+                    $transactionStatus = 'Miscellaneous';
+                }
+                else{
+                    $transactionStatus = 'Public';
+                }
+
+                if($row['weight_type'] == 'Container'){
+                    $weightType = 'Primer Mover';
+                }elseif($row['weight_type'] == 'Empty Container'){
+                    $weightType = 'Primer Mover + Container';
+                }else if($row['weight_type'] == 'Different Container'){
+                    $weightType = 'Primer Mover + Different Bins';
+                } else{
+                    $weightType = $row['weight_type'];
+                }
+
+                if ($includeContainer == 'Y') {
+                    $lineData = array($row['transaction_id'], $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['customer_code'],
+                    $row['customer_name'], $row['supplier_code'], $row['supplier_name'], $productCode, $productName, $row['product_description'], $row['destination_code'], 
+                    $row['destination'], $row['transporter_code'], $row['transporter'], $row['purchase_order'], $row['delivery_no'], $row['container_no'], $row['seal_no'], 
+                    $row['container_no2'], $row['seal_no2'], $row['order_weight'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], $row['nett_weight1'], $row['gross_weight1_date'], 
+                    $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], $row['tare_weight2_date'],
+                    $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], 
+                    $row['created_by'], $row['remarks']);
+                }else{
+                    $lineData = array($row['transaction_id'], $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['customer_code'],
+                    $row['customer_name'], $row['supplier_code'], $row['supplier_name'], $productCode, $productName, $row['product_description'], $row['destination_code'], 
+                    $row['destination'], $row['transporter_code'], $row['transporter'], $row['purchase_order'], $row['delivery_no'], $row['order_weight'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], $row['nett_weight1'], $row['gross_weight1_date'], 
+                    $row['tare_weight1_date'],
+                    $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], 
+                    $row['created_by'], $row['remarks']);
+                }
             }
             else{
-                $transactionStatus = 'Public';
+                $lineData = array($row['serialNo'], $row['product_name'], $row['units'], $row['unitWeight'], $row['tare'], $row['currentWeight'], $row['actualWeight'],
+                $row['totalPCS'], $row['moq'], $row['unitPrice'], $row['totalPrice'], $row['veh_number'], $row['lots_no'], $row['batchNo'], $row['invoiceNo']
+                , $row['deliveryNo'], $row['purchaseNo'], $row['customer_name'], $row['packages'], $row['dateTime'], $row['remark'], $row['status'], $deleted);
             }
-
-            if($row['weight_type'] == 'Container'){
-                $weightType = 'Primer Mover';
-            }elseif($row['weight_type'] == 'Empty Container'){
-                $weightType = 'Primer Mover + Container';
-            }else if($row['weight_type'] == 'Different Container'){
-                $weightType = 'Primer Mover + Different Bins';
-            } else{
-                $weightType = $row['weight_type'];
-            }
-
-            if ($includeContainer == 'Y') {
-                $lineData = array($row['transaction_id'], $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['customer_code'],
-                $row['customer_name'], $row['supplier_code'], $row['supplier_name'], $productCode, $productName, $row['product_description'], $row['destination_code'], 
-                $row['destination'], $row['transporter_code'], $row['transporter'], $row['purchase_order'], $row['delivery_no'], $row['container_no'], $row['seal_no'], 
-                $row['container_no2'], $row['seal_no2'], $row['order_weight'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], $row['nett_weight1'], $row['gross_weight1_date'], 
-                $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], $row['tare_weight2_date'],
-                $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], 
-                $row['created_by'], $row['remarks']);
-            }else{
-                $lineData = array($row['transaction_id'], $transactionStatus, $weightType, $row['transaction_date'], $row['lorry_plate_no1'], $row['customer_code'],
-                $row['customer_name'], $row['supplier_code'], $row['supplier_name'], $productCode, $productName, $row['product_description'], $row['destination_code'], 
-                $row['destination'], $row['transporter_code'], $row['transporter'], $row['purchase_order'], $row['delivery_no'], $row['order_weight'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], $row['nett_weight1'], $row['gross_weight1_date'], 
-                $row['tare_weight1_date'],
-                $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], 
-                $row['created_by'], $row['remarks']);
-            }
-        }
-        else{
-            $lineData = array($row['serialNo'], $row['product_name'], $row['units'], $row['unitWeight'], $row['tare'], $row['currentWeight'], $row['actualWeight'],
-            $row['totalPCS'], $row['moq'], $row['unitPrice'], $row['totalPrice'], $row['veh_number'], $row['lots_no'], $row['batchNo'], $row['invoiceNo']
-            , $row['deliveryNo'], $row['purchaseNo'], $row['customer_name'], $row['packages'], $row['dateTime'], $row['remark'], $row['status'], $deleted);
         }
 
         # Added checking to fix duplicated issue
-        if (!empty($lineData)) {
+        if (!empty($lineData) && $reportType != 'purchase_grading') {
             array_walk($lineData, 'filterData'); 
             $excelData .= implode("\t", array_values($lineData)) . "\n"; 
         }
     } 
 }else{ 
-    $excelData .= 'No records found...'. "\n"; 
+    if ($reportType == 'purchase_grading') {
+        $excelData .= '<tr><td colspan="34">No records found...</td></tr>';
+    } else {
+        $excelData .= 'No records found...'. "\n";
+    }
 } 
  
 // Headers for download 
@@ -282,7 +356,11 @@ header("Content-Type: application/vnd.ms-excel");
 header("Content-Disposition: attachment; filename=\"$fileName\""); 
  
 // Render excel data 
-echo $excelData;
+if ($reportType == 'purchase_grading') {
+    echo $excelData . "</table>";
+} else {
+    echo $excelData;
+}
  
 exit;
 ?>
