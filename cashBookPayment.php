@@ -580,7 +580,7 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#addCashBook').on('click', function(){
             // Show Capture Buttons When Add New
             $('#addModal').find('#id').val("");
-            $('#addModal').find('#date').val(formatDate2(today));
+            $('#addModal').find('#date')[0]._flatpickr.setDate(formatDate2(today), true);
             $('#addModal').find('#date')[0]._flatpickr.set('clickOpens', true);
             $('#addModal').find('#cashBookNo').val("");
             $('#addModal').find('#totalDeduction').val("0");
@@ -749,7 +749,7 @@ if(($row = $result->fetch_assoc()) !== null){
             if(obj.status === 'success'){
                 $('#addModal').find('#id').val(obj.message.id);
                 $('#addModal').find('#cashBookNo').val(obj.message.cash_book_no);
-                $('#addModal').find('#date').val(formatDate2(new Date(obj.message.date)));
+                $('#addModal').find('#date')[0]._flatpickr.setDate(formatDate2(new Date(obj.message.date)), true);
                 $('#addModal').find('#date')[0]._flatpickr.set('clickOpens', false);
                 $('#addModal').find('#totalDeduction').val(obj.message.total_deduction);
                 $('#addModal').find('#totalAddition').val(obj.message.total_addition);
