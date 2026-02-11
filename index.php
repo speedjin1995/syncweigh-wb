@@ -1151,7 +1151,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-xxl-4 col-lg-4" id="priceCard" style="display:none;">
+                                                                    <div class="col-xxl-4 col-lg-4" id="priceCard" style="display:<?php if($includePrice == 'N'): ?>none<?php else: ?>block<?php endif; ?>;">
                                                                         <div class="card bg-light" style="min-height: 385px;">
                                                                             <div class="card-body">
                                                                                 <div class="row mb-3" id="divOrderWeight">

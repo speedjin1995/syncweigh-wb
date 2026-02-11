@@ -2,11 +2,14 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <?php
+$pid = "1";
+$pid2 = "2";
 $user = $_SESSION['id'];
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
-$stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
-$stmt->bind_param('s', $user);
+$allowManual = $_SESSION['allowManual'];
+$stmt = $db->prepare("SELECT * from Port WHERE id = ?");
+$stmt->bind_param('s', $pid);
 $stmt->execute();
 $result = $stmt->get_result();
 //$role = 'NORMAL';
@@ -27,6 +30,20 @@ if(($row = $result->fetch_assoc()) !== null){
     $indicator = $row['indicator'];
 }
 
+
+$stmt2 = $db->prepare("SELECT * from Port WHERE id = ?");
+$stmt2->bind_param('s', $pid2);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
+
+if(($row2 = $result2->fetch_assoc()) !== null){
+    $port2 = $row2['com_port'];
+    $baudrate2 = $row2['bits_per_second'];
+    $databits2 = $row2['data_bits'];
+    $parity2 = $row2['parity'];
+    $stopbits2 = $row2['stop_bits'];
+    $indicator2 = $row2['indicator'];
+}
 $plantName = '-';
 
 if($plantId != null && count($plantId) > 0){
@@ -125,7 +142,7 @@ else{
 <!-- Begin page -->
 <div id="layout-wrapper">
 
-    <?php include 'layouts/menu2.php'; ?>
+    <?php include 'layouts/menu.php'; ?>
 
     <!-- ============================================================== -->
     <!-- Start right Content here -->
@@ -163,7 +180,7 @@ else{
                                             <div class="col-12">
                                                 <div class="hstack gap-2 justify-content-center">
                                                     <div class="col-xl-12 col-md-12 col-md-12">
-                                                        <div class="card bg-primary">
+                                                        <div class="card bg-danger">
                                                             <div class="card-body">
                                                                 <div class="d-flex justify-content-between">
                                                                     <div>
@@ -187,7 +204,10 @@ else{
                                             <div class="col-12">
                                                 <div class="card bg-light">
                                                     <div class="card-body">
-                                                        <div class="col-12">
+                                                        <div class="col-12" <?php 
+                                                            if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY' && $_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'MANAGER' && $allowManual == 'N'){
+                                                                echo 'style="display:none;"';
+                                                            }?>>
                                                             <div class="row">
                                                                 <label for="manualWeight" class="col-sm-4 col-form-label">Manual Weight</label>
                                                                 <div class="col-sm-8">
@@ -219,61 +239,73 @@ else{
                                                                 </div>
                                                             </div>
                                                         </div><br>
-                                                        <div class="col-12">
-                                                            <div class="row" id="productNameDisplay">
-                                                                <label for="productName" class="col-sm-4 col-form-label">Product</label>
-                                                                <div class="col-sm-8">
-                                                                    <select class="form-select select2" id="productName" name="productName" required>
-                                                                        <option selected="-">-</option>
-                                                                        <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
-                                                                            <option 
-                                                                                value="<?=$rowProduct['name'] ?>" 
-                                                                                data-price="<?=$rowProduct['price'] ?>" 
-                                                                                data-code="<?=$rowProduct['product_code'] ?>" 
-                                                                                data-high="<?=$rowProduct['high'] ?>" 
-                                                                                data-low="<?=$rowProduct['low'] ?>" 
-                                                                                data-variance="<?=$rowProduct['variance'] ?>" 
-                                                                                data-description="<?=$rowProduct['description'] ?>">
-                                                                                <?=$rowProduct['product_code'] ?>
-                                                                            </option>
-                                                                        <?php } ?>
-                                                                    </select>                                                                                        
-                                                                </div>
-                                                            </div>
-                                                            <div class="row" id="rawMaterialDisplay" style="display:none;">
-                                                                <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material</label>
-                                                                <div class="col-sm-8">
-                                                                    <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
-                                                                        <option selected="-">-</option>
-                                                                        <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                                                                            <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
-                                                                        <?php } ?>
-                                                                    </select>           
+                                                        <div class="row">
+                                                            <label for="vehiclePlateNo1" class="col-sm-4 col-form-label">
+                                                                Vehicle Plate No.
+                                                            </label>
+                                                            <div class="col-sm-8">
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No">
                                                                 </div>
                                                             </div>
                                                         </div><br>
-                                                        <div class="col-12">
-                                                            <div class="row">
-                                                                <label for="containerNo" class="col-sm-4 col-form-label">
-                                                                    Container No.
-                                                                </label>
-                                                                <div class="col-sm-8">
-                                                                    <div class="input-group">
-                                                                        <input type="text" class="form-control" id="containerNo" name="containerNo" placeholder="Container No">
+                                                        <div class="row">
+                                                            <div class="col-12" id="divCustomerName">
+                                                                <div class="row">
+                                                                    <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
+                                                                    <div class="col-sm-8">
+                                                                        <select class="form-select js-choice select2" id="customerName" name="customerName" required>
+                                                                            <option selected="-">-</option>
+                                                                            <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
+                                                                                <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
+                                                                            <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12" id="divSupplierName" style="display:none;">
+                                                                <div class="row">
+                                                                    <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
+                                                                    <div class="col-sm-8">
+                                                                        <select class="form-select select2" id="supplierName" name="supplierName" required>
+                                                                            <option selected="-">-</option>
+                                                                            <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
+                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
+                                                                            <?php } ?>
+                                                                        </select>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div><br>
-                                                        <div class="col-12">
-                                                            <div class="row">
-                                                                <label for="vehiclePlateNo1" class="col-sm-4 col-form-label">
-                                                                    Vehicle Plate No.
-                                                                </label>
-                                                                <div class="col-sm-8">
-                                                                    <div class="input-group">
-                                                                        <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No">
-                                                                    </div>
-                                                                </div>
+                                                        <div class="row" id="productNameDisplay">
+                                                            <label for="productName" class="col-sm-4 col-form-label">Product</label>
+                                                            <div class="col-sm-8">
+                                                                <select class="form-select select2" id="productName" name="productName" required>
+                                                                    <option selected="-">-</option>
+                                                                    <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
+                                                                        <option 
+                                                                            value="<?=$rowProduct['name'] ?>" 
+                                                                            data-price="<?=$rowProduct['price'] ?>" 
+                                                                            data-code="<?=$rowProduct['product_code'] ?>" 
+                                                                            data-high="<?=$rowProduct['high'] ?>" 
+                                                                            data-low="<?=$rowProduct['low'] ?>" 
+                                                                            data-variance="<?=$rowProduct['variance'] ?>" 
+                                                                            data-description="<?=$rowProduct['description'] ?>">
+                                                                            <?=$rowProduct['product_code'] ?>
+                                                                        </option>
+                                                                    <?php } ?>
+                                                                </select>                                                                                        
+                                                            </div>
+                                                        </div>
+                                                        <div class="row" id="rawMaterialDisplay" style="display:none;">
+                                                            <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material</label>
+                                                            <div class="col-sm-8">
+                                                                <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
+                                                                    <option selected="-">-</option>
+                                                                    <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
+                                                                        <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
+                                                                    <?php } ?>
+                                                                </select>           
                                                             </div>
                                                         </div><br>
                                                         <div class="col-12">
@@ -281,17 +313,14 @@ else{
                                                                 <label for="grossIncoming" class="col-sm-4 col-form-label">Incoming</label>
                                                                 <div class="col-sm-8">
                                                                     <div class="input-group">
-                                                                        <!-- <div class="input-group-text">
-                                                                            <input class="form-check-input mt-0" id="manual" name="manual" type="checkbox" value="0" aria-label="Checkbox for following text input">
-                                                                        </div>                                                                                             -->
                                                                         <input type="number" class="form-control input-readonly" id="grossIncoming" name="grossIncoming" placeholder="0" readonly>
                                                                         <div class="input-group-text">Kg</div>
                                                                         <button class="input-group-text btn btn-success fs-5" id="grossCapture" type="button"><i class="mdi mdi-sync"></i></button>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div><br>
-                                                        <div class="col-12">
+                                                        </div>
+                                                        <div class="col-12" style="display:none;">
                                                             <div class="row">
                                                                 <label for="grossIncomingDate" class="col-sm-4 col-form-label">Incoming Date</label>
                                                                 <div class="col-sm-8">
@@ -313,8 +342,8 @@ else{
                                                                     </div>                                                                                       
                                                                 </div>
                                                             </div>
-                                                        </div><br>
-                                                        <div class="col-12">
+                                                        </div>
+                                                        <div class="col-12" style="display:none;">
                                                             <div class="row">
                                                                 <label for="tareOutgoingDate" class="col-sm-4 col-form-label">Outgoing Date</label>
                                                                 <div class="col-sm-8">
@@ -376,7 +405,7 @@ else{
                                         <div class="row col-12">
                                             <div class="hstack gap-2 justify-content-end">
                                                 <button type="button" class="btn btn-warning" id="addWeight">New</button>
-                                                <button type="button" class="btn btn-success" id="submitWeightPrint">Submit & Print</button>
+                                                <button type="button" class="btn btn-success" id="submitWeightPrint"><?=$languageArray['submit_print_code'][$language]?></button>
                                                 <button type="button" class="btn btn-primary" id="submitWeight"><?=$languageArray['submit_code'][$language]?></button>
                                             </div>
                                         </div><!--end col--> 
@@ -388,7 +417,7 @@ else{
                                             <div class="h-100">
                                                 <div class="col-xxl-12 col-lg-12">
                                                     <div class="card">
-                                                        <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" >
+                                                        <div class="card-header fs-5" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" >
                                                             <i class="mdi mdi-chevron-down pull-right"></i>
                                                             Search Records
                                                         </div>
@@ -428,7 +457,7 @@ else{
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->
-                                                                        <!--div class="col-3" id="customerSearchDisplay">
+                                                                        <div class="col-3" id="customerSearchDisplay">
                                                                             <div class="mb-3">
                                                                                 <label for="customerNoSearch" class="form-label">Customer No</label>
                                                                                 <select id="customerNoSearch" class="form-select select2" >
@@ -439,7 +468,7 @@ else{
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->
-                                                                        <!--div class="col-3" id="supplierSearchDisplay" style="display:none">
+                                                                        <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                                             <div class="mb-3">
                                                                                 <label for="supplierSearch" class="form-label">Supplier No</label>
                                                                                 <select id="supplierSearch" class="form-select select2" >
@@ -468,7 +497,7 @@ else{
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->                       
-                                                                        <!--div class="col-3" id="productSearchDisplay">
+                                                                        <div class="col-3" id="productSearchDisplay">
                                                                             <div class="mb-3">
                                                                                 <label for="productSearch" class="form-label">Product</label>
                                                                                 <select id="productSearch" class="form-select select2" >
@@ -479,7 +508,7 @@ else{
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->
-                                                                        <!--div class="col-3" id="rawMatSearchDisplay" style="display:none">
+                                                                        <div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                                             <div class="mb-3">
                                                                                 <label for="rawMatSearch" class="form-label">Raw Material</label>
                                                                                 <select id="rawMatSearch" class="form-select select2" >
@@ -490,13 +519,13 @@ else{
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->
-                                                                        <div class="col-3">
+                                                                        <!--div class="col-3">
                                                                             <div class="mb-3">
                                                                                 <label for="containerNoSearch" class="form-label">Container No</label>
                                                                                 <input type="text" class="form-control" id="containerNoSearch" name="containerNoSearch" placeholder="Container No">                                                                                  
                                                                             </div>
                                                                         </div><!--end col-->
-                                                                        <div class="col-6">
+                                                                        <div class="col-3">
                                                                             <div class="text-end">
                                                                                 <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> <?=$languageArray['search_code'][$language]?></button>
                                                                             </div>
@@ -524,6 +553,7 @@ else{
                                                                         <tr>
                                                                             <th>No.</th>
                                                                             <th><?=$languageArray['status_code'][$language]?></th>
+                                                                            <!--th>Customer/<br>Supplier</th-->
                                                                             <th>Vehicle</th>
                                                                             <th>Incoming</th>
                                                                             <th>Incoming <br>Date</th>
@@ -1218,7 +1248,6 @@ else{
             $.post('http://127.0.0.1:5002/handshaking', function(data){
                 if(data != "Error"){
                     console.log("Data Received:" + data);
-                    console.log(ind);
                     
                     if(ind == 'X2S' || ind == 'X722'){
                         if(data.includes("GS")){
@@ -1229,6 +1258,22 @@ else{
                             $('#indicatorConnected').addClass('bg-primary');
                             $('#checkingConnection').removeClass('bg-danger');
                         }
+                    }
+                    else if(ind == 'BX23'){
+                        var text = data.split(" ");
+                        let newArray = text.slice(1, -1);
+                        let newtext = newArray.join();
+                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
+                        $('#indicatorConnected').addClass('bg-primary');
+                        $('#checkingConnection').removeClass('bg-danger');
+                    }
+                    else if(ind == '205'){
+                        var text = data.split(" ");
+                        let newArray = text.slice(1, -1);
+                        let newtext = newArray.join();
+                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
+                        $('#indicatorConnected').addClass('bg-primary');
+                        $('#checkingConnection').removeClass('bg-danger');
                     }
                     else if(ind == 'BDI'){
                         if(data.includes("GS") || data.includes("NT") || data.includes("ST") || data.includes("US")){

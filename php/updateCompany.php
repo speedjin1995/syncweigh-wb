@@ -16,6 +16,7 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 	$companyAddress2 = null;
 	$companyAddress3 = null;
 	$companyFax = null;
+	$companyPackage = null;
 	$today = date("Y-m-d H:i:s");
 	$id = '1';
 	$action = '2';
@@ -32,8 +33,12 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 		$companyFax = filter_input(INPUT_POST, 'companyFax', FILTER_SANITIZE_STRING);
 	}
 
-	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, name=?, include_price=?, include_container=?, modified_date=?, modified_by=? WHERE id=?")) {
-		$stmt2->bind_param('ssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyFax, $companyName, $_POST['includePrice'], $_POST['includeContainer'], $today, $username, $id);
+	if($_POST['companyPackage'] != null && $_POST['companyPackage'] != ""){
+		$companyPackage = filter_input(INPUT_POST, 'companyPackage', FILTER_SANITIZE_STRING);
+	}
+
+	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?,  package=?, fax_no=?, name=?, include_price=?, include_container=?, modified_date=?, modified_by=? WHERE id=?")) {
+		$stmt2->bind_param('sssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyPackage, $companyFax, $companyName, $_POST['includePrice'], $_POST['includeContainer'], $today, $username, $id);
 		
 		if($stmt2->execute()){
 			$stmt2->close();

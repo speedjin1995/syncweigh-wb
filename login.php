@@ -93,7 +93,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             $_SESSION['plant']=$plantlist;
 
-                            if($roles == 'USERS'){
+                            $stmt = $link->prepare("SELECT * from Company WHERE id = 1");
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+
+                            $package = 'Standard';
+                            
+                            if(($row = $result->fetch_assoc()) !== null){
+                                $package = $row['package'] ?? 'Standard';
+                            }
+
+
+                            if($package == 'Lite'){
                                 // Redirect user to welcome page
                                 header("location: simple.php");
                             }

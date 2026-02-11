@@ -1414,6 +1414,28 @@ INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`
 ALTER TABLE `Payment_Voucher` CHANGE `invoice_no` `invoice_no` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;
 ALTER TABLE `Payment_Voucher_Log` CHANGE `invoice_no` `invoice_no` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;
 
+-- 08/01/2026 --
+ALTER TABLE `Company` ADD `package` TEXT NULL AFTER `mobile_no`;
+ALTER TABLE `Company_Log` ADD `package` TEXT NULL AFTER `mobile_no`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Always set action_id = 2 for update
+    SET action_value = 2;
+
+    -- Insert into Company_Log table
+    INSERT INTO Company_Log (
+        company_id, company_code, company_reg_no, new_reg_no, `name`, address_line_1, address_line_2, address_line_3, phone_no, fax_no, tin_no, mobile_no, package, include_price, include_container, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.company_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.tin_no, NEW.mobile_no, NEW.package, NEW.include_price, NEW.include_container, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
 -- 09/02/2026 --
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_book_payment_code', 'Cash Book Payment', '现金簿付款', 'Pembayaran Buku Tunai', 'பணம் புத்தக கட்டணம்');
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_book_code', 'Cash Book', '现金簿', 'Buku Tunai', 'பணப்பதிவு புத்தகம்');
