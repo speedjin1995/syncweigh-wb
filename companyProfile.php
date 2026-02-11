@@ -9,11 +9,11 @@ require_once "layouts/config.php";
 // Check if the user is already logged in, if yes then redirect him to index page
 $user = $_SESSION['id'];
 $id = '1';
-$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, include_price, include_container from Company where id = ?");
+$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, include_price, include_container from Company where id = ?");
 mysqli_stmt_bind_param($stmt2, "s", $id);
 mysqli_stmt_execute($stmt2);
 mysqli_stmt_store_result($stmt2);
-mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $fax_no, $include_price, $include_container);
+mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $include_price, $include_container);
 if (mysqli_stmt_fetch($stmt2)) {
     $usercompany_reg_no = $company_reg_no;
     $username = $name;
@@ -21,6 +21,7 @@ if (mysqli_stmt_fetch($stmt2)) {
     $useraddress_line_2 = $address_line_2;
     $useraddress_line_3 = $address_line_3;
     $userphone_no = $phone_no;
+    $userpackage = $package;
     $userfax_no = $fax_no;
     $includePrice = $include_price;
     $includeContainer = $include_container;
@@ -130,6 +131,18 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                     <label for="companyFax" class="col-sm-4 col-form-label">Fax No.</label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control input-readonly" id="companyFax" name="companyFax" placeholder="Company Fax" value="<?=$userfax_no ?>" <?= $readonly ?>>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                    <label for="companyPackage" class="col-sm-4 col-form-label">Package</label>
+                                                    <div class="col-sm-8">
+                                                        <select class="form-select input-readonly" id="companyPackage" name="companyPackage" <?= $readonly ?>>
+                                                            <option value="">-- Select Package --</option>
+                                                            <option value="Lite" <?= $userpackage == 'Lite' ? 'selected' : '' ?>>Lite</option>
+                                                            <option value="Standard" <?= $userpackage == 'Standard' ? 'selected' : '' ?>>Standard</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
