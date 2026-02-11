@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'db_connect.php';
+require_once 'requires/function.php';
 
 if(!isset($_SESSION['id'])){
 	echo '<script type="text/javascript">location.href = "../login.php";</script>'; 
@@ -136,13 +137,33 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
         }
     }
     
+    $weighingRecords = [];
     if ($dateObj->format('d') == '01') {
         // Start of month - use current values as base
         $accumDeduction = $deductionRecords;
         $accumAddition = $additionRecords;
+
+        // Query today weighing records
+        if ($select_stmt = $db->prepare("SELECT * FROM Weight WHERE DATE(transaction_date)=? AND is_complete='Y' AND is_cancel <> 'Y' AND status=0")) {
+            $dateOnly = $dateObj->format('Y-m-d');
+            $select_stmt->bind_param('s', $dateOnly);
+            if ($select_stmt->execute()) {
+                $result = $select_stmt->get_result();
+                while ($row = $result->fetch_assoc()) {
+                    $weighingRecords[] = $row;
+                }
+            }
+            $select_stmt->close();
+
+            // Group by transaction status
+            $weighingRecords = groupByTransactionStatus($weighingRecords);
+            $dailyPurchase = calculateFFBPurchase($weighingRecords);
+            $dailySales = calculateFFBSales($weighingRecords);
+
+        }
     } else {
         // Get previous record
-        $sql = "SELECT accum_deduction, accum_addition FROM Cash_Book WHERE DATE(date) < ? AND deleted = 0 ORDER BY date DESC LIMIT 1";
+        $sql = "SELECT accum_deduction, accum_addition, accum_purchase, accum_sales FROM Cash_Book WHERE DATE(date) < ? AND deleted = 0 ORDER BY date DESC LIMIT 1";
         if ($select_stmt = $db->prepare($sql)) {
             $dateOnly = $dateObj->format('Y-m-d');
             $select_stmt->bind_param('s', $dateOnly);

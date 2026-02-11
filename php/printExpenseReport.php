@@ -2,6 +2,7 @@
 session_start();
 require_once 'db_connect.php';
 require_once 'requires/lookup.php';
+require_once 'requires/function.php';
 include 'phpqrcode/qrlib.php';
 
 $compids = '1';
@@ -63,6 +64,7 @@ if(isset($_POST['userID'])) {
                 $dailyCashFfb = 0.00;
                 $dailyDebitNote = 0.00;
                 $dailyCashIn = 0.00;
+                $cashIns = [];
                 foreach ($additions as $addition) {
                     $type = $addition['type'];
                     $amt = floatval($addition['amount']);
@@ -77,6 +79,10 @@ if(isset($_POST['userID'])) {
                         $dailyDebitNote += $amt;
                     }elseif ($type == 'CASHIN'){
                         $dailyCashIn += $amt;
+                        $cashIns[] = [
+                            'description' => $addition['desc'],
+                            'amount' => $amt
+                        ];
                     }
                 }
 
@@ -117,12 +123,19 @@ if(isset($_POST['userID'])) {
                 $dailyPetrolDiesel = 0.00;
                 $dailyStaffAdv = 0.00;
                 $dailyStaffSal = 0.00;
+                $cashOuts = [];
+                $generalExpenses = [];
+                $petrolDiesels = [];
                 foreach ($deductions as $deduction) {
                     $type = $deduction['type'];
                     $amt = floatval($deduction['amount']);
 
                     if ($type == 'CASHOUT'){
                         $dailyCashOut += $amt;
+                        $cashOuts[] = [
+                            'description' => $deduction['desc'],
+                            'amount' => $amt
+                        ];
                     }elseif ($type == 'CREDITNOTE'){
                         $dailyCreditNote += $amt;
                     }elseif ($type == 'CREDITFFBRAM'){
@@ -133,8 +146,16 @@ if(isset($_POST['userID'])) {
                         $dailyCreditAdv += $amt;
                     }elseif ($type == 'GENERAL'){
                         $dailyGeneral += $amt;
+                        $generalExpenses[] = [
+                            'description' => $deduction['desc'],
+                            'amount' => $amt
+                        ];
                     }elseif ($type == 'PETROL_DIESEL'){
                         $dailyPetrolDiesel += $amt;
+                        $petrolDiesels[] = [
+                            'description' => $deduction['desc'],
+                            'amount' => $amt
+                        ];
                     }elseif ($type == 'STAFFADV'){
                         $dailyStaffAdv += $amt;
                     }elseif ($type == 'STAFFSAL'){
@@ -181,6 +202,33 @@ if(isset($_POST['userID'])) {
                 }
                 ##############################################
 
+                ############## Weighing Records ##############
+                $weights = [];
+                $date = date('Y-m-d', strtotime($row['date']));
+                if ($weigh_stmt = $db->prepare("SELECT * FROM Weight WHERE DATE(transaction_date)=? AND is_complete='Y' AND is_cancel <> 'Y' AND status=0 ORDER BY id ASC")){
+                    $date = date('Y-m-d', strtotime($row['date']));
+                    $weigh_stmt->bind_param('s', $date);
+
+                    // Execute the prepared query.
+                    if (! $weigh_stmt->execute()) {
+                        echo json_encode(
+                            array(
+                                "status" => "failed",
+                                "message" => "Something went wrong"
+                            )); 
+                    }
+                    else{
+                        $result2 = $weigh_stmt->get_result();
+                    
+                        while ($row2 = $result2->fetch_assoc()) {
+                            $weights[] = $row2;
+                        }
+
+                        $weights = groupByTransactionStatus($weights);
+                    }
+                }
+                
+                ##############################################
 
                 $message = '
                     <html>
@@ -189,20 +237,25 @@ if(isset($_POST['userID'])) {
                         <style>
                             @page {
                                 size: A4 portrait;
-                                margin: 0.5in;
+                                margin: 0.5in 0.5in 1in 0.5in;
                             }
                             
                             @media print {
                                 body {
-                                    margin: 0.5in;
+                                    margin: 0.5in 0.5in 1in 0.5in;
+                                }
+                                
+                                .detail-section {
+                                    page-break-inside: avoid;
                                 }
                             }
                             
                             body {
                                 font-family: Arial, sans-serif;
                                 font-size: 10pt;
-                                margin: 0.5in;
+                                margin: 0.5in 0.5in 1in 0.5in;
                                 padding: 0;
+                                padding-bottom: 1in;
                             }
                             
                             .header {
@@ -271,6 +324,12 @@ if(isset($_POST['userID'])) {
                             
                             .detail-section {
                                 margin-bottom: 15px;
+                                page-break-inside: avoid;
+                                break-inside: avoid;
+                            }
+                            
+                            .main-table {
+                                page-break-inside: auto;
                             }
                             
                             .detail-title {
@@ -539,41 +598,122 @@ if(isset($_POST['userID'])) {
                                 </tr>
                             </tbody>
                         </table>
-                        
+                ';
+
+                ######## CASH Sections ##########
+                if (!empty($weights['Purchase'])) {
+                    $message .= '
                         <div class="detail-section">
                             <div class="detail-title">CASH</div>
-                            <div class="detail-item">P25001951 FFB 0.84 MT (MOHAMMAD WAZIR SHAFIX) <span class="amount-right"><span class="weight-value">0.84</span><span class="price-value">604.80</span></span></div>
-                            <div class="detail-item">P25001955 FFB 0.08 MT (MOHD FIRTI BIN SABAR) <span class="amount-right"><span class="weight-value">0.08</span><span class="price-value">60.00</span></span></div>
-                            <div class="detail-item">P25001958 FFB 0.80 MT (ROSSITAR BINTI BERING) <span class="amount-right"><span class="weight-value">0.80</span><span class="price-value">576.00</span></span></div>
-                            <div class="detail-item">P25001959 FFB 0.49 MT (ASIP BIN JAR [MUSI]) <span class="amount-right"><span class="weight-value">0.49</span><span class="price-value">352.80</span></span></div>
-                            <div class="detail-item">P25001960 FFB 0.54 MT (ASIP BIN JAR [MUSI]) <span class="amount-right"><span class="weight-value">0.54</span><span class="price-value">388.80</span></span></div>
-                            <div class="detail-item">P25001963 FFB 0.29 MT (ROSSITAR BINTI BERING) <span class="amount-right"><span class="weight-value">0.29</span><span class="price-value">217.50</span></span></div>
-                            <div class="detail-item detail-total" style="margin-left: 400px;"><span class="amount-right"><span class="weight-value">3.04</span><span class="price-value">2,199.90</span></span></div>
+                    ';
+
+                    $totalCashMt = 0.00;
+                    $totalCashPrice = 0.00;
+                    foreach ($weights['Purchase'] as $weight) {
+                        $totalCashMt += (float) $weight['final_weight']/1000;
+                        $totalCashPrice += (float) $weight['total_price'];
+                        $message .= '
+                            <div class="detail-item">'.$weight['transaction_id'].' FFB '.formatWeight($weight['final_weight']/1000).' MT ('.strtoupper($weight['supplier_name']).') <span class="amount-right"><span class="weight-value">'.formatWeight($weight['final_weight']/1000).'</span><span class="price-value">'.number_format($weight['total_price'], 2).'</span></span></div>
+                        ';
+                    }
+
+                    $message .= '
+                            <div class="detail-item detail-total" style="margin-left: 400px;"><span class="amount-right"><span class="weight-value">'.number_format($totalCashMt, 2).'</span><span class="price-value">'.number_format($totalCashPrice, 2).'</span></span></div>
                         </div>
-                        
+                    ';
+                }
+                
+                ######## CASH IN Sections ##########
+                if (!empty($cashIns)) {
+                    $message .= '
                         <div class="detail-section">
                             <div class="detail-title">CASH IN</div>
-                            <div class="detail-item">BAKI BULAN 8 <span class="amount-right">19,268.60</span></div>
-                            <div class="detail-item detail-total" style="margin-left: 400px;"><span class="amount-right">19,268.60</span></div>
+                    ';
+
+                    $cashInTotal = 0.00;
+                    foreach ($cashIns as $cashIn) {
+                        $cashInTotal += (float) $cashIn['amount'];
+                        $message .= '
+                            <div class="detail-item">'.(!empty($cashIn['description']) ? $cashIn['description'] : '<span style="visibility:hidden">Test</span>').' <span class="amount-right">'.number_format($cashIn['amount'], 2).'</span></div>
+                        ';
+                    }
+
+                    $message .= '
+                            <div class="detail-item detail-total" style="margin-left: 400px;"><span class="amount-right">'.number_format($cashInTotal, 2).'</span></div>
                         </div>
-                        
+                    ';
+                }
+
+                // <div class="detail-section">
+                //             <div class="detail-title">FFB OUT</div>
+                //             <div class="detail-item">Sale Eng Hong Palm Oil Mill <span class="amount-right">9.23</span></div>
+                //             <div class="detail-item detail-total" style="margin-left: 400px;"><span class="amount-right">9.23</span></div>
+                //         </div>
+
+                ######## GENERAL EXPENSES Sections ##########
+                if (!empty($generalExpenses)) {
+                    $message .= '
                         <div class="detail-section">
-                            <div class="detail-title">FFB OUT</div>
-                            <div class="detail-item">Sale Eng Hong Palm Oil Mill <span class="amount-right">9.23</span></div>
-                            <div class="detail-item detail-total" style="margin-left: 400px;"><span class="amount-right">9.23</span></div>
+                            <div class="detail-title">GENERAL EXPENSES</div>
+                    ';
+
+                    $generalExpensesTotal = 0.00;
+                    foreach ($generalExpenses as $generalExpense) {
+                        $generalExpensesTotal += (float) $generalExpense['amount'];
+                        $message .= '
+                            <div class="detail-item">'.(!empty($generalExpense['description']) ? $generalExpense['description'] : '<span style="visibility:hidden">Test</span>').' <span class="amount-right">'.number_format($generalExpense['amount'], 2).'</span></div>
+                        ';
+                    }
+
+                    $message .= '
+                            <div class="detail-item detail-total" style="margin-left: 400px;"><span class="amount-right">'.number_format($generalExpensesTotal, 2).'</span></div>
                         </div>
-                        
+                    ';
+                }
+
+                ######## PETROL/DIESEL Sections ##########
+                if (!empty($petrolDiesels)) {
+                    $message .= '
                         <div class="detail-section">
                             <div class="detail-title">PETROL/DIESEL</div>
-                            <div class="detail-item">BRK8814 <span class="amount-right">200.00</span></div>
-                            <div class="detail-item">VMK8814 <span class="amount-right">100.00</span></div>
-                            <div class="detail-item">VNE8814 <span class="amount-right">200.00</span></div>
-                            <div class="detail-item detail-total" style="margin-left: 400px;"><span class="amount-right">500.00</span></div>
+                    ';
+
+                    $petrolDieselsTotal = 0.00;
+                    foreach ($petrolDiesels as $petrolDiesel) {
+                        $petrolDieselsTotal += (float) $petrolDiesel['amount'];
+                        $message .= '
+                            <div class="detail-item">'.(!empty($petrolDiesel['description']) ? $petrolDiesel['description'] : '<span style="visibility:hidden">Test</span>').' <span class="amount-right">'.number_format($petrolDiesel['amount'], 2).'</span></div>
+                        ';
+                    }
+
+                    $message .= '
+                            <div class="detail-item detail-total" style="margin-left: 400px;"><span class="amount-right">'.number_format($petrolDieselsTotal, 2).'</span></div>
                         </div>
-                        
-                        <div style="text-align: center; margin-top: 50px;">
-                            <p>PAGE 1</p>
-                        </div>
+                    ';
+                }
+
+                ######## CASH OUT Sections ##########
+                // if (!empty($petrolDiesels)) {
+                //     $message .= '
+                //         <div class="detail-section">
+                //             <div class="detail-title">PETROL/DIESEL</div>
+                //     ';
+
+                //     $petrolDieselsTotal = 0.00;
+                //     foreach ($petrolDiesels as $petrolDiesel) {
+                //         $petrolDieselsTotal += (float) $petrolDiesel['amount'];
+                //         $message .= '
+                //             <div class="detail-item">'.(!empty($petrolDiesel['description']) ? $petrolDiesel['description'] : '<span style="visibility:hidden">Test</span>').' <span class="amount-right">'.number_format($petrolDiesel['amount'], 2).'</span></div>
+                //         ';
+                //     }
+
+                //     $message .= '
+                //             <div class="detail-item detail-total" style="margin-left: 400px;"><span class="amount-right">'.number_format($petrolDieselsTotal, 2).'</span></div>
+                //         </div>
+                //     ';
+                // }
+
+                $message .= '
                     </body>
                     </html>
                 ';
