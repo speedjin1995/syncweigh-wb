@@ -2,6 +2,7 @@
 session_start();
 require_once 'db_connect.php';
 require_once 'requires/function.php';
+require_once 'requires/lookup.php';
 
 if(!isset($_SESSION['id'])){
 	echo '<script type="text/javascript">location.href = "../login.php";</script>'; 
@@ -108,10 +109,6 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
             }
         }
     }
-
-    // Query Previous Record to get accumulated values
-    $accumDeduction = [];
-    $accumAddition = [];
     
     $dateObj = new DateTime($date);
     $dateOnly = $dateObj->format('Y-m-d');
@@ -137,30 +134,64 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
         }
     }
     
+    // Query Previous Record to get accumulated values
     $weighingRecords = [];
-    if ($dateObj->format('d') == '01') {
+    $accumDeduction = [];
+    $accumAddition = [];
+    $accumPurchase = [];
+    $accumSales = [];
+    $prevValues = [];
+
+    // Query today weighing records
+    if ($select_stmt = $db->prepare("SELECT * FROM Weight WHERE DATE(transaction_date)=? AND is_complete='Y' AND is_cancel <> 'Y' AND status=0")) {
+        $dateOnly = $dateObj->format('Y-m-d');
+        $select_stmt->bind_param('s', $dateOnly);
+        if ($select_stmt->execute()) {
+            $result = $select_stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $weighingRecords[] = $row;
+            }
+        }
+        $select_stmt->close();
+    }
+
+    // Check if first record of the month exists
+    $firstOfMonth = $dateObj->format('Y-m-01');
+    $isFirstRecordOfMonth = false;
+    
+    if ($check_stmt = $db->prepare("SELECT id FROM Cash_Book WHERE DATE(date) >= ? AND DATE(date) < ? AND deleted = 0 LIMIT 1")) {
+        $check_stmt->bind_param('ss', $firstOfMonth, $dateOnly);
+        if ($check_stmt->execute()) {
+            $check_result = $check_stmt->get_result();
+            $isFirstRecordOfMonth = ($check_result->num_rows == 0);
+        }
+        $check_stmt->close();
+    }
+
+    if ($isFirstRecordOfMonth) {
         // Start of month - use current values as base
         $accumDeduction = $deductionRecords;
         $accumAddition = $additionRecords;
 
-        // Query today weighing records
-        if ($select_stmt = $db->prepare("SELECT * FROM Weight WHERE DATE(transaction_date)=? AND is_complete='Y' AND is_cancel <> 'Y' AND status=0")) {
-            $dateOnly = $dateObj->format('Y-m-d');
-            $select_stmt->bind_param('s', $dateOnly);
-            if ($select_stmt->execute()) {
-                $result = $select_stmt->get_result();
-                while ($row = $result->fetch_assoc()) {
-                    $weighingRecords[] = $row;
-                }
-            }
-            $select_stmt->close();
+        // Group by transaction status
+        $weighingRecords = groupByTransactionStatus($weighingRecords);
+        $dailyPurchase = calculateFFBPurchase($weighingRecords, $db);
+        $dailySales = calculateFFBSales($weighingRecords, $db);
 
-            // Group by transaction status
-            $weighingRecords = groupByTransactionStatus($weighingRecords);
-            $dailyPurchase = calculateFFBPurchase($weighingRecords);
-            $dailySales = calculateFFBSales($weighingRecords);
+        // Accumulate purchase
+        $accumPurchase = [
+            'accumCashFfbPurchase' => floatval($dailyPurchase['totalCashPrice']),
+            'accumCashWeight' => $dailyPurchase['totalCashWeight'],
+            'accumTermWeight' => $dailyPurchase['totalTermWeight'],
+            'accumFfbIn' => floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight']),
+            'accumFfbInRejected' => floatval($dailyPurchase['totalRejectedWeight']),
+            'accumFfbOut' => floatval($dailySales['totalSalesWeight'])
+        ];
 
-        }
+        // Previous Day Values
+        $prevValues = [
+            'ffbBalance' => floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight']) - floatval($dailyPurchase['totalRejectedWeight']) - floatval($dailySales['totalSalesWeight']),
+        ];
     } else {
         // Get previous record
         $sql = "SELECT accum_deduction, accum_addition, accum_purchase, accum_sales FROM Cash_Book WHERE DATE(date) < ? AND deleted = 0 ORDER BY date DESC LIMIT 1";
@@ -172,6 +203,8 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                 if ($row = $result->fetch_assoc()) {
                     $prevDeduction = json_decode($row['accum_deduction'], true) ?: [];
                     $prevAddition = json_decode($row['accum_addition'], true) ?: [];
+                    $prevPurchase = json_decode($row['accum_purchase'], true) ?: [];
+                    $prevSales = json_decode($row['accum_sales'], true) ?: [];
                     
                     // Build lookup arrays by type
                     $prevDeductionMap = [];
@@ -205,6 +238,27 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                             'amount' => $prevAmount + floatval($record['amount'])
                         ];
                     }
+
+                    // Group by transaction status
+                    $weighingRecords = groupByTransactionStatus($weighingRecords);
+                    $dailyPurchase = calculateFFBPurchase($weighingRecords, $db);
+                    $dailySales = calculateFFBSales($weighingRecords, $db);
+
+                    // Accumulate purchase
+                    $accumPurchase = [
+                        'accumCashFfbPurchase' => floatval($dailyPurchase['totalCashPrice']) + (isset($prevPurchase['accumCashFfbPurchase']) ? floatval($prevPurchase['accumCashFfbPurchase']) : 0),
+                        'accumCashWeight' => floatval($dailyPurchase['totalCashWeight']) + (isset($prevPurchase['accumCashWeight']) ? floatval($prevPurchase['accumCashWeight']) : 0),
+                        'accumTermWeight' => floatval($dailyPurchase['totalTermWeight']) + (isset($prevPurchase['accumTermWeight']) ? floatval($prevPurchase['accumTermWeight']) : 0),
+                        'accumFfbIn' => floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight']) + (isset($prevPurchase['accumFfbIn']) ? floatval($prevPurchase['accumFfbIn']) : 0),
+                        'accumFfbInRejected' => floatval($dailyPurchase['totalRejectedWeight']) + (isset($prevPurchase['accumFfbInRejected']) ? floatval($prevPurchase['accumFfbInRejected']) : 0),
+                        'accumFfbOut' => floatval($dailySales['totalSalesWeight']) + (isset($prevPurchase['accumFfbOut']) ? floatval($prevPurchase['accumFfbOut']) : 0)
+                    ];
+
+                    // Previous Day Values
+                    $prevValues = [
+                        'ffbBalance' => floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight']) - floatval($dailyPurchase['totalRejectedWeight']) - floatval($dailySales['totalSalesWeight']),
+                    ];
+
                 } else {
                     // No previous record - use current values
                     $accumDeduction = $deductionRecords;
@@ -217,13 +271,15 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
 
     if(!empty($cashbookId))
     {
-        if ($update_stmt = $db->prepare("UPDATE Cash_Book SET cash_book_no=?, date=?, deduction_details=?, addition_details=?, total_deduction=?, total_addition=?, accum_deduction=?, accum_addition=?, created_by=?, modified_by=? WHERE id=?")) 
+        if ($update_stmt = $db->prepare("UPDATE Cash_Book SET cash_book_no=?, date=?, deduction_details=?, addition_details=?, total_deduction=?, total_addition=?, accum_deduction=?, accum_addition=?, accum_purchase=?, prev_values=?, created_by=?, modified_by=? WHERE id=?")) 
         {
             $deductionJson = json_encode($deductionRecords);
             $additionJson = json_encode($additionRecords);
             $accumDeductionJson = json_encode($accumDeduction);
             $accumAdditionJson = json_encode($accumAddition);
-            $update_stmt->bind_param('sssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $username, $username, $cashbookId);
+            $accumPurchaseJson = json_encode($accumPurchase);
+            $prevValuesJson = json_encode($prevValues);
+            $update_stmt->bind_param('sssssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $accumPurchaseJson, $prevValuesJson, $username, $username, $cashbookId);
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
                 echo json_encode(
@@ -247,12 +303,14 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
     }
     else
     {
-        if ($insert_stmt = $db->prepare("INSERT INTO Cash_Book (cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, accum_deduction, accum_addition, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+        if ($insert_stmt = $db->prepare("INSERT INTO Cash_Book (cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, accum_deduction, accum_addition, accum_purchase, prev_values, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             $deductionJson = json_encode($deductionRecords);
             $additionJson = json_encode($additionRecords);
             $accumDeductionJson = json_encode($accumDeduction);
             $accumAdditionJson = json_encode($accumAddition);
-            $insert_stmt->bind_param('ssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $username, $username);
+            $accumPurchaseJson = json_encode($accumPurchase);
+            $prevValuesJson = json_encode($prevValues);
+            $insert_stmt->bind_param('ssssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $accumPurchaseJson, $prevValuesJson, $username, $username);
 
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {

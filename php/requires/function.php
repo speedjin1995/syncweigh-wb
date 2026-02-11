@@ -10,44 +10,68 @@ function groupByTransactionStatus($weights) {
 }
 
 // Calculate Purchase Weight
-function calculateFFBPurchase($weighingRecords){
+function calculateFFBPurchase($weighingRecords, $db){
     $dataReturn = [];
-    $totalPurchaseWeight = 0.00;
+    $totalCashWeight = 0.00;
+    $totalTermWeight = 0.00;
+    $totalRejectedWeight = 0.00;
+    $totalCashPrice = 0.00;
 
     if(!isset($weighingRecords['Purchase'])){
-        return $totalPurchaseWeight;
+        $dataReturn['totalCashWeight'] = $totalCashWeight;
+        $dataReturn['totalTermWeight'] = $totalTermWeight;
+        $dataReturn['totalRejectedWeight'] = $totalRejectedWeight;
+        $dataReturn['totalCashPrice'] = $totalCashPrice;
+        return $dataReturn;
     }
 
     if (empty($weighingRecords['Purchase'])){
-        return $totalPurchaseWeight;
+        $dataReturn['totalCashWeight'] = $totalCashWeight;
+        $dataReturn['totalTermWeight'] = $totalTermWeight;
+        $dataReturn['totalRejectedWeight'] = $totalRejectedWeight;
+        $dataReturn['totalCashPrice'] = $totalCashPrice;
+        return $dataReturn;
     }
 
     foreach($weighingRecords['Purchase'] as $purchaseRecord){
-        
-        $totalPurchaseWeight += (float) $purchaseRecord['final_weight'];
+        $paymentTerm = searchSupplierTermByCode($purchaseRecord['supplier_code'], $db);
+        if ($paymentTerm == 'Cash') {
+            $totalCashWeight += (float) $purchaseRecord['nett_weight1'];
+            $totalRejectedWeight += (float) $purchaseRecord['reduce_weight'];
+            $totalCashPrice += (float) $purchaseRecord['total_price'];
+        }else{
+            $totalTermWeight += (float) $purchaseRecord['nett_weight1'];
+            $totalRejectedWeight += (float) $purchaseRecord['reduce_weight'];
+        }
     }
 
-    $dataReturn['totalPurchaseWeight'] = $totalPurchaseWeight;
-
+    $dataReturn['totalCashWeight'] = $totalCashWeight;
+    $dataReturn['totalTermWeight'] = $totalTermWeight;
+    $dataReturn['totalRejectedWeight'] = $totalRejectedWeight;
+    $dataReturn['totalCashPrice'] = $totalCashPrice;
     return $dataReturn;
 }
 
 // Calculate Sales Weight
-function calculateFFBSales($weighingRecords){
+function calculateFFBSales($weighingRecords, $db){
     $dataReturn = [];
     $totalSalesWeight = 0.00;
 
     if(!isset($weighingRecords['Sales'])){
-        return $totalSalesWeight;
+        $dataReturn['totalSalesWeight'] = $totalSalesWeight;
+        return $dataReturn;
     }
 
     if (empty($weighingRecords['Sales'])){
-        return $totalSalesWeight;
+        $dataReturn['totalSalesWeight'] = $totalSalesWeight;
+        return $dataReturn;
     }
 
     foreach($weighingRecords['Sales'] as $salesRecord){
-        $totalSalesWeight += (float) $salesRecord['final_weight'];
+        $totalSalesWeight += (float) $salesRecord['nett_weight1'];
     }
 
     $dataReturn['totalSalesWeight'] = $totalSalesWeight;
+
+    return $dataReturn;
 }

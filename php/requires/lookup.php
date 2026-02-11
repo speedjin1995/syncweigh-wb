@@ -50,7 +50,7 @@ function searchSupplierTermByCode($value, $db) {
             $select_stmt->execute();
             $result = $select_stmt->get_result();
             if ($row = $result->fetch_assoc()) {
-                $id = $row['description'];
+                $id = $row['payment_term'];
             }
             $select_stmt->close();
         }

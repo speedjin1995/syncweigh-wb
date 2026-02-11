@@ -156,7 +156,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                     <th width="10%"><?=$languageArray['number_short_code'][$language]?></th>
                                                                                     <th width="35%"><?=$languageArray['type_code'][$language]?></th>
                                                                                     <th width="30%"><?=$languageArray['description_code'][$language]?></th>
-                                                                                    <th width="25%"><?=$languageArray['amount_code'][$language]?> (RM)</th>
+                                                                                    <th width="25%"><?=$languageArray['amount_code'][$language]?></th>
                                                                                     <th width="10%"><button type="button" class="btn btn-sm btn-success" id="addDeductionRow"><i class="bx bx-plus"></i></button></th>
                                                                                 </tr>
                                                                             </thead>
@@ -179,7 +179,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                     <th width="10%"><?=$languageArray['number_short_code'][$language]?></th>
                                                                                     <th width="35%"><?=$languageArray['type_code'][$language]?></th>
                                                                                     <th width="30%"><?=$languageArray['description_code'][$language]?></th>
-                                                                                    <th width="25%"><?=$languageArray['amount_code'][$language]?> (RM)</th>
+                                                                                    <th width="25%"><?=$languageArray['amount_code'][$language]?></th>
                                                                                     <th width="10%"><button type="button" class="btn btn-sm btn-success" id="addAdditionRow"><i class="bx bx-plus"></i></button></th>
                                                                                 </tr>
                                                                             </thead>
@@ -306,15 +306,16 @@ if(($row = $result->fetch_assoc()) !== null){
             </td>
             <td>
                 <select class="form-select" id="deductionType" name="deductionType" required>
-                    <option value="CASHOUT">Cash Out</option>
-                    <option value="CREDITNOTE">Credit Note</option>
-                    <option value="CREDITFFBRAM">Credit FFB Advance (Ramp)</option>
-                    <option value="CREDITFFBHQ">Credit FFB Advance (HQ)</option>
-                    <option value="CREDITFFBADV">Credit FFB Advance</option>
-                    <option value="GENERAL">General Expenses</option>
-                    <option value="PETROL_DIESEL">Petrol/Diesel</option>
-                    <option value="STAFFADV">Staff Advance</option>
-                    <option value="STAFFSAL">Staff Salary</option>
+                    <option value="CASHOUT">Cash Out (RM)</option>
+                    <option value="CREDITNOTE">Credit Note (RM)</option>
+                    <option value="CREDITFFBRAM">Credit FFB Advance (Ramp) (RM)</option>
+                    <option value="CREDITFFBHQ">Credit FFB Advance (HQ) (RM)</option>
+                    <option value="CREDITFFBADV">Credit FFB Advance (RM)</option>
+                    <option value="GENERAL">General Expenses (RM)</option>
+                    <option value="PETROL_DIESEL">Petrol/Diesel (RM)</option>
+                    <option value="STAFFADV">Staff Advance (RM)</option>
+                    <option value="STAFFSAL">Staff Salary (RM)</option>
+                    <option value="FFBSHORTAGE">FFB Shortage (MT)</option>
                 </select>
             </td>
             <td>
@@ -338,11 +339,11 @@ if(($row = $result->fetch_assoc()) !== null){
             </td>
             <td>
                 <select class="form-select" id="additionType" name="additionType" required>
-                    <option value="CASHHQ">Cash From HQ</option>
-                    <option value="CASHRAM">Cash Received By Ramp</option>
-                    <option value="CASHFFBCUST">Cash Received By FFB Customer</option>
-                    <option value="DEBITNOTE">Debit Note</option>
-                    <option value="CASHIN">Cash In</option>
+                    <option value="CASHHQ">Cash From HQ (RM)</option>
+                    <option value="CASHRAM">Cash Received By Ramp (RM)</option>
+                    <option value="CASHFFBCUST">Cash Received By FFB Customer (RM)</option>
+                    <option value="DEBITNOTE">Debit Note (RM)</option>
+                    <option value="CASHIN">Cash In (RM)</option>
                 </select>
             </td>
             <td>
