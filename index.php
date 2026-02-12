@@ -5924,6 +5924,62 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         }
     }
 
+    function buildMessage(action) {
+        // Bootstrap values from PHP
+        const deductions = {
+            F1: <?= (int)$F1 ?>,
+            F2: <?= (int)$F2 ?>,
+            F3: <?= (int)$F3 ?>,
+            F4: <?= (int)$F4 ?>,
+            F5: <?= (int)$F5 ?>,
+            F6: <?= (int)$F6 ?>,
+            F7: <?= (int)$F7 ?>,
+            F8: <?= (int)$F8 ?>,
+            F9: <?= (int)$F9 ?>,
+            F10: <?= (int)$F10 ?>,
+            F11: <?= (int)$F11 ?>,
+            F12: <?= (int)$F12 ?>
+        };
+
+        // Map F key → input name + format
+        const mapping = {
+            F1: { field: 'F1', sign: '-', suffix: '#' },
+            F2: { field: 'F2', sign: '-', suffix: '#' },
+            F3: { field: 'F3', sign: '-', suffix: '#' },
+            F4: { field: 'F4', sign: '+', suffix: '#' },
+            F5: { field: 'F5', sign: '+', suffix: '#' },
+            F6: { field: 'F6', sign: '+', suffix: '#' },
+            F7: { field: 'F7', sign: '-', suffix: '%' },
+            F8: { field: 'F8', sign: '-', suffix: '%' },
+            F9: { field: 'F9', sign: '-', suffix: '%' },
+            F10: { field: 'F10', sign: '+', suffix: '%' },
+            F11: { field: 'F11', sign: '+', suffix: '%' },
+            F12: { field: 'F12', sign: '+', suffix: '%' }
+        };
+
+        const cfg = mapping[action];
+        if (!cfg) return null;
+
+        const val = deductions[action] || 0;
+        const padded = String(val).padStart(5, '0');
+        return "JS" + cfg.sign + padded + cfg.suffix;
+    }
+
+    function postMessage(message) {
+        $.ajax({
+        url: 'http://127.0.0.1:5002/deduction',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ message: message }),
+        success: function (res) {
+            console.log("Sent:", message, "→", res);
+        },
+        error: function (xhr, status, err) {
+            console.warn("Error posting:", message, status, err);
+        }
+        });
+    }
+
     // function deactivate(id){
         
     //     $('#spinnerLoading').show();
