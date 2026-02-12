@@ -388,7 +388,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <select id="reportType" name="reportType" class="form-select" required>
                                                             <option value="DR">Daily Report</option>
                                                             <option value="DMR">Daily Management Report</option>
-                                                            <option value="ER">Expense Report</option>
+                                                            <!-- <option value="ER">Expense Report</option> -->
                                                         </select>   
                                                     </div>
                                                 </div>
