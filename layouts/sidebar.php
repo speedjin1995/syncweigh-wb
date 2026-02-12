@@ -180,6 +180,14 @@
                                         ';
                                     }
 
+                                    if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["allowDeduct"] == 'Y'){
+                                        echo '
+                                        <li class="nav-item">
+                                            <a href="deductionSetup.php" class="nav-link"><b>'.$languageArray['deduction_setup_code'][$language].'</b></a>
+                                        </li> 
+                                        ';
+                                    }
+
                                     if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
                                         echo '
                                         <li class="nav-item">
