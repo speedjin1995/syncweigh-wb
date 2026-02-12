@@ -329,7 +329,7 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                     $(".page-content").show();
                 });
 
-                $("#passwordModal").modal("show");
+                // $("#passwordModal").modal("show");
 
                 $("#passwordCheckForm").on("submit", function (e) {
                     e.preventDefault();
@@ -353,30 +353,30 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                         $('#spinnerLoading').show();
 
                         // Switch modal to ask for password3
-                        $('#passwordModal').find('#password2Div').val('').hide();
-                        $('#passwordModal').find('#password3Div').val('').show();
+                        // $('#passwordModal').find('#password2Div').val('').hide();
+                        // $('#passwordModal').find('#password3Div').val('').show();
 
-                        $("#passwordModal").modal({
-                            backdrop: 'static',
-                            keyboard: false
-                        }).on("shown.bs.modal", function () {
-                            $(".page-content").addClass("blur");
-                        }).on("hidden.bs.modal", function () {
-                            $(".page-content").removeClass("blur");
-                        });
+                        // $("#passwordModal").modal({
+                        //     backdrop: 'static',
+                        //     keyboard: false
+                        // }).on("shown.bs.modal", function () {
+                        //     $(".page-content").addClass("blur");
+                        // }).on("hidden.bs.modal", function () {
+                        //     $(".page-content").removeClass("blur");
+                        // });
 
-                        $("#passwordModal").modal("show");
+                        // $("#passwordModal").modal("show");
 
-                        // Handle password3 submit
-                        $("#passwordCheckForm").off("submit").on("submit", function (e) {
-                            e.preventDefault();
-                            var password3 = $('#password3').val();
+                        // // Handle password3 submit
+                        // $("#passwordCheckForm").off("submit").on("submit", function (e) {
+                        //     e.preventDefault();
+                        //     var password3 = $('#password3').val();
 
-                            $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
-                                let obj = JSON.parse(data);
+                        //     $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
+                        //         let obj = JSON.parse(data);
 
-                                if (obj.status === "success") {
-                                    $("#passwordModal").modal("hide");
+                        //         if (obj.status === "success") {
+                        //             $("#passwordModal").modal("hide");
 
                                     // Proceed with saving form
                                     $.post('php/updateDeduction.php', $('#profileForm').serialize(), function (data) {
@@ -396,12 +396,12 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                         }
                                     });
 
-                                } else {
-                                    alert(obj.message);
-                                    window.location.href = "index.php";
-                                }
-                            });
-                        });
+                        //         } else {
+                        //             alert(obj.message);
+                        //             window.location.href = "index.php";
+                        //         }
+                        //     });
+                        // });
                     }
                 });
                 
