@@ -903,7 +903,7 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#finalAmount').val(finalAmount.toFixed(2));
     }
 
-    function loadPricingModal(data) {
+    function loadPricingModal(data) {console.log(data);
         var tableBody = $('#paymentDetailsTable');
         tableBody.empty();
         
@@ -929,7 +929,7 @@ if(($row = $result->fetch_assoc()) !== null){
         });
         
         // Load existing payment data if available
-        if (data.paymentVoucher) {
+        if (data.paymentVoucher && Object.keys(data.paymentVoucher).length > 0) {
             $('#voucherDate').val(formatDate2(new Date(data.paymentVoucher.voucher_date)));
             $('#unitPrice').val(data.paymentVoucher.unit_price);
             $('#tax').val(data.paymentVoucher.tax);
@@ -951,6 +951,8 @@ if(($row = $result->fetch_assoc()) !== null){
                 $('#additionsTable').append(row);
             });
         } else {
+            $('#deductionsTable').empty();
+            $('#additionsTable').empty();
             $('#unitPrice').val(0.00);
             $('#tax').val(0);
             $('#totalAmount').val(0.00);
