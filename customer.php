@@ -1271,7 +1271,7 @@ function deduction(id, deductionId = '') {
     $.post('php/getDeduction.php', {userID: deductionId, type: "Customer"}, function(data)
     {
         var obj = JSON.parse(data);
-        if(obj.status === 'success'){console.log(obj.message);
+        if(obj.status === 'success'){
             $('#deductionModal').find('#custSuppId').val(id);
             $('#deductionModal').find('#deductionId').val(obj.message.id || deductionId);
             $('#deductionModal').find('#statusSwitch').val(obj.message.status).trigger('change');
