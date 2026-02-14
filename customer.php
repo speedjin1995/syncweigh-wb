@@ -648,10 +648,10 @@ $(function () {
                     dropdownHtml += '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>';
 
                     // Conditionally add Deduction Setup button
-                    // if (role === 'ADMIN' || role === 'SADMIN' || allowDeduct === 'Y') {
-                    //     dropdownHtml += '<li><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ')">';
-                    //     dropdownHtml += '<i class="ri-subtract-fill align-bottom me-2 text-muted"></i> <?=$languageArray['deduction_setup_code'][$language] ?></a></li>';
-                    // }
+                    if (role === 'ADMIN' || role === 'SADMIN' || allowDeduct === 'Y') {
+                        dropdownHtml += '<li><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ', ' + row.customer_deduction_id + ')">';
+                        dropdownHtml += '<i class="ri-subtract-fill align-bottom me-2 text-muted"></i> <?=$languageArray['deduction_setup_code'][$language] ?></a></li>';
+                    }
 
                     // Delete button
                     dropdownHtml += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')">';
@@ -1007,25 +1007,25 @@ $(function () {
     $('#submitDeduction').on('click', function(){
         if($('#deductionForm').valid()){
             $('#deductionModal').modal('hide');
-            // Switch modal to ask for password3
-            $('#passwordModal').find('#password2Div').hide();
-            $('#passwordModal').find('#password3Div').show();
-            $("#passwordModal").modal({
-                backdrop: 'static', // disable closing by clicking outside
-                keyboard: false // disable ESC close
-            }).modal("show");
+            // // Switch modal to ask for password3
+            // $('#passwordModal').find('#password2Div').hide();
+            // $('#passwordModal').find('#password3Div').show();
+            // $("#passwordModal").modal({
+            //     backdrop: 'static', // disable closing by clicking outside
+            //     keyboard: false // disable ESC close
+            // }).modal("show");
 
 
             // Handle password3 submit
-            $("#passwordCheckForm").off("submit").on("submit", function (e) {
-                e.preventDefault();
-                var password3 = $('#password3').val();
+            // $("#passwordCheckForm").off("submit").on("submit", function (e) {
+            //     e.preventDefault();
+            //     var password3 = $('#password3').val();
 
-                $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
-                    let obj = JSON.parse(data);
+            //     $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
+            //         let obj = JSON.parse(data);
 
-                    if (obj.status === "success") {
-                        $("#passwordModal").modal("hide");
+            //         if (obj.status === "success") {
+            //             $("#passwordModal").modal("hide");
 
                         // Proceed with saving form
                         $.post('php/deductions.php', $('#deductionForm').serialize(), function (data) {
@@ -1036,14 +1036,14 @@ $(function () {
                             } else if (obj.status === 'failed') {
                                 alert(obj.message);
                             } else {
-                                alert("Failed to update ports");
+                                alert("Failed to update deduction");
                             }
                         });
-                    } else {
-                        alert(obj.message);
-                    }
-                });
-            });
+            //         } else {
+            //             alert(obj.message);
+            //         }
+            //     });
+            // });
         }
     });
 
@@ -1266,17 +1266,50 @@ function reactivate(id) {
   $('#spinnerLoading').hide();
 }
 
-function deduction(id) {
-    $('#deductionModal').find('#custSuppId').val(id);
-    $('#deductionModal').find('#deductionId').val('');
-    $('#passwordModal').find('#password2').val('');
-    $('#passwordModal').find('#password3').val('');
-    $('#passwordModal').find('#password2Div').show(); // show password2 input
-    $('#passwordModal').find('#password3Div').hide(); // hide password3 input
-    $("#passwordModal").modal({
-        backdrop: 'static', // disable closing by clicking outside
-        keyboard: false // disable ESC close
-    }).modal("show");
+function deduction(id, deductionId = '') {
+    $('#spinnerLoading').show();
+    $.post('php/getDeduction.php', {userID: deductionId, type: "Customer"}, function(data)
+    {
+        var obj = JSON.parse(data);
+        if(obj.status === 'success'){console.log(obj.message);
+            $('#deductionModal').find('#custSuppId').val(id);
+            $('#deductionModal').find('#deductionId').val(obj.message.id || deductionId);
+            $('#deductionModal').find('#statusSwitch').val(obj.message.status).trigger('change');
+            $('#deductionModal').find('#F1').val(obj.message.F1);
+            $('#deductionModal').find('#F2').val(obj.message.F2);
+            $('#deductionModal').find('#F3').val(obj.message.F3);
+            $('#deductionModal').find('#F4').val(obj.message.F4);
+            $('#deductionModal').find('#F5').val(obj.message.F5);
+            $('#deductionModal').find('#F6').val(obj.message.F6);
+            $('#deductionModal').find('#F7').val(obj.message.F7);
+            $('#deductionModal').find('#F8').val(obj.message.F8);
+            $('#deductionModal').find('#F9').val(obj.message.F9);
+            $('#deductionModal').find('#F10').val(obj.message.F10);
+            $('#deductionModal').find('#F11').val(obj.message.F11);
+            $('#deductionModal').find('#F12').val(obj.message.F12);
+            loadAutoDeductionData(obj.message.auto_data);
+            $('#deductionModal').modal('show');
+            // $('#passwordModal').find('#password2').val('');
+            // $('#passwordModal').find('#password3').val('');
+            // $('#passwordModal').find('#password2Div').show(); // show password2 input
+            // $('#passwordModal').find('#password3Div').hide(); // hide password3 input
+            // $("#passwordModal").modal({
+            //     backdrop: 'static', // disable closing by clicking outside
+            //     keyboard: false // disable ESC close
+            // }).modal("show");
+        }
+        else if(obj.status === 'failed'){
+            $('#spinnerLoading').hide();
+            $("#failBtn").attr('data-toast-text', obj.message );
+            $("#failBtn").click();
+        }
+        else{
+            $('#spinnerLoading').hide();
+            $("#failBtn").attr('data-toast-text', obj.message );
+            $("#failBtn").click();
+        }
+        $('#spinnerLoading').hide();
+    });
 }
 
 $('#customerForm').validate({
