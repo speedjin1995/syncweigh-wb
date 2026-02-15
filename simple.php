@@ -204,7 +204,7 @@ else{
                                             <div class="col-12">
                                                 <div class="card bg-light">
                                                     <div class="card-body">
-                                                        <div class="col-12" <?php 
+                                                        <div class="col-12 mb-3" <?php 
                                                             if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY' && $_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'MANAGER' && $allowManual == 'N'){
                                                                 echo 'style="display:none;"';
                                                             }?>>
@@ -257,7 +257,7 @@ else{
                                                                         <select class="form-select js-choice select2" id="customerName" name="customerName" required>
                                                                             <option selected="-">-</option>
                                                                             <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
-                                                                                <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
+                                                                                <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>" data-id="<?=$rowCustomer['id'] ?>"><?=$rowCustomer['name'] ?></option>
                                                                             <?php } ?>
                                                                         </select>
                                                                     </div>
@@ -270,7 +270,7 @@ else{
                                                                         <select class="form-select select2" id="supplierName" name="supplierName" required>
                                                                             <option selected="-">-</option>
                                                                             <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
-                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
+                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>" data-id="<?=$rowSupplier['id'] ?>"><?=$rowSupplier['name'] ?></option>
                                                                             <?php } ?>
                                                                         </select>
                                                                     </div>
@@ -308,6 +308,18 @@ else{
                                                                 </select>           
                                                             </div>
                                                         </div><br>
+                                                        <div class="row" id="unitPriceDisplay" style="display:none;">
+                                                            <label for="unitPrice" class="col-sm-4 col-form-label">
+                                                                Unit Price
+                                                            </label>
+                                                            <div class="col-sm-8">
+                                                                <div class="input-group">
+                                                                    <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0">
+                                                                    <div class="input-group-text">RM</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <br id="unitPriceBr" style="display:none;">
                                                         <div class="col-12">
                                                             <div class="row">
                                                                 <label for="grossIncoming" class="col-sm-4 col-form-label">Incoming</label>
@@ -2455,7 +2467,39 @@ else{
 
         //supplierName
         $('#supplierName').on('change', function(){
+            var supplierId = $('#supplierName :selected').data('id');
             $('#supplierCode').val($('#supplierName :selected').data('code'));
+
+            // Check if selected supplier is cash or term. If cash, show price fields. If term, hide price fields.
+            $.post('php/getSupplier.php', {userID: supplierId}, function(data){
+                var obj = JSON.parse(data);
+
+                if (obj.status == 'success'){
+                    if (obj.message.payment_term == 'Cash'){
+                        $('#unitPriceDisplay').show();
+                        $('#unitPriceBr').show();
+                        // $('#subTotalPriceDisplay').show();
+                        // $('#sstDisplay').show();
+                        // $('#totalPriceDisplay').show();
+                    }else{
+                        $('#unitPriceDisplay').hide();
+                        $('#unitPriceBr').hide();
+                        // $('#subTotalPriceDisplay').hide();
+                        // $('#sstDisplay').hide();
+                        // $('#totalPriceDisplay').hide();
+                    }
+                }
+                else if(obj.status === 'failed'){
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+            });
         });
 
         //transporter
@@ -2480,7 +2524,39 @@ else{
 
         //customerName
         $('#customerName').on('change', function(){
+            var customerId = $('#customerName :selected').data('id');
             $('#customerCode').val($('#customerName :selected').data('code'));
+
+            // Check if selected customer is cash or term. If cash, show price fields. If term, hide price fields.
+            $.post('php/getCustomer.php', {userID: customerId}, function(data){
+                var obj = JSON.parse(data);
+
+                if (obj.status == 'success'){
+                    if (obj.message.payment_term == 'Cash'){
+                        $('#unitPriceDisplay').show();
+                        $('#unitPriceBr').show();
+                        // $('#subTotalPriceDisplay').show();
+                        // $('#sstDisplay').show();
+                        // $('#totalPriceDisplay').show();
+                    }else{
+                        $('#unitPriceDisplay').hide();
+                        $('#unitPriceBr').hide();
+                        // $('#subTotalPriceDisplay').hide();
+                        // $('#sstDisplay').hide();
+                        // $('#totalPriceDisplay').hide();
+                    }
+                }
+                else if(obj.status === 'failed'){
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+            });
         });
 
         $('input[name="exDel"]').change(function() {
