@@ -239,6 +239,14 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
+                                                                                    <label for="mspoNo" class="col-sm-4 col-form-label"><?=$languageArray['mspo_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="mspoNo" name="mspoNo" placeholder="<?=$languageArray['mspo_code'][$language]?>">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
                                                                                     <label for="paymentTerm" class="col-sm-4 col-form-label"><?=$languageArray['payment_term_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <select id="paymentTerm" name="paymentTerm" class="form-select select2">
@@ -777,6 +785,7 @@ $(function () {
         $('#addModal').find('#icNo').val("");
         $('#addModal').find('#tinNo').val("");
         $('#addModal').find('#mpob').val("");
+        $('#addModal').find('#mpsoNo').val("");
         $('#addModal').find('#paymentTerm').val("Term").trigger('change');
 
         // Remove Validation Error Message
@@ -1132,6 +1141,7 @@ function edit(id){
             $('#addModal').find('#icNo').val(obj.message.ic_no);
             $('#addModal').find('#tinNo').val(obj.message.tin_no);
             $('#addModal').find('#mpob').val(obj.message.mpob);
+            $('#addModal').find('#mspoNo').val(obj.message.mspo_no);
             $('#addModal').find('#paymentTerm').val(obj.message.payment_term).trigger('change');
 
             // Remove Validation Error Message
