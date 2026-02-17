@@ -77,9 +77,14 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
     $deductionAmt = isset($_POST['deductionAmt']) ? $_POST['deductionAmt']: [];
 
     $deductionRecords = [];
+    $deductionFfbStorage = 0;
     if(isset($deductionNo) && $deductionNo != null && count($deductionNo) > 0){ 
         foreach ($deductionNo as $key => $value) {
             if (!empty($value) && isset($deductionType[$key]) && isset($deductionDesc[$key]) && isset($deductionAmt[$key])) {
+                if($deductionType[$key] == 'FFBSHORTAGE') {
+                    $deductionFfbStorage += floatval($deductionAmt[$key]);
+                }
+
                 $deductionRecords[] = [
                     "no" => $value,
                     "type" => $deductionType[$key],
@@ -188,13 +193,17 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
             'accumFfbOut' => floatval($dailySales['totalSalesWeight'])
         ];
 
+        // Balance C/F = (FFB purchase cash weight[MT] + FFB purchase term weight[MT]) - FFB purchase rejected weight - FFB sales weight[MT] - FFB shortage weight[MT]
+        $balanceCf = (floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight'])) - floatval($dailyPurchase['totalRejectedWeight']) - floatval($dailySales['totalSalesWeight'] - $deductionFfbStorage);
+
         // Previous Day Values
         $prevValues = [
             'ffbBalance' => floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight']) - floatval($dailyPurchase['totalRejectedWeight']) - floatval($dailySales['totalSalesWeight']),
+            'balanceCf' => $balanceCf
         ];
     } else {
         // Get previous record
-        $sql = "SELECT accum_deduction, accum_addition, accum_purchase, accum_sales FROM Cash_Book WHERE DATE(date) < ? AND deleted = 0 ORDER BY date DESC LIMIT 1";
+        $sql = "SELECT accum_deduction, accum_addition, accum_purchase, accum_sales, prev_values FROM Cash_Book WHERE DATE(date) < ? AND deleted = 0 ORDER BY date DESC LIMIT 1";
         if ($select_stmt = $db->prepare($sql)) {
             $dateOnly = $dateObj->format('Y-m-d');
             $select_stmt->bind_param('s', $dateOnly);
@@ -205,6 +214,7 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                     $prevAddition = json_decode($row['accum_addition'], true) ?: [];
                     $prevPurchase = json_decode($row['accum_purchase'], true) ?: [];
                     $prevSales = json_decode($row['accum_sales'], true) ?: [];
+                    $prevWDValues = json_decode($row['prev_values'], true) ?: []; //$previous working day values
                     
                     // Build lookup arrays by type
                     $prevDeductionMap = [];
@@ -254,9 +264,13 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                         'accumFfbOut' => floatval($dailySales['totalSalesWeight']) + (isset($prevPurchase['accumFfbOut']) ? floatval($prevPurchase['accumFfbOut']) : 0)
                     ];
 
+                    // Balance C/F = Prev FFB Bal[MT] + (FFB purchase cash weight[MT] + FFB purchase term weight[MT]) - FFB purchase rejected weight - FFB sales weight[MT] - FFB shortage weight[MT]
+                    $balanceCf = (floatval($prevWDValues['balanceCf']) + floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight'])) - floatval($dailyPurchase['totalRejectedWeight']) - floatval($dailySales['totalSalesWeight'] - $deductionFfbStorage);
+
                     // Previous Day Values
                     $prevValues = [
                         'ffbBalance' => floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight']) - floatval($dailyPurchase['totalRejectedWeight']) - floatval($dailySales['totalSalesWeight']),
+                        'balanceCf' => $balanceCf
                     ];
 
                 } else {
