@@ -913,7 +913,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 '<td>' + weight.cust_supp_code + '</td>' +
                 '<td>' + weight.cust_supp_name + '</td>' +
                 '<td>' + weight.weight_type + '</td>' +
-                '<td>' + weight.invoice_no + '</td>' +
+                '<td>' + (weight.invoice_no ?? '') + '</td>' +
                 '<td>' + (parseFloat(weight.gross_weight1)/1000).toFixed(2) + '</td>' +
                 '<td>' + weight.gross_weight1_date + '</td>' +
                 '<td>' + (parseFloat(weight.tare_weight1)/1000).toFixed(2) + '</td>' +
