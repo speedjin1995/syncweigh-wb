@@ -693,7 +693,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                                         <select class="form-select js-choice select2" id="customerName" name="customerName" required>
                                                                                                             <option selected="-">-</option>
                                                                                                             <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
-                                                                                                                <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
+                                                                                                                <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>" data-id="<?=$rowCustomer['id'] ?>"><?=$rowCustomer['name'] ?></option>
                                                                                                             <?php } ?>
                                                                                                         </select>
                                                                                                     </div>
@@ -706,7 +706,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                                         <select class="form-select select2" id="supplierName" name="supplierName" required>
                                                                                                             <option selected="-">-</option>
                                                                                                             <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
-                                                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
+                                                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>" data-id="<?=$rowSupplier['id'] ?>"><?=$rowSupplier['name'] ?></option>
                                                                                                             <?php } ?>
                                                                                                         </select>
                                                                                                     </div>
@@ -1185,7 +1185,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
+                                                                                            <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0">
                                                                                             <div class="input-group-text">RM</div>
                                                                                         </div>
                                                                                     </div>
@@ -4940,7 +4940,44 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
         //supplierName
         $('#supplierName').on('change', function(){
+            var supplierId = $('#supplierName :selected').data('id');
             $('#supplierCode').val($('#supplierName :selected').data('code'));
+
+            // Check if selected supplier is cash or term. If cash, show price fields. If term, hide price fields.
+            if ('<?php echo $includePrice; ?>' == 'Y') {
+                $.post('php/getSupplier.php', {userID: supplierId}, function(data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        if(obj.message.payment_term == "Cash")
+                        {
+                            $('#priceCard').show();
+                            $('#unitPriceDisplay').show();
+                            $('#subTotalPriceDisplay').show();
+                            $('#sstDisplay').show();
+                            $('#totalPriceDisplay').show();
+                        }
+                        else
+                        {
+                            $('#priceCard').hide();
+                            $('#unitPriceDisplay').hide();
+                            $('#subTotalPriceDisplay').hide();
+                            $('#sstDisplay').hide();
+                            $('#totalPriceDisplay').hide();
+                        }
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
         });
 
         $('#driverName').on('change', function(){
@@ -4969,7 +5006,44 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
         //customerName
         $('#customerName').on('change', function(){
+            var customerId = $('#customerName :selected').data('id');
             $('#customerCode').val($('#customerName :selected').data('code'));
+
+            // Check if selected customer is cash or term. If cash, show price fields. If term, hide price fields.
+            if ('<?php echo $includePrice; ?>' == 'Y') {
+                $.post('php/getCustomer.php', {userID: customerId}, function(data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        if(obj.message.payment_term == "Cash")
+                        {
+                            $('#priceCard').show();
+                            $('#unitPriceDisplay').show();
+                            $('#subTotalPriceDisplay').show();
+                            $('#sstDisplay').show();
+                            $('#totalPriceDisplay').show();
+                        }
+                        else
+                        {
+                            $('#priceCard').hide();
+                            $('#unitPriceDisplay').hide();
+                            $('#subTotalPriceDisplay').hide();
+                            $('#sstDisplay').hide();
+                            $('#totalPriceDisplay').hide();
+                        }
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
         });
 
         $('input[name="exDel"]').change(function() {
@@ -5658,13 +5732,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 $('#addModal').find('#subTotalPrice').val(obj.message.sub_total);
                 $('#addModal').find('#sstPrice').val(obj.message.sst);
                 $('#addModal').find('#totalPrice').val(obj.message.total_price);
-                $('#addModal').find('#finalWeight').val(obj.message.final_weight);
+                $('#addModal').find('#finalWeight').val(obj.message.final_weight); console.log(obj.message.load_drum);
 
-                if (obj.message.load_drum == 'LOAD'){
-                    $('#addModal').find("input[name='loadDrum'][value='true']").prop("checked", true).trigger('change');
-                }else{
-                    $('#addModal').find("input[name='loadDrum'][value='false']").prop("checked", true).trigger('change');
-                }
+                // if (obj.message.load_drum == 'LOAD'){
+                //     $('#addModal').find("input[name='loadDrum'][value='true']").prop("checked", true).trigger('change');
+                // }else{
+                //     $('#addModal').find("input[name='loadDrum'][value='false']").prop("checked", true).trigger('change');
+                // }
                 
                 $('#addModal').find('#noOfDrum').val(obj.message.no_of_drum);
                 $('#addModal').find('#containerNoInput').val(obj.message.container_no);
