@@ -26,6 +26,36 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['voucherDate']) && !e
         $invoiceNo = trim($_POST["invoiceNo"]);
     }
 
+    if (empty($_POST["voucherNo"])) {
+        $name = 'payment_voucher';
+		if($update_stmt2 = $db->prepare("SELECT * FROM miscellaneous WHERE name=?")){
+			$update_stmt2->bind_param('s', $name);
+
+			if (! $update_stmt2->execute()) {
+                echo json_encode(
+                    array(
+                        "status" => "failed",
+                        "message" => "Something went wrong when querying miscellaneous"
+                    )
+                ); 
+            }
+            else{
+                $voucherNo = 'PV';
+                $result2 = $update_stmt2->get_result();
+				if ($row2 = $result2->fetch_assoc()) {
+                    $charSize = strlen($row2['value']);
+                    $value = $row2['value'];
+                    for($i=0; $i<(4-(int)$charSize); $i++){
+                        $voucherNo.='0';  // PV0000
+                    }
+                    $voucherNo .= $value;
+				} 
+            }
+		}
+    } else {
+        $voucherNo = trim($_POST["voucherNo"]);
+    }
+
     if (empty($_POST["unitPrice"])) {
         $unitPrice = 0;
     } else {
@@ -164,21 +194,52 @@ if (isset($_POST['id'], $_POST['customerSupplier'], $_POST['voucherDate']) && !e
                 // Insert new record
                 $payment_check_stmt->close();
                 
-                if ($insert_payment_stmt = $db->prepare("INSERT INTO Payment_Voucher (customer_supplier, invoice_no, voucher_date, unit_price, tax, total_nett_weight, total_amount, deduction_amount, addition_amount, final_amount, deduction_details, addition_details, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                if ($insert_payment_stmt = $db->prepare("INSERT INTO Payment_Voucher (customer_supplier, voucher_no, invoice_no, voucher_date, unit_price, tax, total_nett_weight, total_amount, deduction_amount, addition_amount, final_amount, outstanding_amount, deduction_details, addition_details, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                     $deductionsJson = json_encode($deductionRecords);
                     $additionJson = json_encode($additionRecords);
                     
-                    $insert_payment_stmt->bind_param('ssssssssssssss', $_POST['customerSupplier'], $invoiceNo, $voucherDate, $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $deductionsJson, $additionJson, $username, $username);
-                    $insert_payment_stmt->execute();
-                    $insert_payment_stmt->close();
+                    $insert_payment_stmt->bind_param('ssssssssssssssss', $_POST['customerSupplier'], $voucherNo, $invoiceNo, $voucherDate, $unitPrice, $tax, $totalNettWeight, $subtotal, $totalDeductions, $totalAdditions, $finalAmount, $finalAmount, $deductionsJson, $additionJson, $username, $username);
+
+                    if (! $insert_payment_stmt->execute()) {
+                        echo json_encode(
+                            array(
+                                "status"=> "failed", 
+                                "message"=> $insert_payment_stmt->error
+                            )
+                        );
+                    }
+                    else{
+                        $insert_payment_stmt->close();
+
+                        // Update miscellaneous for voucher no
+                        $name = 'payment_voucher';
+                        if($update_stmt2 = $db->prepare("UPDATE miscellaneous SET value=value+1 WHERE name=?")){
+                            $update_stmt2->bind_param('s', $name);
+
+                            // Execute the prepared query.
+                            if (! $update_stmt2->execute()) {
+                                echo json_encode(
+                                    array(
+                                        "status"=> "failed", 
+                                        "message"=> $update_stmt2->error
+                                    )
+                                );
+                            }
+                            else{
+                                $update_stmt2->close();
+
+                                echo json_encode(
+                                    array(
+                                        "status"=> "success", 
+                                        "message"=> "Added Successfully!!" 
+                                    )
+                                );
+                            }
+                        }
+                    }
                 }
             }
         }
-
-        echo json_encode(array(
-            "status" => "success",
-            "message" => "Pricing updated successfully!"
-        ));
     } else {
         echo json_encode(array(
             "status" => "failed",

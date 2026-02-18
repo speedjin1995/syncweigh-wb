@@ -186,6 +186,10 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="row mb-3">
                                                                     <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Voucher No</label>
+                                                                        <input type="text" class="form-control input-readonly" id="voucherNo" name="voucherNo" readonly>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
                                                                         <label class="form-label">Voucher Date</label>
                                                                         <input type="text" class="form-control" id="voucherDate" name="voucherDate" required>
                                                                     </div>
@@ -193,12 +197,12 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                         <label class="form-label">Unit Price (RM)</label>
                                                                         <input type="number" class="form-control" id="unitPrice" name="unitPrice" step="0.01" required>
                                                                     </div>
+                                                                </div>
+                                                                <div class="row mb-3">
                                                                     <div class="col-xxl-4 col-lg-4">
                                                                         <label class="form-label">Tax (%)</label>
                                                                         <input type="number" class="form-control" id="tax" name="tax" step="0.01" min="0" max="100" value="0" required>
                                                                     </div>
-                                                                </div>
-                                                                <div class="row mb-3">
                                                                     <div class="col-xxl-4 col-lg-4">
                                                                         <label class="form-label">Total Nett Weight (MT)</label>
                                                                         <input type="number" class="form-control" id="totalNettWeight" name="totalNettWeight" readonly>
@@ -336,7 +340,8 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Transaction Date</th>
+                                                                    <th><?=$languageArray['transaction_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['voucher_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['weighing_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['transaction_status_code'][$language]?></th>
                                                                     <th><?=$languageArray['supplier_code'][$language]?></th>
@@ -464,6 +469,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     }
                 },
                 { data: 'transaction_date' },
+                { data: 'voucher_no' },
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
@@ -542,6 +548,7 @@ if(($row = $result->fetch_assoc()) !== null){
                         }
                     },
                     { data: 'transaction_date' },
+                    { data: 'voucher_no' },
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
@@ -903,7 +910,7 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#finalAmount').val(finalAmount.toFixed(2));
     }
 
-    function loadPricingModal(data) {console.log(data);
+    function loadPricingModal(data) {
         var tableBody = $('#paymentDetailsTable');
         tableBody.empty();
         
@@ -930,6 +937,7 @@ if(($row = $result->fetch_assoc()) !== null){
         
         // Load existing payment data if available
         if (data.paymentVoucher && Object.keys(data.paymentVoucher).length > 0) {
+            $('#voucherNo').val(data.paymentVoucher.voucher_no);
             $('#voucherDate').val(formatDate2(new Date(data.paymentVoucher.voucher_date)));
             $('#unitPrice').val(data.paymentVoucher.unit_price);
             $('#tax').val(data.paymentVoucher.tax);
@@ -951,6 +959,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 $('#additionsTable').append(row);
             });
         } else {
+            $('#voucherNo').val('');
             $('#deductionsTable').empty();
             $('#additionsTable').empty();
             $('#unitPrice').val(0.00);

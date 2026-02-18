@@ -1602,3 +1602,42 @@ $$
 DELIMITER ;
 
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'mspo_code', 'MSPO Code', 'MSPO代码', 'Kod MSPO', 'MSPO குறியீடு');
+
+ALTER TABLE `Payment_Voucher` ADD `voucher_no` VARCHAR(100) NOT NULL AFTER `customer_supplier`;
+ALTER TABLE `Payment_Voucher_Log` ADD `voucher_no` VARCHAR(100) NOT NULL AFTER `customer_supplier`;
+ALTER TABLE `Payment_Voucher` ADD `outstanding_amount` VARCHAR(100) NULL AFTER `final_amount`;
+ALTER TABLE `Payment_Voucher_Log` ADD `outstanding_amount` VARCHAR(100) NULL AFTER `final_amount`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_PAY` AFTER INSERT ON `Payment_Voucher` FOR EACH ROW INSERT INTO Payment_Voucher_Log (
+    payment_voucher_id, voucher_no, customer_supplier, voucher_date, invoice_no, unit_price, tax, total_nett_weight, total_amount, deduction_amount, addition_amount, final_amount, outstanding_amount, deduction_details, addition_details, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.voucher_no, NEW.customer_supplier, NEW.voucher_date, NEW.invoice_no, NEW.unit_price, NEW.tax, NEW.total_nett_weight, NEW.total_amount, NEW.deduction_amount, NEW.addition_amount, NEW.final_amount, NEW.outstanding_amount, NEW.deduction_details, NEW.addition_details, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PAY` BEFORE UPDATE ON `Payment_Voucher` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if deleted = 1, set action_id to 3, otherwise set to 2
+    IF NEW.deleted = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Payment_Voucher_Log table
+    INSERT INTO Payment_Voucher_Log (
+        payment_voucher_id, voucher_no, customer_supplier, voucher_date, invoice_no, unit_price, tax, total_nett_weight, total_amount, deduction_amount, addition_amount, final_amount, outstanding_amount, deduction_details, addition_details, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.voucher_no, NEW.customer_supplier, NEW.voucher_date, NEW.invoice_no, NEW.unit_price, NEW.tax, NEW.total_nett_weight, NEW.total_amount, NEW.deduction_amount, NEW.addition_amount, NEW.final_amount, NEW.outstanding_amount, NEW.deduction_details, NEW.addition_details, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('payment_voucher', 1);
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'voucher_no_code', 'Voucher No', '凭证号', 'Nombor Baucar', 'வவுசர் எண்');
