@@ -315,7 +315,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     <option value="PETROL_DIESEL">Petrol/Diesel (RM)</option>
                     <option value="STAFFADV">Staff Advance (RM)</option>
                     <option value="STAFFSAL">Staff Salary (RM)</option>
-                    <option value="FFBSHORTAGE">FFB Shortage (MT)</option>
+                    <option value="CREDITFFBPAY">Credit FFB payment (RM)</option>
                 </select>
             </td>
             <td>
@@ -738,6 +738,31 @@ if(($row = $result->fetch_assoc()) !== null){
         // Trigger calculation on input change
         $(document).on('input', 'input[id^="deductionAmt"], input[id^="additionAmt"]', function() {
             calculateTotals();
+        });
+
+        // Handle deductionType change for CREDITFFBPAY
+        $(document).on('change', 'select[id^="deductionType"]', function() {
+            var rowIndex = $(this).attr('id').replace('deductionType', '');
+            var descField = $('#deductionDesc' + rowIndex);
+            
+            if($(this).val() == 'CREDITFFBPAY') {
+                $.post('php/getOutstandingPaymentVouchers.php', function(data) {
+                    var obj = JSON.parse(data);
+                    if(obj.status === 'success') {
+                        var selectHtml = '<select class="form-select" id="deductionDesc' + rowIndex + '" name="deductionDesc[' + rowIndex + ']" required>';
+                        selectHtml += '<option value="">Please Select</option>';
+                        $.each(obj.message, function(i, voucher) {
+                            selectHtml += '<option value="' + voucher.id + '">' + voucher.voucher_no + ' - RM' + voucher.outstanding_amount + '</option>';
+                        });
+                        selectHtml += '</select>';
+                        descField.replaceWith(selectHtml);
+                    }
+                });
+            } else {
+                if(descField.is('select')) {
+                    descField.replaceWith('<input type="text" class="form-control" id="deductionDesc' + rowIndex + '" name="deductionDesc[' + rowIndex + ']" style="background-color:white;" required>');
+                }
+            }
         });
 
     });

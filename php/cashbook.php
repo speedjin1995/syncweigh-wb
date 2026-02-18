@@ -283,9 +283,46 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
         }
     }
 
+    ######## Calculate Payment Voucher deduction amount for FFB payment ############
+    foreach($deductionRecords as $record) {
+        if($record['type'] == 'CREDITFFBPAY') {
+            $paymentVoucherId = $record['desc'];
+            $outstandingDetails = [];
+    
+            if ($pv_stmt = $db->prepare("SELECT * FROM Payment_Voucher WHERE id=?")) {
+                $pv_stmt->bind_param('i', $paymentVoucherId);
+                if ($pv_stmt->execute()) {
+                    $pv_result = $pv_stmt->get_result();
+                    if ($pv_row = $pv_result->fetch_assoc()) {
+                        $finalAmount = floatval($pv_row['final_amount']);
+                        $creditFfbPay = 0;
+
+                        if(!empty($pv_row['outstanding_details'])) {
+                            $outstandingDetails = json_decode($pv_row['outstanding_details'], true) ?: [];
+                        }else{
+                            $outstandingDetails[] = [
+                                'cashbook_no' => $cashBookNo,
+                                'pv_id' => intval($paymentVoucherId),
+                                'amount' => floatval($record['amount'])
+                            ];
+                        }
+                        
+                        // Rebuild outstanding with previous amount if exists
+                        $prevAmount = isset($prevOutstandingMap[$paymentVoucherId]) ? $prevOutstandingMap[$paymentVoucherId] : 0;
+                        $outstandingDetails[] = [
+                            'pv_id' => intval($paymentVoucherId),
+                            'amount' => $prevAmount + $amount
+                        ];
+                    }
+                }
+                $pv_stmt->close();
+            }
+        }
+    }
+
     if(!empty($cashbookId))
     {
-        if ($update_stmt = $db->prepare("UPDATE Cash_Book SET cash_book_no=?, date=?, deduction_details=?, addition_details=?, total_deduction=?, total_addition=?, accum_deduction=?, accum_addition=?, accum_purchase=?, prev_values=?, created_by=?, modified_by=? WHERE id=?")) 
+        if ($update_stmt = $db->prepare("UPDATE Cash_Book SET cash_book_no=?, date=?, deduction_details=?, addition_details=?, total_deduction=?, total_addition=?, accum_deduction=?, accum_addition=?, accum_purchase=?, prev_values=?, outstanding_details=?, created_by=?, modified_by=? WHERE id=?")) 
         {
             $deductionJson = json_encode($deductionRecords);
             $additionJson = json_encode($additionRecords);
@@ -293,7 +330,8 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
             $accumAdditionJson = json_encode($accumAddition);
             $accumPurchaseJson = json_encode($accumPurchase);
             $prevValuesJson = json_encode($prevValues);
-            $update_stmt->bind_param('sssssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $accumPurchaseJson, $prevValuesJson, $username, $username, $cashbookId);
+            $outstandingJson = json_encode($outstandingDetails);
+            $update_stmt->bind_param('ssssssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $accumPurchaseJson, $prevValuesJson, $outstandingJson, $username, $username, $cashbookId);
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
                 echo json_encode(
@@ -317,14 +355,15 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
     }
     else
     {
-        if ($insert_stmt = $db->prepare("INSERT INTO Cash_Book (cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, accum_deduction, accum_addition, accum_purchase, prev_values, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+        if ($insert_stmt = $db->prepare("INSERT INTO Cash_Book (cash_book_no, date, deduction_details, addition_details, total_deduction, total_addition, accum_deduction, accum_addition, accum_purchase, prev_values, outstanding_details, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             $deductionJson = json_encode($deductionRecords);
             $additionJson = json_encode($additionRecords);
             $accumDeductionJson = json_encode($accumDeduction);
             $accumAdditionJson = json_encode($accumAddition);
             $accumPurchaseJson = json_encode($accumPurchase);
             $prevValuesJson = json_encode($prevValues);
-            $insert_stmt->bind_param('ssssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $accumPurchaseJson, $prevValuesJson, $username, $username);
+            $outstandingJson = json_encode($outstandingDetails);
+            $insert_stmt->bind_param('sssssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $accumPurchaseJson, $prevValuesJson, $outstandingJson, $username, $username);
 
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {
