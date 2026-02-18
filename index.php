@@ -5672,9 +5672,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
                 $('#addModal').find('#transporterCode').val(obj.message.transporter_code);
                 $('#addModal').find('#transporter').val(obj.message.transporter).trigger('change');
-                $('#addModal').find('#customerName').val(obj.message.customer_name).select2('destroy').select2();
+                $('#addModal').find('#customerName').val(obj.message.customer_name).trigger('change');
                 $('#addModal').find('#customerCode').val(obj.message.customer_code);
-                $('#addModal').find('#supplierName').val(obj.message.supplier_name).select2('destroy').select2();
+                $('#addModal').find('#supplierName').val(obj.message.supplier_name).trigger('change');
                 $('#addModal').find('#supplierCode').val(obj.message.supplier_code);
                 $('#addModal').find('#siteCode').val(obj.message.site_code);
                 $('#addModal').find('#siteName').val(obj.message.site_name).trigger('change');
