@@ -2,7 +2,8 @@
 session_start();
 require_once 'db_connect.php';
 
-if(isset($_POST['customerSupplier'], $_POST['transactionDate'])) {
+if(isset($_POST['slipType'], $_POST['customerSupplier'], $_POST['transactionDate'])) {
+    $slipType = $_POST['slipType'];
     $customerSupplier = $_POST['customerSupplier'];
     $transactionDate = DateTime::createFromFormat('d-m-Y', $_POST['transactionDate'])->format('Y-m-d');
     
