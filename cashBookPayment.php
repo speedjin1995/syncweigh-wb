@@ -800,7 +800,7 @@ if(($row = $result->fetch_assoc()) !== null){
                         
                         if(item.type == 'CREDITFFBPAY') {
                             (function(rowIdx, descValue) {
-                                $.post('php/getOutstandingPaymentVouchers.php', function(data) {
+                                $.post('php/getOutstandingPaymentVouchers.php', {selectedId: descValue}, function(data) {
                                     var obj2 = JSON.parse(data);
                                     if(obj2.status === 'success') {
                                         var selectHtml = '<select class="form-select" id="deductionDesc' + rowIdx + '" name="deductionDesc[' + rowIdx + ']" required>';
