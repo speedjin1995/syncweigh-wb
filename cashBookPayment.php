@@ -795,8 +795,28 @@ if(($row = $result->fetch_assoc()) !== null){
 
                         $("#deductionTable").find('#deductionNo:last').attr('name', 'deductionNo['+deductionRowCount+']').attr("id", "deductionNo" + deductionRowCount).val(deductionRowCount + 1);
                         $("#deductionTable").find('#deductionType:last').attr('name', 'deductionType['+deductionRowCount+']').attr("id", "deductionType" + deductionRowCount).val(item.type);
-                        $("#deductionTable").find('#deductionDesc:last').attr('name', 'deductionDesc['+deductionRowCount+']').attr("id", "deductionDesc" + deductionRowCount).val(item.desc);
+                        $("#deductionTable").find('#deductionDesc:last').attr('name', 'deductionDesc['+deductionRowCount+']').attr("id", "deductionDesc" + deductionRowCount);
                         $("#deductionTable").find('#deductionAmt:last').attr('name', 'deductionAmt['+deductionRowCount+']').attr("id", "deductionAmt" + deductionRowCount).val(item.amount);
+                        
+                        if(item.type == 'CREDITFFBPAY') {
+                            (function(rowIdx, descValue) {
+                                $.post('php/getOutstandingPaymentVouchers.php', function(data) {
+                                    var obj2 = JSON.parse(data);
+                                    if(obj2.status === 'success') {
+                                        var selectHtml = '<select class="form-select" id="deductionDesc' + rowIdx + '" name="deductionDesc[' + rowIdx + ']" required>';
+                                        selectHtml += '<option value="">Please Select</option>';
+                                        $.each(obj2.message, function(j, voucher) {
+                                            var selected = voucher.id == descValue ? 'selected' : '';
+                                            selectHtml += '<option value="' + voucher.id + '" ' + selected + '>' + voucher.voucher_no + ' - RM' + voucher.outstanding_amount + '</option>';
+                                        });
+                                        selectHtml += '</select>';
+                                        $('#deductionDesc' + rowIdx).replaceWith(selectHtml);
+                                    }
+                                });
+                            })(deductionRowCount, item.desc);
+                        } else {
+                            $("#deductionDesc" + deductionRowCount).val(item.desc);
+                        }
 
                         deductionRowCount++;
                     }
