@@ -13,85 +13,74 @@ if (isset($_POST)) {
 		$statusSwitch = $_POST['statusSwitch'];
 	}
 
-    // Manual
-    $F1  = parseNullableFloat('F1');
-    $F2  = parseNullableFloat('F2');
-    $F3  = parseNullableFloat('F3');
-    $F4  = parseNullableFloat('F4');
-    $F5  = parseNullableFloat('F5');
-    $F6  = parseNullableFloat('F6');
-    $F7  = parseNullableFloat('F7');
-    $F8  = parseNullableFloat('F8');
-    $F9  = parseNullableFloat('F9');
-    $F10 = parseNullableFloat('F10');
-    $F11 = parseNullableFloat('F11');
-    $F12 = parseNullableFloat('F12');
+    $modified_by = $_SESSION['username'];
+    $params = [];
+    $types = "";
+    $setClauses = [];
 
-    // Auto
-    $autoData = [];
-    if ($statusSwitch == 'Auto' && isset($_POST['rangeFrom']) && is_array($_POST['rangeFrom'])) {
-        $rangeFrom = $_POST['rangeFrom'];
-        $rangeTo = $_POST['rangeTo'] ?? [];
-        $negativeKg = $_POST['negativeKg'] ?? [];
-        $positiveKg = $_POST['positiveKg'] ?? [];
-        $negativePerc = $_POST['negativePerc'] ?? [];
-        $positivePerc = $_POST['positivePerc'] ?? [];
-        
-        // Build auto data array
-        foreach ($rangeFrom as $key => $value) {
-            if (!empty($value) || !empty($rangeTo[$key])) {
-                $autoData[] = [
-                    'rangeFrom' => (float)($value ?? 0),
-                    'rangeTo' => (float)($rangeTo[$key] ?? 0),
-                    'negativeKg' => (float)($negativeKg[$key] ?? 0),
-                    'positiveKg' => (float)($positiveKg[$key] ?? 0),
-                    'negativePerc' => (float)($negativePerc[$key] ?? 0),
-                    'positivePerc' => (float)($positivePerc[$key] ?? 0)
-                ];
+    // Build dynamic SQL based on statusSwitch
+    if ($statusSwitch == 'Manual') {
+        $setClauses[] = "F1=?, F2=?, F3=?, F4=?, F5=?, F6=?, F7=?, F8=?, F9=?, F10=?, F11=?, F12=?";
+        $types .= "dddddddddddd";
+        $params = [
+            parseNullableFloat('F1'), parseNullableFloat('F2'), parseNullableFloat('F3'),
+            parseNullableFloat('F4'), parseNullableFloat('F5'), parseNullableFloat('F6'),
+            parseNullableFloat('F7'), parseNullableFloat('F8'), parseNullableFloat('F9'),
+            parseNullableFloat('F10'), parseNullableFloat('F11'), parseNullableFloat('F12')
+        ];
+    } elseif ($statusSwitch == 'Auto') {
+        $autoData = [];
+        if (isset($_POST['rangeFrom']) && is_array($_POST['rangeFrom'])) {
+            $rangeFrom = $_POST['rangeFrom'];
+            $rangeTo = $_POST['rangeTo'] ?? [];
+            $negativeKg = $_POST['negativeKg'] ?? [];
+            $positiveKg = $_POST['positiveKg'] ?? [];
+            $negativePerc = $_POST['negativePerc'] ?? [];
+            $positivePerc = $_POST['positivePerc'] ?? [];
+            
+            foreach ($rangeFrom as $key => $value) {
+                if (!empty($value) || !empty($rangeTo[$key])) {
+                    $autoData[] = [
+                        'rangeFrom' => (float)($value ?? 0),
+                        'rangeTo' => (float)($rangeTo[$key] ?? 0),
+                        'negativeKg' => (float)($negativeKg[$key] ?? 0),
+                        'positiveKg' => (float)($positiveKg[$key] ?? 0),
+                        'negativePerc' => (float)($negativePerc[$key] ?? 0),
+                        'positivePerc' => (float)($positivePerc[$key] ?? 0)
+                    ];
+                }
             }
         }
+        $setClauses[] = "auto_data=?";
+        $types .= "s";
+        $params[] = json_encode($autoData);
+    } elseif ($statusSwitch == 'Default') {
+        $setClauses[] = "default_range_min=?, default_range_max=?, default_range_weight=?";
+        $types .= "ddd";
+        $params = [
+            parseNullableFloat('defaultRangeMin'),
+            parseNullableFloat('defaultRangeMax'),
+            parseNullableFloat('defaultWeight')
+        ];
+    } elseif ($statusSwitch == 'Customer_Supplier') {
+        $setClauses[] = "customers=?, suppliers=?";
+        $types .= "ss";
+        $params = [
+            json_encode(isset($_POST['customer']) ? $_POST['customer'] : []),
+            json_encode(isset($_POST['supplier']) ? $_POST['supplier'] : [])
+        ];
     }
-    
-    // Convert auto data to JSON string
-    $autoDataJson = json_encode($autoData);
 
-    // Default
-    if ($statusSwitch == 'Default') {
-        $defaultRangeMin = parseNullableFloat('defaultRangeMin');
-        $defaultRangeMax = parseNullableFloat('defaultRangeMax');
-        $defaultWeight = parseNullableFloat('defaultWeight');
-    }
+    // Add status, modified_by and updated_at to all queries
+    $setClauses[] = "status=?, modified_by=?, updated_at=NOW()";
+    $types .= "ss";
+    $params[] = $statusSwitch;
+    $params[] = $modified_by;
 
-    // Customer/Supplier
-    if ($statusSwitch == 'Customer_Supplier') {
-        $selectedCustomers = isset($_POST['customer']) ? $_POST['customer'] : [];
-        $selectedSuppliers = isset($_POST['supplier']) ? $_POST['supplier'] : [];
-        // You can process these arrays as needed
-        $customersJson = json_encode($selectedCustomers);
-        $suppliersJson = json_encode($selectedSuppliers);
-    }
-
-    $modified_by = $_SESSION['username'];
-
-    $sql = "UPDATE Deduction 
-            SET F1=?, F2=?, F3=?, F4=?, F5=?, F6=?, 
-                F7=?, F8=?, F9=?, F10=?, F11=?, F12=?, 
-                status=?, auto_data=?, default_range_min=?, 
-                default_range_max=?, default_range_weight=?, 
-                customers=?, suppliers=?,
-                modified_by=?, updated_at=NOW() 
-            LIMIT 1";
+    $sql = "UPDATE Deduction SET " . implode(", ", $setClauses) . " LIMIT 1";
 
     if ($stmt = $db->prepare($sql)) {
-        $stmt->bind_param(
-            "ddddddddddddssdddsss",
-            $F1, $F2, $F3, $F4, $F5, $F6,
-            $F7, $F8, $F9, $F10, $F11, $F12,
-            $statusSwitch, $autoDataJson, 
-            $defaultRangeMin, $defaultRangeMax,
-            $defaultWeight, $customersJson, $suppliersJson,
-            $modified_by
-        );
+        $stmt->bind_param($types, ...$params);
 
         if($stmt->execute()){
             $stmt->close();
