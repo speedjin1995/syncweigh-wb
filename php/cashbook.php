@@ -75,6 +75,7 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
     $deductionType = isset($_POST['deductionType']) ? $_POST['deductionType']: [];
     $deductionDesc = isset($_POST['deductionDesc']) ? $_POST['deductionDesc']: [];
     $deductionAmt = isset($_POST['deductionAmt']) ? $_POST['deductionAmt']: [];
+    $pvSelect = isset($_POST['pvSelect']) ? $_POST['pvSelect']: [];
 
     $deductionRecords = [];
     $deductionFfbStorage = 0;
@@ -85,12 +86,19 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                     $deductionFfbStorage += floatval($deductionAmt[$key]);
                 }
 
-                $deductionRecords[] = [
+                $record = [
                     "no" => $value,
                     "type" => $deductionType[$key],
                     "desc" => $deductionDesc[$key],
                     "amount" => $deductionAmt[$key]
                 ];
+                
+                // Add pv_id if type is CREDITFFBPAY
+                if($deductionType[$key] == 'CREDITFFBPAY' && isset($pvSelect[$key]) && !empty($pvSelect[$key])) {
+                    $record['pv_id'] = $pvSelect[$key];
+                }
+                
+                $deductionRecords[] = $record;
             }
         }
     }
@@ -288,17 +296,23 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
     $outstandingDetails = [];
     $processedPVs = []; // Track which PVs we've already processed
     $currentCashbookAmounts = []; // Track total amounts per PV for current cashbook
+    $currentCashbookDescs = []; // Track descriptions per PV for current cashbook
     
     // First, calculate total amount per PV for current cashbook
     foreach($deductionRecords as $record) {
         if($record['type'] == 'CREDITFFBPAY') {
-            $paymentVoucherId = $record['desc'];
+            $paymentVoucherId = isset($record['pv_id']) ? $record['pv_id'] : $record['desc'];
             $creditFfbPay += floatval($record['amount']);
             
             if(!isset($currentCashbookAmounts[$paymentVoucherId])) {
                 $currentCashbookAmounts[$paymentVoucherId] = 0;
             }
             $currentCashbookAmounts[$paymentVoucherId] += floatval($record['amount']);
+            
+            // Store description
+            if(!isset($currentCashbookDescs[$paymentVoucherId])) {
+                $currentCashbookDescs[$paymentVoucherId] = isset($record['desc']) ? $record['desc'] : '';
+            }
         }
     }
     
@@ -319,6 +333,7 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                     foreach($pvOutstanding as $key => $item) {
                         if($item['cashbook_no'] == $cashBookNo) {
                             $pvOutstanding[$key]['amount'] = $totalAmount;
+                            $pvOutstanding[$key]['desc'] = isset($currentCashbookDescs[$paymentVoucherId]) ? $currentCashbookDescs[$paymentVoucherId] : '';
                             $found = true;
                             break;
                         }
@@ -328,6 +343,7 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                         $pvOutstanding[] = [
                             'cashbook_no' => $cashBookNo,
                             'pv_id' => intval($paymentVoucherId),
+                            'desc' => isset($currentCashbookDescs[$paymentVoucherId]) ? $currentCashbookDescs[$paymentVoucherId] : '',
                             'amount' => $totalAmount
                         ];
                     }

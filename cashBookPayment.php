@@ -154,9 +154,9 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th width="10%"><?=$languageArray['number_short_code'][$language]?></th>
-                                                                                    <th width="35%"><?=$languageArray['type_code'][$language]?></th>
-                                                                                    <th width="30%"><?=$languageArray['description_code'][$language]?></th>
-                                                                                    <th width="25%"><?=$languageArray['amount_code'][$language]?></th>
+                                                                                    <th width="30%"><?=$languageArray['type_code'][$language]?></th>
+                                                                                    <th width="45%"><?=$languageArray['description_code'][$language]?></th>
+                                                                                    <th width="15%"><?=$languageArray['amount_code'][$language]?></th>
                                                                                     <th width="10%"><button type="button" class="btn btn-sm btn-success" id="addDeductionRow"><i class="bx bx-plus"></i></button></th>
                                                                                 </tr>
                                                                             </thead>
@@ -746,21 +746,44 @@ if(($row = $result->fetch_assoc()) !== null){
             var descField = $('#deductionDesc' + rowIndex);
             
             if($(this).val() == 'CREDITFFBPAY') {
-                $.post('php/getOutstandingPaymentVouchers.php', function(data) {
-                    var obj = JSON.parse(data);
-                    if(obj.status === 'success') {
-                        var selectHtml = '<select class="form-select" id="deductionDesc' + rowIndex + '" name="deductionDesc[' + rowIndex + ']" required>';
-                        selectHtml += '<option value="">Please Select</option>';
-                        $.each(obj.message, function(i, voucher) {
-                            selectHtml += '<option value="' + voucher.id + '">' + voucher.voucher_no + ' - RM' + voucher.outstanding_amount + '</option>';
-                        });
-                        selectHtml += '</select>';
-                        descField.replaceWith(selectHtml);
-                    }
-                });
+                var descFieldParent = descField.closest('td');
+                
+                // Add d-flex class to parent td if not exists
+                if(!descFieldParent.hasClass('d-flex')) {
+                    descFieldParent.addClass('d-flex gap-2');
+                }
+                
+                // Change description field to col-6
+                if(!descField.parent().hasClass('col-6')) {
+                    descField.wrap('<div class="col-6"></div>');
+                }
+                
+                // Add payment voucher select if not exists
+                if(descFieldParent.find('select[id^="pvSelect"]').length === 0) {
+                    $.post('php/getOutstandingPaymentVouchers.php', function(data) {
+                        var obj = JSON.parse(data);
+                        if(obj.status === 'success') {
+                            var selectHtml = '<div class="col-6"><select class="form-select" id="pvSelect' + rowIndex + '" name="pvSelect[' + rowIndex + ']" required>';
+                            selectHtml += '<option value="">Please Select Payment Voucher</option>';
+                            $.each(obj.message, function(i, voucher) {
+                                selectHtml += '<option value="' + voucher.id + '">' + voucher.voucher_no + ' - RM' + voucher.outstanding_amount + '</option>';
+                            });
+                            selectHtml += '</select></div>';
+                            descField.parent().after(selectHtml);
+                        }
+                    });
+                }
             } else {
-                if(descField.is('select')) {
-                    descField.replaceWith('<input type="text" class="form-control" id="deductionDesc' + rowIndex + '" name="deductionDesc[' + rowIndex + ']" style="background-color:white;" required>');
+                var descFieldParent = descField.closest('td');
+                // Remove payment voucher select if exists
+                descFieldParent.find('select[id^="pvSelect"]').parent().remove();
+                
+                // Remove d-flex class from parent td
+                descFieldParent.removeClass('d-flex gap-2');
+                
+                // Unwrap description field if wrapped
+                if(descField.parent().hasClass('col-6')) {
+                    descField.unwrap();
                 }
             }
         });
@@ -799,21 +822,35 @@ if(($row = $result->fetch_assoc()) !== null){
                         $("#deductionTable").find('#deductionAmt:last').attr('name', 'deductionAmt['+deductionRowCount+']').attr("id", "deductionAmt" + deductionRowCount).val(item.amount);
                         
                         if(item.type == 'CREDITFFBPAY') {
-                            (function(rowIdx, descValue) {
-                                $.post('php/getOutstandingPaymentVouchers.php', {selectedId: descValue}, function(data) {
+                            var descFieldParent = $('#deductionDesc' + deductionRowCount).closest('td');
+                            
+                            // Add d-flex class to parent td
+                            if(!descFieldParent.hasClass('d-flex')) {
+                                descFieldParent.addClass('d-flex gap-2');
+                            }
+                            
+                            // Wrap description field in col-6
+                            if(!$('#deductionDesc' + deductionRowCount).parent().hasClass('col-6')) {
+                                $('#deductionDesc' + deductionRowCount).wrap('<div class="col-6"></div>');
+                            }
+                            
+                            $('#deductionDesc' + deductionRowCount).val(item.desc);
+                            
+                            (function(rowIdx, pvId) {
+                                $.post('php/getOutstandingPaymentVouchers.php', {selectedId: pvId}, function(data) {
                                     var obj2 = JSON.parse(data);
                                     if(obj2.status === 'success') {
-                                        var selectHtml = '<select class="form-select" id="deductionDesc' + rowIdx + '" name="deductionDesc[' + rowIdx + ']" required>';
-                                        selectHtml += '<option value="">Please Select</option>';
+                                        var selectHtml = '<div class="col-6"><select class="form-select" id="pvSelect' + rowIdx + '" name="pvSelect[' + rowIdx + ']" required>';
+                                        selectHtml += '<option value="">Please Select Payment Voucher</option>';
                                         $.each(obj2.message, function(j, voucher) {
-                                            var selected = voucher.id == descValue ? 'selected' : '';
+                                            var selected = voucher.id == pvId ? 'selected' : '';
                                             selectHtml += '<option value="' + voucher.id + '" ' + selected + '>' + voucher.voucher_no + ' - RM' + voucher.outstanding_amount + '</option>';
                                         });
-                                        selectHtml += '</select>';
-                                        $('#deductionDesc' + rowIdx).replaceWith(selectHtml);
+                                        selectHtml += '</select></div>';
+                                        $('#deductionDesc' + rowIdx).parent().after(selectHtml);
                                     }
                                 });
-                            })(deductionRowCount, item.desc);
+                            })(deductionRowCount, item.pv_id);
                         } else {
                             $("#deductionDesc" + deductionRowCount).val(item.desc);
                         }
