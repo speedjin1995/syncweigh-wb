@@ -98,11 +98,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $result = $stmt->get_result();
 
                             $package = 'Standard';
+                            $_SESSION['includeDisplaySetup'] = 'N';
                             
                             if(($row = $result->fetch_assoc()) !== null){
                                 $package = $row['package'] ?? 'Standard';
+                                $_SESSION['includeDisplaySetup'] = $row['include_display_setup'] ?? 'N';
                             }
-
 
                             if($package == 'Lite'){
                                 // Redirect user to welcome page
