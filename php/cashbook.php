@@ -297,6 +297,7 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
     $processedPVs = []; // Track which PVs we've already processed
     $currentCashbookAmounts = []; // Track total amounts per PV for current cashbook
     $currentCashbookDescs = []; // Track descriptions per PV for current cashbook
+    $currentCashbookDate = $date; // Track cashbook date
     
     // First, calculate total amount per PV for current cashbook
     foreach($deductionRecords as $record) {
@@ -333,6 +334,7 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                     foreach($pvOutstanding as $key => $item) {
                         if($item['cashbook_no'] == $cashBookNo) {
                             $pvOutstanding[$key]['amount'] = $totalAmount;
+                            $pvOutstanding[$key]['cashbook_date'] = $currentCashbookDate;
                             $pvOutstanding[$key]['desc'] = isset($currentCashbookDescs[$paymentVoucherId]) ? $currentCashbookDescs[$paymentVoucherId] : '';
                             $found = true;
                             break;
@@ -342,6 +344,7 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                     if(!$found) {
                         $pvOutstanding[] = [
                             'cashbook_no' => $cashBookNo,
+                            'cashbook_date' => $currentCashbookDate,
                             'pv_id' => intval($paymentVoucherId),
                             'desc' => isset($currentCashbookDescs[$paymentVoucherId]) ? $currentCashbookDescs[$paymentVoucherId] : '',
                             'amount' => $totalAmount
