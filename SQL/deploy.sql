@@ -1643,3 +1643,4 @@ DELIMITER ;
 
 INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('payment_voucher', 1);
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'voucher_no_code', 'Voucher No', '凭证号', 'Nombor Baucar', 'வவுசர் எண்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'outstanding_amount_code', 'Outstanding Amount', '未结金额', 'Jumlah Tertunggak', 'மீதமுள்ள தொகை');

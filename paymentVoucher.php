@@ -375,6 +375,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     <th><?=$languageArray['transaction_status_code'][$language]?></th>
                                                                     <th><?=$languageArray['supplier_code'][$language]?></th>
                                                                     <th><?=$languageArray['invoice_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['outstanding_amount_code'][$language]?> (RM)</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -503,6 +504,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 { data: 'transaction_status' },
                 { data: 'customer' },
                 { data: 'invoice_no' },
+                { data: 'outstanding_amount' },
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -582,6 +584,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     { data: 'transaction_status' },
                     { data: 'customer' },
                     { data: 'invoice_no' },
+                    { data: 'outstanding_amount' },
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {
