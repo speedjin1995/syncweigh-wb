@@ -2,8 +2,10 @@
 session_start();
 require_once 'db_connect.php';
 
-if(isset($_POST['slipType'], $_POST['customerSupplier'], $_POST['transactionDate'])) {
+if(isset($_POST['slipType'], $_POST['transactionStatus'], $_POST['weightType'], $_POST['customerSupplier'], $_POST['transactionDate'])){
     $slipType = $_POST['slipType'];
+    $transactionStatus = $_POST['transactionStatus'];
+    $weightType = $_POST['weightType'];
     $customerSupplier = $_POST['customerSupplier'];
     $transactionDate = DateTime::createFromFormat('d-m-Y', $_POST['transactionDate'])->format('Y-m-d');
     
@@ -28,6 +30,9 @@ if(isset($_POST['slipType'], $_POST['customerSupplier'], $_POST['transactionDate
     $compname = 'SYNCTRONIX TECHNOLOGY (M) SDN BHD';
     $compreg = '123456789-X';
     $compaddress = 'No.34, Jalan Bagan 1, Taman Bagan, 13400 Butterworth. Penang.';
+    $compaddress1 = '';
+    $compaddress2 = '';
+    $compaddress3 = '';
     $compphone = '6043325822';
     
     $stmt = $db->prepare("SELECT * FROM Company WHERE id = 1");
@@ -37,6 +42,9 @@ if(isset($_POST['slipType'], $_POST['customerSupplier'], $_POST['transactionDate
         $compname = $row['name'];
         $compreg = $row['company_reg_no'];
         $compaddress = $row['address_line_1'] . ', ' . $row['address_line_2'] . ', ' . $row['address_line_3'];
+        $compaddress1 = $row['address_line_1'];
+        $compaddress2 = $row['address_line_2'];
+        $compaddress3 = $row['address_line_3'];
         $compphone = $row['phone_no'];
     }
     
@@ -48,8 +56,12 @@ if(isset($_POST['slipType'], $_POST['customerSupplier'], $_POST['transactionDate
         $result = $stmt->get_result();
         
         if ($row = $result->fetch_assoc()) {
+            $supplierName = $row['customer_supplier'];
             $voucherDate = date('d/m/Y', strtotime($row['voucher_date']));
-            
+            $invoiceNo = $row['invoice_no'] ?? '';
+            $outstandingDetails = json_decode($row['outstanding_details'], true);
+            $outstandingAmount = number_format($row['outstanding_amount'] ?? 0, 2);
+
             if ($slipType == 'pv') {
                 // Format date to Malay month and year
                 $malayMonths = array(
@@ -61,9 +73,6 @@ if(isset($_POST['slipType'], $_POST['customerSupplier'], $_POST['transactionDate
                 $year = date('Y', strtotime($row['voucher_date']));
                 $formatVoucherDate = $malayMonths[$month] . ' ' . $year;
                 
-                $supplierName = $row['customer_supplier'];
-                $voucherDate = date('d/m/Y', strtotime($row['voucher_date']));
-                $invoiceNo = $row['invoice_no'] ?? '';
                 $accountNo = $row['account_no'] ?? '';
                 $deductions = json_decode($row['deduction_details'], true);
                 $additions = json_decode($row['addition_details'], true);
@@ -273,8 +282,356 @@ if(isset($_POST['slipType'], $_POST['customerSupplier'], $_POST['transactionDate
                     </div>
                 </body>
                 </html>';
-            } else {
-                $message = '';
+            } elseif ($slipType == 'ffbStatement') {
+                $voucherDateMonthYear = date('F Y', strtotime($row['voucher_date']));
+                $voucherDateFormat = date('d M Y', strtotime($row['voucher_date']));
+
+                ###### Supplier details ######
+                $supplierName = $row['customer_supplier'];
+                $supplierMpob = '';
+                $supplierPhone = '';
+                $supplier_stmt = $db->prepare("SELECT * FROM Supplier WHERE name = ? AND status = 0");
+                $supplier_stmt->bind_param("s", $supplierName);
+                $supplier_stmt->execute();
+                $supplier_result = $supplier_stmt->get_result();
+                if ($supplier_row = $supplier_result->fetch_assoc()) {
+                    $supplierName = $supplier_row['name'];
+                    $supplierMpob = $supplier_row['mpob'];
+                    $supplierPhone = $supplier_row['phone_no'];
+                }
+
+                ###### Weighing details ######
+                $weighingData = array();
+                $totalNettWeight = 0;
+                $totalAmount = 0;
+                if ($weight_stmt = $db->prepare("SELECT * FROM Weight WHERE transaction_status = ? AND weight_type = ? AND supplier_name = ? AND DATE(transaction_date) = ? AND is_complete = 'Y' AND is_cancel <> 'Y' AND status = '0'")) {
+                    $weight_stmt->bind_param('ssss', $transactionStatus, $weightType, $customerSupplier, $transactionDate);
+                    $weight_stmt->execute();
+                    $weight_result = $weight_stmt->get_result();
+            
+                    while ($weight_row = $weight_result->fetch_assoc()) {
+                        $weighingData[] = array(
+                            "id" => $weight_row['id'],
+                            "transaction_id" => $weight_row['transaction_id'],
+                            "lorry_plate_no1" => $weight_row['lorry_plate_no1'],
+                            "nett_weight1" => $weight_row['nett_weight1'],
+                            "unit_price" => $weight_row['unit_price'],
+                            "sub_total" => $weight_row['sub_total'],
+                            "sst" => $weight_row['sst'],
+                            "total_price" => $weight_row['total_price'],
+                            "invoice_no" => $weight_row['invoice_no'],
+                        );
+                        $totalNettWeight += floatval($weight_row['nett_weight1']);
+                        $totalAmount += floatval($weight_row['total_price']);
+                    }
+                }
+
+                $message = '
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
+                        <style>
+                            @page {
+                                size: A4;
+                                margin-top: 120px;
+                                margin-bottom: 250px;
+                                margin-left: 15mm;
+                                margin-right: 15mm;
+                                
+                                @top-center {
+                                    content: element(page-header);
+                                }
+                                
+                                @bottom-center {
+                                    content: element(page-footer);
+                                }
+                            }
+                            body {
+                                font-family: "Times New Roman", serif;
+                                font-size: 14px;
+                                margin: 0;
+                                padding: 0;
+                            }
+                            .page-header {
+                                position: running(page-header);
+                                text-align: center;
+                                font-size: 13px;
+                                line-height: 1.3;
+                                padding-top: 150px;
+                            }
+                            .page-header h2 {
+                                margin: 0 0 5px 0;
+                                font-size: 18px;
+                            }
+                            .header {
+                                text-align: center;
+                                margin-bottom: 20px;
+                                font-size: 13px;
+                                line-height: 1.3;
+                            }
+                            .header h2 {
+                                margin: 0 0 5px 0;
+                                font-size: 18px;
+                            }
+                            .title {
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 18px;
+                                margin: 20px 0;
+                            }
+                            .title span {
+                                font-weight: normal;
+                                font-size: 14px;
+                            }
+                            .title-underline {
+                                border-bottom: 1px solid #000;
+                                margin: 10px 0 20px 0;
+                            }
+                            .info-section {
+                                margin: 15px 0;
+                            }
+                            .info-row {
+                                display: flex;
+                                margin-bottom: 5px;
+                            }
+                            .info-row > span:first-child {
+                                width: 60%;
+                            }
+                            .info-row > span:nth-child(2) {
+                                width: 20%;
+                            }
+                            .info-row > span:nth-child(3) {
+                                width: 20%;
+                            }
+                            .customer-name {
+                                font-weight: bold;
+                                font-size: 16px;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin: 15px 0;
+                            }
+                            td {
+                                padding: 4px 8px;
+                                font-size: 13px;
+                            }
+                            .table-border {
+                                border-top: 1px solid #000;
+                                border-bottom: 1px solid #000;
+                            }
+                            .border-top {
+                                border-top: 1px solid #000;
+                            }
+                            .border-bottom {
+                                border-bottom: 1px solid #000;
+                            }
+                            .text-right {
+                                text-align: right;
+                            }
+                            .text-center {
+                                text-align: center;
+                            }
+                            .summary-section {
+                                margin-top: 20px;
+                            }
+                            .content-wrapper {
+                                margin-top: 110px;
+                            }
+                            .page-footer {
+                                position: running(page-footer);
+                                width: 100%;
+                            }
+                            .page-footer table {
+                                margin: 10px 0;
+                            }
+                            .footer-signatures {
+                                display: flex;
+                                justify-content: space-between;
+                            }
+                            .footer-signatures > div {
+                                width: 45%;
+                                text-align: center;
+                            }
+                            .payment-section {
+                                margin-top: 40px;
+                            }
+                            
+                            .footer-left {
+                                position: running(footer-left);
+                                width: 200px;
+                            }
+                            
+                            .footer-right {
+                                position: running(footer-right);
+                                width: 200px;
+                            }
+                            
+                            .signature-line {
+                                border-top: 1px solid #000;
+                                width: 200px;
+                                margin: 50px auto 0 auto;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="page-header">
+                            <h2>'.$compname.'</h2>
+                            ('.$compreg.')<br>
+                            '.$compaddress1.'<br>
+                            '.$compaddress2.'<br>
+                            '.$compaddress3.'<br>
+                            Tel: '.$compphone.'
+                            <div style="margin-top: 15px; font-weight: bold; font-size: 18px;">
+                                FFB STATEMENT<br>
+                                <span style="font-weight: normal; font-size: 14px;">For The Month Of '.$voucherDateMonthYear.'</span>
+                            </div>
+                            <div style="border-bottom: 1px solid #000; margin: 10px 0;"></div>
+                        </div>
+
+                        <div class="page-footer">
+                            <table>
+                                <tr>
+                                    <td>Cheque No:</td>
+                                    <td class="border-bottom" style="width: 200px;"></td>
+                                    <td></td>
+                                    <td>Add Total Flat Rate Amount:</td>
+                                    <td class="text-right border-bottom" style="width: 150px;">0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Payment Date:</td>
+                                    <td class="border-bottom" style="width: 200px;"></td>
+                                    <td></td>
+                                    <td>Net Amount (RM):</td>
+                                    <td class="text-right border-bottom" style="width: 150px;">'.$outstandingAmount.'</td>
+                                </tr>
+                            </table>
+                            <div class="footer-signatures border-top">
+                                <div>
+                                    <p style="padding-bottom: 30px;">'.$compname.'</p>
+                                    <div class="signature-line"></div>
+                                    <p style="text-align: center; margin-top: 5px;">Authorised Signature</p>
+                                </div>
+                                <div>
+                                    <p style="padding-bottom: 30px;">Kindly Acknowledge Receipt</p>
+                                    <div class="signature-line"></div>
+                                    <p style="text-align: center; margin-top: 5px;">Received By</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-wrapper">
+                            <div class="info-section">
+                                <div class="info-row">
+                                    <span class="customer-name">'.$supplierName.'</span>
+                                    <span class="label">Invoice No:</span>
+                                    <span class="value">'.$invoiceNo.'</span>
+                                </div>
+                                <div class="info-row">
+                                    <span></span>
+                                    <span class="label">Date:</span>
+                                    <span class="value">'.$voucherDateFormat.'</span>
+                                </div>
+                                <div class="info-row">
+                                    <span></span>
+                                    <span class="label">MPOB Licence No:</span>
+                                    <span class="value">'.$supplierMpob.'</span>
+                                </div>
+                            </div>
+
+                            <div class="info-section">
+                                <p>(Flat Rate No: )</p>
+                                <p>TEL: '.$supplierPhone.'</p>
+                            </div>
+
+                            <table>
+                                <tr class="table-border">
+                                    <td class="text-left">Date</td>
+                                    <td class="text-center">Ticket No</td>
+                                    <td class="text-center">Vehicle No</td>
+                                    <td class="text-center">POER %</td>
+                                    <td class="text-center">Net Weight<br>(MT)</td>
+                                    <td class="text-center">Price (RM)<br>(MT)</td>
+                                    <td class="text-center">Total<br>Amount (RM)</td>
+                                </tr>';
+
+                                if (!empty($weighingData)) {
+                                    foreach ($weighingData as $weight) {
+                                        $message .= '
+                                            <tr>
+                                                <td>'.$voucherDateFormat.'</td>
+                                                <td>'.$weight['transaction_id'].'</td>
+                                                <td>'.$weight['lorry_plate_no1'].'</td>
+                                                <td class="text-center">0.00</td>
+                                                <td class="text-center">'.number_format($weight['nett_weight1']/1000, 2).'</td>
+                                                <td class="text-center">'.number_format($weight['unit_price'], 2).'</td>
+                                                <td class="text-right">'.number_format($weight['total_price'], 2).'</td>
+                                            </tr>
+                                        ';
+                                    }
+                                }
+
+                            $message .= '
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total</td>
+                                    <td></td>
+                                    <td class="text-center border-top">'.number_format($totalNettWeight/1000, 2).'</td>
+                                    <td class="border-top"></td>
+                                    <td class="text-right border-top">'.number_format($totalAmount, 2).'</td>
+                                </tr>
+                            </table>
+
+                            <table class="summary-section">
+                                <tbody>
+                                    <tr class="border-bottom">
+                                        <td class="text-left" width="15%">Date</td>
+                                        <td class="text-left" width="25%">Details</td>
+                                        <td class="text-left" width="15%">Reference</td>
+                                        <td class="text-center" width="15%">Sub Total <br> Excluding GST</td>
+                                        <td class="text-center" width="15%">GST Amount <br> (6%)</td>
+                                        <td class="text-center" width="15%">Total <br> Amount (RM)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b><u>Low Cash</u></b></td>
+                                    </tr>';
+
+                                    $paymentTotal = 0;
+                                    if (!empty($outstandingDetails)) {
+                                        foreach ($outstandingDetails as $outstanding) {
+                                            $paymentTotal += floatval($outstanding['amount']);
+                                            $message .= '
+                                                <tr>
+                                                    <td>'.($outstanding['cashbook_date'] !='' ? date('d M Y', strtotime($outstanding['cashbook_date'])) : '').'</td>
+                                                    <td>'.$outstanding['desc'].'</td>
+                                                    <td>'.$outstanding['cashbook_no'].'</td>
+                                                    <td class="text-center">'.number_format($outstanding['amount'], 2).'</td>
+                                                    <td class="text-center">0.00</td>
+                                                    <td class="text-center">'.number_format($outstanding['amount'], 2).'</td>
+                                                </tr>
+                                            ';
+                                        }
+                                    }
+
+                        $message .= '
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5" class="text-center"><b>SubTotal :</b></td>
+                                        <td class="text-right"><b>'.number_format($paymentTotal, 2).'</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-right">Total(Add/Loss) (RM) :</td>
+                                        <td class="text-right">'.number_format(-$paymentTotal, 2).'</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </body>
+                    </html>
+                ';
             }
             
             echo json_encode(array(

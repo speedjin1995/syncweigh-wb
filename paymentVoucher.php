@@ -331,6 +331,8 @@ if(($row = $result->fetch_assoc()) !== null){
 
                                                         <input type="hidden" id="customerSupplierPrint" name="customerSupplierPrint">
                                                         <input type="hidden" id="transactionDatePrint" name="transactionDatePrint">
+                                                        <input type="hidden" id="weighingTypePrint" name="weighingTypePrint">
+                                                        <input type="hidden" id="transactionStatusPrint" name="transactionStatusPrint">
                                                     </div> 
 
                                                     <div class="modal-footer">
@@ -514,7 +516,7 @@ if(($row = $result->fetch_assoc()) !== null){
                             '</button>' +
                             '<ul class="dropdown-menu dropdown-menu-end">' +
                                 '<li>' +
-                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.transaction_date + '\')">' +
+                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.transaction_date + '\', \'' + row.transaction_status + '\', \'' + row.weight_type + '\')">' +
                                         '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
                                     '</a>' +
                                 '</li>' +
@@ -594,7 +596,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                 '</button>' +
                                 '<ul class="dropdown-menu dropdown-menu-end">' +
                                     '<li>' +
-                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.transaction_date + '\')">' +
+                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.transaction_date + '\', \'' + row.transaction_status + '\', \'' + row.weight_type + '\')">' +
                                             '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
                                         '</a>' +
                                     '</li>' +
@@ -616,9 +618,11 @@ if(($row = $result->fetch_assoc()) !== null){
                 if($('#printModal').hasClass('show')){
                     var customerSupplierI = $('#printModal').find('#customerSupplierPrint').val();
                     var transactionDateI = $('#printModal').find('#transactionDatePrint').val();
+                    var transactionStatusI = $('#printModal').find('#transactionStatusPrint').val();
+                    var weightTypeI = $('#printModal').find('#weighingTypePrint').val();
                     var printSlipTypeI = $('#printModal').find('#printSlipType').val();
 
-                    $.post('php/printPaymentVoucherSlip.php', {slipType: printSlipTypeI, customerSupplier: customerSupplierI, transactionDate: transactionDateI}, function(data){
+                    $.post('php/printPaymentVoucherSlip.php', {slipType: printSlipTypeI, customerSupplier: customerSupplierI, transactionDate: transactionDateI, transactionStatus: transactionStatusI, weightType: weightTypeI}, function(data){
                         var obj = JSON.parse(data);
 
                         if(obj.status === 'success'){
@@ -900,9 +904,11 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#totalNettWeight').val((data.totalNettWeight).toFixed(2));
     }
 
-    function print(customerSupplier, transactionDate) {
+    function print(customerSupplier, transactionDate, transactionStatus, weightType) {
         $('#printModal').find('#customerSupplierPrint').val(customerSupplier);
         $('#printModal').find('#transactionDatePrint').val(transactionDate);
+        $('#printModal').find('#weighingTypePrint').val(weightType);
+        $('#printModal').find('#transactionStatusPrint').val(transactionStatus);
         $('#printModal').modal('show');
 
         $('#printSlipForm').validate({
