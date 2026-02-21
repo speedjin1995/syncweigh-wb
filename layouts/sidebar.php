@@ -110,6 +110,9 @@
                                                 </li>
                                                 <li class="nav-item">
                                                     <a href="user.php" class="nav-link"><b>'.$languageArray['staff_code'][$language].'</b></a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="grader.php" class="nav-link"><b>'.$languageArray['grader_code'][$language].'</b></a>
                                                 </li>';
 
                                             if($_SESSION['package'] != 'Lite'){
