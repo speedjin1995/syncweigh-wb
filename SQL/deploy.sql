@@ -1527,3 +1527,100 @@ $$
 DELIMITER ;
 
 INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('cash_book', 1);
+
+-- 15/02/2026 --
+ALTER TABLE `Customer` ADD `mspo_no` VARCHAR(10) NULL AFTER `mpob`;
+
+ALTER TABLE `Customer_Log` ADD `mspo_no` VARCHAR(10) NULL AFTER `mpob`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_CUSTOMER` AFTER INSERT ON `Customer` FOR EACH ROW 
+INSERT INTO Customer_Log (
+    customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.mspo_no, NEW.payment_term, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_CUSTOMER` BEFORE UPDATE ON `Customer` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Customer_Log table
+    INSERT INTO Customer_Log (
+        customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.mspo_no, NEW.payment_term, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Supplier` ADD `mspo_no` VARCHAR(10) NULL AFTER `mpob`;
+
+ALTER TABLE `Supplier_Log` ADD `mspo_no` VARCHAR(10) NULL AFTER `mpob`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_SUPPLIER` AFTER INSERT ON `Supplier` FOR EACH ROW 
+INSERT INTO Supplier_Log (
+    supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, customer_id, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.mspo_no, NEW.payment_term, NEW.customer_id, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_SUPPLIER` BEFORE UPDATE ON `Supplier` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Supplier_Log table
+    INSERT INTO Supplier_Log (
+        supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, customer_id, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.mspo_no, NEW.payment_term, NEW.customer_id, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'mspo_code', 'MSPO Code', 'MSPO代码', 'Kod MSPO', 'MSPO குறியீடு');
+
+-- 20/02/2026 --
+ALTER TABLE `Company` ADD `include_display_setup` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_container`;
+ALTER TABLE `Company_Log` ADD `include_display_setup` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_container`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Always set action_id = 2 for update
+    SET action_value = 2;
+
+    -- Insert into Company_Log table
+    INSERT INTO Company_Log (
+        company_id, company_code, company_reg_no, new_reg_no, `name`, address_line_1, address_line_2, address_line_3, phone_no, fax_no, tin_no, mobile_no, package, include_price, include_container, include_display_setup, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.company_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.tin_no, NEW.mobile_no, NEW.package, NEW.include_price, NEW.include_container, NEW.include_display_setup, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;

@@ -107,7 +107,12 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['grossInc
         $transactionStatus = trim($_POST["transactionStatus"]);
     }
 
-    $unitPrice = '0.00';
+    if (empty($_POST["unitPrice"])) {
+        $unitPrice = '0.00';
+    } else {
+        $unitPrice = trim($_POST["unitPrice"]);
+    }
+
     $subTotalPrice = '0.00';
     $sstPrice = '0.00';
     $totalPrice = '0.00';
