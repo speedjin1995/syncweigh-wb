@@ -295,9 +295,10 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
         </script>
 
         <script type="text/javascript">
+            const status = "<?= $status ?>";
+            const autoData = <?= json_encode($autoData ? json_decode($autoData, true) : []) ?>;
+
             $(function () {
-                const status = "<?= $status ?>";
-                const autoData = <?= json_encode($autoData ? json_decode($autoData, true) : []) ?>;
                 var rowCount = 0;
 
                 // Initialize all Select2 elements in the modal

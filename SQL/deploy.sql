@@ -1603,6 +1603,29 @@ DELIMITER ;
 
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'mspo_code', 'MSPO Code', 'MSPO代码', 'Kod MSPO', 'MSPO குறியீடு');
 
+-- 20/02/2026 --
+ALTER TABLE `Company` ADD `include_display_setup` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_container`;
+ALTER TABLE `Company_Log` ADD `include_display_setup` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_container`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Always set action_id = 2 for update
+    SET action_value = 2;
+
+    -- Insert into Company_Log table
+    INSERT INTO Company_Log (
+        company_id, company_code, company_reg_no, new_reg_no, `name`, address_line_1, address_line_2, address_line_3, phone_no, fax_no, tin_no, mobile_no, package, include_price, include_container, include_display_setup, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.company_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.tin_no, NEW.mobile_no, NEW.package, NEW.include_price, NEW.include_container, NEW.include_display_setup, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+-- 21/02/2026 --
 ALTER TABLE `Payment_Voucher` ADD `voucher_no` VARCHAR(100) NOT NULL AFTER `customer_supplier`;
 ALTER TABLE `Payment_Voucher_Log` ADD `voucher_no` VARCHAR(100) NOT NULL AFTER `customer_supplier`;
 ALTER TABLE `Payment_Voucher` ADD `outstanding_amount` VARCHAR(100) NULL AFTER `final_amount`;
@@ -1644,3 +1667,66 @@ DELIMITER ;
 INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('payment_voucher', 1);
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'voucher_no_code', 'Voucher No', '凭证号', 'Nombor Baucar', 'வவுசர் எண்');
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'outstanding_amount_code', 'Outstanding Amount', '未结金额', 'Jumlah Tertunggak', 'மீதமுள்ள தொகை');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'grader_code', 'Grader', '分级员', 'Penilai', 'மதிப்பீட்டாளர்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'grader_name_code', 'Grader Name', '分级员姓名', 'Nama Penilai', 'மதிப்பீட்டாளர் பெயர்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'certificate_id_code', 'Certificate ID', '证书编号', 'ID Sijil', 'சான்றிதழ் ஐடி');
+
+CREATE TABLE `Grader` (
+  `id` int(11) NOT NULL,
+  `grader_name` varchar(100) DEFAULT NULL,
+  `cert_id` varchar(100) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `created_by` varchar(50) NOT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE `Grader` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Grader` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `Grader_Log` (
+  `id` int(11) NOT NULL,
+  `grader_id` int(11) NOT NULL,
+  `grader_name` varchar(100) DEFAULT NULL,
+  `cert_id` varchar(100) DEFAULT NULL,
+  `action_id` int(11) NOT NULL,
+  `action_by` varchar(50) NOT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE `Grader_Log` ADD PRIMARY KEY (`id`);
+  
+ALTER TABLE `Grader_Log` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_GRADER` AFTER INSERT ON `Grader` FOR EACH ROW INSERT INTO Grader_Log (
+    grader_id, grader_name, cert_id, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.grader_name, NEW.cert_id, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_GRADER` BEFORE UPDATE ON `Grader` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Grader_Log table
+    INSERT INTO Grader_Log (
+        grader_id, grader_name, cert_id, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.grader_name, NEW.cert_id, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
