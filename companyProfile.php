@@ -9,11 +9,11 @@ require_once "layouts/config.php";
 // Check if the user is already logged in, if yes then redirect him to index page
 $user = $_SESSION['id'];
 $id = '1';
-$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, include_price, include_container, include_display_setup from Company where id = ?");
+$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, include_price, include_container, include_display_setup, include_grading from Company where id = ?");
 mysqli_stmt_bind_param($stmt2, "s", $id);
 mysqli_stmt_execute($stmt2);
 mysqli_stmt_store_result($stmt2);
-mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $include_price, $include_container, $include_display_setup);
+mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $include_price, $include_container, $include_display_setup, $include_grading);
 if (mysqli_stmt_fetch($stmt2)) {
     $usercompany_reg_no = $company_reg_no;
     $username = $name;
@@ -26,6 +26,7 @@ if (mysqli_stmt_fetch($stmt2)) {
     $includePrice = $include_price;
     $includeContainer = $include_container;
     $includeDisplaySetup = $include_display_setup;
+    $includeGrading = $include_grading;
 }
 
 $role = 'NORMAL';
@@ -172,6 +173,15 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                         <div class="col-sm-8">
                                                             <input type="radio" class="form-check-input" id="includeDisplaySetupYes" name="includeDisplaySetup" value="Y" <?= $includeDisplaySetup == 'Y' ? 'checked' : '' ?> <?= $readonly ?>> Yes
                                                             <input type="radio" class="form-check-input ms-3" id="includeDisplaySetupNo" name="includeDisplaySetup" value="N" <?= $includeDisplaySetup == 'N' ? 'checked' : '' ?> <?= $readonly ?>> No
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mb-3">
+                                                    <div class="row">
+                                                        <label class="col-sm-4 col-form-label">Include Grading</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="radio" class="form-check-input" id="includeGradingYes" name="includeGrading" value="Y" <?= $includeGrading == 'Y' ? 'checked' : '' ?> <?= $readonly ?>> Yes
+                                                            <input type="radio" class="form-check-input ms-3" id="includeGradingNo" name="includeGrading" value="N" <?= $includeGrading == 'N' ? 'checked' : '' ?> <?= $readonly ?>> No
                                                         </div>
                                                     </div>
                                                 </div>
