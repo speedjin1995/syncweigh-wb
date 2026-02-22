@@ -11,6 +11,24 @@ if (isset($_POST['id'])) {
     $weightId = $_POST['id'];
     $modified_by = $_SESSION['username'];
 
+    if (empty($_POST["ticketDo"])) {
+        $ticketDo = null;
+    } else {
+        $ticketDo = trim($_POST["ticketDo"]);
+    }
+
+    if (empty($_POST["reduceWeight"])) {
+        $reduceWeight = null;
+    } else {
+        $reduceWeight = floatval(trim($_POST["reduceWeight"]))*1000;
+    }
+
+    if (empty($_POST["finalWeight"])) {
+        $finalWeight = null;
+    } else {
+        $finalWeight = floatval(trim($_POST["finalWeight"]))*1000;
+    }
+
     if (empty($_POST["rejectWeight"])) {
         $rejectWeight = null;
     } else {
@@ -182,9 +200,10 @@ if (isset($_POST['id'])) {
     );
     $gradingDetailJson = json_encode($gradingDetail);
 
-    if ($update_stmt = $db->prepare("UPDATE Weight SET grader_id=?, reject_weight=?, grade_detail=?, modified_by=? WHERE id=?")) 
+    // var_dump($ticketDo, $grader, $rejectWeight, $reduceWeight, $finalWeight, $gradingDetailJson, $modified_by, $weightId);exit;
+    if ($update_stmt = $db->prepare("UPDATE Weight SET delivery_no=?, grader_id=?, reject_weight=?, reduce_weight=?, final_weight=?, grade_detail=?, modified_by=? WHERE id=?")) 
     {
-        $update_stmt->bind_param('sssss', $grader, $rejectWeight, $gradingDetailJson, $modified_by, $weightId);
+        $update_stmt->bind_param('ssssssss', $ticketDo, $grader, $rejectWeight, $reduceWeight, $finalWeight, $gradingDetailJson, $modified_by, $weightId);
 
         // Execute the prepared query.
         if (! $update_stmt->execute()) {

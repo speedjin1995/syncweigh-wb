@@ -79,6 +79,7 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name 
 $supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
+$graders = $db->query("SELECT * FROM Grader WHERE status = '0' ORDER BY grader_name ASC");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
@@ -94,6 +95,20 @@ if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
 }
 else{
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0'");
+}
+
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$includePrice = '';
+$includeContainer = '';
+$includeGrading = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $includePrice = $row['include_price'];
+    $includeContainer = $row['include_container'];
+    $includeGrading = $row['include_grading'];
 }
 ?>
 
@@ -127,6 +142,14 @@ else{
 
         .modal-header {
             padding: var(1rem, 1rem) !important;
+        }
+
+        #gradingModal {
+            z-index: 1055 !important;
+        }
+
+        #gradingModal .modal-backdrop {
+            z-index: 1050 !important;
         }
     </style>
 </head>
@@ -413,6 +436,8 @@ else{
                                         <input type="hidden" id="tareWeightBy2" name="tareWeightBy2">
                                         <input type="hidden" id="transactionDate" name="transactionDate">
                                         <input type="hidden" id="transactionId" name="transactionId">
+                                        <input type="hidden" id="deliveryNo" name="deliveryNo">
+                                        <input type="hidden" id="reduceWeight" name="reduceWeight">
 
                                         <div class="row col-12">
                                             <div class="hstack gap-2 justify-content-end">
@@ -582,6 +607,217 @@ else{
                                     </div><!-- container-fluid -->
                                 </div>
                             </div> <!-- end row-->
+
+                            <div class="row">
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="modal fade" id="gradingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Grading Entry</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form role="form" id="gradingForm" class="needs-validation" novalidate autocomplete="off">
+                                                        <div class="row col-12">
+                                                            <div class="col-xxl-12 col-lg-12">
+                                                                <div class="row mb-3">
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Transaction ID</label>
+                                                                        <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" readonly>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Vehicle No</label>
+                                                                        <input type="text" class="form-control input-readonly" id="vehicleNo" name="vehicleNo" readonly>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Ticket/DO</label>
+                                                                        <input type="text" class="form-control input-readonly" id="ticketDo" name="ticketDo">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Nett Weight (MT)</label>
+                                                                        <input type="text" class="form-control input-readonly" id="nettWeight" name="nettWeight" readonly>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Reduce Weight (MT)</label>
+                                                                        <input type="text" class="form-control input-readonly" id="reduceWeight" name="reduceWeight">
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Final Weight (MT)</label>
+                                                                        <input type="number" class="form-control input-readonly" id="finalWeight" name="finalWeight" readonly>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Reject Weight (MT)</label>
+                                                                        <input type="text" class="form-control input-readonly" id="rejectWeight" name="rejectWeight" value="0">
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Graded By</label>
+                                                                        <select class="form-select select2" id="grader" name="grader" required>
+                                                                            <option value="">-</option>
+                                                                            <?php while($rowGrader=mysqli_fetch_assoc($graders)){ ?>
+                                                                                <option value="<?=$rowGrader['id'] ?>"><?=$rowGrader['grader_name'] ?></option>
+                                                                            <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mb-3 mt-4">
+                                                                    <div class="col-xxl-12 col-lg-12">
+                                                                        <h6 class="mb-2">MSPO Certification</h6>
+                                                                        <table class="table table-bordered align-middle">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Type</th>
+                                                                                    <th>Percent (%)</th>
+                                                                                    <th>Weight (KG)</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td>MSPO</td>
+                                                                                    <td><input type="number" class="form-control" id="mspoPerc" name="mspoPerc" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control" id="mspoWeight" name="mspoWeight" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>NON MSPO</td>
+                                                                                    <td><input type="number" class="form-control" id="nonMspoPerc" name="nonMspoPerc" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control" id="nonMspoWeight" name="nonMspoWeight" value="0.00"></td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mt-4">
+                                                                    <div class="col-xxl-6 col-lg-6">
+                                                                        <h6 class="mb-2">Base Extraction Rate</h6>
+                                                                        <table class="table table-bordered align-middle">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th width="50%">Bunch Size</th>
+                                                                                    <th width="50%">Percent (%)</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td>> 25</td>
+                                                                                    <td><input type="number" class="form-control" id="bunchSize25" name="bunchSize25" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>> 10</td>
+                                                                                    <td><input type="number" class="form-control" id="bunchSize10" name="bunchSize10" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>> 9-10</td>
+                                                                                    <td><input type="number" class="form-control" id="bunchSize9_10" name="bunchSize9_10" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>> 8-9</td>
+                                                                                    <td><input type="number" class="form-control" id="bunchSize8_9" name="bunchSize8_9" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>> 7-8</td>
+                                                                                    <td><input type="number" class="form-control" id="bunchSize7_8" name="bunchSize7_8" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>> 6-7</td>
+                                                                                    <td><input type="number" class="form-control" id="bunchSize6_7" name="bunchSize6_7" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>> 5-6</td>
+                                                                                    <td><input type="number" class="form-control" id="bunchSize5_6" name="bunchSize5_6" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>5 <</td>
+                                                                                    <td><input type="number" class="form-control" id="bunchSize5" name="bunchSize5" value="0.00"></td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                            <tfoot>
+                                                                                <tr>
+                                                                                    <th>Total (%)</th>
+                                                                                    <th><input type="number" class="form-control" id="totalPercent" name="totalPercent" value="0.00" readonly></th>
+                                                                                </tr>
+                                                                            </tfoot>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div class="col-xxl-6 col-lg-6">
+                                                                        <h6 class="mb-2">Quality Factors</h6>
+                                                                        <table class="table table-bordered align-middle">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th width="50%">Factors</th>
+                                                                                    <th width="50%">Percent (%)</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td>Unripe Bunch (UR)</td>
+                                                                                    <td><input type="number" class="form-control" id="unripe" name="unripe" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>Underripe (UD)</td>
+                                                                                    <td><input type="number" class="form-control" id="underripe" name="underripe" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>Empty Bunch (EM)</td>
+                                                                                    <td><input type="number" class="form-control" id="emptyBunch" name="emptyBunch" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>Rotten Bunch (RB)</td>
+                                                                                    <td><input type="number" class="form-control" id="rottenBunch" name="rottenBunch" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>Long Stalks (LS)</td>
+                                                                                    <td><input type="number" class="form-control" id="longStalks" name="longStalks" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>Dirty Bunch (DB)</td>
+                                                                                    <td><input type="number" class="form-control" id="dirtyBunch" name="dirtyBunch" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>Dura Bunch (DD)</td>
+                                                                                    <td><input type="number" class="form-control" id="duraBunch" name="duraBunch" value="0.00"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>Old Bunch (OB)</td>
+                                                                                    <td><input type="number" class="form-control" id="oldBunch" name="oldBunch" value="0.00"></td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                            <tfoot>
+                                                                                <tr>
+                                                                                    <th>Total (%)</th>
+                                                                                    <th><input type="number" class="form-control" id="totalQualityFactor" name="totalQualityFactor" value="0.00" readonly></th>
+                                                                                </tr>
+                                                                            </tfoot>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <input type="hidden" id="id" name="id">
+                                                            <input type="hidden" id="submitPrint" name="submitPrint">
+                                                            <input type="hidden" id="transactionStatus" name="transactionStatus">
+                                                            <input type="hidden" id="isEmptyContainer" name="isEmptyContainer">
+                                                        </div>
+                                                        
+                                                        <div class="col-xxl-12 col-lg-12">
+                                                            <div class="hstack gap-2 justify-content-end">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitGrading"><?=$languageArray['submit_code'][$language]?></button>
+                                                            </div>
+                                                        </div><!--end col-->                                                               
+                                                    </form>
+                                                </div>
+                                            </div><!-- /.modal-content -->
+                                        </div><!-- /.modal-dialog -->
+                                    </div><!-- /.modal -->
+                                </div>
+                            </div> <!-- end row-->
                         </div> <!-- end .h-100-->
 
                     </div> <!-- end col -->
@@ -671,6 +907,7 @@ else{
                     </div>
                 </div>
             </div>
+            
             <?php include 'layouts/footer.php'; ?>
         </div>
         <!-- end main content-->
@@ -703,6 +940,7 @@ else{
     var table = null;
     var emptyContainerTable = null;
     let clickTimer = null;
+    var includeGrading = '<?= $includeGrading ?>';
 
     var grossIncomingDatePicker;
     var tareOutgoingDatePicker; 
@@ -910,17 +1148,84 @@ else{
                 $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
                     var obj = JSON.parse(data); 
                     if(obj.status === 'success'){
-                        <?php
-                            if(isset($_GET['weight'])){
-                                echo "window.location = 'simple.php';";
-                            }
-                        ?>
-                        table.ajax.reload();
-                        window.location = 'simple.php';
                         $('#spinnerLoading').hide();
                         $('#addModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
+
+                        // If Transaction Status is Purchase, open grading modal
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                            $.post('php/getWeight.php', { userID: obj.id }, function (data) {
+                                var obj = JSON.parse(data);
+                                if (obj.status === 'success') {
+                                    $('#gradingModal').find('#id').val(obj.message.id);
+                                    $('#gradingModal').find('#submitPrint').val('N');
+                                    $('#gradingModal').find('#transactionId').val(obj.message.transaction_id);
+                                    $('#gradingModal').find('#vehicleNo').val(obj.message.lorry_plate_no1);
+                                    $('#gradingModal').find('#ticketDo').val(obj.message.delivery_no);
+                                    $('#gradingModal').find('#nettWeight').val(obj.message.nett_weight1 ? (parseFloat(obj.message.nett_weight1)/1000).toFixed(2) : '0.00');
+                                    $('#gradingModal').find('#reduceWeight').val(obj.message.reduce_weight ? (parseFloat(obj.message.reduce_weight)/1000).toFixed(2) : '0.00');
+                                    $('#gradingModal').find('#finalWeight').val(obj.message.final_weight ? (parseFloat(obj.message.final_weight)/1000).toFixed(2) : '0.00');
+                                    $('#gradingModal').find('#rejectWeight').val(obj.message.reject_weight ? (parseFloat(obj.message.reject_weight)/1000).toFixed(2) : '0.00');
+                                    $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
+
+                                    var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
+                                    $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
+                                    $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
+                                    $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+                                    $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
+                                    $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
+                                    $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
+                                    $('#gradingModal').find('#bunchSize8_9').val(gradingDetail.bunch_size_8_9 || '0.00');
+                                    $('#gradingModal').find('#bunchSize7_8').val(gradingDetail.bunch_size_7_8 || '0.00');
+                                    $('#gradingModal').find('#bunchSize6_7').val(gradingDetail.bunch_size_6_7 || '0.00');
+                                    $('#gradingModal').find('#bunchSize5_6').val(gradingDetail.bunch_size_5_6 || '0.00');
+                                    $('#gradingModal').find('#bunchSize5').val(gradingDetail.bunch_size_5 || '0.00');
+                                    $('#gradingModal').find('#totalPercent').val(gradingDetail.total_percent || '0.00');
+                                    $('#gradingModal').find('#unripe').val(gradingDetail.unripe || '0.00');
+                                    $('#gradingModal').find('#underripe').val(gradingDetail.underripe || '0.00');
+                                    $('#gradingModal').find('#emptyBunch').val(gradingDetail.empty_bunch || '0.00');
+                                    $('#gradingModal').find('#rottenBunch').val(gradingDetail.rotten_bunch || '0.00');
+                                    $('#gradingModal').find('#longStalks').val(gradingDetail.long_stalks || '0.00');
+                                    $('#gradingModal').find('#dirtyBunch').val(gradingDetail.dirty_bunch || '0.00');
+                                    $('#gradingModal').find('#duraBunch').val(gradingDetail.dura_bunch || '0.00');
+                                    $('#gradingModal').find('#oldBunch').val(gradingDetail.old_bunch || '0.00');
+                                    $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
+
+                                    if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
+                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
+                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                    }else{
+                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
+                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                    }
+                                    $('#gradingModal').modal('show');
+                                }
+                            });
+
+                            // <?php
+                            //     if(isset($_GET['weight'])){
+                            //         echo "window.location = 'simple.php';";
+                            //     }
+                            // ?>
+                            // table.ajax.reload();
+                            // window.location = 'simple.php';
+                            // $("#successBtn").attr('data-toast-text', obj.message);
+                            // $("#successBtn").click();
+                        }else{
+                            <?php
+                                if(isset($_GET['weight'])){
+                                    echo "window.location = 'simple.php';";
+                                }
+                            ?>
+                            table.ajax.reload();
+                            window.location = 'simple.php';
+                            $("#successBtn").attr('data-toast-text', obj.message);
+                            $("#successBtn").click();
+                        }
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -1054,52 +1359,114 @@ else{
                     if(obj.status === 'success'){
                         $('#spinnerLoading').hide();
                         $('#addModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
 
-                        $.post('php/print2.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-                            var obj2 = JSON.parse(data);
+                        // If Transaction Status is Purchase, open grading modal
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                            $.post('php/getWeight.php', { userID: obj.id }, function (data) {
+                                var obj = JSON.parse(data);
+                                if (obj.status === 'success') {
+                                    $('#gradingModal').find('#id').val(obj.message.id);
+                                    $('#gradingModal').find('#submitPrint').val('Y');
+                                    $('#gradingModal').find('#transactionStatus').val(transactionStatus);
+                                    $('#gradingModal').find('#isEmptyContainer').val(isEmptyContainer);
+                                    $('#gradingModal').find('#transactionId').val(obj.message.transaction_id);
+                                    $('#gradingModal').find('#vehicleNo').val(obj.message.lorry_plate_no1);
+                                    $('#gradingModal').find('#ticketDo').val(obj.message.delivery_no);
+                                    $('#gradingModal').find('#nettWeight').val(obj.message.nett_weight1 ? (parseFloat(obj.message.nett_weight1)/1000).toFixed(2) : '0.00');
+                                    $('#gradingModal').find('#reduceWeight').val(obj.message.reduce_weight ? (parseFloat(obj.message.reduce_weight)/1000).toFixed(2) : '0.00');
+                                    $('#gradingModal').find('#finalWeight').val(obj.message.final_weight ? (parseFloat(obj.message.final_weight)/1000).toFixed(2) : '0.00');
+                                    $('#gradingModal').find('#rejectWeight').val(obj.message.reject_weight ? (parseFloat(obj.message.reject_weight)/1000).toFixed(2) : '0.00');
+                                    $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
 
-                            if(obj2.status === 'success'){
-                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                printWindow.document.write(obj2.message);
-                                printWindow.document.close();
-                                setTimeout(function(){
-                                    printWindow.print();
-                                    printWindow.close();
-                                    table.ajax.reload();
-                                    window.location = 'simple.php';
+                                    var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
+                                    $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
+                                    $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
+                                    $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+                                    $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
+                                    $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
+                                    $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
+                                    $('#gradingModal').find('#bunchSize8_9').val(gradingDetail.bunch_size_8_9 || '0.00');
+                                    $('#gradingModal').find('#bunchSize7_8').val(gradingDetail.bunch_size_7_8 || '0.00');
+                                    $('#gradingModal').find('#bunchSize6_7').val(gradingDetail.bunch_size_6_7 || '0.00');
+                                    $('#gradingModal').find('#bunchSize5_6').val(gradingDetail.bunch_size_5_6 || '0.00');
+                                    $('#gradingModal').find('#bunchSize5').val(gradingDetail.bunch_size_5 || '0.00');
+                                    $('#gradingModal').find('#totalPercent').val(gradingDetail.total_percent || '0.00');
+                                    $('#gradingModal').find('#unripe').val(gradingDetail.unripe || '0.00');
+                                    $('#gradingModal').find('#underripe').val(gradingDetail.underripe || '0.00');
+                                    $('#gradingModal').find('#emptyBunch').val(gradingDetail.empty_bunch || '0.00');
+                                    $('#gradingModal').find('#rottenBunch').val(gradingDetail.rotten_bunch || '0.00');
+                                    $('#gradingModal').find('#longStalks').val(gradingDetail.long_stalks || '0.00');
+                                    $('#gradingModal').find('#dirtyBunch').val(gradingDetail.dirty_bunch || '0.00');
+                                    $('#gradingModal').find('#duraBunch').val(gradingDetail.dura_bunch || '0.00');
+                                    $('#gradingModal').find('#oldBunch').val(gradingDetail.old_bunch || '0.00');
+                                    $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
+
+                                    if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
+                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
+                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                    }else{
+                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
+                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                    }
+                                    $('#gradingModal').modal('show');
+                                }
+                            });
+                        }else{
+                            $("#successBtn").attr('data-toast-text', obj.message);
+                            $("#successBtn").click();
+
+                            var transactionStatus = $('#transactionStatus').val();
+                            print(obj.id, transactionStatus, isEmptyContainer);
+                        }
+
+                        // $.post('php/print2.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+                        //     var obj2 = JSON.parse(data);
+
+                        //     if(obj2.status === 'success'){
+                        //         var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                        //         printWindow.document.write(obj2.message);
+                        //         printWindow.document.close();
+                        //         setTimeout(function(){
+                        //             printWindow.print();
+                        //             printWindow.close();
+                        //             table.ajax.reload();
+                        //             window.location = 'simple.php';
                                     
-                                    /*setTimeout(function () {
-                                        if (confirm("Do you need to reprint?")) {
-                                            $.post('php/print2.php', { userID: obj.id, file: 'weight' }, function (data) {
-                                                var obj = JSON.parse(data);
-                                                if (obj.status === 'success') {
-                                                    var reprintWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                                    reprintWindow.document.write(obj.message);
-                                                    reprintWindow.document.close();
-                                                    setTimeout(function () {
-                                                        reprintWindow.print();
-                                                        reprintWindow.close();
-                                                    }, 500);
-                                                } 
-                                                else {
-                                                    window.location = 'simple.php';
-                                                }
-                                            });
-                                        }
-                                    }, 500);*/
-                                }, 500);
-                            }
-                            else if(obj.status === 'failed'){
-                                $("#failBtn").attr('data-toast-text', obj.message );
-                                $("#failBtn").click();
-                            }
-                            else{
-                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                                $("#failBtn").click();
-                            }
-                        });
+                        //             /*setTimeout(function () {
+                        //                 if (confirm("Do you need to reprint?")) {
+                        //                     $.post('php/print2.php', { userID: obj.id, file: 'weight' }, function (data) {
+                        //                         var obj = JSON.parse(data);
+                        //                         if (obj.status === 'success') {
+                        //                             var reprintWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                        //                             reprintWindow.document.write(obj.message);
+                        //                             reprintWindow.document.close();
+                        //                             setTimeout(function () {
+                        //                                 reprintWindow.print();
+                        //                                 reprintWindow.close();
+                        //                             }, 500);
+                        //                         } 
+                        //                         else {
+                        //                             window.location = 'simple.php';
+                        //                         }
+                        //                     });
+                        //                 }
+                        //             }, 500);*/
+                        //         }, 500);
+                        //     }
+                        //     else if(obj.status === 'failed'){
+                        //         $("#failBtn").attr('data-toast-text', obj.message );
+                        //         $("#failBtn").click();
+                        //     }
+                        //     else{
+                        //         $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                        //         $("#failBtn").click();
+                        //     }
+                        // });
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -1165,6 +1532,42 @@ else{
                     });
                 }
             }*/
+        });
+
+        $('#submitGrading').on('click', function(){
+            if($('#gradingForm').valid()){
+                $('#spinnerLoading').show();
+                $.post('php/updateWeightGrade.php', $('#gradingForm').serialize(), function(data){
+                    var obj = JSON.parse(data); 
+                    if(obj.status === 'success'){
+                        var printSlip = $('#gradingModal').find('#submitPrint').val();
+                        var id = $('#gradingModal').find('#id').val();
+                        var transactionStatus = $('#gradingModal').find('#transactionStatus').val();
+                        var isEmptyContainer = $('#gradingModal').find('#isEmptyContainer').val();
+
+                        $('#spinnerLoading').hide();
+                        $('#gradingModal').modal('hide');
+                        $("#successBtn").attr('data-toast-text', obj.message);
+                        $("#successBtn").click();
+
+                        if (printSlip == 'Y'){
+                            print(id, transactionStatus, isEmptyContainer);
+                        }else{
+                            window.location.reload();
+                        }
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', 'Failed to save');
+                        $("#failBtn").click();
+                    }
+                });
+            }
         });
 
         $('#submitWeights').on('click', function(){
@@ -2769,6 +3172,51 @@ else{
             x = x.toUpperCase();
             $('#sealNoSearch').val(x);
         });
+
+        // Grading Modal Trigger Start //
+        $('#gradingModal').find('#reduceWeight').on('keyup', function(){
+            var reduceWeight = $(this).val() ? parseFloat($(this).val()) : 0;
+            var nettWeight = $('#gradingModal').find('#nettWeight').val() ? parseFloat($('#gradingModal').find('#nettWeight').val()) : 0;
+            var finalWeight = Math.abs(nettWeight - reduceWeight);
+            $('#gradingModal').find('#finalWeight').val(finalWeight.toFixed(2));
+        });
+
+        $('#bunchSize25, #bunchSize10, #bunchSize9_10, #bunchSize8_9, #bunchSize7_8, #bunchSize6_7, #bunchSize5_6, #bunchSize5').on('keyup', function(){
+            var total = 0;
+            $('#bunchSize25, #bunchSize10, #bunchSize9_10, #bunchSize8_9, #bunchSize7_8, #bunchSize6_7, #bunchSize5_6, #bunchSize5').each(function(){
+                total += parseFloat($(this).val()) || 0;
+            });
+            
+            if(total > 100){
+                alert('Total percentage cannot exceed 100%');
+                $(this).val(0);
+                total = 0;
+                $('#bunchSize25, #bunchSize10, #bunchSize9_10, #bunchSize8_9, #bunchSize7_8, #bunchSize6_7, #bunchSize5_6, #bunchSize5').each(function(){
+                    total += parseFloat($(this).val()) || 0;
+                });
+            }
+            
+            $('#totalPercent').val(total.toFixed(2));
+        });
+
+        $('#unripe, #underripe, #emptyBunch, #rottenBunch, #longStalks, #dirtyBunch, #duraBunch, #oldBunch').on('keyup', function(){
+            var total = 0;
+            $('#unripe, #underripe, #emptyBunch, #rottenBunch, #longStalks, #dirtyBunch, #duraBunch, #oldBunch').each(function(){
+                total += parseFloat($(this).val()) || 0;
+            });
+            
+            if(total > 100){
+                alert('Total percentage cannot exceed 100%');
+                $(this).val(0);
+                total = 0;
+                $('#unripe, #underripe, #emptyBunch, #rottenBunch, #longStalks, #dirtyBunch, #duraBunch, #oldBunch').each(function(){
+                    total += parseFloat($(this).val()) || 0;
+                });
+            }
+            
+            $('#totalQualityFactor').val(total.toFixed(2));
+        });
+        // Grading Modal Trigger End //
 
         <?php
             if(isset($_GET['weight'])){
