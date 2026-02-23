@@ -580,7 +580,7 @@ if(isset($_POST['userID'])) {
                                     <td style="text-align: right">'.number_format($dailyCashRamp, 2).'</td>
                                     <td style="text-align: right">'.number_format($accumCashRamp, 2).'</td>
                                     <td style="font-weight: bold">Credit B/F</td>
-                                    <td style="text-align: right">0.00</td>
+                                    <td style="text-align: right">'.number_format(($prevValues['balanceCf']/1000), 2).'</td>
                                     <td style="text-align: right">0.00</td>
                                 </tr>
                                 <tr>

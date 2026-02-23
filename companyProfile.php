@@ -9,11 +9,11 @@ require_once "layouts/config.php";
 // Check if the user is already logged in, if yes then redirect him to index page
 $user = $_SESSION['id'];
 $id = '1';
-$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, include_price, include_container, include_display_setup from Company where id = ?");
+$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, mpob_no, mpob_expiry_date, mspo_no, mspo_expiry_date, include_price, include_container, include_display_setup, include_grading from Company where id = ?");
 mysqli_stmt_bind_param($stmt2, "s", $id);
 mysqli_stmt_execute($stmt2);
 mysqli_stmt_store_result($stmt2);
-mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $include_price, $include_container, $include_display_setup);
+mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $mpob_no, $mpob_expiry_date, $mspo_no, $mspo_expiry_date, $include_price, $include_container, $include_display_setup, $include_grading);
 if (mysqli_stmt_fetch($stmt2)) {
     $usercompany_reg_no = $company_reg_no;
     $username = $name;
@@ -23,9 +23,14 @@ if (mysqli_stmt_fetch($stmt2)) {
     $userphone_no = $phone_no;
     $userpackage = $package;
     $userfax_no = $fax_no;
+    $mpobNo = $mpob_no;
+    $mpobExpiry = $mpob_expiry_date;
+    $mspoNo = $mspo_no;
+    $mspoExpiry = $mspo_expiry_date;
     $includePrice = $include_price;
     $includeContainer = $include_container;
     $includeDisplaySetup = $include_display_setup;
+    $includeGrading = $include_grading;
 }
 
 $role = 'NORMAL';
@@ -137,6 +142,30 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
+                                                    <label for="mpobNo" class="col-sm-4 col-form-label">MPOB License No</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control input-readonly" id="mpobNo" name="mpobNo" placeholder="MPOB License No" value="<?=$mpob_no ?>" <?= $readonly ?>>
+                                                    </div>
+                                                    <label for="mpobExpiry" class="col-sm-2 col-form-label">Expiry Date</label>
+                                                    <div class="col-sm-2">
+                                                        <input type="date" class="form-control" data-provider="flatpickr" id="mpobExpiry" name="mpobExpiry" value="" <?= $readonly ?>>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                    <label for="mspoNo" class="col-sm-4 col-form-label">MSPO Cert No</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control input-readonly" id="mspoNo" name="mspoNo" placeholder="MSPO Cert No" value="<?=$mspo_no ?>" <?= $readonly ?>>
+                                                    </div>
+                                                    <label for="mspoExpiry" class="col-sm-2 col-form-label">Expiry Date</label>
+                                                    <div class="col-sm-2">
+                                                        <input type="date" class="form-control" data-provider="flatpickr" id="mspoExpiry" name="mspoExpiry" value="" <?= $readonly ?>>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
                                                     <label for="companyPackage" class="col-sm-4 col-form-label">Package</label>
                                                     <div class="col-sm-8">
                                                         <select class="form-select input-readonly" id="companyPackage" name="companyPackage" <?= $readonly ?>>
@@ -175,6 +204,15 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-12 mb-3">
+                                                    <div class="row">
+                                                        <label class="col-sm-4 col-form-label">Include Grading</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="radio" class="form-check-input" id="includeGradingYes" name="includeGrading" value="Y" <?= $includeGrading == 'Y' ? 'checked' : '' ?> <?= $readonly ?>> Yes
+                                                            <input type="radio" class="form-check-input ms-3" id="includeGradingNo" name="includeGrading" value="N" <?= $includeGrading == 'N' ? 'checked' : '' ?> <?= $readonly ?>> No
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="mt-4" <?= $hidden ? 'style="display:none;"' : '' ?>>
                                                 <button class="btn btn-success w-100" type="submit">Update</button>
@@ -207,5 +245,17 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
         
         <!-- App js -->
         <script src="assets/js/app.js"></script>
+
+        <script type="text/javascript">
+            flatpickr("#mpobExpiry", {
+                dateFormat: "d-m-Y",
+                defaultDate: "<?= $mpobExpiry ? date('d-m-Y', strtotime($mpobExpiry)) : '' ?>"
+            });
+
+            flatpickr("#mspoExpiry", {
+                dateFormat: "d-m-Y",
+                defaultDate: "<?= $mspoExpiry ? date('d-m-Y', strtotime($mspoExpiry)) : '' ?>"
+            });
+        </script>
     </body>
 </html>

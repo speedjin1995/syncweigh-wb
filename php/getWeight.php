@@ -419,12 +419,15 @@ if(isset($_POST['userID'])){
                             $message['nett_weight2'] = $row['nett_weight2'];
                             $message['reduce_weight'] = $row['reduce_weight'];
                             $message['final_weight'] = $row['final_weight'];
+                            $message['reject_weight'] = $row['reject_weight'];
                             $message['weight_different'] = $row['weight_different'];
                             $message['is_complete'] = $row['is_complete'];
                             $message['is_cancel'] = $row['is_cancel'];
                             $message['manual_weight'] = $row['manual_weight'];
                             $message['indicator_id'] = $row['indicator_id'];
                             $message['weighbridge_id'] = $row['weighbridge_id'];
+                            $message['grader_id'] = $row['grader_id'];
+                            $message['grade_detail'] = $row['grade_detail'];
                             $message['created_date'] = $row['created_date'];
                             $message['created_by'] = $row['created_by'];
                             $message['modified_date'] = $row['modified_date'];
@@ -495,6 +498,18 @@ if(isset($_POST['userID'])){
                             else {
                                 // Log error if the statement couldn't be prepared
                                 $message['vehicleNoTxt2'] = $db->error;
+                            }
+
+                            if ($row['transaction_status'] == 'Purchase'){
+                                if ($update_stmt3 = $db->prepare("SELECT * FROM Supplier WHERE supplier_code=? AND status = '0'")) {
+                                    $update_stmt3->bind_param('s', $row['supplier_code']);
+                                    $update_stmt3->execute();
+                                    $result3 = $update_stmt3->get_result();
+                                    
+                                    if ($row3 = $result3->fetch_assoc()) {
+                                        $message['supplier_detail'] = $row3;
+                                    }
+                                } 
                             }
                         }
                     }

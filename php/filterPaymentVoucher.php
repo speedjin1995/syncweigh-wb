@@ -52,25 +52,25 @@ if($searchValue != ''){
 
 $allQuery = "select MAX(id) as id from Weight where is_complete = 'Y' AND  is_cancel <> 'Y' AND transaction_status = '".$_POST['transactionStatus']."' AND customer_code IS NOT NULL AND transaction_date IS NOT NULL group by DATE(transaction_date), customer_code";
 if($_POST['transactionStatus'] == 'Purchase'){
-	$allQuery = "select MAX(id) as id from Weight where is_complete = 'Y' AND  is_cancel <> 'Y' AND transaction_status = '".$_POST['transactionStatus']."' AND supplier_code IS NOT NULL AND transaction_date IS NOT NULL group by DATE(transaction_date), supplier_code";
+	$allQuery = "select MAX(w.id) as id from Weight w INNER JOIN Supplier s ON w.supplier_code = s.supplier_code where w.is_complete = 'Y' AND w.is_cancel <> 'Y' AND w.transaction_status = '".$_POST['transactionStatus']."' AND w.supplier_code IS NOT NULL AND w.transaction_date IS NOT NULL AND s.payment_term = 'Term' group by DATE(w.transaction_date), w.supplier_code";
 }
 $sel = mysqli_query($db, $allQuery); 
 $totalRecords = mysqli_num_rows($sel);
 ## Total number of record with filtering
 $filteredQuery = "select MAX(id) as id from Weight where is_complete = 'Y' AND is_cancel <> 'Y' AND customer_code IS NOT NULL AND transaction_date IS NOT NULL".$searchQuery." group by DATE(transaction_date), customer_code";
 if($_POST['transactionStatus'] == 'Purchase'){
-	$filteredQuery = "select MAX(id) as id from Weight where is_complete = 'Y' AND is_cancel <> 'Y' AND supplier_code IS NOT NULL AND transaction_date IS NOT NULL".$searchQuery." group by DATE(transaction_date), supplier_code";
+	$filteredQuery = "select MAX(w.id) as id from Weight w INNER JOIN Supplier s ON w.supplier_code = s.supplier_code where w.is_complete = 'Y' AND w.is_cancel <> 'Y' AND w.supplier_code IS NOT NULL AND w.transaction_date IS NOT NULL AND s.payment_term = 'Term'".$searchQuery." group by DATE(w.transaction_date), w.supplier_code";
 }
 $sel = mysqli_query($db, $filteredQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = mysqli_num_rows($sel);
 
 ## Fetch records
-$empQuery = "select MAX(id) as id, transaction_status, weight_type, MAX(customer_name) as customer_name, MAX(supplier_name) as supplier_name, MAX(invoice_no) as invoice_no, MAX(transaction_date) as transaction_date from Weight where is_complete = 'Y' AND is_cancel <> 'Y' AND customer_code IS NOT NULL AND transaction_date IS NOT NULL".$searchQuery." group by DATE(transaction_date), customer_code order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+$empQuery = "select MAX(w.id) as id, w.transaction_status, w.weight_type, MAX(w.customer_name) as customer_name, MAX(w.supplier_name) as supplier_name, MAX(w.customer_code) as customer_code, MAX(w.invoice_no) as invoice_no, MAX(w.transaction_date) as transaction_date, MAX(pv.voucher_no) as voucher_no, pv.outstanding_amount as outstanding_amount from Weight w LEFT JOIN Payment_Voucher pv ON DATE(w.transaction_date) = DATE(pv.voucher_date) AND w.customer_name = pv.customer_supplier where w.is_complete = 'Y' AND w.is_cancel <> 'Y' AND w.customer_code IS NOT NULL AND w.transaction_date IS NOT NULL".$searchQuery." group by DATE(w.transaction_date), w.customer_code order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 if($_POST['transactionStatus'] == 'Purchase'){
-	$empQuery = "select MAX(id) as id, transaction_status, weight_type, MAX(customer_name) as customer_name, MAX(supplier_name) as supplier_name, MAX(invoice_no) as invoice_no, MAX(transaction_date) as transaction_date from Weight where is_complete = 'Y' AND is_cancel <> 'Y' AND supplier_code IS NOT NULL AND transaction_date IS NOT NULL".$searchQuery." group by DATE(transaction_date), supplier_code order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+	$empQuery = "select MAX(w.id) as id, w.transaction_status, w.weight_type, MAX(w.customer_name) as customer_name, MAX(w.supplier_name) as supplier_name, MAX(w.supplier_code) as supplier_code, MAX(w.invoice_no) as invoice_no, MAX(w.transaction_date) as transaction_date, MAX(pv.voucher_no) as voucher_no, pv.outstanding_amount as outstanding_amount from Weight w INNER JOIN Supplier s ON w.supplier_code = s.supplier_code LEFT JOIN Payment_Voucher pv ON DATE(w.transaction_date) = DATE(pv.voucher_date) AND w.supplier_name = pv.customer_supplier where w.is_complete = 'Y' AND w.is_cancel <> 'Y' AND w.supplier_code IS NOT NULL AND w.transaction_date IS NOT NULL AND s.payment_term = 'Term'".$searchQuery." group by DATE(w.transaction_date), w.supplier_code order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 }
-$empRecords = mysqli_query($db, $empQuery); 
+$empRecords = mysqli_query($db, $empQuery);
 $data = array();
 
 while($row = mysqli_fetch_assoc($empRecords)) {
@@ -81,6 +81,8 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     "customer"=>($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Local' ? $row['customer_name'] : $row['supplier_name']),
     "invoice_no"=>$row['invoice_no'],
     "transaction_date"=>date('d-m-Y', strtotime($row['transaction_date'])),
+    "voucher_no"=>$row['voucher_no'] ?? '',
+    "outstanding_amount"=>(!empty($row['outstanding_amount']) ? number_format(floatval($row['outstanding_amount']), 2) : ''),
   );
 }
 
