@@ -80,6 +80,7 @@ $supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name
 $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $graders = $db->query("SELECT * FROM Grader WHERE status = '0' ORDER BY grader_name ASC");
+$drivers = $db->query("SELECT * FROM Driver WHERE status = '0' ORDER BY driver_name ASC");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
@@ -270,6 +271,23 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                 <div class="input-group">
                                                                     <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No">
                                                                 </div>
+                                                            </div>
+                                                        </div><br>
+                                                        <div class="row">
+                                                            <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
+                                                            <div class="col-sm-8">
+                                                                <select class="form-select js-choice select2" id="driverName" name="driverName">
+                                                                    <option selected="-">-</option>
+                                                                    <?php while($rowDriver=mysqli_fetch_assoc($drivers)){ ?>
+                                                                        <option value="<?=$rowDriver['driver_name'] ?>" data-code="<?=$rowDriver['driver_ic'] ?>"><?=$rowDriver['driver_name'] ?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                            </div>
+                                                        </div><br>
+                                                        <div class="row">
+                                                            <label for="driverIc" class="col-sm-4 col-form-label">Driver IC</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
                                                             </div>
                                                         </div><br>
                                                         <div class="row">
@@ -957,10 +975,22 @@ if(($row = $result->fetch_assoc()) !== null){
         yesterday.setDate(yesterday.getDate() - 1);
 
         // Initialize all Select2 elements in the modal
-        $('#addModal .select2').select2({
+        $('#weightForm .select2').select2({
             allowClear: true,
             placeholder: "Please Select",
-            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+            dropdownParent: $('#weightForm') // Ensures dropdown is not cut off
+        });
+
+        // Apply custom styling to Select2 elements in addModal
+        $('.select2-container .select2-selection--single').css({
+            'padding-top': '4px',
+            'padding-bottom': '4px',
+            'height': 'auto'
+        });
+
+        $('.select2-container .select2-selection__arrow').css({
+            'padding-top': '33px',
+            'height': 'auto'
         });
 
         $('#fromDateSearch').flatpickr({
@@ -1901,6 +1931,7 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#containerNo').val("");
             $('#containerNo2').val("");
             $('#sealNo2').val("");
+            $('#driverName').val("").trigger('change');
 
             // Show select and hide input readonly
             $('#salesOrderEdit').val("").hide();
@@ -3173,6 +3204,10 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#sealNoSearch').val(x);
         });
 
+        $('#driverName').on('change', function(){
+            $('#driverIc').val($('#driverName :selected').data('code'));
+        });
+
         // Grading Modal Trigger Start //
         $('#gradingModal').find('#reduceWeight').on('keyup', function(){
             var reduceWeight = $(this).val() ? parseFloat($(this).val()) : 0;
@@ -3510,6 +3545,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     $("input[name='exDel'][value='false']").prop("checked", true);
                 }
                 
+                $('#driverName').val(obj.message.driver_name).trigger('change');
                 $('#purchaseOrder').val(obj.message.purchase_order);
                 $('#invoiceNo').val(obj.message.invoice_no);
                 $('#deliveryNo').val(obj.message.delivery_no);
