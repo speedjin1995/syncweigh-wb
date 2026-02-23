@@ -3539,7 +3539,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 formData.append('file', 'weight');
 
                 $.ajax({
-                    url: 'php/print.php',
+                    url: 'php/print_pws.php',
                     type: 'POST',
                     data: formData,
                     processData: false,
@@ -3554,7 +3554,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             setTimeout(function(){
                                 printWindow.print();
                                 printWindow.close();
-                                location.reload();
+                                // location.reload();
                             }, 500);
 
                             $('#spinnerLoading').hide();

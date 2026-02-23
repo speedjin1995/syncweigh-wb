@@ -3940,7 +3940,7 @@ if(($row = $result->fetch_assoc()) !== null){
         //var id = $('#prePrintModal').find('#id').val();
         var prePrintStatus = 'N';
 
-        $.post('php/print2.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+        $.post('php/print_pws.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){
