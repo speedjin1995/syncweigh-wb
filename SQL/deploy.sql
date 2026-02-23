@@ -1838,3 +1838,25 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Co
 END
 $$
 DELIMITER ;
+
+
+ALTER TABLE `Company` ADD `mpob_no` VARCHAR(100) NULL AFTER `package`, ADD `mpob_expiry_date` DATETIME NULL AFTER `mpob_no`, ADD `mspo_no` VARCHAR(100) NULL AFTER `mpob_expiry_date`, ADD `mspo_expiry_date` DATETIME NULL AFTER `mspo_no`;
+ALTER TABLE `Company_Log` ADD `mpob_no` VARCHAR(100) NULL AFTER `package`, ADD `mpob_expiry_date` DATETIME NULL AFTER `mpob_no`, ADD `mspo_no` VARCHAR(100) NULL AFTER `mpob_expiry_date`, ADD `mspo_expiry_date` DATETIME NULL AFTER `mspo_no`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Always set action_id = 2 for update
+    SET action_value = 2;
+
+    -- Insert into Company_Log table
+    INSERT INTO Company_Log (
+        company_id, company_code, company_reg_no, new_reg_no, `name`, address_line_1, address_line_2, address_line_3, phone_no, fax_no, tin_no, mobile_no, package, mpob_no, mpob_expiry_date, mspo_no, mspo_expiry_date, include_price, include_container, include_display_setup, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.company_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.tin_no, NEW.mobile_no, NEW.package, NEW.mpob_no, NEW.mpob_expiry_date, NEW.mspo_no, NEW.mspo_expiry_date, NEW.include_price, NEW.include_container, NEW.include_display_setup, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
