@@ -330,8 +330,8 @@ $allowDeduct = $_SESSION["allowDeduct"];
                                                             <div class="d-flex align-items-center">
                                                                 <label for="statusSwitch" class="col-form-label me-2">Mode</label>
                                                                 <select id="statusSwitch" name="statusSwitch" class="form-select select2" style="width: 150px;">
-                                                                    <option value="Manual" selected>Manual</option>
-                                                                    <option value="Auto">Auto</option>
+                                                                    <!--option value="Manual" selected>Manual</option-->
+                                                                    <option value="Auto" selected>Auto</option>
                                                                     <option value="Disable">Disable</option>
                                                                 </select>
                                                             </div>
