@@ -1919,3 +1919,5 @@ END
 $$
 DELIMITER ;
 
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'payslip_code', 'Payslip', '工资单', 'Slip Gaji', 'சம்பளச்சீட்டு');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'pay_slip_no_code', 'Payslip No', '工资单号', 'Nombor Slip Gaji', 'சம்பளச்சீட்டு எண்');
