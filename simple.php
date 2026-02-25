@@ -1259,7 +1259,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $('#addModal').modal('hide');
 
                         // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
                             $.post('php/getWeight.php', { userID: obj.id }, function (data) {
                                 var obj = JSON.parse(data);
                                 if (obj.status === 'success') {
@@ -1468,7 +1468,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $('#addModal').modal('hide');
 
                         // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
                             $.post('php/getWeight.php', { userID: obj.id }, function (data) {
                                 var obj = JSON.parse(data);
                                 if (obj.status === 'success') {
