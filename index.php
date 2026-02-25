@@ -4789,7 +4789,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);
@@ -4852,7 +4854,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);

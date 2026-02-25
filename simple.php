@@ -2440,6 +2440,32 @@ if ($rowd = $resultd->fetch_assoc()) {
             var transactionStatus = $('#transactionStatus').val();
 
             if (x){
+                $.post('php/getVehicle.php', {userID: x, type: 'lookup'}, function (data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
+                    }
+                    else if(obj.status === 'error'){
+                        alert(obj.message);
+                        //$('#vehicleNoTxt').val('');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
+
+            /*if (x){
                 $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
@@ -2472,13 +2498,40 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
-            }
+            }*/
         });
 
         $('#vehiclePlateNo1').on('change', function(){
             var vehiclePlateNo1 = $(this).val();
             var transactionStatus = $('#transactionStatus').val();
+
             if (vehiclePlateNo1){
+                $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'lookup'}, function (data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
+                    }
+                    else if(obj.status === 'error'){
+                        alert(obj.message);
+                        $('#vehicleNoTxt').val('');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
+
+            /*if (vehiclePlateNo1){
                 $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
@@ -2511,7 +2564,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
-            }
+            }*/
         });
 
         $('#manualVehicle2').on('change', function(){
