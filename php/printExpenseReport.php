@@ -328,16 +328,17 @@ if(isset($_POST['userID'])) {
 
                 ############### CASH Sections ################
                 $cashSection = '';
+                $totalCashMt = 0.00;
+                $totalCashPrice = 0.00;
+                $dailyCreditMt = 0.00;
+                $ffbInRejected = 0.00;
+
                 if (!empty($weights['Purchase'])) {
                     $cashSection .= '
                         <div class="detail-section">
                             <div class="detail-title">CASH</div>
                     ';
 
-                    $totalCashMt = 0.00;
-                    $totalCashPrice = 0.00;
-                    $dailyCreditMt = 0.00;
-                    $ffbInRejected = 0.00;
                     foreach ($weights['Purchase'] as $weight) {
                         $paymentTerm = searchSupplierTermByCode($weight['supplier_code'], $db);
                         if ($paymentTerm == 'Term'){
