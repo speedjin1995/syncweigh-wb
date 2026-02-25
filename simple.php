@@ -3862,31 +3862,57 @@ if ($rowd = $resultd->fetch_assoc()) {
 
     function print(id, transactionStatus, isEmptyContainer = 'N') {
         var prePrintStatus = 'N';
+        
+        if(includeGrading == 'Y'){
+            $.post('php/print_pws.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+                var obj = JSON.parse(data);
 
-        $.post('php/print_pws.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
-        //$.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
-            var obj = JSON.parse(data);
+                if(obj.status === 'success'){
+                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                    printWindow.document.write(obj.message);
+                    printWindow.document.close();
+                    setTimeout(function(){
+                        printWindow.print();
+                        printWindow.close();
+                    }, 500);
 
-            if(obj.status === 'success'){
-                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                printWindow.document.write(obj.message);
-                printWindow.document.close();
-                setTimeout(function(){
-                    printWindow.print();
-                    printWindow.close();
-                }, 500);
+                    $('#spinnerLoading').hide();
+                }
+                else if(obj.status === 'failed'){
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                    $("#failBtn").click();
+                }
+            }); 
+        }
+        else{
+            $.post('php/print.php', {userID: id, file: 'weight', prePrintHeader: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+                var obj = JSON.parse(data);
 
-                $('#spinnerLoading').hide();
-            }
-            else if(obj.status === 'failed'){
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-            else{
-                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                $("#failBtn").click();
-            }
-        });
+                if(obj.status === 'success'){
+                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                    printWindow.document.write(obj.message);
+                    printWindow.document.close();
+                    setTimeout(function(){
+                        printWindow.print();
+                        printWindow.close();
+                    }, 500);
+
+                    $('#spinnerLoading').hide();
+                }
+                else if(obj.status === 'failed'){
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                    $("#failBtn").click();
+                }
+            }); 
+        }
     }
 
     // Indicator Functions
