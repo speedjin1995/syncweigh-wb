@@ -3544,37 +3544,72 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 var formData = new FormData($('#prePrintForm')[0]);
                 formData.append('file', 'weight');
 
-                $.ajax({
-                    url: 'php/print_pws.php',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(data){
-                        var obj = JSON.parse(data);
+                if(includeGrading == 'Y'){
+                    $.ajax({
+                        url: 'php/print_pws.php',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data){
+                            var obj = JSON.parse(data);
 
-                        if(obj.status === 'success'){
-                            var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                            printWindow.document.write(obj.message);
-                            printWindow.document.close();
-                            setTimeout(function(){
-                                printWindow.print();
-                                printWindow.close();
-                                // location.reload();
-                            }, 500);
+                            if(obj.status === 'success'){
+                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                                printWindow.document.write(obj.message);
+                                printWindow.document.close();
+                                setTimeout(function(){
+                                    printWindow.print();
+                                    printWindow.close();
+                                    // location.reload();
+                                }, 500);
 
-                            $('#spinnerLoading').hide();
+                                $('#spinnerLoading').hide();
+                            }
+                            else if(obj.status === 'failed'){
+                                $("#failBtn").attr('data-toast-text', obj.message );
+                                $("#failBtn").click();
+                            }
+                            else{
+                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                                $("#failBtn").click();
+                            }
                         }
-                        else if(obj.status === 'failed'){
-                            $("#failBtn").attr('data-toast-text', obj.message );
-                            $("#failBtn").click();
+                    });
+                }
+                else{
+                    $.ajax({
+                        url: 'php/print.php',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data){
+                            var obj = JSON.parse(data);
+
+                            if(obj.status === 'success'){
+                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                                printWindow.document.write(obj.message);
+                                printWindow.document.close();
+                                setTimeout(function(){
+                                    printWindow.print();
+                                    printWindow.close();
+                                    // location.reload();
+                                }, 500);
+
+                                $('#spinnerLoading').hide();
+                            }
+                            else if(obj.status === 'failed'){
+                                $("#failBtn").attr('data-toast-text', obj.message );
+                                $("#failBtn").click();
+                            }
+                            else{
+                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                                $("#failBtn").click();
+                            }
                         }
-                        else{
-                            $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                            $("#failBtn").click();
-                        }
-                    }
-                });
+                    });
+                }
             }
         });
 
