@@ -386,8 +386,8 @@ if(($row = $result->fetch_assoc()) !== null){
                                                     <label for="reportType" class="col-sm-4 col-form-label">Report Type *</label>
                                                     <div class="col-sm-8">
                                                         <select id="reportType" name="reportType" class="form-select" required>
-                                                            <option value="DR">Daily Report</option>
-                                                            <option value="DMR">Daily Management Report</option>
+                                                            <option value="DFI">Daily FFB Intake</option>
+                                                            <option value="DMFI">Daily Management FFB Intake</option>
                                                             <!-- <option value="ER">Expense Report</option> -->
                                                         </select>   
                                                     </div>

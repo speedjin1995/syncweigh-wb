@@ -21,18 +21,6 @@ function filterData(&$str){
     if(strstr($str, '"')) $str = '"' . str_replace('"', '""', $str) . '"'; 
 }
 
-// Format Weight String
-function formatWeight($weight){
-    if ($weight != 0){
-        $formatted = number_format(ltrim($weight, '0'), 2, '.', ',');
-        $formatted = preg_replace('/\.00$/', '', $formatted);    
-    }else{
-        $formatted = $weight;
-    }
-
-    return $formatted;
-}
-
 if(isset($_POST['userID'])) {
     $id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
 
