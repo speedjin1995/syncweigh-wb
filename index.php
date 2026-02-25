@@ -820,7 +820,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-8 col-lg-8">
                                                                                         <div class="row">
-                                                                                            <div class="col-xxl-6 col-lg-6 mb-3">
+                                                                                            <div class="col-xxl-6 col-lg-6 mb-3" style="display: <?php if($includeContainer == 'N'): ?>none<?php else: ?>block<?php endif; ?>">
                                                                                                 <div class="row">
                                                                                                     <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
                                                                                                     <div class="col-sm-8">
