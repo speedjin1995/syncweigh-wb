@@ -1163,21 +1163,23 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                     <div class="col-xxl-4 col-lg-4" id="priceCard" style="display:<?php if($includePrice == 'N'): ?>none<?php else: ?>block<?php endif; ?>;">
                                                                         <div class="card bg-light" style="min-height: 385px;">
                                                                             <div class="card-body">
-                                                                                <div class="row mb-3" id="divOrderWeight">
-                                                                                    <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
-                                                                                            <div class="input-group-text">Kg</div>
+                                                                                <div style="display:none;">
+                                                                                    <div class="row mb-3" id="divOrderWeight">
+                                                                                        <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
+                                                                                        <div class="col-sm-8">
+                                                                                            <div class="input-group">
+                                                                                                <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
+                                                                                                <div class="input-group-text">Kg</div>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="row mb-3" id="divWeightDifference">
-                                                                                    <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
-                                                                                            <div class="input-group-text">Kg</div>
+                                                                                    <div class="row mb-3" id="divWeightDifference">
+                                                                                        <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
+                                                                                        <div class="col-sm-8">
+                                                                                            <div class="input-group">
+                                                                                                <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
+                                                                                                <div class="input-group-text">Kg</div>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
