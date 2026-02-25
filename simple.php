@@ -98,6 +98,7 @@ else{
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0'");
 }
 
+
 // Get Company Detail
 $stmt = $db->prepare("SELECT * from Company WHERE id = 1");
 $stmt->execute();
@@ -107,6 +108,7 @@ $includePrice = '';
 $includeContainer = '';
 $includeGrading = '';
 $package = '';
+
 if(($row = $result->fetch_assoc()) !== null){
     $includePrice = $row['include_price'];
     $includeContainer = $row['include_container'];
@@ -116,6 +118,38 @@ if(($row = $result->fetch_assoc()) !== null){
 
 if ($package == 'Standard') {
     echo "<script>window.location = 'index.php';</script>";
+}
+
+// For Deductions
+$did = '1';
+$status = 'Disable';
+$F1 = $F2 = $F3 = $F4 = $F5 = $F6 = $F7 = $F8 = $F9 = $F10 = $F11 = $F12 = 0;
+$autoDataArray = [];
+$default_range_min = $default_range_max = $default_range_weight = 0;
+
+$stmtd = $db->prepare("SELECT * FROM Deduction WHERE id = ? LIMIT 1");
+$stmtd->bind_param('s', $did);
+$stmtd->execute();
+$resultd = $stmtd->get_result();
+
+if ($rowd = $resultd->fetch_assoc()) {
+    $dstatus = $rowd['status'] ?? 'Disable';
+    $F1 = $rowd['F1'] ?? 0;
+    $F2 = $rowd['F2'] ?? 0;
+    $F3 = $rowd['F3'] ?? 0;
+    $F4 = $rowd['F4'] ?? 0;
+    $F5 = $rowd['F5'] ?? 0;
+    $F6 = $rowd['F6'] ?? 0;
+    $F7 = $rowd['F7'] ?? 0;
+    $F8 = $rowd['F8'] ?? 0;
+    $F9 = $rowd['F9'] ?? 0;
+    $F10 = $rowd['F10'] ?? 0;
+    $F11 = $rowd['F11'] ?? 0;
+    $F12 = $rowd['F12'] ?? 0;
+    $autoDataJson = $rowd['auto_data'] ?? '[]';
+    $autoDataArray = json_decode($autoDataJson, true) ?? [];
+    $default_range_min = $rowd['default_range_min'] ?? 0;
+    $default_range_max = $rowd['default_range_max'] ?? 0  ;
 }
 ?>
 
@@ -259,7 +293,7 @@ if ($package == 'Standard') {
                                                         </div>
                                                         <div class="col-12">
                                                             <div class="row">
-                                                                <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
+                                                                <label for="transactionStatus" class="col-sm-4 col-form-label">Trans Status</label>
                                                                 <div class="col-sm-8">
                                                                     <select id="transactionStatus" name="transactionStatus" class="form-select select2">
                                                                         <option value="Sales" selected>Sales</option>
@@ -864,6 +898,12 @@ if ($package == 'Standard') {
                             <div class="row">
                                 <div class="col-4">
                                     <div class="form-group">
+                                        <label>Indicator</label>
+                                        <input class="form-control" type="text" id="indicator" name="indicator" value="<?=$indicator ?>">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
                                         <label>Serial Port</label>
                                         <input class="form-control" type="text" id="serialPort" name="serialPort" value="<?=$port ?>">
                                     </div>
@@ -965,7 +1005,8 @@ if ($package == 'Standard') {
     var emptyContainerTable = null;
     let clickTimer = null;
     var includeGrading = '<?= $includeGrading ?>';
-
+    var deductionValue = "-0";
+    var ind = '<?=$indicator ?>';
     var grossIncomingDatePicker;
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
@@ -973,12 +1014,13 @@ if ($package == 'Standard') {
 
     $(function () {
         var userRole = '<?=$role ?>';
-        var ind = '<?=$indicator ?>';
+        const dstatus = "<?= $dstatus ?>";
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
         yesterday.setDate(yesterday.getDate() - 1);
+        const ws = new WebSocket("ws://localhost:5002/ws");
 
         // Initialize all Select2 elements in the modal
         $('#weightForm .select2').select2({
@@ -1695,76 +1737,56 @@ if ($package == 'Standard') {
             }
         });
 
-        setInterval(function () {
-            $.post('http://127.0.0.1:5002/handshaking', function(data){
-                if(data != "Error"){
-                    console.log("Data Received:" + data);
-                    
-                    if(ind == 'X2S' || ind == 'X722'){
-                        if(data.includes("GS")){
-                            var text = data.split(" ");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(text2);
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                    else if(ind == 'BX23'){
-                        var text = data.split(" ");
-                        let newArray = text.slice(1, -1);
-                        let newtext = newArray.join();
-                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
-                        $('#indicatorConnected').addClass('bg-primary');
-                        $('#checkingConnection').removeClass('bg-danger');
-                    }
-                    else if(ind == '205'){
-                        var text = data.split(" ");
-                        let newArray = text.slice(1, -1);
-                        let newtext = newArray.join();
-                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
-                        $('#indicatorConnected').addClass('bg-primary');
-                        $('#checkingConnection').removeClass('bg-danger');
-                    }
-                    else if(ind == 'BDI'){
-                        if(data.includes("GS") || data.includes("NT") || data.includes("ST") || data.includes("US")){
-                            var text = data.split(" ");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(text2);
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                    else if(ind == 'EX2001'){
-                        data = data.replace("kg", "").replace("KG", "").replace("Kg", "").replace("g", "");
-                        if(data != null && data != ''){
-                            var text = data.split(",");
-                            var text2 = text[text.length - 1];
-                            //text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(parseInt(text2.replaceAll(",", "").trim()).toString());
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                    else if(ind == 'D2008'){
-                        if(data.includes("GS")){
-                            var text = data.split(",");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(parseInt(text2).toString());
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                }
-                else{
-                    $('#indicatorWeight').html('0');
-                    $('#indicatorConnected').removeClass('bg-primary');
-                    $('#checkingConnection').addClass('bg-danger');
-                }
+        ws.onmessage = function(event){
+            var data = event.data;
+
+            console.log("Data:", data);
+
+            var reading = parseWeight(data);
+
+            if(dstatus === "Auto"){
+                
+            }
+
+            setConnectedUI(true);
+        };
+
+        ws.onclose = function(){
+            setConnectedUI(false);
+        };
+
+        if(dstatus === "Manual"){
+            $(document).on('keydown', function(e) {
+                const k = e.key; // 'F1'...'F12', 'Escape'
+                if (!k) return;
+
+                const accepted = new Set(['F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12','Escape']);
+                if (!accepted.has(k)) return;
+
+                // prevent browser defaults (F1 help, F11 fullscreen, etc.)
+                e.preventDefault();
+
+                // map Escape → ESC
+                const action = (k === 'Escape') ? 'ESC' : k;
+
+                // optionally include context
+                const payload = {};
+                payload.focused = document.activeElement
+                    ? (document.activeElement.name || document.activeElement.id || document.activeElement.tagName)
+                    : null;
+
+                // construct message and send
+                const msg = buildMessage(action);
+                
+                if (msg){
+                    //deductionValue = msg;
+                    postMessage(msg);
+                } 
             });
-        }, 500);
+        }
+        else if(dstatus === "Default"){
+
+        }
 
         $('#filterSearch').on('click', function(){
             var fromDateI = $('#fromDateSearch').val();
@@ -1852,6 +1874,13 @@ if ($package == 'Standard') {
 
         $('#addWeight').on('click', function(){
             // Show Capture Buttons When Add New
+            const msg = buildMessage('ESC');
+                
+            if (msg){
+                //deductionValue = msg;
+                postMessage(msg);
+            }
+
             $('#grossCapture').show();
             $('#tareCapture').show();
             $('#id').val("");
@@ -2368,31 +2397,6 @@ if ($package == 'Standard') {
             var replacementContainer = $(this).val();
             $('#replaceContainerText').text(replacementContainer);
         });
-
-        /*$('#customerType').on('change', function(){
-            var transactionStatus = $('#transactionStatus').val();
-            if (transactionStatus == 'Purchase'){
-                $('#unitPriceDisplay').hide();
-                $('#subTotalPriceDisplay').hide();
-                $('#sstDisplay').hide();
-                $('#totalPriceDisplay').hide();
-            }else{
-                if($(this).val() == "Cash")
-                {
-                    $('#unitPriceDisplay').show();
-                    $('#subTotalPriceDisplay').show();
-                    $('#sstDisplay').show();
-                    $('#totalPriceDisplay').show();
-                }
-                else
-                {
-                    $('#unitPriceDisplay').hide();
-                    $('#subTotalPriceDisplay').hide();
-                    $('#sstDisplay').hide();
-                    $('#totalPriceDisplay').hide();
-                }
-            }
-        });*/
 
         $('#manualVehicle').on('change', function(){
             if($(this).is(':checked')){
@@ -2940,6 +2944,10 @@ if ($package == 'Standard') {
                     $("#failBtn").click();
                 }
             });
+
+            if(dstatus === "Customer_Supplier"){
+
+            }
         });
 
         //transporter
@@ -2997,6 +3005,10 @@ if ($package == 'Standard') {
                     $("#failBtn").click();
                 }
             });
+
+            if(dstatus === "Customer_Supplier"){
+
+            }
         });
 
         $('input[name="exDel"]').change(function() {
@@ -3670,37 +3682,6 @@ if ($package == 'Standard') {
                     });
                 }
 
-                // Load these field after PO/SO is loaded
-                /*$('#addModal').on('orderLoaded', function() {
-                    $('#customerCode').val(obj.message.customer_code);
-                    $('#customerName').val(obj.message.customer_name).trigger('change');
-                    $('#supplierCode').val(obj.message.supplier_code);
-                    $('#supplierName').val(obj.message.supplier_name).trigger('change')
-                    $('#siteCode').val(obj.message.site_code);
-                    $('#siteName').val(obj.message.site_name).trigger('change');
-                    $('#agent').val(obj.message.agent_name).trigger('change');
-                    $('#agentCode').val(obj.message.agent_code);
-                    $('#rawMaterialCode').val(obj.message.raw_mat_code);
-                    $('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
-                    $('#productName').val(obj.message.product_name).trigger('change');
-                    $('#productCode').val(obj.message.product_code);
-                    $('#supplierWeight').val(obj.message.supplier_weight);
-                    $('#orderWeight').val(obj.message.order_weight);
-                    $('#destinationCode').val(obj.message.destination_code);
-                    $('#destination').val(obj.message.destination).trigger('change');
-                    $('#plant').val(obj.message.plant_name).trigger('change');
-                    $('#plantCode').val(obj.message.plant_code);
-
-                    // Hide select and show input readonly
-                    // if (obj.message.transaction_status == 'Purchase'){
-                    //     $('#purchaseOrder').next('.select2-container').hide();
-                    //     $('#purchaseOrderEdit').val(obj.message.purchase_order).show();
-                    // }else{
-                    //     $('#salesOrder').next('.select2-container').hide();
-                    //     $('#salesOrderEdit').val(obj.message.purchase_order).show();
-                    // }
-                });*/
-
                 // Initialize all Select2 elements in the modal
                 $('#addModal .select2').select2({
                     allowClear: true,
@@ -3834,23 +3815,6 @@ if ($package == 'Standard') {
 
     function deactivate(id, isEmptyContainer) {
         if (confirm('Are you sure you want to cancel this item?')) {
-            /*$('#cancelModal').find('#id').val(id);
-            $('#cancelModal').find('#isEmptyContainer').val(isEmptyContainer);
-            $('#cancelModal').modal('show');
-
-            $('#cancelForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });*/
             $.post('php/deleteWeight.php', {id: id, cancelReason: 'Cancelled', isEmptyContainer:'N'}, function(data){
                 var obj = JSON.parse(data);
                 
@@ -3876,77 +3840,11 @@ if ($package == 'Standard') {
         }
     }
 
-    // function deactivate(id){
-        
-    //     $('#spinnerLoading').show();
-    //     $.post('php/deleteWeight.php', {userID: id}, function(data){
-    //         var obj = JSON.parse(data);
-            
-    //         if(obj.status === 'success'){
-    //             table.ajax.reload();
-    //             $('#spinnerLoading').hide();
-    //             $("#successBtn").attr('data-toast-text', obj.message);
-    //             $("#successBtn").click();
-    //         }
-    //         else if(obj.status === 'failed'){
-    //             $('#spinnerLoading').hide();
-    //             $("#failBtn").attr('data-toast-text', obj.message );
-    //             $("#failBtn").click();
-    //         }
-    //         else{
-    //             $('#spinnerLoading').hide();
-    //             $("#failBtn").attr('data-toast-text', obj.message );
-    //             $("#failBtn").click();
-    //         }
-    //     });
-    // }
-
     function print(id, transactionStatus, isEmptyContainer = 'N') {
-        /*if (transactionStatus == "Sales"){
-            $('#prePrintModal').find('#id').val(id);
-            $('#prePrintModal').find('#prePrint').val("");
-            $("#prePrintModal").modal("show");
-
-            $('#prePrintForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
-        }else{
-            $.post('php/print2.php', {userID: id, file: 'weight'}, function(data){
-                var obj = JSON.parse(data);
-
-                if(obj.status === 'success'){
-                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                    printWindow.document.write(obj.message);
-                    printWindow.document.close();
-                    setTimeout(function(){
-                        printWindow.print();
-                        printWindow.close();
-                    }, 500);
-                }
-                else if(obj.status === 'failed'){
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-                else{
-                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                    $("#failBtn").click();
-                }
-            });
-        }*/
-        //var id = $('#prePrintModal').find('#id').val();
         var prePrintStatus = 'N';
 
         $.post('php/print_pws.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+        //$.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){
@@ -3967,6 +3865,102 @@ if ($package == 'Standard') {
             else{
                 $("#failBtn").attr('data-toast-text', "Something wrong when print");
                 $("#failBtn").click();
+            }
+        });
+    }
+
+    // Indicator Functions
+    function parseWeight(data){
+        var reading = "0";
+
+        if(ind == 'X2S' || ind == 'X722'){
+            var text = data.split(" ");
+            var val = text[text.length - 1].replace(/kg|KG|Kg/g,"");
+            reading = val.trim();
+            $('#indicatorWeight').html(val);
+        }
+        else if(ind == 'BX23' || ind == '205'){
+            var text = data.split(" ");
+            var newtext = text.slice(1, -1).join("");
+            reading = newtext.trim();
+            $('#indicatorWeight').html(newtext.trim());
+        }
+
+        return reading;
+    }
+
+    function setConnectedUI(state){
+        if(state){
+            $('#indicatorConnected').addClass('bg-primary');
+            $('#checkingConnection').removeClass('bg-danger');
+            $('#indicatorActive').removeClass('d-none').addClass('d-flex');
+            $('#indicatorInactive').addClass('d-none');
+        }else{
+            $('#indicatorWeight').html('0');
+            $('#indicatorConnected').removeClass('bg-primary');
+            $('#checkingConnection').addClass('bg-danger');
+            $('#indicatorInactive').removeClass('d-none').addClass('d-flex');
+            $('#indicatorActive').addClass('d-none');
+        }
+    }
+
+    function buildMessage(action) {
+        // Bootstrap values from PHP
+        const deductions = {
+            F1: <?= (int)$F1 ?>,
+            F2: <?= (int)$F2 ?>,
+            F3: <?= (int)$F3 ?>,
+            F4: <?= (int)$F4 ?>,
+            F5: <?= (int)$F5 ?>,
+            F6: <?= (int)$F6 ?>,
+            F7: <?= (int)$F7 ?>,
+            F8: <?= (int)$F8 ?>,
+            F9: <?= (int)$F9 ?>,
+            F10: <?= (int)$F10 ?>,
+            F11: <?= (int)$F11 ?>,
+            F12: <?= (int)$F12 ?>
+        };
+
+        // Map F key → input name + format
+        const mapping = {
+            F1: { field: 'F1', sign: '-', suffix: '#' },
+            F2: { field: 'F2', sign: '-', suffix: '#' },
+            F3: { field: 'F3', sign: '-', suffix: '#' },
+            F4: { field: 'F4', sign: '+', suffix: '#' },
+            F5: { field: 'F5', sign: '+', suffix: '#' },
+            F6: { field: 'F6', sign: '+', suffix: '#' },
+            F7: { field: 'F7', sign: '-', suffix: '%' },
+            F8: { field: 'F8', sign: '-', suffix: '%' },
+            F9: { field: 'F9', sign: '-', suffix: '%' },
+            F10: { field: 'F10', sign: '+', suffix: '%' },
+            F11: { field: 'F11', sign: '+', suffix: '%' },
+            F12: { field: 'F12', sign: '+', suffix: '%' }
+        };
+
+        const cfg = mapping[action];
+        if (!cfg && action != 'ESC') {
+            return null;
+        }
+        else if (action == 'ESC') {
+            return "JQ-------$"; // Special case for ESC
+        }
+
+        const val = deductions[action] || 0;
+        const padded = String(val).padStart(6, '0');
+        return "JS" + cfg.sign + padded + cfg.suffix;
+    }
+
+    function postMessage(message) {
+        $.ajax({
+        url: 'http://127.0.0.1:5002/deduction',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ message: message }),
+            success: function (res) {
+                console.log("Sent:", message, "→", res);
+            },
+            error: function (xhr, status, err) {
+                console.warn("Error posting:", message, status, err);
             }
         });
     }
