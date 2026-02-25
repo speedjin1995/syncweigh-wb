@@ -126,7 +126,9 @@ if ($package == 'Standard') {
 $did = '1';
 $status = 'Disable';
 $F1 = $F2 = $F3 = $F4 = $F5 = $F6 = $F7 = $F8 = $F9 = $F10 = $F11 = $F12 = 0;
-$autoDataArray = [];
+$autoDataJson = '[]';
+$autoCustomerJson = '[]';
+$autoSupplierJson = '[]';
 $default_range_min = $default_range_max = $default_range_weight = 0;
 
 $stmtd = $db->prepare("SELECT * FROM Deduction WHERE id = ? LIMIT 1");
@@ -149,7 +151,9 @@ if ($rowd = $resultd->fetch_assoc()) {
     $F11 = $rowd['F11'] ?? 0;
     $F12 = $rowd['F12'] ?? 0;
     $autoDataJson = $rowd['auto_data'] ?? '[]';
-    $autoDataArray = json_decode($autoDataJson, true) ?? [];
+    $autoCustomerJson = $rowd['customers'] ?? '[]';
+    $autoSupplierJson = $rowd['suppliers'] ?? '[]';
+    //$autoDataArray = json_decode($autoDataJson, true) ?? [];
     //$default_range_min = $rowd['default_range_min'] ?? 0;
     //$default_range_max = $rowd['default_range_max'] ?? 0  ;
 }
@@ -1037,6 +1041,9 @@ if ($rowd = $resultd->fetch_assoc()) {
     $(function () {
         var userRole = '<?=$role ?>';
         const dstatus = "<?= $dstatus ?>";
+        var autoDataJson = <?= json_encode($autoDataJson) ?>;
+        const autoCustomerJson = <?= json_encode($autoCustomerJson) ?>;
+        const autoSupplierJson = <?= json_encode($autoSupplierJson) ?>;
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
@@ -1763,9 +1770,33 @@ if ($rowd = $resultd->fetch_assoc()) {
             var data = event.data;
             console.log("Data:", data);
             var reading = parseWeight(data);
+            var autoData = JSON.parse(autoDataJson);
 
             if(dstatus === "Auto"){
+                for (const item of autoData) {
+                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
+                        console.log("Matched Range:", item);
+                        const msg = buildMessageAuto(item);
                 
+                        if (msg){
+                            postMessage(msg);
+                        } 
+                        break;
+                    }
+                }
+            }
+            else if(dstatus === "Customer_Supplier"){
+                for (const item of autoData) {
+                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
+                        console.log("Matched Range:", item);
+                        const msg = buildMessageAuto(item);
+                
+                        if (msg){
+                            postMessage(msg);
+                        } 
+                        break;
+                    }
+                }
             }
 
             setConnectedUI(true);
@@ -2952,6 +2983,10 @@ if ($rowd = $resultd->fetch_assoc()) {
                         // $('#sstDisplay').hide();
                         // $('#totalPriceDisplay').hide();
                     }
+
+                    if(dstatus === "Customer_Supplier"){
+
+                    }
                 }
                 else if(obj.status === 'failed'){
                     $('#spinnerLoading').hide();
@@ -2964,10 +2999,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                     $("#failBtn").click();
                 }
             });
-
-            if(dstatus === "Customer_Supplier"){
-
-            }
         });
 
         //transporter
@@ -3013,6 +3044,10 @@ if ($rowd = $resultd->fetch_assoc()) {
                         // $('#sstDisplay').hide();
                         // $('#totalPriceDisplay').hide();
                     }
+
+                    if(dstatus === "Customer_Supplier"){
+
+                    }
                 }
                 else if(obj.status === 'failed'){
                     $('#spinnerLoading').hide();
@@ -3025,10 +3060,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                     $("#failBtn").click();
                 }
             });
-
-            if(dstatus === "Customer_Supplier"){
-
-            }
         });
 
         $('input[name="exDel"]').change(function() {
@@ -3994,6 +4025,44 @@ if ($rowd = $resultd->fetch_assoc()) {
         const val = deductions[action] || 0;
         const padded = String(val).padStart(6, '0');
         return "JS" + cfg.sign + padded + cfg.suffix;
+    }
+
+    function buildMessageAuto(config) {
+        if (!config) return null;
+
+        // priority order (you can change if needed)
+        let sign = null;
+        let value = 0;
+        let suffix = null;
+
+        if (config.negativeKg > 0) { // KG deduction
+            sign = '-';
+            value = config.negativeKg;
+            suffix = '#';
+        }
+        else if (config.positiveKg > 0) {
+            sign = '+';
+            value = config.positiveKg;
+            suffix = '#';
+        }
+        else if (config.negativePerc > 0) { // Percentage deduction
+            sign = '-';
+            value = config.negativePerc;
+            suffix = '%';
+        }
+        else if (config.positivePerc > 0) {
+            sign = '+';
+            value = config.positivePerc;
+            suffix = '%';
+        }
+        else {
+            return null; // nothing to send
+        }
+
+        // device requires 6 digit padding
+        const padded = String(value).padStart(6, '0');
+
+        return "JS" + sign + padded + suffix;
     }
 
     function postMessage(message) {

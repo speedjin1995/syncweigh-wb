@@ -73,6 +73,10 @@ if ($user != null && $user != ''){
 $did = '1';
 $status = 'Disable';
 $F1 = $F2 = $F3 = $F4 = $F5 = $F6 = $F7 = $F8 = $F9 = $F10 = $F11 = $F12 = 0;
+$autoDataJson = '[]';
+$autoCustomerJson = '[]';
+$autoSupplierJson = '[]';
+$default_range_min = $default_range_max = $default_range_weight = 0;
 
 $stmtd = $db->prepare("SELECT * FROM Deduction WHERE id = ? LIMIT 1");
 $stmtd->bind_param('s', $did);
@@ -93,6 +97,12 @@ if ($rowd = $resultd->fetch_assoc()) {
     $F10 = $rowd['F10'] ?? 0;
     $F11 = $rowd['F11'] ?? 0;
     $F12 = $rowd['F12'] ?? 0;
+    $autoDataJson = $rowd['auto_data'] ?? '[]';
+    $autoCustomerJson = $rowd['customers'] ?? '[]';
+    $autoSupplierJson = $rowd['suppliers'] ?? '[]';
+    //$autoDataArray = json_decode($autoDataJson, true) ?? [];
+    //$default_range_min = $rowd['default_range_min'] ?? 0;
+    //$default_range_max = $rowd['default_range_max'] ?? 0  ;
 }
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
@@ -2124,6 +2134,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             <div class="row">
                                 <div class="col-4">
                                     <div class="form-group">
+                                        <label>Indicator</label>
+                                        <input class="form-control" type="text" id="indicator" name="indicator" value="<?=$indicator ?>">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
                                         <label>Serial Port</label>
                                         <input class="form-control" type="text" id="serialPort" name="serialPort" value="<?=$port ?>">
                                     </div>
@@ -2316,10 +2332,11 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     <script type="text/javascript">
     var table = null;
     var emptyContainerTable = null;
-    let clickTimer = null;
+    var clickTimer = null;
+    var deductionValue = "-0";
     var includeContainer = '<?= $includeContainer ?>';
     var includeGrading = '<?= $includeGrading ?>';
-
+    var ind = '<?=$indicator ?>';
     var grossIncomingDatePicker;
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
@@ -2328,8 +2345,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
     $(function () {
         var userRole = '<?=$role ?>';
-        var ind = '<?=$indicator ?>';
         const dstatus = "<?= $dstatus ?>";
+        var autoDataJson = <?= json_encode($autoDataJson) ?>;
+        const autoCustomerJson = <?= json_encode($autoCustomerJson) ?>;
+        const autoSupplierJson = <?= json_encode($autoSupplierJson) ?>;
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
@@ -2337,6 +2356,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         tomorrow.setDate(tomorrow.getDate() + 1);
         yesterday.setDate(yesterday.getDate() - 1);
         last30.setDate(today.getDate() - 30);
+        const ws = new WebSocket("ws://localhost:5002/ws");
 
         // Initialize all Select2 elements in the search bar
         $('#collapseSearch .select2').select2({
@@ -3760,19 +3780,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             }
         );*/
 
-        $.post('http://127.0.0.1:5002/', $('#setupForm').serialize(), function(data){
-            if(data == "true"){
-                $('#indicatorConnected').addClass('bg-primary');
-                $('#checkingConnection').removeClass('bg-danger');
-                //$('#captureWeight').removeAttr('disabled');
-            }
-            else{
-                $('#indicatorConnected').removeClass('bg-primary');
-                $('#checkingConnection').addClass('bg-danger');
-                //$('#captureWeight').attr('disabled', true);
-            }
-        });
-
         $.post('http://127.0.0.1:5002/display', $('#displayForm').serialize(), function(data){
             if(data == "true"){
                 //$('#indicatorConnected').addClass('bg-primary');
@@ -3786,78 +3793,59 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             }
         });
 
-        setInterval(function () {
-            $.post('http://127.0.0.1:5002/handshaking', function(data){
-                if(data != "Error"){
-                    console.log("Data Received:" + data);
-                    
-                    if(ind == 'X2S' || ind == 'X722'){
-                        if(data.includes("GS")){
-                            var text = data.split(" ");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(text2);
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                    else if(ind == 'BX23'){
-                        var text = data.split(" ");
-                        let newArray = text.slice(1, -1);
-                        let newtext = newArray.join();
-                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
-                        $('#indicatorConnected').addClass('bg-primary');
-                        $('#checkingConnection').removeClass('bg-danger');
-                    }
-                    else if(ind == '205'){
-                        var text = data.split(" ");
-                        let newArray = text.slice(1, -1);
-                        let newtext = newArray.join();
-                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
-                        $('#indicatorConnected').addClass('bg-primary');
-                        $('#checkingConnection').removeClass('bg-danger');
-                    }
-                    else if(ind == 'BDI'){
-                        if(data.includes("GS") || data.includes("NT") || data.includes("ST") || data.includes("US")){
-                            var text = data.split(" ");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(text2);
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                    else if(ind == 'EX2001'){
-                        data = data.replace("kg", "").replace("KG", "").replace("Kg", "").replace("g", "");
-                        if(data != null && data != ''){
-                            var text = data.split(",");
-                            var text2 = text[text.length - 1];
-                            //text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(parseInt(text2.replaceAll(",", "").trim()).toString());
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                    else if(ind == 'D2008'){
-                        if(data.includes("GS")){
-                            var text = data.split(",");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(parseInt(text2).toString());
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                }
-                else{
-                    $('#indicatorWeight').html('0');
-                    $('#indicatorConnected').removeClass('bg-primary');
-                    $('#checkingConnection').addClass('bg-danger');
-                }
-            });
-        }, 500);
+        $.post('http://127.0.0.1:5002/', $('#setupForm').serialize(), function(data){
+            if(data == "true"){
+                $('#indicatorConnected').addClass('bg-primary');
+                $('#checkingConnection').removeClass('bg-danger');
+                //$('#captureWeight').removeAttr('disabled');
+            }
+            else{
+                $('#indicatorConnected').removeClass('bg-primary');
+                $('#checkingConnection').addClass('bg-danger');
+                //$('#captureWeight').attr('disabled', true);
+            }
+        });
 
-        if(dstatus === "Enable"){
+        ws.onmessage = function(event){
+            var data = event.data;
+            console.log("Data:", data);
+            var reading = parseWeight(data);
+
+            if(dstatus === "Auto"){
+                for (const item of autoData) {
+                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
+                        console.log("Matched Range:", item);
+                        const msg = buildMessageAuto(item);
+                
+                        if (msg){
+                            postMessage(msg);
+                        } 
+                        break;
+                    }
+                }
+            }
+            else if(dstatus === "Customer_Supplier"){
+                for (const item of autoData) {
+                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
+                        console.log("Matched Range:", item);
+                        const msg = buildMessageAuto(item);
+                
+                        if (msg){
+                            postMessage(msg);
+                        } 
+                        break;
+                    }
+                }
+            }
+
+            setConnectedUI(true);
+        };
+
+        ws.onclose = function(){
+            setConnectedUI(false);
+        };
+
+        if(dstatus === "Manual"){
             $(document).on('keydown', function(e) {
                 const k = e.key; // 'F1'...'F12', 'Escape'
                 if (!k) return;
@@ -3879,9 +3867,16 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
                 // construct message and send
                 const msg = buildMessage(action);
-                if (msg) postMessage(msg);
+                
+                if (msg){
+                    //deductionValue = msg;
+                    postMessage(msg);
+                } 
             });
         }
+        /*else if(dstatus === "Default"){
+
+        }*/
 
         $('#filterSearch').on('click', function(){
             var fromDateI = $('#fromDateSearch').val();
@@ -5390,6 +5385,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#sstDisplay').hide();
                             $('#totalPriceDisplay').hide();
                         }
+
+                        if(dstatus === "Customer_Supplier"){
+
+                        }
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -5455,6 +5454,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#subTotalPriceDisplay').hide();
                             $('#sstDisplay').hide();
                             $('#totalPriceDisplay').hide();
+                        }
+
+                        if(dstatus === "Customer_Supplier"){
+
                         }
                     }
                     else if(obj.status === 'failed'){
