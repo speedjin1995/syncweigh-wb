@@ -336,23 +336,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                             </div-->
                                                         </div><br>
                                                         <div class="row">
-                                                            <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
-                                                            <div class="col-sm-8">
-                                                                <select class="form-select js-choice select2" id="driverName" name="driverName">
-                                                                    <option selected="-">-</option>
-                                                                    <?php while($rowDriver=mysqli_fetch_assoc($drivers)){ ?>
-                                                                        <option value="<?=$rowDriver['driver_name'] ?>" data-code="<?=$rowDriver['driver_ic'] ?>"><?=$rowDriver['driver_name'] ?></option>
-                                                                    <?php } ?>
-                                                                </select>
-                                                            </div>
-                                                        </div><br>
-                                                        <div class="row">
-                                                            <label for="driverIc" class="col-sm-4 col-form-label">Driver IC</label>
-                                                            <div class="col-sm-8">
-                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
-                                                            </div>
-                                                        </div><br>
-                                                        <div class="row">
                                                             <div class="col-12" id="divCustomerName">
                                                                 <div class="row">
                                                                     <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
@@ -475,6 +458,23 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                         <div class="input-group-text">Kg</div>
                                                                     </div>
                                                                 </div>
+                                                            </div>
+                                                        </div><br>
+                                                        <div class="row">
+                                                            <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
+                                                            <div class="col-sm-8">
+                                                                <select class="form-select js-choice select2" id="driverName" name="driverName">
+                                                                    <option selected="-">-</option>
+                                                                    <?php while($rowDriver=mysqli_fetch_assoc($drivers)){ ?>
+                                                                        <option value="<?=$rowDriver['driver_name'] ?>" data-code="<?=$rowDriver['driver_ic'] ?>"><?=$rowDriver['driver_name'] ?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                            </div>
+                                                        </div><br>
+                                                        <div class="row">
+                                                            <label for="driverIc" class="col-sm-4 col-form-label">Driver IC</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
                                                             </div>
                                                         </div><br>
                                                         <div class="col-12">
