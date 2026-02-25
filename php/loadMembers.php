@@ -51,7 +51,7 @@ $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
-$empQuery = "select Users.id, Users.employee_code, Users.username, Users.useremail, Users.name, roles.role_name, Users.plant_id, Users.status from Users, roles WHERE 
+$empQuery = "select Users.id, Users.employee_code, Users.username, Users.useremail, Users.name, roles.role_name, Users.plant_id, Users.basic_salary, Users.status from Users, roles WHERE 
 Users.role = roles.role_code AND Users.status IN (0) AND Users.role <> 'SADMIN' AND Users.role <> 'AUTHORITY'".$searchQuery." 
 order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 
@@ -66,7 +66,7 @@ if ($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION
       $jsonCondition = implode(" OR ", $conditions);
 
       $empQuery = "SELECT Users.name AS empname, Users.id, Users.employee_code, Users.username, Users.useremail, Users.name, 
-                          roles.role_name, Users.plant_id, Users.status
+                          roles.role_name, Users.plant_id, Users.basic_salary, Users.status
                    FROM Users 
                    JOIN roles ON Users.role = roles.role_code 
                    WHERE Users.status IN (0) 
@@ -80,7 +80,7 @@ if ($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION
 }
 // If user role is AUTHORITY, allow viewing AUTHORITY users too (exclude only SADMIN)
 elseif ($_SESSION["roles"] == 'AUTHORITY') {
-  $empQuery = "SELECT Users.id, Users.employee_code, Users.username, Users.useremail, Users.name, roles.role_name, Users.plant_id, Users.status
+  $empQuery = "SELECT Users.id, Users.employee_code, Users.username, Users.useremail, Users.name, roles.role_name, Users.plant_id, Users.basic_salary, Users.status
                FROM Users
                JOIN roles ON Users.role = roles.role_code
                WHERE Users.status IN (0)
@@ -112,6 +112,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     "useremail"=>$row['useremail'],
     "role"=>$row['role_name'],
     "plant"=>$plant,
+    "basic_salary"=>$row['basic_salary'] ?? '0.00',
     "status"=>$row['status']
   );
 }

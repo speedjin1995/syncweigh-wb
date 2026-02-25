@@ -126,6 +126,9 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                         <th>Email</th>
                                                         <th>Role</th>
                                                         <th>Plant Name</th>
+                                                        <?php if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'ADMIN'){ ?>
+                                                        <th>Basic Salary (RM)</th>
+                                                        <?php } ?>
                                                         <th><?=$languageArray['status_code'][$language]?></th>
                                                         <th><?=$languageArray['action_code'][$language]?></th>
                                                     </tr>
@@ -217,6 +220,14 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                                 <option value="<?=$pcode ?>"><?=$pname ?></option>
                                                             <?php } ?>
                                                         </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                <label for="basicSalary" class="col-sm-4 col-form-label">Basic Salary (RM)</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" class="form-control" id="basicSalary" name="basicSalary" placeholder="Basic Salary (RM)" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -399,6 +410,10 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 { data: 'useremail' },
                 { data: 'role' },
                 { data: 'plant' },
+                <?php if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'ADMIN'){ ?>
+                { data: 'basic_salary' },
+                <?php } ?>
+
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -478,10 +493,11 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             $('#addModal').find('#username').val("");
             $('#addModal').find('#name').val("");
             $('#addModal').find('#useremail').val("");
-            $('#addModal').find('#roles').val("");
+            $('#addModal').find('#roles').val("").trigger('change');
             $('#addModal').find('#plantId').val('').trigger('change');
             $('#addModal').find('#allowManual').val("N");
             $('#addModal').find('#allowDeduct').val("N");
+            $('#addModal').find('#basicSalary').val("");
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -660,6 +676,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 $("#addModal").find("#plantId").val(JSON.parse(obj.message.plant)).trigger("change");
                 $('#addModal').find('#allowManual').val(obj.message.allow_manual);
                 $('#addModal').find('#allowDeduct').val(obj.message.allow_deduct);
+                $('#addModal').find('#basicSalary').val(obj.message.basic_salary);
 
                 // Remove Validation Error Message
                 $('#addModal .is-invalid').removeClass('is-invalid');

@@ -7,7 +7,7 @@ if(!isset($_SESSION['username'])){
     echo 'window.location.href = "../login.html";</script>';
 }
 
-if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST['roles'], $_POST['allowManual'], $_POST['allowDeduct'])){
+if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST['roles'], $_POST['allowManual'], $_POST['allowDeduct'], $_POST['basicSalary'])){
     $id = $_SESSION['id'];
     $name = $_SESSION["username"];
 
@@ -21,7 +21,8 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
     $param_role = filter_input(INPUT_POST, 'roles', FILTER_SANITIZE_STRING);
     $param_allowmanual = filter_input(INPUT_POST, 'allowManual', FILTER_SANITIZE_STRING);
     $param_allowdeduct = filter_input(INPUT_POST, 'allowDeduct', FILTER_SANITIZE_STRING);
-    
+    $param_basicsalary = filter_input(INPUT_POST, 'basicSalary', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
     if(isset($_POST['plantId']) && $_POST['plantId'] != null){
         $param_code = filter_input(INPUT_POST, 'employeeCode', FILTER_SANITIZE_STRING);
     }
@@ -69,8 +70,8 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
             }
         }
 
-        if ($update_stmt = $db->prepare("UPDATE Users SET username=?, name=?, useremail=?, role=?, modified_by=?, plant_id=?, employee_code=?, allow_manual=?, allow_deduct=? WHERE id=?")) {
-            $update_stmt->bind_param("ssssssssss", $param_username, $param_name, $param_useremail, $param_role, $param_modified_by, $param_plant, $param_code, $param_allowmanual, $param_allowdeduct, $_POST['id']);
+        if ($update_stmt = $db->prepare("UPDATE Users SET username=?, name=?, useremail=?, role=?, modified_by=?, plant_id=?, employee_code=?, allow_manual=?, allow_deduct=?, basic_salary=? WHERE id=?")) {
+            $update_stmt->bind_param("sssssssssss", $param_username, $param_name, $param_useremail, $param_role, $param_modified_by, $param_plant, $param_code, $param_allowmanual, $param_allowdeduct, $param_basicsalary, $_POST['id']);
             $action = "2";
 
             // Execute the prepared query.
@@ -134,8 +135,8 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
             $param_token3 = bin2hex(random_bytes(50)); // generate unique token
         }
 
-        if ($insert_stmt = $db->prepare("INSERT INTO Users (employee_code, useremail, username, name, password, token, password2, token2, password3, token3, role, plant_id, allow_manual, allow_deduct, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {            
-            $insert_stmt->bind_param("ssssssssssssssss", $param_code, $param_useremail, $param_username, $param_name, $param_password, $param_token, $param_password2, $param_token2, $param_password3, $param_token3, $param_role, $param_plant, $param_allowmanual, $param_allowdeduct, $param_created_by, $param_modified_by);
+        if ($insert_stmt = $db->prepare("INSERT INTO Users (employee_code, useremail, username, name, password, token, password2, token2, password3, token3, role, plant_id, allow_manual, allow_deduct, basic_salary, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {            
+            $insert_stmt->bind_param("sssssssssssssssss", $param_code, $param_useremail, $param_username, $param_name, $param_password, $param_token, $param_password2, $param_token2, $param_password3, $param_token3, $param_role, $param_plant, $param_allowmanual, $param_allowdeduct, $param_basicsalary, $param_created_by, $param_modified_by);
             $action = "1";
 
             // Execute the prepared query.

@@ -1882,3 +1882,40 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH 
 END
 $$
 DELIMITER ;
+
+-- 26/02/2026 --
+ALTER TABLE `Users` ADD `basic_salary` VARCHAR(100) NULL DEFAULT '0' AFTER `plant_id`;
+ALTER TABLE `Users_Log` ADD `basic_salary` VARCHAR(100) NULL DEFAULT '0' AFTER `plant_id`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_USER` AFTER INSERT ON `Users` FOR EACH ROW 
+INSERT INTO Users_Log (
+    user_id, employee_code, username, name, useremail, password, password2, password3, plant_id, allow_manual, allow_deduct, basic_salary, `status`, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.basic_salary, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Users_Log table
+    INSERT INTO Users_Log (
+        user_id, employee_code, username, name, useremail, password, password2, password3, plant_id, allow_manual, allow_deduct, basic_salary, `status`, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.basic_salary, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
