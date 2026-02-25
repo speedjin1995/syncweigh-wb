@@ -765,12 +765,12 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                                 <tr>
                                                                                     <td>MSPO</td>
                                                                                     <td><input type="number" class="form-control" id="mspoPerc" name="mspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control" id="mspoWeight" name="mspoWeight" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control input-readonly" id="mspoWeight" name="mspoWeight" value="0.00" readonly></td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td>NON MSPO</td>
                                                                                     <td><input type="number" class="form-control" id="nonMspoPerc" name="nonMspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control" id="nonMspoWeight" name="nonMspoWeight" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control input-readonly" id="nonMspoWeight" name="nonMspoWeight" value="0.00" readonly></td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
@@ -1299,16 +1299,18 @@ if ($rowd = $resultd->fetch_assoc()) {
                                     $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
 
                                     if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        var mspoPerc = gradingDetail.mspo_perc || 100;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
                                     }else{
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        var mspoPerc = gradingDetail.mspo_perc || 0;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
                                     }
+
+                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
                                     $('#gradingModal').modal('show');
                                 }
                             });
@@ -1510,16 +1512,18 @@ if ($rowd = $resultd->fetch_assoc()) {
                                     $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
 
                                     if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        var mspoPerc = gradingDetail.mspo_perc || 100;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
                                     }else{
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        var mspoPerc = gradingDetail.mspo_perc || 0;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
                                     }
+
+                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
                                     $('#gradingModal').modal('show');
                                 }
                             });
@@ -3372,6 +3376,42 @@ if ($rowd = $resultd->fetch_assoc()) {
             }
             
             $('#totalQualityFactor').val(total.toFixed(2));
+        });
+
+        $('#mspoPerc').on('keyup', function(){
+            var percentage = parseFloat($(this).val()) || 0;
+            if (percentage < 0){
+                alert('Percentage cannot be negative');
+                $(this).val(0);
+                percentage = 0;
+            }else if (percentage > 100){
+                alert('Percentage cannot exceed 100%');
+                $(this).val(0);
+                percentage = 0;
+            }
+
+            var nettWeight = $('#weightForm').find('#nettWeight').val() ? parseFloat($('#weightForm').find('#nettWeight').val()) : 0;
+            var mspoWeight = (percentage / 100) * nettWeight;
+
+            $('#mspoWeight').val(mspoWeight.toFixed(2));
+        });
+
+        $('#nonMspoPerc').on('keyup', function(){
+            var percentage = parseFloat($(this).val()) || 0;
+            if (percentage < 0){
+                alert('Percentage cannot be negative');
+                $(this).val(0);
+                percentage = 0;
+            }else if (percentage > 100){
+                alert('Percentage cannot exceed 100%');
+                $(this).val(0);
+                percentage = 0;
+            }
+
+            var nettWeight = $('#weightForm').find('#nettWeight').val() ? parseFloat($('#weightForm').find('#nettWeight').val()) : 0;
+            var nonMspoWeight = (percentage / 100) * nettWeight;
+
+            $('#nonMspoWeight').val(nonMspoWeight.toFixed(2));
         });
         // Grading Modal Trigger End //
 
