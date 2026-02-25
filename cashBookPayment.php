@@ -315,6 +315,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     <option value="PETROL_DIESEL">Petrol/Diesel (RM)</option>
                     <option value="STAFFADV">Staff Advance (RM)</option>
                     <option value="STAFFSAL">Staff Salary (RM)</option>
+                    <option value="FFBSHORTAGE">FFB Shortage (MT)</option>
                     <option value="CREDITFFBPAY">Credit FFB payment (RM)</option>
                 </select>
             </td>
@@ -944,8 +945,12 @@ if(($row = $result->fetch_assoc()) !== null){
     function calculateTotals() {
         var totalDeductions = 0;
         var totalAdditions = 0;
-        $('input[id^="deductionAmt"]').each(function() { 
-            totalDeductions += parseFloat($(this).val()) || 0; 
+        $('input[id^="deductionAmt"]').each(function() {
+            var index = $(this).attr('id').replace('deductionAmt', '');
+            var type = $('#deductionType' + index).val();
+            if (type !== 'FFBSHORTAGE') {
+                totalDeductions += parseFloat($(this).val()) || 0;
+            }
         });
         $('input[id^="additionAmt"]').each(function() { 
             totalAdditions += parseFloat($(this).val()) || 0; 
