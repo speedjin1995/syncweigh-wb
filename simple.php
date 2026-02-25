@@ -71,6 +71,8 @@ if ($user != null && $user != ''){
 
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
+$vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
+$vehicles2 = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
 $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $customer2 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $product = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
@@ -148,8 +150,8 @@ if ($rowd = $resultd->fetch_assoc()) {
     $F12 = $rowd['F12'] ?? 0;
     $autoDataJson = $rowd['auto_data'] ?? '[]';
     $autoDataArray = json_decode($autoDataJson, true) ?? [];
-    $default_range_min = $rowd['default_range_min'] ?? 0;
-    $default_range_max = $rowd['default_range_max'] ?? 0  ;
+    //$default_range_min = $rowd['default_range_min'] ?? 0;
+    //$default_range_max = $rowd['default_range_max'] ?? 0  ;
 }
 ?>
 
@@ -309,9 +311,29 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                             </label>
                                                             <div class="col-sm-8">
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No">
+                                                                    <div class="input-group-text">
+                                                                        <input class="form-check-input mt-0" id="manualVehicle" name="manualVehicle" type="checkbox" value="0" aria-label="Checkbox for following text input">
+                                                                    </div>
+                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No" style="display:none" >
+                                                                    <div class="col-10 index-vehicle">
+                                                                        <select class="form-select select2" id="vehiclePlateNo1" name="vehiclePlateNo1" >
+                                                                            <option selected="-">-</option>
+                                                                            <?php while($row2=mysqli_fetch_assoc($vehicles)){ ?>
+                                                                                <option value="<?=$row2['veh_number'] ?>" data-weight="<?=$row2['vehicle_weight'] ?>"><?=$row2['veh_number'] ?></option>
+                                                                            <?php } ?>
+                                                                        </select>
+                                                                        <input type="text" class="form-control" id="vehiclePlateNo1Edit" name="vehiclePlateNo1Edit" hidden>
+                                                                    </div>
+                                                                    <!--div class="invalid-feedback">
+                                                                        Please fill in the field.
+                                                                    </div-->
                                                                 </div>
                                                             </div>
+                                                            <!--div class="col-sm-8">
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No">
+                                                                </div>
+                                                            </div-->
                                                         </div><br>
                                                         <div class="row">
                                                             <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
@@ -1739,9 +1761,7 @@ if ($rowd = $resultd->fetch_assoc()) {
 
         ws.onmessage = function(event){
             var data = event.data;
-
             console.log("Data:", data);
-
             var reading = parseWeight(data);
 
             if(dstatus === "Auto"){
@@ -1784,9 +1804,9 @@ if ($rowd = $resultd->fetch_assoc()) {
                 } 
             });
         }
-        else if(dstatus === "Default"){
+        /*else if(dstatus === "Default"){
 
-        }
+        }*/
 
         $('#filterSearch').on('click', function(){
             var fromDateI = $('#fromDateSearch').val();
