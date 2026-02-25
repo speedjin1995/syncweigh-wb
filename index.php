@@ -141,10 +141,16 @@ $result = $stmt->get_result();
 $includePrice = '';
 $includeContainer = '';
 $includeGrading = '';
+$package = '';
 if(($row = $result->fetch_assoc()) !== null){
     $includePrice = $row['include_price'];
     $includeContainer = $row['include_container'];
     $includeGrading = $row['include_grading'];
+    $package = $row['package'];
+}
+
+if ($package == 'Lite') {
+    echo "<script>window.location = 'simple.php';</script>";
 }
 
 /*$cameras = [];

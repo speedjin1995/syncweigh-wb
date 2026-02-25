@@ -21,18 +21,6 @@ function filterData(&$str){
     if(strstr($str, '"')) $str = '"' . str_replace('"', '""', $str) . '"'; 
 }
 
-// Format Weight String
-function formatWeight($weight){
-    if ($weight != 0){
-        $formatted = number_format(ltrim($weight, '0'), 2, '.', ',');
-        $formatted = preg_replace('/\.00$/', '', $formatted);    
-    }else{
-        $formatted = $weight;
-    }
-
-    return $formatted;
-}
-
 if(isset($_POST['userID'])) {
     $id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
 
@@ -328,16 +316,17 @@ if(isset($_POST['userID'])) {
 
                 ############### CASH Sections ################
                 $cashSection = '';
+                $totalCashMt = 0.00;
+                $totalCashPrice = 0.00;
+                $dailyCreditMt = 0.00;
+                $ffbInRejected = 0.00;
+
                 if (!empty($weights['Purchase'])) {
                     $cashSection .= '
                         <div class="detail-section">
                             <div class="detail-title">CASH</div>
                     ';
 
-                    $totalCashMt = 0.00;
-                    $totalCashPrice = 0.00;
-                    $dailyCreditMt = 0.00;
-                    $ffbInRejected = 0.00;
                     foreach ($weights['Purchase'] as $weight) {
                         $paymentTerm = searchSupplierTermByCode($weight['supplier_code'], $db);
                         if ($paymentTerm == 'Term'){
@@ -580,7 +569,7 @@ if(isset($_POST['userID'])) {
                                     <td style="text-align: right">'.number_format($dailyCashRamp, 2).'</td>
                                     <td style="text-align: right">'.number_format($accumCashRamp, 2).'</td>
                                     <td style="font-weight: bold">Credit B/F</td>
-                                    <td style="text-align: right">'.number_format(($prevValues['balanceCf']/1000), 2).'</td>
+                                    <td style="text-align: right">'.($isFirstRecordOfMonth ? '0.00' : number_format((float) $prevValues['balanceCf']/1000, 2)).'</td>
                                     <td style="text-align: right">0.00</td>
                                 </tr>
                                 <tr>

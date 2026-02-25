@@ -254,6 +254,10 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                 <h5 class="card-title text-white mb-0"><?=$languageArray['cash_book_payment_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <button type="button" id="exportPdf" class="btn btn-info waves-effect waves-light">
+                                                                    <i class="ri-file-pdf-line align-middle me-1"></i>
+                                                                    Export Report
+                                                                </button>
                                                                 <button type="button" id="addCashBook" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
@@ -315,6 +319,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     <option value="PETROL_DIESEL">Petrol/Diesel (RM)</option>
                     <option value="STAFFADV">Staff Advance (RM)</option>
                     <option value="STAFFSAL">Staff Salary (RM)</option>
+                    <option value="FFBSHORTAGE">FFB Shortage (MT)</option>
                     <option value="CREDITFFBPAY">Credit FFB payment (RM)</option>
                 </select>
             </td>
@@ -675,6 +680,34 @@ if(($row = $result->fetch_assoc()) !== null){
             }
         });
 
+        $('#exportPdf').on('click', function(){
+            var fromDate = $('#fromDateSearch').val();
+            var toDate = $('#toDateSearch').val();
+
+            $.post('php/exportAccountingPdf.php', { file: 'weight', fromDate: fromDate, toDate: toDate, reportType: 'DR' }, function(response){
+                var obj = JSON.parse(response);
+
+                if(obj.status === 'success'){
+                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                    printWindow.document.write(obj.message);
+                    printWindow.document.close();
+                    setTimeout(function(){
+                        printWindow.print();
+                        printWindow.close();
+                    }, 500);
+                }
+                else if(obj.status === 'failed'){
+                    toastr["error"](obj.message, "Failed:");
+                }
+                else{
+                    toastr["error"]("Something wrong when activate", "Failed:");
+                }
+            }).fail(function(error){
+                console.error("Error exporting PDF:", error);
+                alert("An error occurred while generating the PDF.");
+            });
+        });
+
         // Remove deduction row
         $("#deductionTable").on('click', 'button[id^="remove"]', function () {
             $(this).parents("tr").remove();
@@ -944,8 +977,12 @@ if(($row = $result->fetch_assoc()) !== null){
     function calculateTotals() {
         var totalDeductions = 0;
         var totalAdditions = 0;
-        $('input[id^="deductionAmt"]').each(function() { 
-            totalDeductions += parseFloat($(this).val()) || 0; 
+        $('input[id^="deductionAmt"]').each(function() {
+            var index = $(this).attr('id').replace('deductionAmt', '');
+            var type = $('#deductionType' + index).val();
+            if (type !== 'FFBSHORTAGE') {
+                totalDeductions += parseFloat($(this).val()) || 0;
+            }
         });
         $('input[id^="additionAmt"]').each(function() { 
             totalAdditions += parseFloat($(this).val()) || 0; 
