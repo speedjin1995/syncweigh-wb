@@ -829,24 +829,20 @@ if(($row = $result->fetch_assoc()) !== null){
         });
 
         $("#addEarningsRow").click(function(){
-            // // Count unique selected types in the table
-            // var selectedTypes = [];
-            // $('#earningsTable select[id^="earningsType"]').each(function() {
-            //     var val = $(this).val();
-            //     if (val && !selectedTypes.includes(val)) {
-            //         selectedTypes.push(val);
-            //     }
-            // });
+            // Count unique selected types in the table
+            var selectedTypes = [];
+            $('#earningsTable select[id^="earningsType"]').each(function() {
+                var val = $(this).val();
+                if (val && !selectedTypes.includes(val)) {
+                    selectedTypes.push(val);
+                }
+            });
             
-            // // Count available types from template
-            // var availableCount = $('#earningsDetail select option').filter(function() {
-            //     return $(this).val() !== '';
-            // }).length;
-            
-            // if (selectedTypes.length >= availableCount) {
-            //     alert('All earnings types have been added. Please remove a row to add a different type.');
-            //     return;
-            // }
+            // If all types are selected, show error
+            if (selectedTypes.length >= earningTypes.length) {
+                alert('All earnings types have been added. Please remove a row to add a different type.');
+                return;
+            }
             
             addEarningsRow();
         });
@@ -876,6 +872,9 @@ if(($row = $result->fetch_assoc()) !== null){
                         }
 
                         // Add deduction rows (EPF, SOCSO, TAX, EIS) if allowed
+                        $('#deductionTable').html('');
+                        deductionRowCount = 0;
+
                         addDeductionRow('EMP_EPF', 'Employee EPF', calculateEPF(obj.message.basic_salary));
                         addDeductionRow('EMP_SOCSO', 'Employee SOCSO', calculateSOCSO(obj.message.basic_salary));
                         addDeductionRow('EMP_EIS', 'Employee EIS', calculateEIS(obj.message.basic_salary));
