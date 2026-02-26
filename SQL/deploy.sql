@@ -1884,6 +1884,8 @@ $$
 DELIMITER ;
 
 -- 26/02/2026 --
+ALTER TABLE `Vehicle` CHANGE `vehicle_weight` `vehicle_weight` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
+
 ALTER TABLE `Users` ADD `basic_salary` VARCHAR(100) NULL DEFAULT '0' AFTER `plant_id`;
 ALTER TABLE `Users_Log` ADD `basic_salary` VARCHAR(100) NULL DEFAULT '0' AFTER `plant_id`;
 

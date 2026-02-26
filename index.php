@@ -73,6 +73,10 @@ if ($user != null && $user != ''){
 $did = '1';
 $status = 'Disable';
 $F1 = $F2 = $F3 = $F4 = $F5 = $F6 = $F7 = $F8 = $F9 = $F10 = $F11 = $F12 = 0;
+$autoDataJson = '[]';
+$autoCustomerJson = '[]';
+$autoSupplierJson = '[]';
+$default_range_min = $default_range_max = $default_range_weight = 0;
 
 $stmtd = $db->prepare("SELECT * FROM Deduction WHERE id = ? LIMIT 1");
 $stmtd->bind_param('s', $did);
@@ -93,6 +97,12 @@ if ($rowd = $resultd->fetch_assoc()) {
     $F10 = $rowd['F10'] ?? 0;
     $F11 = $rowd['F11'] ?? 0;
     $F12 = $rowd['F12'] ?? 0;
+    $autoDataJson = $rowd['auto_data'] ?? '[]';
+    $autoCustomerJson = $rowd['customers'] ?? '[]';
+    $autoSupplierJson = $rowd['suppliers'] ?? '[]';
+    //$autoDataArray = json_decode($autoDataJson, true) ?? [];
+    //$default_range_min = $rowd['default_range_min'] ?? 0;
+    //$default_range_max = $rowd['default_range_max'] ?? 0  ;
 }
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
@@ -820,7 +830,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-8 col-lg-8">
                                                                                         <div class="row">
-                                                                                            <div class="col-xxl-6 col-lg-6 mb-3">
+                                                                                            <div class="col-xxl-6 col-lg-6 mb-3" style="display: <?php if($includeContainer == 'N'): ?>none<?php else: ?>block<?php endif; ?>">
                                                                                                 <div class="row">
                                                                                                     <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
                                                                                                     <div class="col-sm-8">
@@ -1163,21 +1173,23 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                     <div class="col-xxl-4 col-lg-4" id="priceCard" style="display:<?php if($includePrice == 'N'): ?>none<?php else: ?>block<?php endif; ?>;">
                                                                         <div class="card bg-light" style="min-height: 385px;">
                                                                             <div class="card-body">
-                                                                                <div class="row mb-3" id="divOrderWeight">
-                                                                                    <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
-                                                                                            <div class="input-group-text">Kg</div>
+                                                                                <div style="display:none;">
+                                                                                    <div class="row mb-3" id="divOrderWeight">
+                                                                                        <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
+                                                                                        <div class="col-sm-8">
+                                                                                            <div class="input-group">
+                                                                                                <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
+                                                                                                <div class="input-group-text">Kg</div>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="row mb-3" id="divWeightDifference">
-                                                                                    <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
-                                                                                            <div class="input-group-text">Kg</div>
+                                                                                    <div class="row mb-3" id="divWeightDifference">
+                                                                                        <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
+                                                                                        <div class="col-sm-8">
+                                                                                            <div class="input-group">
+                                                                                                <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
+                                                                                                <div class="input-group-text">Kg</div>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -1814,12 +1826,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <tr>
                                                                                     <td>MSPO</td>
                                                                                     <td><input type="number" class="form-control" id="mspoPerc" name="mspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control" id="mspoWeight" name="mspoWeight" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control input-readonly" id="mspoWeight" name="mspoWeight" value="0.00" readonly></td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td>NON MSPO</td>
                                                                                     <td><input type="number" class="form-control" id="nonMspoPerc" name="nonMspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control" id="nonMspoWeight" name="nonMspoWeight" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control input-readonly" id="nonMspoWeight" name="nonMspoWeight" value="0.00" readonly></td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
@@ -2124,6 +2136,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             <div class="row">
                                 <div class="col-4">
                                     <div class="form-group">
+                                        <label>Indicator</label>
+                                        <input class="form-control" type="text" id="indicator" name="indicator" value="<?=$indicator ?>">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
                                         <label>Serial Port</label>
                                         <input class="form-control" type="text" id="serialPort" name="serialPort" value="<?=$port ?>">
                                     </div>
@@ -2316,10 +2334,11 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     <script type="text/javascript">
     var table = null;
     var emptyContainerTable = null;
-    let clickTimer = null;
+    var clickTimer = null;
+    var deductionValue = "-0";
     var includeContainer = '<?= $includeContainer ?>';
     var includeGrading = '<?= $includeGrading ?>';
-
+    var ind = '<?=$indicator ?>';
     var grossIncomingDatePicker;
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
@@ -2328,8 +2347,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
     $(function () {
         var userRole = '<?=$role ?>';
-        var ind = '<?=$indicator ?>';
         const dstatus = "<?= $dstatus ?>";
+        var autoDataJson = <?= json_encode($autoDataJson) ?>;
+        const autoCustomerJson = <?= json_encode($autoCustomerJson) ?>;
+        const autoSupplierJson = <?= json_encode($autoSupplierJson) ?>;
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
@@ -2337,6 +2358,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         tomorrow.setDate(tomorrow.getDate() + 1);
         yesterday.setDate(yesterday.getDate() - 1);
         last30.setDate(today.getDate() - 30);
+        const ws = new WebSocket("ws://localhost:5002/ws");
 
         // Initialize all Select2 elements in the search bar
         $('#collapseSearch .select2').select2({
@@ -2923,6 +2945,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
             var isValid = true;
 
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
+            }
+
             // custom validation for select2
             $('#addModal .select2[required]').each(function () {
                 var select2Field = $(this);
@@ -2954,7 +2982,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $('#addModal').modal('hide');
 
                         // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
                             $.post('php/getWeight.php', { userID: obj.id }, function (data) {
                                 var obj = JSON.parse(data);
                                 if (obj.status === 'success') {
@@ -2970,10 +2998,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                     $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
 
                                     var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
-                                    $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
-                                    $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
-                                    $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
-                                    $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
                                     $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
                                     $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
                                     $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
@@ -2994,16 +3018,18 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                     $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
 
                                     if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        var mspoPerc = gradingDetail.mspo_perc || 100;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
                                     }else{
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        var mspoPerc = gradingDetail.mspo_perc || 0;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
                                     }
+
+                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
                                     $('#gradingModal').modal('show');
                                 }
                             });
@@ -3271,6 +3297,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 isEmptyContainer = 'Y';
             }
 
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
+            }
+
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight.php', $('#weightForm').serialize(), function(data){
@@ -3280,7 +3312,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $('#addModal').modal('hide');
 
                         // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
                             $.post('php/getWeight.php', { userID: obj.id }, function (data) {
                                 var obj = JSON.parse(data);
                                 if (obj.status === 'success') {
@@ -3322,16 +3354,18 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                     $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
 
                                     if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        var mspoPerc = gradingDetail.mspo_perc || 100;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
                                     }else{
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        var mspoPerc = gradingDetail.mspo_perc || 0;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
                                     }
+
+                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+                                    
                                     $('#gradingModal').modal('show');
                                 }
                             });
@@ -3544,37 +3578,72 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 var formData = new FormData($('#prePrintForm')[0]);
                 formData.append('file', 'weight');
 
-                $.ajax({
-                    url: 'php/print_pws.php',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(data){
-                        var obj = JSON.parse(data);
+                if(includeGrading == 'Y'){
+                    $.ajax({
+                        url: 'php/print_pws.php',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data){
+                            var obj = JSON.parse(data);
 
-                        if(obj.status === 'success'){
-                            var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                            printWindow.document.write(obj.message);
-                            printWindow.document.close();
-                            setTimeout(function(){
-                                printWindow.print();
-                                printWindow.close();
-                                // location.reload();
-                            }, 500);
+                            if(obj.status === 'success'){
+                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                                printWindow.document.write(obj.message);
+                                printWindow.document.close();
+                                setTimeout(function(){
+                                    printWindow.print();
+                                    printWindow.close();
+                                    // location.reload();
+                                }, 500);
 
-                            $('#spinnerLoading').hide();
+                                $('#spinnerLoading').hide();
+                            }
+                            else if(obj.status === 'failed'){
+                                $("#failBtn").attr('data-toast-text', obj.message );
+                                $("#failBtn").click();
+                            }
+                            else{
+                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                                $("#failBtn").click();
+                            }
                         }
-                        else if(obj.status === 'failed'){
-                            $("#failBtn").attr('data-toast-text', obj.message );
-                            $("#failBtn").click();
+                    });
+                }
+                else{
+                    $.ajax({
+                        url: 'php/print.php',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data){
+                            var obj = JSON.parse(data);
+
+                            if(obj.status === 'success'){
+                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                                printWindow.document.write(obj.message);
+                                printWindow.document.close();
+                                setTimeout(function(){
+                                    printWindow.print();
+                                    printWindow.close();
+                                    // location.reload();
+                                }, 500);
+
+                                $('#spinnerLoading').hide();
+                            }
+                            else if(obj.status === 'failed'){
+                                $("#failBtn").attr('data-toast-text', obj.message );
+                                $("#failBtn").click();
+                            }
+                            else{
+                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                                $("#failBtn").click();
+                            }
                         }
-                        else{
-                            $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                            $("#failBtn").click();
-                        }
-                    }
-                });
+                    });
+                }
             }
         });
 
@@ -3725,19 +3794,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             }
         );*/
 
-        $.post('http://127.0.0.1:5002/', $('#setupForm').serialize(), function(data){
-            if(data == "true"){
-                $('#indicatorConnected').addClass('bg-primary');
-                $('#checkingConnection').removeClass('bg-danger');
-                //$('#captureWeight').removeAttr('disabled');
-            }
-            else{
-                $('#indicatorConnected').removeClass('bg-primary');
-                $('#checkingConnection').addClass('bg-danger');
-                //$('#captureWeight').attr('disabled', true);
-            }
-        });
-
         $.post('http://127.0.0.1:5002/display', $('#displayForm').serialize(), function(data){
             if(data == "true"){
                 //$('#indicatorConnected').addClass('bg-primary');
@@ -3751,78 +3807,59 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             }
         });
 
-        setInterval(function () {
-            $.post('http://127.0.0.1:5002/handshaking', function(data){
-                if(data != "Error"){
-                    console.log("Data Received:" + data);
-                    
-                    if(ind == 'X2S' || ind == 'X722'){
-                        if(data.includes("GS")){
-                            var text = data.split(" ");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(text2);
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                    else if(ind == 'BX23'){
-                        var text = data.split(" ");
-                        let newArray = text.slice(1, -1);
-                        let newtext = newArray.join();
-                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
-                        $('#indicatorConnected').addClass('bg-primary');
-                        $('#checkingConnection').removeClass('bg-danger');
-                    }
-                    else if(ind == '205'){
-                        var text = data.split(" ");
-                        let newArray = text.slice(1, -1);
-                        let newtext = newArray.join();
-                        $('#indicatorWeight').html(newtext.replaceAll(",", "").trim());
-                        $('#indicatorConnected').addClass('bg-primary');
-                        $('#checkingConnection').removeClass('bg-danger');
-                    }
-                    else if(ind == 'BDI'){
-                        if(data.includes("GS") || data.includes("NT") || data.includes("ST") || data.includes("US")){
-                            var text = data.split(" ");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(text2);
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                    else if(ind == 'EX2001'){
-                        data = data.replace("kg", "").replace("KG", "").replace("Kg", "").replace("g", "");
-                        if(data != null && data != ''){
-                            var text = data.split(",");
-                            var text2 = text[text.length - 1];
-                            //text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(parseInt(text2.replaceAll(",", "").trim()).toString());
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                    else if(ind == 'D2008'){
-                        if(data.includes("GS")){
-                            var text = data.split(",");
-                            var text2 = text[text.length - 1];
-                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
-                            $('#indicatorWeight').html(parseInt(text2).toString());
-                            $('#indicatorConnected').addClass('bg-primary');
-                            $('#checkingConnection').removeClass('bg-danger');
-                        }
-                    }
-                }
-                else{
-                    $('#indicatorWeight').html('0');
-                    $('#indicatorConnected').removeClass('bg-primary');
-                    $('#checkingConnection').addClass('bg-danger');
-                }
-            });
-        }, 500);
+        $.post('http://127.0.0.1:5002/', $('#setupForm').serialize(), function(data){
+            if(data == "true"){
+                $('#indicatorConnected').addClass('bg-primary');
+                $('#checkingConnection').removeClass('bg-danger');
+                //$('#captureWeight').removeAttr('disabled');
+            }
+            else{
+                $('#indicatorConnected').removeClass('bg-primary');
+                $('#checkingConnection').addClass('bg-danger');
+                //$('#captureWeight').attr('disabled', true);
+            }
+        });
 
-        if(dstatus === "Enable"){
+        ws.onmessage = function(event){
+            var data = event.data;
+            console.log("Data:", data);
+            var reading = parseWeight(data);
+
+            if(dstatus === "Auto"){
+                for (const item of autoData) {
+                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
+                        console.log("Matched Range:", item);
+                        const msg = buildMessageAuto(item);
+                
+                        if (msg){
+                            postMessage(msg);
+                        } 
+                        break;
+                    }
+                }
+            }
+            else if(dstatus === "Customer_Supplier"){
+                for (const item of autoData) {
+                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
+                        console.log("Matched Range:", item);
+                        const msg = buildMessageAuto(item);
+                
+                        if (msg){
+                            postMessage(msg);
+                        } 
+                        break;
+                    }
+                }
+            }
+
+            setConnectedUI(true);
+        };
+
+        ws.onclose = function(){
+            setConnectedUI(false);
+        };
+
+        if(dstatus === "Manual"){
             $(document).on('keydown', function(e) {
                 const k = e.key; // 'F1'...'F12', 'Escape'
                 if (!k) return;
@@ -3844,9 +3881,16 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
                 // construct message and send
                 const msg = buildMessage(action);
-                if (msg) postMessage(msg);
+                
+                if (msg){
+                    //deductionValue = msg;
+                    postMessage(msg);
+                } 
             });
         }
+        /*else if(dstatus === "Default"){
+
+        }*/
 
         $('#filterSearch').on('click', function(){
             var fromDateI = $('#fromDateSearch').val();
@@ -4752,7 +4796,22 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        var customerName = obj.message.customer_name;
+                        var customerCode = obj.message.customer_code;
+                        var supplierName = obj.message.supplier_name;
+                        var supplierCode = obj.message.supplier_code;
+
+                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                            $('#customerName').val(customerName).trigger('change');
+                            $('#customerCode').val(customerCode);
+                        }else{
+                            $('#supplierName').val(supplierName).trigger('change');
+                            $('#supplierCode').val(supplierCode);
+                        }
+                        
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);
@@ -4815,7 +4874,22 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        var customerName = obj.message.customer_name;
+                        var customerCode = obj.message.customer_code;
+                        var supplierName = obj.message.supplier_name;
+                        var supplierCode = obj.message.supplier_code;
+
+                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                            $('#customerName').val(customerName).trigger('change');
+                            $('#customerCode').val(customerCode);
+                        }else{
+                            $('#supplierName').val(supplierName).trigger('change');
+                            $('#supplierCode').val(supplierCode);
+                        }
+
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);
@@ -5355,6 +5429,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#sstDisplay').hide();
                             $('#totalPriceDisplay').hide();
                         }
+
+                        if(dstatus === "Customer_Supplier"){
+
+                        }
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -5420,6 +5498,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#subTotalPriceDisplay').hide();
                             $('#sstDisplay').hide();
                             $('#totalPriceDisplay').hide();
+                        }
+
+                        if(dstatus === "Customer_Supplier"){
+
                         }
                     }
                     else if(obj.status === 'failed'){
@@ -5744,6 +5826,43 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             
             $('#totalQualityFactor').val(total.toFixed(2));
         });
+
+        $('#mspoPerc').on('keyup', function(){
+            var percentage = parseFloat($(this).val()) || 0;
+            if (percentage < 0){
+                alert('Percentage cannot be negative');
+                $(this).val(0);
+                percentage = 0;
+            }else if (percentage > 100){
+                alert('Percentage cannot exceed 100%');
+                $(this).val(0);
+                percentage = 0;
+            }
+
+            var nettWeight = $('#addModal').find('#nettWeight').val() ? parseFloat($('#addModal').find('#nettWeight').val()) : 0;
+            var mspoWeight = (percentage / 100) * nettWeight;
+
+            $('#mspoWeight').val(mspoWeight.toFixed(2));
+        });
+
+        $('#nonMspoPerc').on('keyup', function(){
+            var percentage = parseFloat($(this).val()) || 0;
+            if (percentage < 0){
+                alert('Percentage cannot be negative');
+                $(this).val(0);
+                percentage = 0;
+            }else if (percentage > 100){
+                alert('Percentage cannot exceed 100%');
+                $(this).val(0);
+                percentage = 0;
+            }
+
+            var nettWeight = $('#addModal').find('#nettWeight').val() ? parseFloat($('#addModal').find('#nettWeight').val()) : 0;
+            var nonMspoWeight = (percentage / 100) * nettWeight;
+
+            $('#nonMspoWeight').val(nonMspoWeight.toFixed(2));
+        });
+
         // Grading Modal Trigger End //
 
 

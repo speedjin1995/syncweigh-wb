@@ -71,6 +71,8 @@ if ($user != null && $user != ''){
 
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
+$vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
+$vehicles2 = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
 $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $customer2 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $product = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
@@ -124,7 +126,9 @@ if ($package == 'Standard') {
 $did = '1';
 $status = 'Disable';
 $F1 = $F2 = $F3 = $F4 = $F5 = $F6 = $F7 = $F8 = $F9 = $F10 = $F11 = $F12 = 0;
-$autoDataArray = [];
+$autoDataJson = '[]';
+$autoCustomerJson = '[]';
+$autoSupplierJson = '[]';
 $default_range_min = $default_range_max = $default_range_weight = 0;
 
 $stmtd = $db->prepare("SELECT * FROM Deduction WHERE id = ? LIMIT 1");
@@ -147,9 +151,11 @@ if ($rowd = $resultd->fetch_assoc()) {
     $F11 = $rowd['F11'] ?? 0;
     $F12 = $rowd['F12'] ?? 0;
     $autoDataJson = $rowd['auto_data'] ?? '[]';
-    $autoDataArray = json_decode($autoDataJson, true) ?? [];
-    $default_range_min = $rowd['default_range_min'] ?? 0;
-    $default_range_max = $rowd['default_range_max'] ?? 0  ;
+    $autoCustomerJson = $rowd['customers'] ?? '[]';
+    $autoSupplierJson = $rowd['suppliers'] ?? '[]';
+    //$autoDataArray = json_decode($autoDataJson, true) ?? [];
+    //$default_range_min = $rowd['default_range_min'] ?? 0;
+    //$default_range_max = $rowd['default_range_max'] ?? 0  ;
 }
 ?>
 
@@ -309,26 +315,29 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                             </label>
                                                             <div class="col-sm-8">
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No">
+                                                                    <div class="input-group-text">
+                                                                        <input class="form-check-input mt-0" id="manualVehicle" name="manualVehicle" type="checkbox" value="0" aria-label="Checkbox for following text input">
+                                                                    </div>
+                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No" style="display:none" >
+                                                                    <div class="col-10 index-vehicle">
+                                                                        <select class="form-select select2" id="vehiclePlateNo1" name="vehiclePlateNo1" >
+                                                                            <option selected="-">-</option>
+                                                                            <?php while($row2=mysqli_fetch_assoc($vehicles)){ ?>
+                                                                                <option value="<?=$row2['veh_number'] ?>" data-weight="<?=$row2['vehicle_weight'] ?>"><?=$row2['veh_number'] ?></option>
+                                                                            <?php } ?>
+                                                                        </select>
+                                                                        <input type="text" class="form-control" id="vehiclePlateNo1Edit" name="vehiclePlateNo1Edit" hidden>
+                                                                    </div>
+                                                                    <!--div class="invalid-feedback">
+                                                                        Please fill in the field.
+                                                                    </div-->
                                                                 </div>
                                                             </div>
-                                                        </div><br>
-                                                        <div class="row">
-                                                            <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
-                                                            <div class="col-sm-8">
-                                                                <select class="form-select js-choice select2" id="driverName" name="driverName">
-                                                                    <option selected="-">-</option>
-                                                                    <?php while($rowDriver=mysqli_fetch_assoc($drivers)){ ?>
-                                                                        <option value="<?=$rowDriver['driver_name'] ?>" data-code="<?=$rowDriver['driver_ic'] ?>"><?=$rowDriver['driver_name'] ?></option>
-                                                                    <?php } ?>
-                                                                </select>
-                                                            </div>
-                                                        </div><br>
-                                                        <div class="row">
-                                                            <label for="driverIc" class="col-sm-4 col-form-label">Driver IC</label>
-                                                            <div class="col-sm-8">
-                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
-                                                            </div>
+                                                            <!--div class="col-sm-8">
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No">
+                                                                </div>
+                                                            </div-->
                                                         </div><br>
                                                         <div class="row">
                                                             <div class="col-12" id="divCustomerName">
@@ -453,6 +462,23 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                         <div class="input-group-text">Kg</div>
                                                                     </div>
                                                                 </div>
+                                                            </div>
+                                                        </div><br>
+                                                        <div class="row">
+                                                            <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
+                                                            <div class="col-sm-8">
+                                                                <select class="form-select js-choice select2" id="driverName" name="driverName">
+                                                                    <option selected="-">-</option>
+                                                                    <?php while($rowDriver=mysqli_fetch_assoc($drivers)){ ?>
+                                                                        <option value="<?=$rowDriver['driver_name'] ?>" data-code="<?=$rowDriver['driver_ic'] ?>"><?=$rowDriver['driver_name'] ?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                            </div>
+                                                        </div><br>
+                                                        <div class="row">
+                                                            <label for="driverIc" class="col-sm-4 col-form-label">Driver IC</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
                                                             </div>
                                                         </div><br>
                                                         <div class="col-12">
@@ -739,12 +765,12 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                                 <tr>
                                                                                     <td>MSPO</td>
                                                                                     <td><input type="number" class="form-control" id="mspoPerc" name="mspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control" id="mspoWeight" name="mspoWeight" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control input-readonly" id="mspoWeight" name="mspoWeight" value="0.00" readonly></td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td>NON MSPO</td>
                                                                                     <td><input type="number" class="form-control" id="nonMspoPerc" name="nonMspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control" id="nonMspoWeight" name="nonMspoWeight" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control input-readonly" id="nonMspoWeight" name="nonMspoWeight" value="0.00" readonly></td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
@@ -1015,6 +1041,9 @@ if ($rowd = $resultd->fetch_assoc()) {
     $(function () {
         var userRole = '<?=$role ?>';
         const dstatus = "<?= $dstatus ?>";
+        var autoDataJson = <?= json_encode($autoDataJson) ?>;
+        const autoCustomerJson = <?= json_encode($autoCustomerJson) ?>;
+        const autoSupplierJson = <?= json_encode($autoSupplierJson) ?>;
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
@@ -1221,6 +1250,12 @@ if ($rowd = $resultd->fetch_assoc()) {
             pass = true;
             var isValid = true;
 
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
+            }
+
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
@@ -1230,7 +1265,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $('#addModal').modal('hide');
 
                         // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
                             $.post('php/getWeight.php', { userID: obj.id }, function (data) {
                                 var obj = JSON.parse(data);
                                 if (obj.status === 'success') {
@@ -1270,16 +1305,18 @@ if ($rowd = $resultd->fetch_assoc()) {
                                     $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
 
                                     if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        var mspoPerc = gradingDetail.mspo_perc || 100;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
                                     }else{
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        var mspoPerc = gradingDetail.mspo_perc || 0;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
                                     }
+
+                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
                                     $('#gradingModal').modal('show');
                                 }
                             });
@@ -1430,6 +1467,12 @@ if ($rowd = $resultd->fetch_assoc()) {
                 isEmptyContainer = 'Y';
             }
 
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
+            }
+
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
@@ -1439,7 +1482,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $('#addModal').modal('hide');
 
                         // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
                             $.post('php/getWeight.php', { userID: obj.id }, function (data) {
                                 var obj = JSON.parse(data);
                                 if (obj.status === 'success') {
@@ -1481,16 +1524,18 @@ if ($rowd = $resultd->fetch_assoc()) {
                                     $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
 
                                     if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        var mspoPerc = gradingDetail.mspo_perc || 100;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
                                     }else{
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        var mspoPerc = gradingDetail.mspo_perc || 0;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
                                     }
+
+                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
                                     $('#gradingModal').modal('show');
                                 }
                             });
@@ -1739,13 +1784,35 @@ if ($rowd = $resultd->fetch_assoc()) {
 
         ws.onmessage = function(event){
             var data = event.data;
-
             console.log("Data:", data);
-
             var reading = parseWeight(data);
+            var autoData = JSON.parse(autoDataJson);
 
             if(dstatus === "Auto"){
+                for (const item of autoData) {
+                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
+                        console.log("Matched Range:", item);
+                        const msg = buildMessageAuto(item);
                 
+                        if (msg){
+                            postMessage(msg);
+                        } 
+                        break;
+                    }
+                }
+            }
+            else if(dstatus === "Customer_Supplier"){
+                for (const item of autoData) {
+                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
+                        console.log("Matched Range:", item);
+                        const msg = buildMessageAuto(item);
+                
+                        if (msg){
+                            postMessage(msg);
+                        } 
+                        break;
+                    }
+                }
             }
 
             setConnectedUI(true);
@@ -1784,9 +1851,9 @@ if ($rowd = $resultd->fetch_assoc()) {
                 } 
             });
         }
-        else if(dstatus === "Default"){
+        /*else if(dstatus === "Default"){
 
-        }
+        }*/
 
         $('#filterSearch').on('click', function(){
             var fromDateI = $('#fromDateSearch').val();
@@ -2420,6 +2487,45 @@ if ($rowd = $resultd->fetch_assoc()) {
             var transactionStatus = $('#transactionStatus').val();
 
             if (x){
+                $.post('php/getVehicle.php', {userID: x, type: 'lookup'}, function (data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        var customerName = obj.message.customer_name;
+                        var customerCode = obj.message.customer_code;
+                        var supplierName = obj.message.supplier_name;
+                        var supplierCode = obj.message.supplier_code;
+
+                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                            $('#customerName').val(customerName).trigger('change');
+                            $('#customerCode').val(customerCode);
+                        }else{
+                            $('#supplierName').val(supplierName).trigger('change');
+                            $('#supplierCode').val(supplierCode);
+                        }
+
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
+                    }
+                    else if(obj.status === 'error'){
+                        alert(obj.message);
+                        //$('#vehicleNoTxt').val('');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
+
+            /*if (x){
                 $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
@@ -2452,13 +2558,53 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
-            }
+            }*/
         });
 
         $('#vehiclePlateNo1').on('change', function(){
             var vehiclePlateNo1 = $(this).val();
             var transactionStatus = $('#transactionStatus').val();
+
             if (vehiclePlateNo1){
+                $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'lookup'}, function (data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        var customerName = obj.message.customer_name;
+                        var customerCode = obj.message.customer_code;
+                        var supplierName = obj.message.supplier_name;
+                        var supplierCode = obj.message.supplier_code;
+
+                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                            $('#customerName').val(customerName).trigger('change');
+                            $('#customerCode').val(customerCode);
+                        }else{
+                            $('#supplierName').val(supplierName).trigger('change');
+                            $('#supplierCode').val(supplierCode);
+                        }
+                        
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
+                    }
+                    else if(obj.status === 'error'){
+                        alert(obj.message);
+                        $('#vehicleNoTxt').val('');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
+
+            /*if (vehiclePlateNo1){
                 $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
@@ -2491,7 +2637,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
-            }
+            }*/
         });
 
         $('#manualVehicle2').on('change', function(){
@@ -2932,6 +3078,10 @@ if ($rowd = $resultd->fetch_assoc()) {
                         // $('#sstDisplay').hide();
                         // $('#totalPriceDisplay').hide();
                     }
+
+                    if(dstatus === "Customer_Supplier"){
+
+                    }
                 }
                 else if(obj.status === 'failed'){
                     $('#spinnerLoading').hide();
@@ -2944,10 +3094,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                     $("#failBtn").click();
                 }
             });
-
-            if(dstatus === "Customer_Supplier"){
-
-            }
         });
 
         //transporter
@@ -2993,6 +3139,10 @@ if ($rowd = $resultd->fetch_assoc()) {
                         // $('#sstDisplay').hide();
                         // $('#totalPriceDisplay').hide();
                     }
+
+                    if(dstatus === "Customer_Supplier"){
+
+                    }
                 }
                 else if(obj.status === 'failed'){
                     $('#spinnerLoading').hide();
@@ -3005,10 +3155,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                     $("#failBtn").click();
                 }
             });
-
-            if(dstatus === "Customer_Supplier"){
-
-            }
         });
 
         $('input[name="exDel"]').change(function() {
@@ -3268,6 +3414,42 @@ if ($rowd = $resultd->fetch_assoc()) {
             }
             
             $('#totalQualityFactor').val(total.toFixed(2));
+        });
+
+        $('#mspoPerc').on('keyup', function(){
+            var percentage = parseFloat($(this).val()) || 0;
+            if (percentage < 0){
+                alert('Percentage cannot be negative');
+                $(this).val(0);
+                percentage = 0;
+            }else if (percentage > 100){
+                alert('Percentage cannot exceed 100%');
+                $(this).val(0);
+                percentage = 0;
+            }
+
+            var nettWeight = $('#weightForm').find('#nettWeight').val() ? parseFloat($('#weightForm').find('#nettWeight').val()) : 0;
+            var mspoWeight = (percentage / 100) * nettWeight;
+
+            $('#mspoWeight').val(mspoWeight.toFixed(2));
+        });
+
+        $('#nonMspoPerc').on('keyup', function(){
+            var percentage = parseFloat($(this).val()) || 0;
+            if (percentage < 0){
+                alert('Percentage cannot be negative');
+                $(this).val(0);
+                percentage = 0;
+            }else if (percentage > 100){
+                alert('Percentage cannot exceed 100%');
+                $(this).val(0);
+                percentage = 0;
+            }
+
+            var nettWeight = $('#weightForm').find('#nettWeight').val() ? parseFloat($('#weightForm').find('#nettWeight').val()) : 0;
+            var nonMspoWeight = (percentage / 100) * nettWeight;
+
+            $('#nonMspoWeight').val(nonMspoWeight.toFixed(2));
         });
         // Grading Modal Trigger End //
 
@@ -3842,31 +4024,57 @@ if ($rowd = $resultd->fetch_assoc()) {
 
     function print(id, transactionStatus, isEmptyContainer = 'N') {
         var prePrintStatus = 'N';
+        
+        if(includeGrading == 'Y'){
+            $.post('php/print_pws.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+                var obj = JSON.parse(data);
 
-        $.post('php/print_pws.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
-        //$.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
-            var obj = JSON.parse(data);
+                if(obj.status === 'success'){
+                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                    printWindow.document.write(obj.message);
+                    printWindow.document.close();
+                    setTimeout(function(){
+                        printWindow.print();
+                        printWindow.close();
+                    }, 500);
 
-            if(obj.status === 'success'){
-                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                printWindow.document.write(obj.message);
-                printWindow.document.close();
-                setTimeout(function(){
-                    printWindow.print();
-                    printWindow.close();
-                }, 500);
+                    $('#spinnerLoading').hide();
+                }
+                else if(obj.status === 'failed'){
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                    $("#failBtn").click();
+                }
+            }); 
+        }
+        else{
+            $.post('php/print.php', {userID: id, file: 'weight', prePrintHeader: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+                var obj = JSON.parse(data);
 
-                $('#spinnerLoading').hide();
-            }
-            else if(obj.status === 'failed'){
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-            else{
-                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                $("#failBtn").click();
-            }
-        });
+                if(obj.status === 'success'){
+                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                    printWindow.document.write(obj.message);
+                    printWindow.document.close();
+                    setTimeout(function(){
+                        printWindow.print();
+                        printWindow.close();
+                    }, 500);
+
+                    $('#spinnerLoading').hide();
+                }
+                else if(obj.status === 'failed'){
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                    $("#failBtn").click();
+                }
+            }); 
+        }
     }
 
     // Indicator Functions
@@ -3948,6 +4156,44 @@ if ($rowd = $resultd->fetch_assoc()) {
         const val = deductions[action] || 0;
         const padded = String(val).padStart(6, '0');
         return "JS" + cfg.sign + padded + cfg.suffix;
+    }
+
+    function buildMessageAuto(config) {
+        if (!config) return null;
+
+        // priority order (you can change if needed)
+        let sign = null;
+        let value = 0;
+        let suffix = null;
+
+        if (config.negativeKg > 0) { // KG deduction
+            sign = '-';
+            value = config.negativeKg;
+            suffix = '#';
+        }
+        else if (config.positiveKg > 0) {
+            sign = '+';
+            value = config.positiveKg;
+            suffix = '#';
+        }
+        else if (config.negativePerc > 0) { // Percentage deduction
+            sign = '-';
+            value = config.negativePerc;
+            suffix = '%';
+        }
+        else if (config.positivePerc > 0) {
+            sign = '+';
+            value = config.positivePerc;
+            suffix = '%';
+        }
+        else {
+            return null; // nothing to send
+        }
+
+        // device requires 6 digit padding
+        const padded = String(value).padStart(6, '0');
+
+        return "JS" + sign + padded + suffix;
     }
 
     function postMessage(message) {

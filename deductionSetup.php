@@ -95,7 +95,7 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                                 <select id="statusSwitch" name="statusSwitch" class="form-select">
                                                     <option value="Manual" <?php if ($status == 'Manual') echo 'selected'; ?>>Manual</option>
                                                     <option value="Auto" <?php if ($status == 'Auto') echo 'selected'; ?>>Auto</option>
-                                                    <option value="Default" <?php if ($status == 'Default') echo 'selected'; ?>>Default</option>
+                                                    <!--option value="Default" <?php if ($status == 'Default') echo 'selected'; ?>>Default</option-->
                                                     <option value="Customer_Supplier" <?php if ($status == 'Customer_Supplier') echo 'selected'; ?>>Customer/Supplier</option>
                                                     <option value="Disable" <?php if ($status == 'Disable') echo 'selected'; ?>>Disable</option>
                                                 </select>

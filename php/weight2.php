@@ -427,9 +427,16 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['grossInc
     } else {
         $productDescription = trim($_POST["productDescription"]);
     }
+    
+    if (empty($_POST["vehiclePlateNo1"])) {
+        $vehiclePlateNo1 = null;
+    } else {
+        $vehiclePlateNo1 = trim($_POST["vehiclePlateNo1"]);
+    }
 
-    $vehiclePlateNo1 = null;
-    $vehiclePlateNo1 = trim($_POST["vehicleNoTxt"]);
+    if(filter_has_var(INPUT_POST,'manualVehicle')) {
+        $vehiclePlateNo1 = trim($_POST["vehicleNoTxt"]);
+    }
 
     if(($weightType == 'Normal' || $weightType == 'Empty Container') && ($grossIncoming != null && $tareOutgoing != null)){
         $isComplete = 'Y';
