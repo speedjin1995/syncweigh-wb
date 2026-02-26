@@ -296,10 +296,10 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                     <input id="socsoMax" name="socsoMax" type="number" step="0.01" class="form-control" placeholder="1000" <?= $readonly ?>>
                 </td>
                 <td>
-                    <input id="socsoEmployer" name="socsoEmployer" type="number" step="0.01" class="form-control socso-employer" placeholder="0" min="0" max="100" <?= $readonly ?>>
+                    <input id="socsoEmployer" name="socsoEmployer" type="number" step="0.01" class="form-control socso-employer" placeholder="0" <?= $readonly ?>>
                 </td>
                 <td>
-                    <input id="socsoEmployee" name="socsoEmployee" type="number" step="0.01" class="form-control socso-employee" placeholder="0" min="0" max="100" <?= $readonly ?>>
+                    <input id="socsoEmployee" name="socsoEmployee" type="number" step="0.01" class="form-control socso-employee" placeholder="0" <?= $readonly ?>>
                 </td>
                 <td class="d-flex" style="text-align:center">
                     <button class="btn btn-sm btn-danger" id="remove" style="background-color: #f06548;">
@@ -319,10 +319,10 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                     <input id="eisMax" name="eisMax" type="number" step="0.01" class="form-control" placeholder="1000" <?= $readonly ?>>
                 </td>
                 <td>
-                    <input id="eisEmployer" name="eisEmployer" type="number" step="0.01" class="form-control eis-employer" placeholder="0" min="0" max="100" <?= $readonly ?>>
+                    <input id="eisEmployer" name="eisEmployer" type="number" step="0.01" class="form-control eis-employer" placeholder="0" <?= $readonly ?>>
                 </td>
                 <td>
-                    <input id="eisEmployee" name="eisEmployee" type="number" step="0.01" class="form-control eis-employee" placeholder="0" min="0" max="100" <?= $readonly ?>>
+                    <input id="eisEmployee" name="eisEmployee" type="number" step="0.01" class="form-control eis-employee" placeholder="0" <?= $readonly ?>>
                 </td>
                 <td class="d-flex" style="text-align:center">
                     <button class="btn btn-sm btn-danger" id="remove" style="background-color: #f06548;">
