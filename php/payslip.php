@@ -187,19 +187,38 @@ if (isset($_POST['date'], $_POST['employee'], $_POST['paySlipNo'])) {
                 );
             }
             else{
-                echo json_encode(
-                    array(
-                        "status"=> "success", 
-                        "message"=> "Added Successfully!!" 
-                    )
-                );
-
                 $insert_stmt->close();
-                $db->close();
-                
+
+                // Update miscellaneous for cash book no
+                $name = 'payslip';
+                if($update_stmt2 = $db->prepare("UPDATE miscellaneous SET value=value+1 WHERE name=?")){
+                    $update_stmt2->bind_param('s', $name);
+
+                    // Execute the prepared query.
+                    if (! $update_stmt2->execute()) {
+                        echo json_encode(
+                            array(
+                                "status"=> "failed", 
+                                "message"=> $update_stmt2->error
+                            )
+                        );
+                    }
+                    else{
+                        $update_stmt2->close();
+
+                        echo json_encode(
+                            array(
+                                "status"=> "success", 
+                                "message"=> "Added Successfully!!" 
+                            )
+                        );
+                    }
+                }
             }
         }
     }
+
+    $db->close();
 }
 else
 {
