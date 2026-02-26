@@ -2945,6 +2945,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
             var isValid = true;
 
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
+            }
+
             // custom validation for select2
             $('#addModal .select2[required]').each(function () {
                 var select2Field = $(this);
@@ -3289,6 +3295,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             var isEmptyContainer = 'N';
             if ($('#weightType').val() == 'Empty Container'){
                 isEmptyContainer = 'Y';
+            }
+
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
             }
 
             if(pass && $('#weightForm').valid()){

@@ -1250,6 +1250,12 @@ if ($rowd = $resultd->fetch_assoc()) {
             pass = true;
             var isValid = true;
 
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
+            }
+
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
@@ -1459,6 +1465,12 @@ if ($rowd = $resultd->fetch_assoc()) {
             var isEmptyContainer = 'N';
             if ($('#weightType').val() == 'Empty Container'){
                 isEmptyContainer = 'Y';
+            }
+
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
             }
 
             if(pass && $('#weightForm').valid()){
