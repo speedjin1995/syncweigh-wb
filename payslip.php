@@ -5,6 +5,22 @@
 $plantId = $_SESSION['plant'];
 
 $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
+$cashbook = $db->query("SELECT * FROM Cash_Book WHERE deleted = '0' ORDER BY cash_book_no ASC");
+
+// Get Company Detail
+$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+
+$epf = 0;
+$socsoDetails = [];
+$eisDetails = [];
+if(($row = $result->fetch_assoc()) !== null){
+    $epf = $row['epf'];
+    $socsoDetails = !empty($row['socso']) ? json_decode($row['socso'], true) : [];
+    $eisDetails = !empty($row['eis']) ? json_decode($row['eis'], true) : [];
+}
+
 ?>
 
 <head>
@@ -128,14 +144,46 @@ $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
                                                                         <input type="text" class="form-control input-readonly" id="paySlipNo" name="paySlipNo" placeholder="<?=$languageArray['pay_slip_no_code'][$language]?>" readonly>
                                                                     </div>
                                                                     <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label"><?=$languageArray['date_code'][$language]?></label>
+                                                                        <label class="form-label"><?=$languageArray['date_code'][$language]?> *</label>
                                                                         <input type="text" class="form-control" id="date" name="date" required>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label"><?=$languageArray['employee_code'][$language]?> *</label>
+                                                                        <select id="employee" name="employee" class="form-select select2" required>
+                                                                            <option selected>-</option>
+                                                                            <?php while($rowUser=mysqli_fetch_assoc($user)){ ?>
+                                                                                <option value="<?=$rowUser['id'] ?>"><?=$rowUser['employee_code'] . ' - ' . $rowUser['name'] ?></option>
+                                                                            <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label"><?=$languageArray['payment_type_code'][$language]?> *</label>
+                                                                        <select id="paymentType" name="paymentType" class="form-select select2" required>
+                                                                            <option value="CASH">Cash</option>
+                                                                            <option value="BANK">Bank Transfer</option>
+                                                                            <option value="CHEQUE">Cheque</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4" id="chequeNoDiv" style="display:none">
+                                                                        <label class="form-label"><?=$languageArray['cheque_no_code'][$language]?></label>
+                                                                        <input type="text" class="form-control" id="chequeNo" name="chequeNo">
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label"><?=$languageArray['cash_book_code'][$language]?></label>
+                                                                        <select id="cashBook" name="cashBook" class="form-select select2" >
+                                                                            <option selected>-</option>
+                                                                            <?php while($rowCashBook=mysqli_fetch_assoc($cashbook)){ ?>
+                                                                                <option value="<?=$rowCashBook['id'] ?>"><?=$rowCashBook['cash_book_no'] ?></option>
+                                                                            <?php } ?>
+                                                                        </select>
                                                                     </div>
                                                                 </div>
 
                                                                 <div class="row mt-4">
                                                                     <div class="col-xxl-6 col-lg-6">
-                                                                        <h6 class="mb-2"><?=$languageArray['cash_book_code'][$language]?> (-)</h6>
+                                                                        <h6 class="mb-2"><?=$languageArray['earnings_code'][$language]?> (+)</h6>
                                                                         <table class="table table-bordered align-middle">
                                                                             <thead>
                                                                                 <tr>
@@ -143,6 +191,29 @@ $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
                                                                                     <th width="30%"><?=$languageArray['type_code'][$language]?></th>
                                                                                     <th width="45%"><?=$languageArray['description_code'][$language]?></th>
                                                                                     <th width="15%"><?=$languageArray['amount_code'][$language]?></th>
+                                                                                    <th width="10%"><button type="button" class="btn btn-sm btn-success" id="addEarningsRow"><i class="bx bx-plus"></i></button></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="earningsTable">
+                                                                            </tbody>
+                                                                            <tfoot>
+                                                                                <tr>
+                                                                                    <th colspan="3" class="text-end"><?=$languageArray['total_code'][$language]?>:</th>
+                                                                                    <th><input type="number" class="form-control form-control-sm" id="grossPay" name="grossPay" readonly></th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </tfoot>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div class="col-xxl-6 col-lg-6">
+                                                                        <h6 class="mb-2"><?=$languageArray['deductions_code'][$language]?> (-)</h6>
+                                                                        <table class="table table-bordered align-middle">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th width="10%"><?=$languageArray['number_short_code'][$language]?></th>
+                                                                                    <th width="35%"><?=$languageArray['type_code'][$language]?></th>
+                                                                                    <th width="30%"><?=$languageArray['description_code'][$language]?></th>
+                                                                                    <th width="25%"><?=$languageArray['amount_code'][$language]?></th>
                                                                                     <th width="10%"><button type="button" class="btn btn-sm btn-success" id="addDeductionRow"><i class="bx bx-plus"></i></button></th>
                                                                                 </tr>
                                                                             </thead>
@@ -157,28 +228,24 @@ $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
                                                                             </tfoot>
                                                                         </table>
                                                                     </div>
-                                                                    <div class="col-xxl-6 col-lg-6">
-                                                                        <h6 class="mb-2"><?=$languageArray['cash_book_code'][$language]?> (+)</h6>
-                                                                        <table class="table table-bordered align-middle">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th width="10%"><?=$languageArray['number_short_code'][$language]?></th>
-                                                                                    <th width="35%"><?=$languageArray['type_code'][$language]?></th>
-                                                                                    <th width="30%"><?=$languageArray['description_code'][$language]?></th>
-                                                                                    <th width="25%"><?=$languageArray['amount_code'][$language]?></th>
-                                                                                    <th width="10%"><button type="button" class="btn btn-sm btn-success" id="addAdditionRow"><i class="bx bx-plus"></i></button></th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody id="additionTable">
-                                                                            </tbody>
-                                                                            <tfoot>
-                                                                                <tr>
-                                                                                    <th colspan="3" class="text-end"><?=$languageArray['total_code'][$language]?>:</th>
-                                                                                    <th><input type="number" class="form-control form-control-sm" id="totalAddition" name="totalAddition" readonly></th>
-                                                                                    <th></th>
-                                                                                </tr>
-                                                                            </tfoot>
-                                                                        </table>
+                                                                </div>
+
+                                                                <div class="row mt-4">
+                                                                    <div class="col-12">
+                                                                        <div class="card bg-light border-0">
+                                                                            <div class="card-body p-3">
+                                                                                <div class="row align-items-center">
+                                                                                    <div class="col-md-6">
+                                                                                        <h5 class="mb-0 text-primary"><?=$languageArray['net_pay_code'][$language]?></h5>
+                                                                                        <small class="text-muted"><?=$languageArray['gross_pay_code'][$language]?> - <?=$languageArray['deductions_code'][$language]?></small>
+                                                                                    </div>
+                                                                                    <div class="col-md-6 text-end">
+                                                                                        <h3 class="mb-0 text-success fw-bold">RM <span id="netPayDisplay">0.00</span></h3>
+                                                                                        <input type="hidden" id="netPay" name="netPay" value="0">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
 
@@ -237,14 +304,14 @@ $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
                                                     <div class="card-header" >
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title text-white mb-0"><?=$languageArray['cash_book_payment_code'][$language]?></h5>
+                                                                <h5 class="card-title text-white mb-0"><?=$languageArray['payslip_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <button type="button" id="exportPdf" class="btn btn-info waves-effect waves-light">
+                                                                <!-- <button type="button" id="exportPdf" class="btn btn-info waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     Export Report
-                                                                </button>
-                                                                <button type="button" id="addCashBook" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                </button> -->
+                                                                <button type="button" id="addPayslip" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
@@ -289,6 +356,35 @@ $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
 
     </div>
 
+    <script type="text/html" id="earningsDetail">
+        <tr class="details">
+            <td>
+                <input type="text" class="form-control" id="earningsNo" name="earningsNo" readonly>
+            </td>
+            <td>
+                <select class="form-select" id="earningsType" name="earningsType" required>
+                    <option value="BASIC">Basic Salary</option>
+                    <option value="ALLOWANCE">Allowance</option>
+                    <option value="OVERTIME">Overtime</option>
+                    <option value="BONUS">Bonus</option>
+                    <option value="COMMISSION">Commission</option>
+                    <option value="CLAIMS">Claims</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" class="form-control" id="earningsDesc" name="earningsDesc">
+            </td>
+            <td>
+                <input type="number" class="form-control" id="earningsAmt" name="earningsAmt" value="0" required>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger" id="remove">
+                    <i class="fa fa-times"></i>
+                </button>
+            </td>
+        </tr>
+    </script>
+
     <script type="text/html" id="deductionDetail">
         <tr class="details">
             <td>
@@ -296,52 +392,17 @@ $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
             </td>
             <td>
                 <select class="form-select" id="deductionType" name="deductionType" required>
-                    <option value="CASHOUT">Cash Out (RM)</option>
-                    <option value="CREDITNOTE">Credit Note (RM)</option>
-                    <option value="CREDITFFBRAM">Credit FFB Advance (Ramp) (RM)</option>
-                    <option value="CREDITFFBHQ">Credit FFB Advance (HQ) (RM)</option>
-                    <option value="CREDITFFBADV">Credit FFB Advance (RM)</option>
-                    <option value="GENERAL">General Expenses (RM)</option>
-                    <option value="PETROL_DIESEL">Petrol/Diesel (RM)</option>
-                    <option value="STAFFADV">Staff Advance (RM)</option>
-                    <option value="STAFFSAL">Staff Salary (RM)</option>
-                    <option value="FFBSHORTAGE">FFB Shortage (MT)</option>
-                    <option value="CREDITFFBPAY">Credit FFB payment (RM)</option>
+                    <option value="EMP_EPF">Employee EPF</option>
+                    <option value="EMP_SOCSO">Employee SOCSO</option>
+                    <option value="TAX">Tax</option>
+                    <option value="EMP_EIS">Employee EIS</option>
                 </select>
             </td>
             <td>
-                <input type="text" class="form-control" id="deductionDesc" name="deductionDesc" style="background-color:white;" required>
+                <input type="text" class="form-control" id="deductionDesc" name="deductionDesc" style="background-color:white;">
             </td>
             <td>
                 <input type="number" class="form-control" id="deductionAmt" name="deductionAmt" style="background-color:white;" value="0" required>
-            </td>
-            <td class="d-flex" style="text-align:center">
-                <button class="btn btn-sm btn-danger" id="remove" style="background-color: #f06548;">
-                    <i class="fa fa-times"></i>
-                </button>
-            </td>
-        </tr>
-    </script>
-
-    <script type="text/html" id="additionDetail">
-        <tr class="details">
-            <td>
-                <input type="text" class="form-control" id="additionNo" name="additionNo" readonly>
-            </td>
-            <td>
-                <select class="form-select" id="additionType" name="additionType" required>
-                    <option value="CASHHQ">Cash From HQ (RM)</option>
-                    <option value="CASHRAM">Cash Received By Ramp (RM)</option>
-                    <option value="CASHFFBCUST">Cash Received By FFB Customer (RM)</option>
-                    <option value="DEBITNOTE">Debit Note (RM)</option>
-                    <option value="CASHIN">Cash In (RM)</option>
-                </select>
-            </td>
-            <td>
-                <input type="text" class="form-control" id="additionDesc" name="additionDesc" style="background-color:white;" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="additionAmt" name="additionAmt" style="background-color:white;" value="0" required>
             </td>
             <td class="d-flex" style="text-align:center">
                 <button class="btn btn-sm btn-danger" id="remove" style="background-color: #f06548;">
@@ -381,8 +442,11 @@ $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
 
     <script type="text/javascript">
     
+    var socso = <?=$socsoDetails?>;
+    var epf = <?=$epf?>;
+    var eis = <?=$eisDetails?>;
+    var earningsRowCount = 0;
     var deductionRowCount = 0;
-    var additionRowCount = 0;
     const today = new Date();
     const tomorrow = new Date(today);
     const yesterday = new Date(today);
@@ -569,17 +633,21 @@ $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
             });
         });
 
-        $('#addCashBook').on('click', function(){
+        $('#addPayslip').on('click', function(){
             // Show Capture Buttons When Add New
             $('#addModal').find('#id').val("");
             $('#addModal').find('#date')[0]._flatpickr.setDate(formatDate2(today), true);
             $('#addModal').find('#date')[0]._flatpickr.set('clickOpens', true);
             $('#addModal').find('#cashBookNo').val("");
+            $('#addModal').find('#grossPay').val("0");
             $('#addModal').find('#totalDeduction').val("0");
-            $('#addModal').find('#totalAddition').val("0");
+            $('#addModal').find('#netPay').val("0");
+            $('#addModal').find('#netPayDisplay').text("0.00");
 
+            earningsRowCount = 0;
             deductionRowCount = 0;
             additionRowCount = 0;
+            $('#addModal').find('#earningsTable').html('');
             $('#addModal').find('#deductionTable').html('');
             $('#addModal').find('#additionTable').html('');
 
@@ -703,111 +771,121 @@ $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
             });
 
             deductionRowCount--;
-            calculateTotals();
+            calculateNetPay();
         });
 
-        // Add deduction row
         $("#addDeductionRow").click(function(){
-            var $addContents = $("#deductionDetail").clone();
-            $("#deductionTable").append($addContents.html());
-
-            $("#deductionTable").find('.details:last').attr("id", "detail" + deductionRowCount);
-            $("#deductionTable").find('.details:last').attr("data-index", deductionRowCount);
-            $("#deductionTable").find('#remove:last').attr("id", "remove" + deductionRowCount);
-
-            $("#deductionTable").find('#deductionNo:last').attr('name', 'deductionNo['+deductionRowCount+']').attr("id", "deductionNo" + deductionRowCount).val(deductionRowCount + 1);
-            $("#deductionTable").find('#deductionType:last').attr('name', 'deductionType['+deductionRowCount+']').attr("id", "deductionType" + deductionRowCount);
-            $("#deductionTable").find('#deductionDesc:last').attr('name', 'deductionDesc['+deductionRowCount+']').attr("id", "deductionDesc" + deductionRowCount);
-            $("#deductionTable").find('#deductionAmt:last').attr('name', 'deductionAmt['+deductionRowCount+']').attr("id", "deductionAmt" + deductionRowCount);
-
-            deductionRowCount++;
-            calculateTotals();
+            addDeductionRow();
         });
 
-        // Remove addition row
-        $("#additionTable").on('click', 'button[id^="remove"]', function () {
+        // Remove deduction row
+        $("#earningsTable").on('click', 'button[id^="remove"]', function () {
             $(this).parents("tr").remove();
 
-            $("#additionTable tr").each(function (index) {
-                $(this).find('input[name^="additionNo"]').val(index + 1);
+            $("#earningsTable tr").each(function (index) {
+                $(this).find('input[name^="earningsNo"]').val(index + 1);
             });
 
-            additionRowCount--;
-            calculateTotals();
+            earningsRowCount--;
+            calculateNetPay();
         });
 
-        // Add addition row
-        $("#addAdditionRow").click(function(){
-            var $addContents = $("#additionDetail").clone();
-            $("#additionTable").append($addContents.html());
-
-            $("#additionTable").find('.details:last').attr("id", "detail" + additionRowCount);
-            $("#additionTable").find('.details:last').attr("data-index", additionRowCount);
-            $("#additionTable").find('#remove:last').attr("id", "remove" + additionRowCount);
-            
-            $("#additionTable").find('#additionNo:last').attr('name', 'additionNo['+additionRowCount+']').attr("id", "additionNo" + additionRowCount).val(additionRowCount + 1);
-            $("#additionTable").find('#additionType:last').attr('name', 'additionType['+additionRowCount+']').attr("id", "additionType" + additionRowCount);
-            $("#additionTable").find('#additionDesc:last').attr('name', 'additionDesc['+additionRowCount+']').attr("id", "additionDesc" + additionRowCount);
-            $("#additionTable").find('#additionAmt:last').attr('name', 'additionAmt['+additionRowCount+']').attr("id", "additionAmt" + additionRowCount);
-
-            additionRowCount++;
-            calculateTotals();
+        $("#addEarningsRow").click(function(){
+            addEarningsRow();
         });
 
         // Trigger calculation on input change
-        $(document).on('input', 'input[id^="deductionAmt"], input[id^="additionAmt"]', function() {
-            calculateTotals();
+        $(document).on('input', 'input[id^="earningsAmt"], input[id^="deductionAmt"]', function() {
+            calculateNetPay();
         });
 
-        // Handle deductionType change for CREDITFFBPAY
-        $(document).on('change', 'select[id^="deductionType"]', function() {
-            var rowIndex = $(this).attr('id').replace('deductionType', '');
-            var descField = $('#deductionDesc' + rowIndex);
-            
-            if($(this).val() == 'CREDITFFBPAY') {
-                var descFieldParent = descField.closest('td');
-                
-                // Add d-flex class to parent td if not exists
-                if(!descFieldParent.hasClass('d-flex')) {
-                    descFieldParent.addClass('d-flex gap-2');
-                }
-                
-                // Change description field to col-6
-                if(!descField.parent().hasClass('col-6')) {
-                    descField.wrap('<div class="col-6"></div>');
-                }
-                
-                // Add payment voucher select if not exists
-                if(descFieldParent.find('select[id^="pvSelect"]').length === 0) {
-                    $.post('php/getOutstandingPaymentVouchers.php', function(data) {
-                        var obj = JSON.parse(data);
-                        if(obj.status === 'success') {
-                            var selectHtml = '<div class="col-6"><select class="form-select" id="pvSelect' + rowIndex + '" name="pvSelect[' + rowIndex + ']" required>';
-                            selectHtml += '<option value="">Please Select Payment Voucher</option>';
-                            $.each(obj.message, function(i, voucher) {
-                                selectHtml += '<option value="' + voucher.id + '">' + voucher.voucher_no + ' - RM' + voucher.outstanding_amount + '</option>';
-                            });
-                            selectHtml += '</select></div>';
-                            descField.parent().after(selectHtml);
+        // Auto default earnings and deduction when select employee
+        $('#employee').on('change', function() {
+            var employee = $(this).val();
+
+            if (employee) {
+                $('#spinnerLoading').show();
+                $.post('php/getUser.php', {userID: employee}, function(data){
+                    var obj = JSON.parse(data);
+                    
+                    if(obj.status === 'success'){
+                        // Clear existing rows
+                        $('#earningsTable').html('');
+                        earningsRowCount = 0;
+                        
+                        // Add basic salary if exists
+                        if(obj.message.basic_salary && parseFloat(obj.message.basic_salary) > 0) {
+                            addEarningsRow('BASIC', 'Basic Salary', obj.message.basic_salary);
                         }
-                    });
-                }
-            } else {
-                var descFieldParent = descField.closest('td');
-                // Remove payment voucher select if exists
-                descFieldParent.find('select[id^="pvSelect"]').parent().remove();
-                
-                // Remove d-flex class from parent td
-                descFieldParent.removeClass('d-flex gap-2');
-                
-                // Unwrap description field if wrapped
-                if(descField.parent().hasClass('col-6')) {
-                    descField.unwrap();
-                }
+
+                        // Add deduction rows (EPF, SOCSO, TAX, EIS) if allowed
+                        addDeductionRow('EMP_EPF', 'Employee EPF', calculateEPF(obj.message.basic_salary));
+                        addDeductionRow('EMP_SOCSO', 'Employee SOCSO', 0);
+                        addDeductionRow('TAX', 'Tax', 0);
+                        addDeductionRow('EMP_EIS', 'Employee EIS', 0);
+                        
+                        $('#spinnerLoading').hide();
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        alert(obj.message);
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        alert(obj.message);
+                    }
+                });
             }
         });
-
     });
+
+    // Calculate Employee EPF
+    function calculateEPF(amount) {
+        var rate = epf ? parseFloat(epf) : 0;
+        var amount = amount ? parseFloat(amount) : 0;
+        var epfAmount = 0;
+        if (amount > 0) {
+            epfAmount = (amount * rate) / 100;
+        }
+
+        return epfAmount.toFixed(2);
+    }
+
+    // Add deduction row
+    function addDeductionRow(type = null, desc = '', amt = 0) {
+        var $addContents = $("#deductionDetail").clone();
+        $("#deductionTable").append($addContents.html());
+
+        $("#deductionTable").find('.details:last').attr("id", "detail" + deductionRowCount);
+        $("#deductionTable").find('.details:last').attr("data-index", deductionRowCount);
+        $("#deductionTable").find('#remove:last').attr("id", "remove" + deductionRowCount);
+
+        $("#deductionTable").find('#deductionNo:last').attr('name', 'deductionNo['+deductionRowCount+']').attr("id", "deductionNo" + deductionRowCount).val(deductionRowCount + 1);
+        $("#deductionTable").find('#deductionType:last').attr('name', 'deductionType['+deductionRowCount+']').attr("id", "deductionType" + deductionRowCount).val(type || 'BASIC');
+        $("#deductionTable").find('#deductionDesc:last').attr('name', 'deductionDesc['+deductionRowCount+']').attr("id", "deductionDesc" + deductionRowCount).val(desc);
+        $("#deductionTable").find('#deductionAmt:last').attr('name', 'deductionAmt['+deductionRowCount+']').attr("id", "deductionAmt" + deductionRowCount).val(amt);
+
+        deductionRowCount++;
+        calculateNetPay();
+    }
+
+    // Add earnings row
+    function addEarningsRow(type = null, desc = '', amt = 0) {
+        var $addContents = $("#earningsDetail").clone();
+        $("#earningsTable").append($addContents.html());
+
+        $("#earningsTable").find('.details:last').attr("id", "detail" + earningsRowCount);
+        $("#earningsTable").find('.details:last').attr("data-index", earningsRowCount);
+        $("#earningsTable").find('#remove:last').attr("id", "remove" + earningsRowCount);
+
+        $("#earningsTable").find('#earningsNo:last').attr('name', 'earningsNo['+earningsRowCount+']').attr("id", "earningsNo" + earningsRowCount).val(earningsRowCount + 1);
+        $("#earningsTable").find('#earningsType:last').attr('name', 'earningsType['+earningsRowCount+']').attr("id", "earningsType" + earningsRowCount).val(type || 'BASIC');
+        $("#earningsTable").find('#earningsDesc:last').attr('name', 'earningsDesc['+earningsRowCount+']').attr("id", "earningsDesc" + earningsRowCount).val(desc);
+        $("#earningsTable").find('#earningsAmt:last').attr('name', 'earningsAmt['+earningsRowCount+']').attr("id", "earningsAmt" + earningsRowCount).val(amt);
+
+        earningsRowCount++;
+        calculateNetPay();
+    }
 
     function edit(id){
         $('#spinnerLoading').show();
@@ -960,22 +1038,24 @@ $user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
         });
     }
 
-    function calculateTotals() {
-        var totalDeductions = 0;
-        var totalAdditions = 0;
-        $('input[id^="deductionAmt"]').each(function() {
-            var index = $(this).attr('id').replace('deductionAmt', '');
-            var type = $('#deductionType' + index).val();
-            if (type !== 'FFBSHORTAGE') {
-                totalDeductions += parseFloat($(this).val()) || 0;
-            }
-        });
-        $('input[id^="additionAmt"]').each(function() { 
-            totalAdditions += parseFloat($(this).val()) || 0; 
+    function calculateNetPay() {
+        var grossPay = 0;
+        var totalDeduction = 0;
+        
+        $('input[id^="earningsAmt"]').each(function() {
+            grossPay += parseFloat($(this).val()) || 0;
         });
         
-        $('#totalDeduction').val(totalDeductions.toFixed(2));
-        $('#totalAddition').val(totalAdditions.toFixed(2));
+        $('input[id^="deductionAmt"]').each(function() {
+            totalDeduction += parseFloat($(this).val()) || 0;
+        });
+        
+        var netPay = grossPay - totalDeduction;
+        
+        $('#grossPay').val(grossPay.toFixed(2));
+        $('#totalDeduction').val(totalDeduction.toFixed(2));
+        $('#netPay').val(netPay.toFixed(2));
+        $('#netPayDisplay').text(netPay.toFixed(2));
     }
 
     function print(id) {
