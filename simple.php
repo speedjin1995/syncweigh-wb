@@ -340,23 +340,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                             </div-->
                                                         </div><br>
                                                         <div class="row">
-                                                            <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
-                                                            <div class="col-sm-8">
-                                                                <select class="form-select js-choice select2" id="driverName" name="driverName">
-                                                                    <option selected="-">-</option>
-                                                                    <?php while($rowDriver=mysqli_fetch_assoc($drivers)){ ?>
-                                                                        <option value="<?=$rowDriver['driver_name'] ?>" data-code="<?=$rowDriver['driver_ic'] ?>"><?=$rowDriver['driver_name'] ?></option>
-                                                                    <?php } ?>
-                                                                </select>
-                                                            </div>
-                                                        </div><br>
-                                                        <div class="row">
-                                                            <label for="driverIc" class="col-sm-4 col-form-label">Driver IC</label>
-                                                            <div class="col-sm-8">
-                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
-                                                            </div>
-                                                        </div><br>
-                                                        <div class="row">
                                                             <div class="col-12" id="divCustomerName">
                                                                 <div class="row">
                                                                     <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
@@ -479,6 +462,23 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                         <div class="input-group-text">Kg</div>
                                                                     </div>
                                                                 </div>
+                                                            </div>
+                                                        </div><br>
+                                                        <div class="row">
+                                                            <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
+                                                            <div class="col-sm-8">
+                                                                <select class="form-select js-choice select2" id="driverName" name="driverName">
+                                                                    <option selected="-">-</option>
+                                                                    <?php while($rowDriver=mysqli_fetch_assoc($drivers)){ ?>
+                                                                        <option value="<?=$rowDriver['driver_name'] ?>" data-code="<?=$rowDriver['driver_ic'] ?>"><?=$rowDriver['driver_name'] ?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                            </div>
+                                                        </div><br>
+                                                        <div class="row">
+                                                            <label for="driverIc" class="col-sm-4 col-form-label">Driver IC</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
                                                             </div>
                                                         </div><br>
                                                         <div class="col-12">
@@ -765,12 +765,12 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                                 <tr>
                                                                                     <td>MSPO</td>
                                                                                     <td><input type="number" class="form-control" id="mspoPerc" name="mspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control" id="mspoWeight" name="mspoWeight" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control input-readonly" id="mspoWeight" name="mspoWeight" value="0.00" readonly></td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td>NON MSPO</td>
                                                                                     <td><input type="number" class="form-control" id="nonMspoPerc" name="nonMspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control" id="nonMspoWeight" name="nonMspoWeight" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control input-readonly" id="nonMspoWeight" name="nonMspoWeight" value="0.00" readonly></td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
@@ -1250,6 +1250,12 @@ if ($rowd = $resultd->fetch_assoc()) {
             pass = true;
             var isValid = true;
 
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
+            }
+
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
@@ -1259,7 +1265,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $('#addModal').modal('hide');
 
                         // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
                             $.post('php/getWeight.php', { userID: obj.id }, function (data) {
                                 var obj = JSON.parse(data);
                                 if (obj.status === 'success') {
@@ -1299,16 +1305,18 @@ if ($rowd = $resultd->fetch_assoc()) {
                                     $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
 
                                     if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        var mspoPerc = gradingDetail.mspo_perc || 100;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
                                     }else{
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        var mspoPerc = gradingDetail.mspo_perc || 0;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
                                     }
+
+                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
                                     $('#gradingModal').modal('show');
                                 }
                             });
@@ -1459,6 +1467,12 @@ if ($rowd = $resultd->fetch_assoc()) {
                 isEmptyContainer = 'Y';
             }
 
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
+            }
+
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
@@ -1468,7 +1482,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $('#addModal').modal('hide');
 
                         // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
                             $.post('php/getWeight.php', { userID: obj.id }, function (data) {
                                 var obj = JSON.parse(data);
                                 if (obj.status === 'success') {
@@ -1510,16 +1524,18 @@ if ($rowd = $resultd->fetch_assoc()) {
                                     $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
 
                                     if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        var mspoPerc = gradingDetail.mspo_perc || 100;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
                                     }else{
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        var mspoPerc = gradingDetail.mspo_perc || 0;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
                                     }
+
+                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
                                     $('#gradingModal').modal('show');
                                 }
                             });
@@ -2471,6 +2487,45 @@ if ($rowd = $resultd->fetch_assoc()) {
             var transactionStatus = $('#transactionStatus').val();
 
             if (x){
+                $.post('php/getVehicle.php', {userID: x, type: 'lookup'}, function (data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        var customerName = obj.message.customer_name;
+                        var customerCode = obj.message.customer_code;
+                        var supplierName = obj.message.supplier_name;
+                        var supplierCode = obj.message.supplier_code;
+
+                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                            $('#customerName').val(customerName).trigger('change');
+                            $('#customerCode').val(customerCode);
+                        }else{
+                            $('#supplierName').val(supplierName).trigger('change');
+                            $('#supplierCode').val(supplierCode);
+                        }
+
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
+                    }
+                    else if(obj.status === 'error'){
+                        alert(obj.message);
+                        //$('#vehicleNoTxt').val('');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
+
+            /*if (x){
                 $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
@@ -2503,13 +2558,53 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
-            }
+            }*/
         });
 
         $('#vehiclePlateNo1').on('change', function(){
             var vehiclePlateNo1 = $(this).val();
             var transactionStatus = $('#transactionStatus').val();
+
             if (vehiclePlateNo1){
+                $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'lookup'}, function (data){
+                    var obj = JSON.parse(data);
+
+                    if (obj.status == 'success'){
+                        var customerName = obj.message.customer_name;
+                        var customerCode = obj.message.customer_code;
+                        var supplierName = obj.message.supplier_name;
+                        var supplierCode = obj.message.supplier_code;
+
+                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                            $('#customerName').val(customerName).trigger('change');
+                            $('#customerCode').val(customerCode);
+                        }else{
+                            $('#supplierName').val(supplierName).trigger('change');
+                            $('#supplierCode').val(supplierCode);
+                        }
+                        
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
+                    }
+                    else if(obj.status === 'error'){
+                        alert(obj.message);
+                        $('#vehicleNoTxt').val('');
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
+                    }
+                });
+            }
+
+            /*if (vehiclePlateNo1){
                 $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
@@ -2542,7 +2637,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
-            }
+            }*/
         });
 
         $('#manualVehicle2').on('change', function(){
@@ -3319,6 +3414,42 @@ if ($rowd = $resultd->fetch_assoc()) {
             }
             
             $('#totalQualityFactor').val(total.toFixed(2));
+        });
+
+        $('#mspoPerc').on('keyup', function(){
+            var percentage = parseFloat($(this).val()) || 0;
+            if (percentage < 0){
+                alert('Percentage cannot be negative');
+                $(this).val(0);
+                percentage = 0;
+            }else if (percentage > 100){
+                alert('Percentage cannot exceed 100%');
+                $(this).val(0);
+                percentage = 0;
+            }
+
+            var nettWeight = $('#weightForm').find('#nettWeight').val() ? parseFloat($('#weightForm').find('#nettWeight').val()) : 0;
+            var mspoWeight = (percentage / 100) * nettWeight;
+
+            $('#mspoWeight').val(mspoWeight.toFixed(2));
+        });
+
+        $('#nonMspoPerc').on('keyup', function(){
+            var percentage = parseFloat($(this).val()) || 0;
+            if (percentage < 0){
+                alert('Percentage cannot be negative');
+                $(this).val(0);
+                percentage = 0;
+            }else if (percentage > 100){
+                alert('Percentage cannot exceed 100%');
+                $(this).val(0);
+                percentage = 0;
+            }
+
+            var nettWeight = $('#weightForm').find('#nettWeight').val() ? parseFloat($('#weightForm').find('#nettWeight').val()) : 0;
+            var nonMspoWeight = (percentage / 100) * nettWeight;
+
+            $('#nonMspoWeight').val(nonMspoWeight.toFixed(2));
         });
         // Grading Modal Trigger End //
 

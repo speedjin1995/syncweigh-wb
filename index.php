@@ -830,7 +830,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                     <div class="col-xxl-8 col-lg-8">
                                                                                         <div class="row">
-                                                                                            <div class="col-xxl-6 col-lg-6 mb-3">
+                                                                                            <div class="col-xxl-6 col-lg-6 mb-3" style="display: <?php if($includeContainer == 'N'): ?>none<?php else: ?>block<?php endif; ?>">
                                                                                                 <div class="row">
                                                                                                     <label for="weightType" class="col-sm-4 col-form-label">Weight Type</label>
                                                                                                     <div class="col-sm-8">
@@ -1173,21 +1173,23 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                     <div class="col-xxl-4 col-lg-4" id="priceCard" style="display:<?php if($includePrice == 'N'): ?>none<?php else: ?>block<?php endif; ?>;">
                                                                         <div class="card bg-light" style="min-height: 385px;">
                                                                             <div class="card-body">
-                                                                                <div class="row mb-3" id="divOrderWeight">
-                                                                                    <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
-                                                                                            <div class="input-group-text">Kg</div>
+                                                                                <div style="display:none;">
+                                                                                    <div class="row mb-3" id="divOrderWeight">
+                                                                                        <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
+                                                                                        <div class="col-sm-8">
+                                                                                            <div class="input-group">
+                                                                                                <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
+                                                                                                <div class="input-group-text">Kg</div>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="row mb-3" id="divWeightDifference">
-                                                                                    <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
-                                                                                            <div class="input-group-text">Kg</div>
+                                                                                    <div class="row mb-3" id="divWeightDifference">
+                                                                                        <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
+                                                                                        <div class="col-sm-8">
+                                                                                            <div class="input-group">
+                                                                                                <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
+                                                                                                <div class="input-group-text">Kg</div>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -1824,12 +1826,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                 <tr>
                                                                                     <td>MSPO</td>
                                                                                     <td><input type="number" class="form-control" id="mspoPerc" name="mspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control" id="mspoWeight" name="mspoWeight" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control input-readonly" id="mspoWeight" name="mspoWeight" value="0.00" readonly></td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td>NON MSPO</td>
                                                                                     <td><input type="number" class="form-control" id="nonMspoPerc" name="nonMspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control" id="nonMspoWeight" name="nonMspoWeight" value="0.00"></td>
+                                                                                    <td><input type="number" class="form-control input-readonly" id="nonMspoWeight" name="nonMspoWeight" value="0.00" readonly></td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
@@ -2943,6 +2945,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
 
             var isValid = true;
 
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
+            }
+
             // custom validation for select2
             $('#addModal .select2[required]').each(function () {
                 var select2Field = $(this);
@@ -2974,7 +2982,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $('#addModal').modal('hide');
 
                         // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
                             $.post('php/getWeight.php', { userID: obj.id }, function (data) {
                                 var obj = JSON.parse(data);
                                 if (obj.status === 'success') {
@@ -2990,10 +2998,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                     $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
 
                                     var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
-                                    $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
-                                    $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
-                                    $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
-                                    $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
                                     $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
                                     $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
                                     $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
@@ -3014,16 +3018,18 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                     $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
 
                                     if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        var mspoPerc = gradingDetail.mspo_perc || 100;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
                                     }else{
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        var mspoPerc = gradingDetail.mspo_perc || 0;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
                                     }
+
+                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
                                     $('#gradingModal').modal('show');
                                 }
                             });
@@ -3291,6 +3297,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 isEmptyContainer = 'Y';
             }
 
+            // Check if grossIncoming is empty
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                alert('Please capture Incoming weight before saving.');
+                return false;
+            }
+
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight.php', $('#weightForm').serialize(), function(data){
@@ -3300,7 +3312,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         $('#addModal').modal('hide');
 
                         // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase"){
+                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
                             $.post('php/getWeight.php', { userID: obj.id }, function (data) {
                                 var obj = JSON.parse(data);
                                 if (obj.status === 'success') {
@@ -3342,16 +3354,18 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                     $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
 
                                     if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
+                                        var mspoPerc = gradingDetail.mspo_perc || 100;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
                                     }else{
-                                        $('#gradingModal').find('#mspoPerc').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#mspoWeight').attr('class', 'form-control input-readonly').attr('readonly', true);
-                                        $('#gradingModal').find('#nonMspoPerc').attr('class', 'form-control').attr('readonly', false);
-                                        $('#gradingModal').find('#nonMspoWeight').attr('class', 'form-control').attr('readonly', false);
+                                        var mspoPerc = gradingDetail.mspo_perc || 0;
+                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
                                     }
+
+                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+                                    
                                     $('#gradingModal').modal('show');
                                 }
                             });
@@ -4782,7 +4796,22 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        var customerName = obj.message.customer_name;
+                        var customerCode = obj.message.customer_code;
+                        var supplierName = obj.message.supplier_name;
+                        var supplierCode = obj.message.supplier_code;
+
+                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                            $('#customerName').val(customerName).trigger('change');
+                            $('#customerCode').val(customerCode);
+                        }else{
+                            $('#supplierName').val(supplierName).trigger('change');
+                            $('#supplierCode').val(supplierCode);
+                        }
+                        
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);
@@ -4845,7 +4874,22 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        var customerName = obj.message.customer_name;
+                        var customerCode = obj.message.customer_code;
+                        var supplierName = obj.message.supplier_name;
+                        var supplierCode = obj.message.supplier_code;
+
+                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                            $('#customerName').val(customerName).trigger('change');
+                            $('#customerCode').val(customerCode);
+                        }else{
+                            $('#supplierName').val(supplierName).trigger('change');
+                            $('#supplierCode').val(supplierCode);
+                        }
+
+                        if (obj.message.vehicle_weight){
+                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        }
                     }
                     else if(obj.status === 'error'){
                         alert(obj.message);
@@ -5782,6 +5826,43 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             
             $('#totalQualityFactor').val(total.toFixed(2));
         });
+
+        $('#mspoPerc').on('keyup', function(){
+            var percentage = parseFloat($(this).val()) || 0;
+            if (percentage < 0){
+                alert('Percentage cannot be negative');
+                $(this).val(0);
+                percentage = 0;
+            }else if (percentage > 100){
+                alert('Percentage cannot exceed 100%');
+                $(this).val(0);
+                percentage = 0;
+            }
+
+            var nettWeight = $('#addModal').find('#nettWeight').val() ? parseFloat($('#addModal').find('#nettWeight').val()) : 0;
+            var mspoWeight = (percentage / 100) * nettWeight;
+
+            $('#mspoWeight').val(mspoWeight.toFixed(2));
+        });
+
+        $('#nonMspoPerc').on('keyup', function(){
+            var percentage = parseFloat($(this).val()) || 0;
+            if (percentage < 0){
+                alert('Percentage cannot be negative');
+                $(this).val(0);
+                percentage = 0;
+            }else if (percentage > 100){
+                alert('Percentage cannot exceed 100%');
+                $(this).val(0);
+                percentage = 0;
+            }
+
+            var nettWeight = $('#addModal').find('#nettWeight').val() ? parseFloat($('#addModal').find('#nettWeight').val()) : 0;
+            var nonMspoWeight = (percentage / 100) * nettWeight;
+
+            $('#nonMspoWeight').val(nonMspoWeight.toFixed(2));
+        });
+
         // Grading Modal Trigger End //
 
 
