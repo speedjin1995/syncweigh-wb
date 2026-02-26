@@ -1223,7 +1223,7 @@ if(($row = $result->fetch_assoc()) !== null){
     }
 
     function print(id) {
-        $.post('php/printExpenseReport.php', { userID: id }, function(response){
+        $.post('php/printPayslip.php', { userID: id }, function(response){
             var obj = JSON.parse(response);
 
             if(obj.status === 'success'){
