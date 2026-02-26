@@ -123,6 +123,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                         <th>Employee Code</th>
                                                         <th>Username</th>
                                                         <th>Name</th>
+                                                        <th>IC No</th>
                                                         <th>Email</th>
                                                         <th>Role</th>
                                                         <th>Plant Name</th>
@@ -187,6 +188,14 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                 <label for="name" class="col-sm-4 col-form-label">User Name *</label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control" id="name" name="name" placeholder="User Name" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                <label for="nric" class="col-sm-4 col-form-label">IC No *</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="nric" name="nric" placeholder="IC No" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -407,6 +416,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 { data: 'employee_code' },
                 { data: 'username' },
                 { data: 'name' },
+                { data: 'nric' },
                 { data: 'useremail' },
                 { data: 'role' },
                 { data: 'plant' },
@@ -492,6 +502,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             $('#addModal').find('#employeeCode').val("");
             $('#addModal').find('#username').val("");
             $('#addModal').find('#name').val("");
+            $('#addModal').find('#nric').val("");
             $('#addModal').find('#useremail').val("");
             $('#addModal').find('#roles').val("").trigger('change');
             $('#addModal').find('#plantId').val('').trigger('change');
@@ -672,6 +683,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 $('#addModal').find('#username').val(obj.message.username);
                 $('#addModal').find('#name').val(obj.message.name);
                 $('#addModal').find('#useremail').val(obj.message.useremail);
+                $('#addModal').find('#nric').val(obj.message.nric);
                 $('#addModal').find('#roles').val(obj.message.role_code).trigger('change');
                 $("#addModal").find("#plantId").val(JSON.parse(obj.message.plant)).trigger("change");
                 $('#addModal').find('#allowManual').val(obj.message.allow_manual);
