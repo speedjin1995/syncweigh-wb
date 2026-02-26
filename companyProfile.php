@@ -270,14 +270,6 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-12 mb-3">
-                                                <div class="row">
-                                                    <label for="tax" class="col-sm-4 col-form-label">Tax (%)</label>
-                                                    <div class="col-sm-8">
-                                                        <input type="number" step="0.01" class="form-control" id="tax" name="tax" placeholder="0.2" <?= $readonly ?>>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="mt-4" <?= $hidden ? 'style="display:none;"' : '' ?>>
                                                 <button class="btn btn-success w-100" type="submit">Update</button>
                                             </div>
