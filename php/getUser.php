@@ -27,6 +27,8 @@ if(isset($_POST['userID'])){
                 $message['name'] = $row['name'];
                 $message['useremail'] = $row['useremail'];
                 $message['nric'] = $row['nric'];
+                $message['position'] = $row['position'];
+                $message['department'] = $row['department'];
                 $message['role_code'] = $row['role'];
                 $message['plant'] = $row['plant_id'];
                 $message['basic_salary'] = $row['basic_salary'];

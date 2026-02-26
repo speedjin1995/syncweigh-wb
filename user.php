@@ -209,6 +209,22 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
+                                                <label for="position" class="col-sm-4 col-form-label">Position</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="position" name="position" placeholder="Position">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                <label for="department" class="col-sm-4 col-form-label">Department</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="department" name="department" placeholder="Department">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
                                                     <label for="roles" class="col-sm-4 col-form-label">Role *</label>
                                                     <div class="col-sm-8">
                                                         <select id="roles" name="roles" class="select2" required>
@@ -504,6 +520,8 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             $('#addModal').find('#name').val("");
             $('#addModal').find('#nric').val("");
             $('#addModal').find('#useremail').val("");
+            $('#addModal').find('#department').val("");
+            $('#addModal').find('#position').val("");
             $('#addModal').find('#roles').val("").trigger('change');
             $('#addModal').find('#plantId').val('').trigger('change');
             $('#addModal').find('#allowManual').val("N");
@@ -684,6 +702,8 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 $('#addModal').find('#name').val(obj.message.name);
                 $('#addModal').find('#useremail').val(obj.message.useremail);
                 $('#addModal').find('#nric').val(obj.message.nric);
+                $('#addModal').find('#department').val(obj.message.department);
+                $('#addModal').find('#position').val(obj.message.position);
                 $('#addModal').find('#roles').val(obj.message.role_code).trigger('change');
                 $("#addModal").find("#plantId").val(JSON.parse(obj.message.plant)).trigger("change");
                 $('#addModal').find('#allowManual').val(obj.message.allow_manual);

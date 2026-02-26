@@ -2172,14 +2172,17 @@ INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('payslip', 1);
 
 ALTER TABLE `Users` ADD `nric` VARCHAR(20) NULL AFTER `useremail`;
 ALTER TABLE `Users_Log` ADD `nric` VARCHAR(20) NULL AFTER `useremail`;
+ALTER TABLE `Users` ADD `position` VARCHAR(100) NULL AFTER `nric`;
+ALTER TABLE `Users_Log` ADD `position` VARCHAR(100) NULL AFTER `nric`;
+ALTER TABLE `Users` ADD `department` VARCHAR(100) NULL AFTER `position`;
 
 DELIMITER $$
 CREATE OR REPLACE TRIGGER `TRG_INS_USER` AFTER INSERT ON `Users` FOR EACH ROW 
 INSERT INTO Users_Log (
-    user_id, employee_code, username, name, useremail, nric, password, password2, password3, plant_id, allow_manual, allow_deduct, basic_salary, `status`, action_id, action_by, event_date
+    user_id, employee_code, username, name, useremail, nric, position, user_department, password, password2, password3, plant_id, allow_manual, allow_deduct, basic_salary, `status`, action_id, action_by, event_date
 ) 
 VALUES (
-    NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.nric, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.basic_salary, NEW.status, 1, NEW.created_by, NEW.created_date
+    NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.nric, NEW.position, NEW.department, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.basic_salary, NEW.status, 1, NEW.created_by, NEW.created_date
 )
 $$
 DELIMITER ;
@@ -2196,10 +2199,10 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW B
 
     -- Insert into Users_Log table
     INSERT INTO Users_Log (
-        user_id, employee_code, username, name, useremail, nric, password, password2, password3, plant_id, allow_manual, allow_deduct, basic_salary, `status`, action_id, action_by, event_date
+        user_id, employee_code, username, name, useremail, nric, position, user_department, password, password2, password3, plant_id, allow_manual, allow_deduct, basic_salary, `status`, action_id, action_by, event_date
     ) 
     VALUES (
-        NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.nric, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.basic_salary, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+        NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.nric, NEW.position, NEW.department, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.basic_salary, NEW.status, action_value, NEW.modified_by, NEW.modified_date
     );
 END
 $$

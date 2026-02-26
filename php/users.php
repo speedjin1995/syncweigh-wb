@@ -38,6 +38,16 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
     $param_created_by = $name;
     $param_modified_by = $name;
 
+    $department = null;
+    if(isset($_POST['department']) && $_POST['department'] != null){
+        $department = filter_input(INPUT_POST, 'department', FILTER_SANITIZE_STRING);
+    }
+
+    $position = null;
+    if(isset($_POST['position']) && $_POST['position'] != null){
+        $position = filter_input(INPUT_POST, 'position', FILTER_SANITIZE_STRING);
+    }
+
     if($_POST['id'] != null && $_POST['id'] != ''){
         ### Check if new username exists or not but need to exclude current user ###
         if ($username_stmt = $db->prepare("SELECT * FROM Users WHERE username = ? AND id != ? AND status = '0'")) {
@@ -71,8 +81,8 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
             }
         }
 
-        if ($update_stmt = $db->prepare("UPDATE Users SET username=?, name=?, useremail=?, nric=?, role=?, modified_by=?, plant_id=?, employee_code=?, allow_manual=?, allow_deduct=?, basic_salary=? WHERE id=?")) {
-            $update_stmt->bind_param("ssssssssssss", $param_username, $param_name, $param_useremail, $param_nric, $param_role, $param_modified_by, $param_plant, $param_code, $param_allowmanual, $param_allowdeduct, $param_basicsalary, $_POST['id']);
+        if ($update_stmt = $db->prepare("UPDATE Users SET username=?, name=?, useremail=?, nric=?, position=?, department=?, role=?, modified_by=?, plant_id=?, employee_code=?, allow_manual=?, allow_deduct=?, basic_salary=? WHERE id=?")) {
+            $update_stmt->bind_param("ssssssssssssss", $param_username, $param_name, $param_useremail, $param_nric, $position, $department, $param_role, $param_modified_by, $param_plant, $param_code, $param_allowmanual, $param_allowdeduct, $param_basicsalary, $_POST['id']);
             $action = "2";
 
             // Execute the prepared query.
@@ -136,8 +146,8 @@ if(isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST
             $param_token3 = bin2hex(random_bytes(50)); // generate unique token
         }
 
-        if ($insert_stmt = $db->prepare("INSERT INTO Users (employee_code, useremail, username, name, nric, password, token, password2, token2, password3, token3, role, plant_id, allow_manual, allow_deduct, basic_salary, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {            
-            $insert_stmt->bind_param("ssssssssssssssssss", $param_code, $param_useremail, $param_username, $param_name, $param_nric, $param_password, $param_token, $param_password2, $param_token2, $param_password3, $param_token3, $param_role, $param_plant, $param_allowmanual, $param_allowdeduct, $param_basicsalary, $param_created_by, $param_modified_by);
+        if ($insert_stmt = $db->prepare("INSERT INTO Users (employee_code, useremail, username, name, nric, position, department, password, token, password2, token2, password3, token3, role, plant_id, allow_manual, allow_deduct, basic_salary, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {            
+            $insert_stmt->bind_param("ssssssssssssssssssss", $param_code, $param_useremail, $param_username, $param_name, $param_nric, $position, $department, $param_password, $param_token, $param_password2, $param_token2, $param_password3, $param_token3, $param_role, $param_plant, $param_allowmanual, $param_allowdeduct, $param_basicsalary, $param_created_by, $param_modified_by);
             $action = "1";
 
             // Execute the prepared query.
