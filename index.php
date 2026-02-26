@@ -4796,6 +4796,19 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
+                        var customerName = obj.message.customer_name;
+                        var customerCode = obj.message.customer_code;
+                        var supplierName = obj.message.supplier_name;
+                        var supplierCode = obj.message.supplier_code;
+
+                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                            $('#customerName').val(customerName).trigger('change');
+                            $('#customerCode').val(customerCode);
+                        }else{
+                            $('#supplierName').val(supplierName).trigger('change');
+                            $('#supplierCode').val(supplierCode);
+                        }
+                        
                         if (obj.message.vehicle_weight){
                             $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
                         }
@@ -4861,6 +4874,19 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
+                        var customerName = obj.message.customer_name;
+                        var customerCode = obj.message.customer_code;
+                        var supplierName = obj.message.supplier_name;
+                        var supplierCode = obj.message.supplier_code;
+
+                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                            $('#customerName').val(customerName).trigger('change');
+                            $('#customerCode').val(customerCode);
+                        }else{
+                            $('#supplierName').val(supplierName).trigger('change');
+                            $('#supplierCode').val(supplierCode);
+                        }
+
                         if (obj.message.vehicle_weight){
                             $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
                         }
