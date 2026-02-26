@@ -1932,15 +1932,16 @@ CREATE TABLE `Payslip` (
   `date` datetime NOT NULL,
   `payment_type` varchar(50) DEFAULT NULL,
   `cheque_no` varchar(100) DEFAULT NULL,
+  `cashbook_id` int(11) DEFAULT NULL,
   `earnings_detail` text NOT NULL,
   `gross_pay` varchar(100) NOT NULL,
   `deductions_detail` text NOT NULL,
   `total_deductions` varchar(100) NOT NULL,
   `net_pay` varchar(100) NOT NULL,
   `created_by` varchar(50) NOT NULL,
-  `created_date` datetime NOT NULL,
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified_by` varchar(50) NOT NULL,
-  `modified_date` datetime NOT NULL,
+  `modified_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `status` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1956,6 +1957,7 @@ CREATE TABLE `Payslip_Log` (
   `date` datetime NOT NULL,
   `payment_type` varchar(50) DEFAULT NULL,
   `cheque_no` varchar(100) DEFAULT NULL,
+  `cashbook_id` int(11) DEFAULT NULL,
   `earnings_detail` text NOT NULL,
   `gross_pay` varchar(100) NOT NULL,
   `deductions_detail` text NOT NULL,
@@ -1972,10 +1974,10 @@ ALTER TABLE `Payslip_Log`  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 DELIMITER $$
 CREATE OR REPLACE TRIGGER `TRG_INS_PAYSLIP` AFTER INSERT ON `Payslip` FOR EACH ROW INSERT INTO Payslip_Log (
-    payslip_id, payslip_no, user_id, date, payment_type, cheque_no, earnings_detail, gross_pay, deductions_detail, total_deductions, net_pay, action_id, action_by, event_date
+    payslip_id, payslip_no, user_id, date, payment_type, cheque_no, cashbook_id, earnings_detail, gross_pay, deductions_detail, total_deductions, net_pay, action_id, action_by, event_date
 ) 
 VALUES (
-    NEW.id, NEW.payslip_no, NEW.user_id, NEW.date, NEW.payment_type, NEW.cheque_no, NEW.earnings_detail, NEW.gross_pay, NEW.deductions_detail, NEW.total_deductions, NEW.net_pay, 1, NEW.created_by, NEW.created_date
+    NEW.id, NEW.payslip_no, NEW.user_id, NEW.date, NEW.payment_type, NEW.cheque_no, NEW.cashbook_id, NEW.earnings_detail, NEW.gross_pay, NEW.deductions_detail, NEW.total_deductions, NEW.net_pay, 1, NEW.created_by, NEW.created_date
 )
 $$
 DELIMITER ;
@@ -1992,10 +1994,10 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_PAYSLIP` BEFORE UPDATE ON `Payslip` FOR EACH 
 
     -- Insert into Payslip_Log table
     INSERT INTO Payslip_Log (
-        payslip_id, payslip_no, user_id, date, payment_type, cheque_no, earnings_detail, gross_pay, deductions_detail, total_deductions, net_pay, action_id, action_by, event_date
+        payslip_id, payslip_no, user_id, date, payment_type, cheque_no, cashbook_id, earnings_detail, gross_pay, deductions_detail, total_deductions, net_pay, action_id, action_by, event_date
     ) 
     VALUES (
-        NEW.id, NEW.payslip_no, NEW.user_id, NEW.date, NEW.payment_type, NEW.cheque_no, NEW.earnings_detail, NEW.gross_pay, NEW.deductions_detail, NEW.total_deductions, NEW.net_pay, action_value, NEW.modified_by, NEW.modified_date
+        NEW.id, NEW.payslip_no, NEW.user_id, NEW.date, NEW.payment_type, NEW.cheque_no, NEW.cashbook_id, NEW.earnings_detail, NEW.gross_pay, NEW.deductions_detail, NEW.total_deductions, NEW.net_pay, action_value, NEW.modified_by, NEW.modified_date
     );
 END
 $$
@@ -2007,6 +2009,7 @@ INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'deductions_code', 'Deductions', '扣除', 'Potongan', 'கழித்தல்');
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'net_pay_code', 'Net Pay', '净支付', 'Gaji Bersih', 'நிகர சம்பளம்');
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'gross_pay_code', 'Gross Pay', '总支付', 'Gaji Kasar', 'மொத்த சம்பளம்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cheque_no_code', 'Cheque No', '支票号', 'No Cek', 'செக் எண்');
 
 ALTER TABLE `Company` ADD `epf` VARCHAR(10) NULL AFTER `include_grading`, ADD `socso` TEXT NULL AFTER `epf`, ADD `eis` TEXT NULL AFTER `socso`, ADD `tax` TEXT NULL AFTER `eis`;
 ALTER TABLE `Company_Log` ADD `epf` VARCHAR(10) NULL AFTER `include_grading`, ADD `socso` TEXT NULL AFTER `epf`, ADD `eis` TEXT NULL AFTER `socso`, ADD `tax` TEXT NULL AFTER `eis`;
@@ -2164,3 +2167,5 @@ UPDATE Company SET eis = '[
   {"no":"64","min":"5901","max":"6000","employer":"11.90","employee":"11.90"},
   {"no":"65","min":"6001","max":"","employer":"11.90","employee":"11.90"}
 ]' WHERE id = 1;
+
+INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('payslip', 1);

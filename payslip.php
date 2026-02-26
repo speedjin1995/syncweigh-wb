@@ -328,9 +328,11 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['date_code'][$language]?></th>
-                                                                    <th><?=$languageArray['cash_book_no_code'][$language]?></th>
-                                                                    <th><?=$languageArray['total_deduction_code'][$language]?> (RM)</th>
-                                                                    <th><?=$languageArray['total_addition_code'][$language]?> (RM)</th>
+                                                                    <th><?=$languageArray['pay_slip_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['employee_code'][$language]?></th>
+                                                                    <th><?=$languageArray['gross_pay_code'][$language]?> (RM)</th>
+                                                                    <th><?=$languageArray['deductions_code'][$language]?> (RM)</th>
+                                                                    <th><?=$languageArray['net_pay_code'][$language]?> (RM)</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -442,9 +444,11 @@ if(($row = $result->fetch_assoc()) !== null){
 
     <script type="text/javascript">
     
-    var socso = <?=$socsoDetails?>;
+    var earningTypes = ['BASIC', 'ALLOWANCE', 'OVERTIME', 'BONUS', 'COMMISSION', 'CLAIMS'];
+    var deductionTypes = ['EMP_EPF', 'EMP_SOCSO', 'TAX', 'EMP_EIS'];
+    var socso = <?=json_encode($socsoDetails)?>;
     var epf = <?=$epf?>;
-    var eis = <?=$eisDetails?>;
+    var eis = <?=json_encode($eisDetails)?>;
     var earningsRowCount = 0;
     var deductionRowCount = 0;
     const today = new Date();
@@ -510,7 +514,7 @@ if(($row = $result->fetch_assoc()) !== null){
             'searching': false,
             'serverMethod': 'post',
             'ajax': {
-                'url':'php/filterCashBook.php',
+                'url':'php/filterPaySlip.php',
                 'data': {
                     fromDate: fromDateI,
                     toDate: toDateI
@@ -527,9 +531,11 @@ if(($row = $result->fetch_assoc()) !== null){
                     }
                 },
                 { data: 'date' },
-                { data: 'cash_book_no' },
-                { data: 'total_deduction' },
-                { data: 'total_addition' },
+                { data: 'payslip_no' },
+                { data: 'user_id' },
+                { data: 'gross_pay' },
+                { data: 'total_deductions' },
+                { data: 'net_pay' },
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -582,7 +588,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 'searching': false,
                 'serverMethod': 'post',
                 'ajax': {
-                    'url':'php/filterCashBook.php',
+                    'url':'php/filterPaySlip.php',
                     'data': {
                         fromDate: fromDateI,
                         toDate: toDateI
@@ -599,9 +605,11 @@ if(($row = $result->fetch_assoc()) !== null){
                         }
                     },
                     { data: 'date' },
-                    { data: 'cash_book_no' },
-                    { data: 'total_deduction' },
-                    { data: 'total_addition' },
+                    { data: 'payslip_no' },
+                    { data: 'user_id' },
+                    { data: 'gross_pay' },
+                    { data: 'total_deductions' },
+                    { data: 'net_pay' },
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {
@@ -638,7 +646,9 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#addModal').find('#id').val("");
             $('#addModal').find('#date')[0]._flatpickr.setDate(formatDate2(today), true);
             $('#addModal').find('#date')[0]._flatpickr.set('clickOpens', true);
-            $('#addModal').find('#cashBookNo').val("");
+            $('#addModal').find('#paymentType').val("BANK").trigger('change');
+            $('#addModal').find('#cashBook').val("").trigger('change');
+            $('#addModal').find('#employee').val("").trigger('change');
             $('#addModal').find('#grossPay').val("0");
             $('#addModal').find('#totalDeduction').val("0");
             $('#addModal').find('#netPay').val("0");
@@ -646,10 +656,8 @@ if(($row = $result->fetch_assoc()) !== null){
 
             earningsRowCount = 0;
             deductionRowCount = 0;
-            additionRowCount = 0;
             $('#addModal').find('#earningsTable').html('');
             $('#addModal').find('#deductionTable').html('');
-            $('#addModal').find('#additionTable').html('');
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -686,7 +694,7 @@ if(($row = $result->fetch_assoc()) !== null){
             var formData = new FormData(this);
             
             $.ajax({
-                url: 'php/cashbook.php',
+                url: 'php/payslip.php',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -762,6 +770,19 @@ if(($row = $result->fetch_assoc()) !== null){
             });
         });
 
+        // Payment Type Change
+        $('#paymentType').on('change', function (){
+            var paymentType = $(this).val();
+
+            if (paymentType == 'CHEQUE') {
+                $('#chequeNoDiv').show();
+                $('#chequeNo').attr('required', true);
+            } else {
+                $('#chequeNoDiv').hide();
+                $('#chequeNo').attr('required', false);
+            }
+        });
+
         // Remove deduction row
         $("#deductionTable").on('click', 'button[id^="remove"]', function () {
             $(this).parents("tr").remove();
@@ -771,14 +792,30 @@ if(($row = $result->fetch_assoc()) !== null){
             });
 
             deductionRowCount--;
+            updateDeductionTypeOptions();
             calculateNetPay();
         });
 
         $("#addDeductionRow").click(function(){
+            // Count unique selected types in the table
+            var selectedTypes = [];
+            $('#deductionTable select[id^="deductionType"]').each(function() {
+                var val = $(this).val();
+                if (val && !selectedTypes.includes(val)) {
+                    selectedTypes.push(val);
+                }
+            });
+            
+            // If all types are selected, show error
+            if (selectedTypes.length >= deductionTypes.length) {
+                alert('All deduction types have been added. Please remove a row to add a different type.');
+                return;
+            }
+            
             addDeductionRow();
         });
 
-        // Remove deduction row
+        // Remove earnings row
         $("#earningsTable").on('click', 'button[id^="remove"]', function () {
             $(this).parents("tr").remove();
 
@@ -787,15 +824,35 @@ if(($row = $result->fetch_assoc()) !== null){
             });
 
             earningsRowCount--;
+            updateEarningsTypeOptions();
             calculateNetPay();
         });
 
         $("#addEarningsRow").click(function(){
+            // // Count unique selected types in the table
+            // var selectedTypes = [];
+            // $('#earningsTable select[id^="earningsType"]').each(function() {
+            //     var val = $(this).val();
+            //     if (val && !selectedTypes.includes(val)) {
+            //         selectedTypes.push(val);
+            //     }
+            // });
+            
+            // // Count available types from template
+            // var availableCount = $('#earningsDetail select option').filter(function() {
+            //     return $(this).val() !== '';
+            // }).length;
+            
+            // if (selectedTypes.length >= availableCount) {
+            //     alert('All earnings types have been added. Please remove a row to add a different type.');
+            //     return;
+            // }
+            
             addEarningsRow();
         });
 
         // Trigger calculation on input change
-        $(document).on('input', 'input[id^="earningsAmt"], input[id^="deductionAmt"]', function() {
+        $(document).on('input', 'input[id^="deductionAmt"]', function() {
             calculateNetPay();
         });
 
@@ -820,9 +877,9 @@ if(($row = $result->fetch_assoc()) !== null){
 
                         // Add deduction rows (EPF, SOCSO, TAX, EIS) if allowed
                         addDeductionRow('EMP_EPF', 'Employee EPF', calculateEPF(obj.message.basic_salary));
-                        addDeductionRow('EMP_SOCSO', 'Employee SOCSO', 0);
+                        addDeductionRow('EMP_SOCSO', 'Employee SOCSO', calculateSOCSO(obj.message.basic_salary));
+                        addDeductionRow('EMP_EIS', 'Employee EIS', calculateEIS(obj.message.basic_salary));
                         addDeductionRow('TAX', 'Tax', 0);
-                        addDeductionRow('EMP_EIS', 'Employee EIS', 0);
                         
                         $('#spinnerLoading').hide();
                     }
@@ -837,7 +894,88 @@ if(($row = $result->fetch_assoc()) !== null){
                 });
             }
         });
+
+        // Handle deductionType change
+        $(document).on('change', 'select[id^="deductionType"]', function() {
+            updateDeductionTypeOptions();
+        });
+
+        // Handle earningsType change 
+        $(document).on('change', 'select[id^="earningsType"]', function() {
+            updateEarningsTypeOptions();
+            recalculateStatutoryDeductions();
+        });
+
+        // Trigger recalculation on earnings amount change
+        $(document).on('input', 'input[id^="earningsAmt"]', function() {
+            recalculateStatutoryDeductions();
+            calculateNetPay();
+        });
     });
+
+    // Update earnings type options to disable already selected types
+    function updateEarningsTypeOptions() {
+        var selectedTypes = [];
+        $('#earningsTable select[id^="earningsType"]').each(function() {
+            var val = $(this).val();
+            if (val) selectedTypes.push(val);
+        });
+        
+        $('#earningsTable select[id^="earningsType"]').each(function() {
+            var currentVal = $(this).val();
+            $(this).find('option').each(function() {
+                var optVal = $(this).val();
+                $(this).prop('disabled', selectedTypes.includes(optVal) && optVal !== currentVal);
+            });
+        });
+    }
+
+    // Update deduction type options to disable already selected types
+    function updateDeductionTypeOptions() {
+        var selectedTypes = [];
+        $('#deductionTable select[id^="deductionType"]').each(function() {
+            var val = $(this).val();
+            if (val) selectedTypes.push(val);
+        });
+        
+        $('#deductionTable select[id^="deductionType"]').each(function() {
+            var currentVal = $(this).val();
+            $(this).find('option').each(function() {
+                var optVal = $(this).val();
+                $(this).prop('disabled', selectedTypes.includes(optVal) && optVal !== currentVal);
+            });
+        });
+    }
+
+    // Recalculate statutory deductions (EPF, SOCSO, EIS)
+    function recalculateStatutoryDeductions() {
+        var contributoryTypes = ['BASIC', 'ALLOWANCE', 'OVERTIME', 'BONUS', 'COMMISSION'];
+        var totalContributory = 0;
+        
+        $('select[id^="earningsType"]').each(function() {
+            var rowIndex = $(this).attr('id').replace('earningsType', '');
+            var type = $(this).val();
+            var amount = parseFloat($('#earningsAmt' + rowIndex).val()) || 0;
+            
+            if (contributoryTypes.includes(type)) {
+                totalContributory += amount;
+            }
+        });
+        
+        // Update EPF
+        $('select[id^="deductionType"]').each(function() {
+            var rowIndex = $(this).attr('id').replace('deductionType', '');
+            var type = $(this).val();
+            
+            if (type === 'EMP_EPF') {
+                $('#deductionAmt' + rowIndex).val(calculateEPF(totalContributory));
+            } else if (type === 'EMP_SOCSO') {
+                $('#deductionAmt' + rowIndex).val(calculateSOCSO(totalContributory));
+            } else if (type === 'EMP_EIS') {
+                $('#deductionAmt' + rowIndex).val(calculateEIS(totalContributory));
+            }
+        });
+    }
 
     // Calculate Employee EPF
     function calculateEPF(amount) {
@@ -851,6 +989,40 @@ if(($row = $result->fetch_assoc()) !== null){
         return epfAmount.toFixed(2);
     }
 
+    // Calculate Employee SOCSO
+    function calculateSOCSO(amount) {
+        var amount = amount ? parseFloat(amount) : 0;
+        if (amount <= 0 || !socso || socso.length === 0) return 0;
+        
+        for (var i = 0; i < socso.length; i++) {
+            var min = parseFloat(socso[i].min);
+            var max = socso[i].max === "" ? Infinity : parseFloat(socso[i].max);
+            
+            if (amount >= min && amount <= max) {
+                return parseFloat(socso[i].employee).toFixed(2);
+            }
+        }
+        
+        return 0;
+    }
+
+    // Calculate Employee EIS
+    function calculateEIS(amount) {
+        var amount = amount ? parseFloat(amount) : 0;
+        if (amount <= 0 || !eis || eis.length === 0) return 0;
+        
+        for (var i = 0; i < eis.length; i++) {
+            var min = parseFloat(eis[i].min);
+            var max = eis[i].max === "" ? Infinity : parseFloat(eis[i].max);
+            
+            if (amount >= min && amount <= max) {
+                return parseFloat(eis[i].employee).toFixed(2);
+            }
+        }
+        
+        return 0;
+    }
+
     // Add deduction row
     function addDeductionRow(type = null, desc = '', amt = 0) {
         var $addContents = $("#deductionDetail").clone();
@@ -861,11 +1033,35 @@ if(($row = $result->fetch_assoc()) !== null){
         $("#deductionTable").find('#remove:last').attr("id", "remove" + deductionRowCount);
 
         $("#deductionTable").find('#deductionNo:last').attr('name', 'deductionNo['+deductionRowCount+']').attr("id", "deductionNo" + deductionRowCount).val(deductionRowCount + 1);
-        $("#deductionTable").find('#deductionType:last').attr('name', 'deductionType['+deductionRowCount+']').attr("id", "deductionType" + deductionRowCount).val(type || 'BASIC');
+        var lastSelect = $("#deductionTable").find('#deductionType:last').attr('name', 'deductionType['+deductionRowCount+']').attr("id", "deductionType" + deductionRowCount);
         $("#deductionTable").find('#deductionDesc:last').attr('name', 'deductionDesc['+deductionRowCount+']').attr("id", "deductionDesc" + deductionRowCount).val(desc);
         $("#deductionTable").find('#deductionAmt:last').attr('name', 'deductionAmt['+deductionRowCount+']').attr("id", "deductionAmt" + deductionRowCount).val(amt);
 
+        // Set the type first
+        if (type) {
+            lastSelect.val(type);
+        } else {
+            // Get already selected types to find first available
+            var selectedTypes = [];
+            $('#deductionTable select[id^="deductionType"]').not(lastSelect).each(function() {
+                var val = $(this).val();
+                if (val) selectedTypes.push(val);
+            });
+            
+            // Find first non-selected option
+            var firstAvailable = null;
+            lastSelect.find('option').each(function() {
+                var optVal = $(this).val();
+                if (optVal && !selectedTypes.includes(optVal)) {
+                    firstAvailable = optVal;
+                    return false; // break
+                }
+            });
+            lastSelect.val(firstAvailable);
+        }
+        
         deductionRowCount++;
+        updateDeductionTypeOptions();
         calculateNetPay();
     }
 
@@ -879,102 +1075,70 @@ if(($row = $result->fetch_assoc()) !== null){
         $("#earningsTable").find('#remove:last').attr("id", "remove" + earningsRowCount);
 
         $("#earningsTable").find('#earningsNo:last').attr('name', 'earningsNo['+earningsRowCount+']').attr("id", "earningsNo" + earningsRowCount).val(earningsRowCount + 1);
-        $("#earningsTable").find('#earningsType:last').attr('name', 'earningsType['+earningsRowCount+']').attr("id", "earningsType" + earningsRowCount).val(type || 'BASIC');
+        var lastSelect = $("#earningsTable").find('#earningsType:last').attr('name', 'earningsType['+earningsRowCount+']').attr("id", "earningsType" + earningsRowCount);
         $("#earningsTable").find('#earningsDesc:last').attr('name', 'earningsDesc['+earningsRowCount+']').attr("id", "earningsDesc" + earningsRowCount).val(desc);
         $("#earningsTable").find('#earningsAmt:last').attr('name', 'earningsAmt['+earningsRowCount+']').attr("id", "earningsAmt" + earningsRowCount).val(amt);
 
+        // Set the type first
+        if (type) {
+            lastSelect.val(type);
+        } else {
+            // Get already selected types to find first available
+            var selectedTypes = [];
+            $('#earningsTable select[id^="earningsType"]').not(lastSelect).each(function() {
+                var val = $(this).val();
+                if (val) selectedTypes.push(val);
+            });
+            
+            // Find first non-selected option
+            var firstAvailable = null;
+            lastSelect.find('option').each(function() {
+                var optVal = $(this).val();
+                if (optVal && !selectedTypes.includes(optVal)) {
+                    firstAvailable = optVal;
+                    return false; // break
+                }
+            });
+            lastSelect.val(firstAvailable);
+        }
+
         earningsRowCount++;
+        updateEarningsTypeOptions();
         calculateNetPay();
     }
 
     function edit(id){
         $('#spinnerLoading').show();
-        $.post('php/getCashBook.php', {userID: id}, function(data)
+        $.post('php/getPayslip.php', {userID: id}, function(data)
         {
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
                 $('#addModal').find('#id').val(obj.message.id);
-                $('#addModal').find('#cashBookNo').val(obj.message.cash_book_no);
+                $('#addModal').find('#paySlipNo').val(obj.message.payslip_no);
                 $('#addModal').find('#date')[0]._flatpickr.setDate(formatDate2(new Date(obj.message.date)), true);
                 $('#addModal').find('#date')[0]._flatpickr.set('clickOpens', false);
-                $('#addModal').find('#totalDeduction').val(obj.message.total_deduction);
-                $('#addModal').find('#totalAddition').val(obj.message.total_addition);
+                $('#addModal').find('#employee').val(obj.message.user_id).select2('destroy').select2();
+                $('#addModal').find('#paymentType').val(obj.message.payment_type).trigger('change');
+                $('#addModal').find('#chequeNo').val(obj.message.cheque_no);
+                $('#addModal').find('#cashBook').val(obj.message.cashbook_id).trigger('change');
+
+                // Earnings Details
+                $('#earningsTable').html('');
+                earningsRowCount = 0;
+                if (obj.message.earnings_detail && obj.message.earnings_detail.length > 0){
+                    for(var i = 0; i < obj.message.earnings_detail.length; i++){
+                        var item = obj.message.earnings_detail[i];
+                        addEarningsRow(item.type, item.desc, item.amt);
+                    }
+                }
 
                 // Deduction Details
                 $('#deductionTable').html('');
                 deductionRowCount = 0;
-                if (obj.message.deduction_details.length > 0){
-                    for(var i = 0; i < obj.message.deduction_details.length; i++){
-                        var item = obj.message.deduction_details[i];
-                        var $addContents = $("#deductionDetail").clone();
-                        $("#deductionTable").append($addContents.html());
-
-                        $("#deductionTable").find('.details:last').attr("id", "detail" + deductionRowCount);
-                        $("#deductionTable").find('.details:last').attr("data-index", deductionRowCount);
-                        $("#deductionTable").find('#remove:last').attr("id", "remove" + deductionRowCount);
-
-                        $("#deductionTable").find('#deductionNo:last').attr('name', 'deductionNo['+deductionRowCount+']').attr("id", "deductionNo" + deductionRowCount).val(deductionRowCount + 1);
-                        $("#deductionTable").find('#deductionType:last').attr('name', 'deductionType['+deductionRowCount+']').attr("id", "deductionType" + deductionRowCount).val(item.type);
-                        $("#deductionTable").find('#deductionDesc:last').attr('name', 'deductionDesc['+deductionRowCount+']').attr("id", "deductionDesc" + deductionRowCount);
-                        $("#deductionTable").find('#deductionAmt:last').attr('name', 'deductionAmt['+deductionRowCount+']').attr("id", "deductionAmt" + deductionRowCount).val(item.amount);
-                        
-                        if(item.type == 'CREDITFFBPAY') {
-                            var descFieldParent = $('#deductionDesc' + deductionRowCount).closest('td');
-                            
-                            // Add d-flex class to parent td
-                            if(!descFieldParent.hasClass('d-flex')) {
-                                descFieldParent.addClass('d-flex gap-2');
-                            }
-                            
-                            // Wrap description field in col-6
-                            if(!$('#deductionDesc' + deductionRowCount).parent().hasClass('col-6')) {
-                                $('#deductionDesc' + deductionRowCount).wrap('<div class="col-6"></div>');
-                            }
-                            
-                            $('#deductionDesc' + deductionRowCount).val(item.desc);
-                            
-                            (function(rowIdx, pvId) {
-                                $.post('php/getOutstandingPaymentVouchers.php', {selectedId: pvId}, function(data) {
-                                    var obj2 = JSON.parse(data);
-                                    if(obj2.status === 'success') {
-                                        var selectHtml = '<div class="col-6"><select class="form-select" id="pvSelect' + rowIdx + '" name="pvSelect[' + rowIdx + ']" required>';
-                                        selectHtml += '<option value="">Please Select Payment Voucher</option>';
-                                        $.each(obj2.message, function(j, voucher) {
-                                            var selected = voucher.id == pvId ? 'selected' : '';
-                                            selectHtml += '<option value="' + voucher.id + '" ' + selected + '>' + voucher.voucher_no + ' - RM' + voucher.outstanding_amount + '</option>';
-                                        });
-                                        selectHtml += '</select></div>';
-                                        $('#deductionDesc' + rowIdx).parent().after(selectHtml);
-                                    }
-                                });
-                            })(deductionRowCount, item.pv_id);
-                        } else {
-                            $("#deductionDesc" + deductionRowCount).val(item.desc);
-                        }
-
-                        deductionRowCount++;
-                    }
-                }
-
-                // Addition Details
-                $('#additionTable').html('');
-                additionRowCount = 0;
-                if (obj.message.addition_details.length > 0){
-                    for(var i = 0; i < obj.message.addition_details.length; i++){
-                        var item = obj.message.addition_details[i];
-                        var $addContents = $("#additionDetail").clone();
-                        $("#additionTable").append($addContents.html());
-
-                        $("#additionTable").find('.details:last').attr("id", "detail" + additionRowCount);
-                        $("#additionTable").find('.details:last').attr("data-index", additionRowCount);
-                        $("#additionTable").find('#remove:last').attr("id", "remove" + additionRowCount);
-
-                        $("#additionTable").find('#additionNo:last').attr('name', 'additionNo['+additionRowCount+']').attr("id", "additionNo" + additionRowCount).val(additionRowCount + 1);
-                        $("#additionTable").find('#additionType:last').attr('name', 'additionType['+additionRowCount+']').attr("id", "additionType" + additionRowCount).val(item.type);
-                        $("#additionTable").find('#additionDesc:last').attr('name', 'additionDesc['+additionRowCount+']').attr("id", "additionDesc" + additionRowCount).val(item.desc);
-                        $("#additionTable").find('#additionAmt:last').attr('name', 'additionAmt['+additionRowCount+']').attr("id", "additionAmt" + additionRowCount).val(item.amount);
-
-                        additionRowCount++;
+                if (obj.message.deductions_detail && obj.message.deductions_detail.length > 0){
+                    for(var i = 0; i < obj.message.deductions_detail.length; i++){
+                        var item = obj.message.deductions_detail[i];
+                        addDeductionRow(item.type, item.desc, item.amt);
                     }
                 }
 

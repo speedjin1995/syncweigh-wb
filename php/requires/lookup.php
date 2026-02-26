@@ -271,6 +271,22 @@ function searchNamebyId($value, $db) {
     return $id;
 }
 
+function searchUserById($value, $db) {
+    $id = null;
+
+    if ($select_stmt = $db->prepare("SELECT * FROM Users WHERE id=?")) {
+        $select_stmt->bind_param('s', $value);
+        $select_stmt->execute();
+        $result = $select_stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            $id = $row;
+        }
+        $select_stmt->close();
+    }
+
+    return $id;
+}
+
 function searchCompanyNameById($value, $db) {
     $id = null;
 
