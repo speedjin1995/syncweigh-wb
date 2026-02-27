@@ -23,6 +23,7 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 	$mspoExpiryDate = null;
 	$epf = null;
 	$nonResidentPcbRate = null;
+	$individualReliefFund = null;
 	$today = date("Y-m-d H:i:s");
 	$id = '1';
 	$action = '2';
@@ -65,6 +66,10 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 
 	if($_POST['nonResidentPcbRate'] != null && $_POST['nonResidentPcbRate'] != ""){
 		$nonResidentPcbRate = filter_input(INPUT_POST, 'nonResidentPcbRate', FILTER_SANITIZE_STRING);
+	}
+
+	if($_POST['individualReliefFund'] != null && $_POST['individualReliefFund'] != ""){
+		$individualReliefFund = filter_input(INPUT_POST, 'individualReliefFund', FILTER_SANITIZE_STRING);
 	}
 
 	// Socso Details Build
@@ -147,8 +152,8 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
     $pcbJson = !empty($pcbDetails) ? json_encode($pcbDetails) : null;
 	// End of PCB Details Build
 
-	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, package=?, fax_no=?, name=?, mpob_no=?, mpob_expiry_date=?, mspo_no=?, mspo_expiry_date=?, include_price=?, include_container=?, include_display_setup=?, include_grading=?, non_resident_pcb_rate=?, epf=?, socso=?, eis=?, tax=?, modified_date=?, modified_by=? WHERE id=?")) {
-		$stmt2->bind_param('ssssssssssssssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyPackage, $companyFax, $companyName, $mpobNo, $mpobExpiryDate, $mspoNo, $mspoExpiryDate, $_POST['includePrice'], $_POST['includeContainer'], $_POST['includeDisplaySetup'], $_POST['includeGrading'], $nonResidentPcbRate, $employeeEpf, $socsoJson, $eisJson, $pcbJson, $today, $username, $id);
+	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, package=?, fax_no=?, name=?, mpob_no=?, mpob_expiry_date=?, mspo_no=?, mspo_expiry_date=?, include_price=?, include_container=?, include_display_setup=?, include_grading=?, non_resident_pcb_rate=?, epf=?, socso=?, eis=?, tax=?, individual_relief_fund=?, modified_date=?, modified_by=? WHERE id=?")) {
+		$stmt2->bind_param('sssssssssssssssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyPackage, $companyFax, $companyName, $mpobNo, $mpobExpiryDate, $mspoNo, $mspoExpiryDate, $_POST['includePrice'], $_POST['includeContainer'], $_POST['includeDisplaySetup'], $_POST['includeGrading'], $nonResidentPcbRate, $employeeEpf, $socsoJson, $eisJson, $pcbJson, $individualReliefFund, $today, $username, $id);
 		
 		if($stmt2->execute()){
 			$stmt2->close();

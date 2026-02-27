@@ -9,11 +9,11 @@ require_once "layouts/config.php";
 // Check if the user is already logged in, if yes then redirect him to index page
 $user = $_SESSION['id'];
 $id = '1';
-$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, mpob_no, mpob_expiry_date, mspo_no, mspo_expiry_date, include_price, include_container, include_display_setup, include_grading, epf, socso, eis, tax, non_resident_pcb_rate from Company where id = ?");
+$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, mpob_no, mpob_expiry_date, mspo_no, mspo_expiry_date, include_price, include_container, include_display_setup, include_grading, epf, socso, eis, tax, non_resident_pcb_rate, individual_relief_fund from Company where id = ?");
 mysqli_stmt_bind_param($stmt2, "s", $id);
 mysqli_stmt_execute($stmt2);
 mysqli_stmt_store_result($stmt2);
-mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $mpob_no, $mpob_expiry_date, $mspo_no, $mspo_expiry_date, $include_price, $include_container, $include_display_setup, $include_grading, $epf, $socso, $eis, $tax, $non_resident_pcb_rate);
+mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $mpob_no, $mpob_expiry_date, $mspo_no, $mspo_expiry_date, $include_price, $include_container, $include_display_setup, $include_grading, $epf, $socso, $eis, $tax, $non_resident_pcb_rate, $individual_relief_fund);
 if (mysqli_stmt_fetch($stmt2)) {
     $usercompany_reg_no = $company_reg_no;
     $username = $name;
@@ -36,6 +36,7 @@ if (mysqli_stmt_fetch($stmt2)) {
     $eis = $eis;
     $tax = $tax;
     $nonResidentPcbRate = $non_resident_pcb_rate;
+    $individualReliefFund = $individual_relief_fund;
 }
 
 $role = 'NORMAL';
@@ -232,6 +233,14 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                     <label for="nonResidentPcbRate" class="col-sm-4 col-form-label">Non-Resident PCB Rate (%)</label>
                                                     <div class="col-sm-8">
                                                         <input type="number" step="0.01" class="form-control" id="nonResidentPcbRate" name="nonResidentPcbRate" placeholder="30" value="<?=$nonResidentPcbRate ?>" <?= $readonly ?>>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                    <label for="individualReliefFund" class="col-sm-4 col-form-label">Individual Relief Fund (RM)</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" step="0.01" class="form-control" id="individualReliefFund" name="individualReliefFund" placeholder="0" value="<?=$individualReliefFund ?>" <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>

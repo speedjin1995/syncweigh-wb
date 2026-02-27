@@ -2015,6 +2015,8 @@ ALTER TABLE `Company` ADD `epf` VARCHAR(10) NULL AFTER `include_grading`, ADD `s
 ALTER TABLE `Company_Log` ADD `epf` VARCHAR(10) NULL AFTER `include_grading`, ADD `socso` TEXT NULL AFTER `epf`, ADD `eis` TEXT NULL AFTER `socso`, ADD `tax` TEXT NULL AFTER `eis`;
 ALTER TABLE `Company` ADD `non_resident_pcb_rate` VARCHAR(20) NULL AFTER `tax`;
 ALTER TABLE `Company_Log` ADD `non_resident_pcb_rate` VARCHAR(20) NULL AFTER `tax`;
+ALTER TABLE `Company` ADD `individual_relief_fund` VARCHAR(100) NULL AFTER `non_resident_pcb_rate`;
+ALTER TABLE `Company_Log` ADD `individual_relief_fund` VARCHAR(100) NULL AFTER `non_resident_pcb_rate`;
 
 DELIMITER $$
 CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH ROW BEGIN
@@ -2025,10 +2027,10 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH 
 
     -- Insert into Company_Log table
     INSERT INTO Company_Log (
-        company_id, company_code, company_reg_no, new_reg_no, `name`, address_line_1, address_line_2, address_line_3, phone_no, fax_no, tin_no, mobile_no, package, include_price, include_container, include_display_setup, include_grading, epf, socso, eis, tax, non_resident_pcb_rate, action_id, action_by, event_date
+        company_id, company_code, company_reg_no, new_reg_no, `name`, address_line_1, address_line_2, address_line_3, phone_no, fax_no, tin_no, mobile_no, package, include_price, include_container, include_display_setup, include_grading, epf, socso, eis, tax, non_resident_pcb_rate, individual_relief_fund, action_id, action_by, event_date
     ) 
     VALUES (
-        NEW.id, NEW.company_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.tin_no, NEW.mobile_no, NEW.package, NEW.include_price, NEW.include_container, NEW.include_display_setup, NEW.include_grading, NEW.epf, NEW.socso, NEW.eis, NEW.tax, NEW.non_resident_pcb_rate, action_value, NEW.modified_by, NEW.modified_date
+        NEW.id, NEW.company_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.tin_no, NEW.mobile_no, NEW.package, NEW.include_price, NEW.include_container, NEW.include_display_setup, NEW.include_grading, NEW.epf, NEW.socso, NEW.eis, NEW.tax, NEW.non_resident_pcb_rate, NEW.individual_relief_fund, action_value, NEW.modified_by, NEW.modified_date
     );
 END
 $$
