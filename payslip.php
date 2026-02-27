@@ -11,15 +11,37 @@ $cashbook = $db->query("SELECT * FROM Cash_Book WHERE deleted = '0' ORDER BY cas
 $stmt = $db->prepare("SELECT * from Company WHERE id = 1");
 $stmt->execute();
 $result = $stmt->get_result();
-
 $epf = 0;
-$socsoDetails = [];
-$eisDetails = [];
 if(($row = $result->fetch_assoc()) !== null){
     $epf = $row['epf'];
-    $socsoDetails = !empty($row['socso']) ? json_decode($row['socso'], true) : [];
-    $eisDetails = !empty($row['eis']) ? json_decode($row['eis'], true) : [];
 }
+
+// Get Payslip Setting
+$socso = [];
+$eis = [];
+$tax = [];
+$nonResidentTaxRate = null;
+$individualReliefFund = null;
+$individualEpfReliefFund = null;
+$stmt2 = $db->prepare("SELECT name, value FROM miscellaneous WHERE name IN ('socso', 'eis', 'tax', 'non_res_epf', 'ind_relief', 'ind_epf_relief')");
+$stmt2->execute();
+$result2 = $stmt2->get_result();
+while ($row = $result2->fetch_assoc()) {
+    if($row['name'] == 'socso') {
+        $socso = !empty($row['value']) ? json_decode($row['value'], true) : [];
+    } else if($row['name'] == 'eis') {
+        $eis = !empty($row['value']) ? json_decode($row['value'], true) : [];
+    } else if($row['name'] == 'tax') {
+        $tax = !empty($row['value']) ? json_decode($row['value'], true) : [];
+    } else if($row['name'] == 'non_res_epf') {
+        $nonResidentTaxRate = $row['value'];
+    } else if($row['name'] == 'ind_relief') {
+        $individualReliefFund = $row['value'];
+    } else if($row['name'] == 'ind_epf_relief') {
+        $individualEpfReliefFund = $row['value'];
+    }
+}
+$stmt2->close();
 
 ?>
 
@@ -441,14 +463,21 @@ if(($row = $result->fetch_assoc()) !== null){
     <script src="assets/js/pages/datatables.init.js"></script>
     <!-- Additional js -->
     <script src="assets/js/additional.js"></script>
+    <script src="assets/js/calculate_pcb.js"></script>
 
     <script type="text/javascript">
     
+    var category = 1;
+    var isResident = 'Y';
     var earningTypes = ['BASIC', 'ALLOWANCE', 'OVERTIME', 'BONUS', 'COMMISSION', 'CLAIMS'];
     var deductionTypes = ['EMP_EPF', 'EMP_SOCSO', 'TAX', 'EMP_EIS'];
-    var socso = <?=json_encode($socsoDetails)?>;
     var epf = <?=$epf?>;
-    var eis = <?=json_encode($eisDetails)?>;
+    var nonResidentTaxRate = <?=$nonResidentTaxRate?>;
+    var individualReliefFund = <?=$individualReliefFund?>;
+    var individualEpfReliefFund = <?=$individualEpfReliefFund?>;
+    var socso = <?=json_encode($socso)?>;
+    var eis = <?=json_encode($eis)?>;
+    var tax = <?=json_encode($tax)?>;
     var earningsRowCount = 0;
     var deductionRowCount = 0;
     const today = new Date();
@@ -855,6 +884,7 @@ if(($row = $result->fetch_assoc()) !== null){
         // Auto default earnings and deduction when select employee
         $('#employee').on('change', function() {
             var employee = $(this).val();
+            var payslipDate = $('#date').val();
 
             if (employee) {
                 $('#spinnerLoading').show();
@@ -872,13 +902,14 @@ if(($row = $result->fetch_assoc()) !== null){
                         }
 
                         // Add deduction rows (EPF, SOCSO, TAX, EIS) if allowed
+                        category = obj.message.pcb_category;
+                        isResident = obj.message.is_resident;
                         $('#deductionTable').html('');
                         deductionRowCount = 0;
-
                         addDeductionRow('EMP_EPF', 'Employee EPF', calculateEPF(obj.message.basic_salary));
                         addDeductionRow('EMP_SOCSO', 'Employee SOCSO', calculateSOCSO(obj.message.basic_salary));
                         addDeductionRow('EMP_EIS', 'Employee EIS', calculateEIS(obj.message.basic_salary));
-                        addDeductionRow('TAX', 'Tax', 0);
+                        addDeductionRow('TAX', 'Tax', calculatePCB(payslipDate, category, obj.message.basic_salary, 0, isResident, nonResidentTaxRate, tax, individualReliefFund, individualEpfReliefFund));
                         
                         $('#spinnerLoading').hide();
                     }
@@ -907,6 +938,11 @@ if(($row = $result->fetch_assoc()) !== null){
 
         // Trigger recalculation on earnings amount change
         $(document).on('input', 'input[id^="earningsAmt"]', function() {
+            recalculateStatutoryDeductions();
+            calculateNetPay();
+        });
+
+        $('#date').on('change', function() {
             recalculateStatutoryDeductions();
             calculateNetPay();
         });
@@ -950,28 +986,35 @@ if(($row = $result->fetch_assoc()) !== null){
     function recalculateStatutoryDeductions() {
         var contributoryTypes = ['BASIC', 'ALLOWANCE', 'OVERTIME', 'BONUS', 'COMMISSION'];
         var totalContributory = 0;
+        var basicSalary = 0;
+        var additionalRemunerationThisMonth = 0;
         
         $('select[id^="earningsType"]').each(function() {
             var rowIndex = $(this).attr('id').replace('earningsType', '');
             var type = $(this).val();
             var amount = parseFloat($('#earningsAmt' + rowIndex).val()) || 0;
             
+            if (type === 'BASIC') basicSalary = amount;
             if (contributoryTypes.includes(type)) {
                 totalContributory += amount;
             }
         });
+
+        additionalRemunerationThisMonth = totalContributory - basicSalary;
         
         // Update EPF
         $('select[id^="deductionType"]').each(function() {
             var rowIndex = $(this).attr('id').replace('deductionType', '');
             var type = $(this).val();
             
-            if (type === 'EMP_EPF') {
-                $('#deductionAmt' + rowIndex).val(calculateEPF(totalContributory));
-            } else if (type === 'EMP_SOCSO') {
-                $('#deductionAmt' + rowIndex).val(calculateSOCSO(totalContributory));
-            } else if (type === 'EMP_EIS') {
-                $('#deductionAmt' + rowIndex).val(calculateEIS(totalContributory));
+            if (type == 'EMP_EPF') {
+                $('#deductionAmt' + rowIndex).val(calculateEPF(basicSalary));
+            } else if (type == 'EMP_SOCSO') {
+                $('#deductionAmt' + rowIndex).val(calculateSOCSO(basicSalary));
+            } else if (type == 'EMP_EIS') {
+                $('#deductionAmt' + rowIndex).val(calculateEIS(basicSalary));
+            } else if (type == 'TAX') {
+                $('#deductionAmt' + rowIndex).val(calculatePCB($('#date').val(), category, basicSalary, additionalRemunerationThisMonth, isResident, nonResidentTaxRate, tax, individualReliefFund, individualEpfReliefFund));
             }
         });
     }
@@ -1020,6 +1063,87 @@ if(($row = $result->fetch_assoc()) !== null){
         }
         
         return 0;
+    }
+
+    // Calculate PCB
+    function calculatePCB(date, userCategory, amount, additionalRemunerationThisMonth, isResident, companyNonResidentTaxRate, companyResidentTaxRate, individualReliefFund, individualEpfReliefFund) {
+        if (isResident == 'N') {
+            var rate = companyNonResidentTaxRate ? parseFloat(companyNonResidentTaxRate) : 0;
+            var taxAmount = calculatePCBNonResident(parseFloat(amount) + parseFloat(additionalRemunerationThisMonth || 0), rate);
+            return taxAmount.toFixed(2);
+        } else {
+            if (parseFloat(additionalRemunerationThisMonth) > 0) {
+                // If there is additional remuneration
+                var opts = {
+                    // PCB category:
+                    // - Use 1 for Category 1 & 3 (uses b1 from your table) — most employees.
+                    // - Use 2 for Category 2 (uses b2 from your table) — special case.
+                    category: userCategory || 1,
+
+                    // Pnormal = annual chargeable income (WITHOUT additional remuneration like bonus),
+                    // simplified as:
+                    //   (monthly basic * 12) - individual relief - EPF relief
+                    // IMPORTANT:
+                    // - individualReliefFund example: 9000
+                    // - individualEpfReliefFund example: 4000 (EPF relief cap)
+                    // - if you have other taxable earnings/deductions, include them in Pnormal too.
+                    Pnormal: (parseFloat(amount) * 12) - parseFloat(individualReliefFund || 0) - parseFloat(individualEpfReliefFund || 0),
+
+                    // Ptotal = annual chargeable income (WITH additional remuneration like bonus),
+                    // i.e. same as Pnormal but include bonus/commission/etc (annualized as needed).
+                    // You should calculate Ptotal upstream and pass it in here.
+                    PTotal: ((parseFloat(amount) * 12) + parseFloat(additionalRemunerationThisMonth || 0)) - parseFloat(individualReliefFund || 0) - parseFloat(individualEpfReliefFund || 0),
+
+                    // X = accumulated PCB already deducted year-to-date (YTD),
+                    // used to "catch up" correctly when calculating current month PCB.
+                    // If employee joined mid-year or had previous employer, this matters.
+                    X: 0,
+
+                    // Z = accumulated zakat paid year-to-date (excluding current month zakat),
+                    // used as an offset in the computerized PCB method (if you support zakat).
+                    Z: 0,
+
+                    // nPlus1 = remaining months in the year INCLUDING current month:
+                    // Jan=12, Feb=11, ... Dec=1.
+                    // Using your helper that derives this from a date.
+                    nPlus1: getNPlus1(date)
+                    };
+
+                var taxAmount = calculatePCBAnnualizedRemuneration(amount, additionalRemunerationThisMonth, companyResidentTaxRate, opts)
+            } else {
+                // No additional remuneration
+                var opts = {
+                    // 1) Category selection for B value
+                    // - If you don’t know, use 1 (Category 1 & 3 uses b1)
+                    // - If employee is Category 2 (per LHDN spec table), use 2 (uses b2)
+                    category: userCategory || 1,
+
+                    // 2) Annual chargeable income P (if you want more accurate than salary*12)
+                    // If omitted: P = monthlySalary * 12
+                    // Use this when you include other taxable earnings (allowances/bonus/commission)
+                    // and/or subtract deductions/reliefs (EPF, etc.) before annualising.
+                    P: (parseFloat(amount) * 12) - parseFloat(individualReliefFund || 0) - parseFloat(individualEpfReliefFund || 0), // example: 66000
+
+                    // 3) Accumulated PCB already deducted year-to-date (X)
+                    // Needed when calculating mid-year or when employee joined later,
+                    // or when there is previous employer MTD.
+                    X: 0,
+
+                    // 4) Accumulated zakat paid year-to-date excluding current month (Z)
+                    // Only if you handle zakat offset.
+                    Z: 0,
+
+                    // 5) Remaining months in year INCLUDING current month (n+1)
+                    // If omitted: 12
+                    // Example:
+                    //   Jan = 12, Feb = 11, ... Dec = 1
+                    nPlus1: getNPlus1(date)
+                };
+                var taxAmount = calculatePCBNormal(amount, companyResidentTaxRate, opts)
+            }
+
+            return taxAmount.toFixed(2);
+        }
     }
 
     // Add deduction row
