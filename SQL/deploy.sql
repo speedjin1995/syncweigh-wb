@@ -2020,14 +2020,16 @@ ALTER TABLE `Users_Log` ADD `position` VARCHAR(100) NULL AFTER `nric`;
 ALTER TABLE `Users` ADD `department` VARCHAR(100) NULL AFTER `position`;
 ALTER TABLE `Users` ADD `is_resident` VARCHAR(1) NOT NULL DEFAULT 'Y' AFTER `nric`;
 ALTER TABLE `Users_Log` ADD `is_resident` VARCHAR(1) NOT NULL DEFAULT 'Y' AFTER `nric`;
+ALTER TABLE `Users` ADD `pcb_category` INT(1) NOT NULL DEFAULT '1' AFTER `basic_salary`;
+ALTER TABLE `Users_Log` ADD `pcb_category` INT(1) NOT NULL DEFAULT '1' AFTER `basic_salary`;
 
 DELIMITER $$
 CREATE OR REPLACE TRIGGER `TRG_INS_USER` AFTER INSERT ON `Users` FOR EACH ROW 
 INSERT INTO Users_Log (
-    user_id, employee_code, username, name, useremail, nric, is_resident, position, user_department, password, password2, password3, plant_id, allow_manual, allow_deduct, basic_salary, `status`, action_id, action_by, event_date
+    user_id, employee_code, username, name, useremail, nric, is_resident, position, user_department, password, password2, password3, plant_id, allow_manual, allow_deduct, basic_salary, pcb_category, `status`, action_id, action_by, event_date
 ) 
 VALUES (
-    NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.nric, NEW.is_resident, NEW.position, NEW.department, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.basic_salary, NEW.status, 1, NEW.created_by, NEW.created_date
+    NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.nric, NEW.is_resident, NEW.position, NEW.department, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.basic_salary, NEW.pcb_category, NEW.status, 1, NEW.created_by, NEW.created_date
 )
 $$
 DELIMITER ;
@@ -2044,10 +2046,10 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW B
 
     -- Insert into Users_Log table
     INSERT INTO Users_Log (
-        user_id, employee_code, username, name, useremail, nric, is_resident, position, user_department, password, password2, password3, plant_id, allow_manual, allow_deduct, basic_salary, `status`, action_id, action_by, event_date
+        user_id, employee_code, username, name, useremail, nric, is_resident, position, user_department, password, password2, password3, plant_id, allow_manual, allow_deduct, basic_salary, pcb_category, `status`, action_id, action_by, event_date
     ) 
     VALUES (
-        NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.nric, NEW.is_resident, NEW.position, NEW.department, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.basic_salary, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+        NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.nric, NEW.is_resident, NEW.position, NEW.department, NEW.password, NEW.password2, NEW.password3, NEW.plant_id, NEW.allow_manual, NEW.allow_deduct, NEW.basic_salary, NEW.pcb_category, NEW.status, action_value, NEW.modified_by, NEW.modified_date
     );
 END
 $$

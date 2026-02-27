@@ -35,6 +35,7 @@ if(isset($_POST['userID'])){
                 $message['allow_manual'] = $row['allow_manual'];
                 $message['allow_deduct'] = $row['allow_deduct'];
                 $message['is_resident'] = $row['is_resident'];
+                $message['pcb_category'] = $row['pcb_category'];
             }
             
             echo json_encode(

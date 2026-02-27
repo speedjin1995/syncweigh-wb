@@ -258,6 +258,18 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
+                                                <label for="pcbCategory" class="col-sm-4 col-form-label">PCB Category</label>
+                                                    <div class="col-sm-8">
+                                                        <select class="form-select" id="pcbCategory" name="pcbCategory" required>
+                                                            <option value="1" selected>Category 1 (Single)</option>
+                                                            <option value="2">Category 2 (Married - Spouse Not Working)</option>
+                                                            <option value="3">Category 3 (Married - Spouse Working)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
                                                     <label for="isResident" class="col-sm-4 col-form-label">Is Resident *</label>
                                                     <div class="col-sm-8">
                                                         <select id="isResident" name="isResident" class="form-control" required>
@@ -539,6 +551,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             $('#addModal').find('#allowDeduct').val("N");
             $('#addModal').find('#isResident').val("Y");
             $('#addModal').find('#basicSalary').val("");
+            $('#addModal').find('#pcbCategory').val("");
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -722,6 +735,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 $('#addModal').find('#allowDeduct').val(obj.message.allow_deduct);
                 $('#addModal').find('#isResident').val(obj.message.is_resident);
                 $('#addModal').find('#basicSalary').val(obj.message.basic_salary);
+                $('#addModal').find('#pcbCategory').val(obj.message.pcb_category);
 
                 // Remove Validation Error Message
                 $('#addModal .is-invalid').removeClass('is-invalid');
