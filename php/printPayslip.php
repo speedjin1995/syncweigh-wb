@@ -122,6 +122,14 @@ if(isset($_POST['userID'])){
                             font-weight: bold;
                             width: 120px;
                         }
+                        .info-table .col-left {
+                            width: 50%;
+                        }
+                        .info-table .col-right-label {
+                            font-weight: bold;
+                            width: 120px;
+                            padding-left: 80px;
+                        }
                         .earnings-table {
                             border: 1px solid #000;
                         }
@@ -185,34 +193,35 @@ if(isset($_POST['userID'])){
                         </div>
 
                         <table class="info-table">
+                            
                             <tr>
                                 <td class="info-label">STAFF NO.</td>
-                                <td>: '.$staff['employee_code'].'</td>
-                                <td class="info-label">VOUCHER NO.</td>
+                                <td class="col-left">: '.$staff['employee_code'].'</td>
+                                <td class="info-label col-right-label">VOUCHER NO.</td>
                                 <td>: '.$row['payslip_no'].'</td>
                             </tr>
                             <tr>
                                 <td class="info-label">NAME</td>
-                                <td>: '.$staff['name'].'</td>
-                                <td class="info-label">PAYMENT TYPE</td>
+                                <td class="col-left">: '.$staff['name'].'</td>
+                                <td class="info-label col-right-label">PAYMENT TYPE</td>
                                 <td>: '.$row['payment_type'].'</td>
                             </tr>
                             <tr>
                                 <td class="info-label">I/C NO.</td>
-                                <td>: '.$staff['nric'].'</td>
-                                <td class="info-label">CHEQUE NO.</td>
+                                <td class="col-left">: '.$staff['nric'].'</td>
+                                <td class="info-label col-right-label">CHEQUE NO.</td>
                                 <td>: '.$row['cheque_no'].'</td>
                             </tr>
                             <tr>
                                 <td class="info-label">POSITION</td>
-                                <td>: '.$staff['position'].'</td>
-                                <td class="info-label">DATE</td>
+                                <td class="col-left">: '.$staff['position'].'</td>
+                                <td class="info-label col-right-label">DATE</td>
                                 <td>: '.$date.'</td>
                             </tr>
                             <tr>
                                 <td class="info-label">DEPARTMENT</td>
-                                <td>: '.$staff['department'].'</td>
-                                <td class="info-label">MONTH</td>
+                                <td class="col-left">: '.$staff['department'].'</td>
+                                <td class="info-label col-right-label">MONTH</td>
                                 <td>: '.$month.'</td>
                             </tr>
                         </table>
