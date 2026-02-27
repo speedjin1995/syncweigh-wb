@@ -205,6 +205,9 @@
                                             <li class="nav-item">
                                                 <a href="portSetup.php" class="nav-link"><b>'.$languageArray['port_setup_code'][$language].'</b></a>
                                             </li>
+                                            <li class="nav-item">
+                                                <a href="payslipSetting.php" class="nav-link"><b>'.$languageArray['payslip_setting_code'][$language].'</b></a>
+                                            </li>
                                         ';
 
                                         if ($_SESSION['includeDisplaySetup'] == 'Y'){
