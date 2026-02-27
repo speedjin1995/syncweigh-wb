@@ -34,6 +34,7 @@ if(isset($_POST['userID'])){
                 $message['basic_salary'] = $row['basic_salary'];
                 $message['allow_manual'] = $row['allow_manual'];
                 $message['allow_deduct'] = $row['allow_deduct'];
+                $message['is_resident'] = $row['is_resident'];
             }
             
             echo json_encode(

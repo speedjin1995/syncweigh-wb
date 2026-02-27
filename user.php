@@ -258,6 +258,17 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
+                                                    <label for="isResident" class="col-sm-4 col-form-label">Is Resident *</label>
+                                                    <div class="col-sm-8">
+                                                        <select id="isResident" name="isResident" class="form-control" required>
+                                                            <option value="Y">YES</option>
+                                                            <option value="N">NO</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
                                                     <label for="allowManual" class="col-sm-4 col-form-label">Allow Manual *</label>
                                                     <div class="col-sm-8">
                                                         <select id="allowManual" name="allowManual" class="form-control" required>
@@ -526,6 +537,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             $('#addModal').find('#plantId').val('').trigger('change');
             $('#addModal').find('#allowManual').val("N");
             $('#addModal').find('#allowDeduct').val("N");
+            $('#addModal').find('#isResident').val("Y");
             $('#addModal').find('#basicSalary').val("");
 
             // Remove Validation Error Message
@@ -708,6 +720,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 $("#addModal").find("#plantId").val(JSON.parse(obj.message.plant)).trigger("change");
                 $('#addModal').find('#allowManual').val(obj.message.allow_manual);
                 $('#addModal').find('#allowDeduct').val(obj.message.allow_deduct);
+                $('#addModal').find('#isResident').val(obj.message.is_resident);
                 $('#addModal').find('#basicSalary').val(obj.message.basic_salary);
 
                 // Remove Validation Error Message
