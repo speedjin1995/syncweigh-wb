@@ -1886,6 +1886,7 @@ DELIMITER ;
 -- 26/02/2026 --
 ALTER TABLE `Vehicle` CHANGE `vehicle_weight` `vehicle_weight` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
 
+-- 27/02/2026 --
 ALTER TABLE `Users` ADD `basic_salary` VARCHAR(100) NULL DEFAULT '0' AFTER `plant_id`;
 ALTER TABLE `Users_Log` ADD `basic_salary` VARCHAR(100) NULL DEFAULT '0' AFTER `plant_id`;
 
@@ -1924,7 +1925,6 @@ DELIMITER ;
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'payslip_code', 'Payslip', '工资单', 'Slip Gaji', 'சம்பளச்சீட்டு');
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'pay_slip_no_code', 'Payslip No', '工资单号', 'Nombor Slip Gaji', 'சம்பளச்சீட்டு எண்');
 
--- 27/02/2026 --
 CREATE TABLE `Payslip` (
   `id` int(11) NOT NULL,
   `payslip_no` varchar(100) NOT NULL,
