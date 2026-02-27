@@ -22,6 +22,7 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 	$mspoNo = null;
 	$mspoExpiryDate = null;
 	$epf = null;
+	$nonResidentPcbRate = null;
 	$today = date("Y-m-d H:i:s");
 	$id = '1';
 	$action = '2';
@@ -60,6 +61,10 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 
 	if($_POST['employeeEpf'] != null && $_POST['employeeEpf'] != ""){
 		$employeeEpf = filter_input(INPUT_POST, 'employeeEpf', FILTER_SANITIZE_STRING);
+	}
+
+	if($_POST['nonResidentPcbRate'] != null && $_POST['nonResidentPcbRate'] != ""){
+		$nonResidentPcbRate = filter_input(INPUT_POST, 'nonResidentPcbRate', FILTER_SANITIZE_STRING);
 	}
 
 	// Socso Details Build
@@ -112,8 +117,38 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
     $eisJson = !empty($eisDetails) ? json_encode($eisDetails) : null;
 	// End of EIS Details Build
 
-	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, package=?, fax_no=?, name=?, mpob_no=?, mpob_expiry_date=?, mspo_no=?, mspo_expiry_date=?, include_price=?, include_container=?, include_display_setup=?, include_grading=?, epf=?, socso=?, eis=?, modified_date=?, modified_by=? WHERE id=?")) {
-		$stmt2->bind_param('ssssssssssssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyPackage, $companyFax, $companyName, $mpobNo, $mpobExpiryDate, $mspoNo, $mspoExpiryDate, $_POST['includePrice'], $_POST['includeContainer'], $_POST['includeDisplaySetup'], $_POST['includeGrading'], $employeeEpf, $socsoJson, $eisJson, $today, $username, $id);
+	// ["pcbNo"]=> array(2) { [0]=> string(1) "1" [1]=> string(1) "2" } ["pcbMin"]=> array(2) { [0]=> string(4) "5001" [1]=> string(5) "20001" } ["pcbMax"]=> array(2) { [0]=> string(5) "20000" [1]=> string(5) "35000" } ["pcbM"]=> array(2) { [0]=> string(4) "5000" [1]=> string(5) "20000" } ["pcbR"]=> array(2) { [0]=> string(1) "1" [1]=> string(1) "3" } ["pcbB1"]=> array(2) { [0]=> string(4) "-400" [1]=> string(4) "-250" } ["pcbB2"]=> array(2) { [0]=> string(4) "-800" [1]=> string(4) "-650" } }
+	// PCB Details Build
+    $pcbNo = isset($_POST['pcbNo']) ? $_POST['pcbNo']: [];
+    $pcbMin = isset($_POST['pcbMin']) ? $_POST['pcbMin']: [];
+    $pcbMax = isset($_POST['pcbMax']) ? $_POST['pcbMax']: [];
+    $pcbM = isset($_POST['pcbM']) ? $_POST['pcbM']: [];
+    $pcbR = isset($_POST['pcbR']) ? $_POST['pcbR']: [];
+    $pcbB1 = isset($_POST['pcbB1']) ? $_POST['pcbB1']: [];
+    $pcbB2 = isset($_POST['pcbB2']) ? $_POST['pcbB2']: [];
+    
+    $pcbDetails = [];
+    if(isset($pcbNo) && $pcbNo != null && count($pcbNo) > 0){ 
+        foreach ($pcbNo as $key => $value) {
+            if (!empty($value)) {
+                $pcbDetails[] = [
+                    "no" => $value,
+                    "min" => $pcbMin[$key],
+                    "max" => $pcbMax[$key],
+                    "m" => $pcbM[$key],
+                    "r" => $pcbR[$key],
+                    "b1" => $pcbB1[$key],
+                    "b2" => $pcbB2[$key]
+                ];
+            }
+        }
+    }
+
+    $pcbJson = !empty($pcbDetails) ? json_encode($pcbDetails) : null;
+	// End of PCB Details Build
+
+	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, package=?, fax_no=?, name=?, mpob_no=?, mpob_expiry_date=?, mspo_no=?, mspo_expiry_date=?, include_price=?, include_container=?, include_display_setup=?, include_grading=?, non_resident_pcb_rate=?, epf=?, socso=?, eis=?, tax=?, modified_date=?, modified_by=? WHERE id=?")) {
+		$stmt2->bind_param('ssssssssssssssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyPackage, $companyFax, $companyName, $mpobNo, $mpobExpiryDate, $mspoNo, $mspoExpiryDate, $_POST['includePrice'], $_POST['includeContainer'], $_POST['includeDisplaySetup'], $_POST['includeGrading'], $nonResidentPcbRate, $employeeEpf, $socsoJson, $eisJson, $pcbJson, $today, $username, $id);
 		
 		if($stmt2->execute()){
 			$stmt2->close();

@@ -9,11 +9,11 @@ require_once "layouts/config.php";
 // Check if the user is already logged in, if yes then redirect him to index page
 $user = $_SESSION['id'];
 $id = '1';
-$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, mpob_no, mpob_expiry_date, mspo_no, mspo_expiry_date, include_price, include_container, include_display_setup, include_grading, epf, socso, eis, tax from Company where id = ?");
+$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, mpob_no, mpob_expiry_date, mspo_no, mspo_expiry_date, include_price, include_container, include_display_setup, include_grading, epf, socso, eis, tax, non_resident_pcb_rate from Company where id = ?");
 mysqli_stmt_bind_param($stmt2, "s", $id);
 mysqli_stmt_execute($stmt2);
 mysqli_stmt_store_result($stmt2);
-mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $mpob_no, $mpob_expiry_date, $mspo_no, $mspo_expiry_date, $include_price, $include_container, $include_display_setup, $include_grading, $epf, $socso, $eis, $tax);
+mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $mpob_no, $mpob_expiry_date, $mspo_no, $mspo_expiry_date, $include_price, $include_container, $include_display_setup, $include_grading, $epf, $socso, $eis, $tax, $non_resident_pcb_rate);
 if (mysqli_stmt_fetch($stmt2)) {
     $usercompany_reg_no = $company_reg_no;
     $username = $name;
@@ -35,6 +35,7 @@ if (mysqli_stmt_fetch($stmt2)) {
     $socso = $socso;
     $eis = $eis;
     $tax = $tax;
+    $nonResidentPcbRate = $non_resident_pcb_rate;
 }
 
 $role = 'NORMAL';
@@ -227,6 +228,14 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                 </div>
                                             </div>
                                             <div class="col-12 mb-3">
+                                                <div class="row">
+                                                    <label for="nonResidentPcbRate" class="col-sm-4 col-form-label">Non-Resident PCB Rate (%)</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" step="0.01" class="form-control" id="nonResidentPcbRate" name="nonResidentPcbRate" placeholder="30" value="<?=$nonResidentPcbRate ?>" <?= $readonly ?>>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
                                                 <div class="card">
                                                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" style="cursor: pointer;" onclick="event.target.tagName !== 'BUTTON' && document.getElementById('socsoContent').classList.toggle('d-none')">
                                                         <h6 class="mb-0 text-white">SOCSO Contribution Table</h6>
@@ -266,6 +275,30 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                                 </tr>
                                                             </thead>
                                                             <tbody id="eisTable"></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="card">
+                                                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" style="cursor: pointer;" onclick="event.target.tagName !== 'BUTTON' && document.getElementById('pcbContent').classList.toggle('d-none')">
+                                                        <h6 class="mb-0 text-white">PCB Rate Table</h6>
+                                                        <button type="button" class="btn btn-sm btn-success" id="addPcbRow" <?= $readonly ?>>Add New</button>
+                                                    </div>
+                                                    <div class="card-body d-none" id="pcbContent">
+                                                        <table class="table table-bordered">
+                                                            <thead class="table-light">
+                                                                <tr>
+                                                                    <th>P Min (RM) <i class="fa fa-info-circle text-muted" data-bs-toggle="tooltip" title="Chargeable income range minimum (annual)"></i></th>
+                                                                    <th>P Max (RM) <i class="fa fa-info-circle text-muted" data-bs-toggle="tooltip" title="Chargeable income range maximum (annual)"></i></th>
+                                                                    <th>M (RM) <i class="fa fa-info-circle text-muted" data-bs-toggle="tooltip" title="First chargeable income for the range"></i></th>
+                                                                    <th>R (%) <i class="fa fa-info-circle text-muted" data-bs-toggle="tooltip" title="Tax rate percentage applied on income exceeding M"></i></th>
+                                                                    <th>B Cat 1 & 3 (RM) <i class="fa fa-info-circle text-muted" data-bs-toggle="tooltip" title="Tax on M after rebate — Category 1 (Single) & Category 3 (Married, spouse working / widowed / divorced)"></i></th>
+                                                                    <th>B Cat 2 (RM) <i class="fa fa-info-circle text-muted" data-bs-toggle="tooltip" title="Tax on M after rebate — Category 2 (Married, spouse not working)"></i></th>
+                                                                    <th>Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="pcbTable"></tbody>
                                                         </table>
                                                     </div>
                                                 </div>
@@ -332,6 +365,35 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
             </tr>
         </script>
 
+        <script type="text/html" id="pcbDetail">
+            <tr class="details">
+                <td>
+                    <input type="hidden" id="pcbNo" name="pcbNo">
+                    <input id="pcbMin" name="pcbMin" type="number" step="0.01" class="form-control" placeholder="0" <?= $readonly ?>>
+                </td>
+                <td>
+                    <input id="pcbMax" name="pcbMax" type="number" step="0.01" class="form-control" placeholder="20000" <?= $readonly ?>>
+                </td>
+                <td>
+                    <input id="pcbM" name="pcbM" type="number" step="0.01" class="form-control" placeholder="0" <?= $readonly ?>>
+                </td>
+                <td>
+                    <input id="pcbR" name="pcbR" type="number" step="0.01" class="form-control" placeholder="0" <?= $readonly ?>>
+                </td>
+                <td>
+                    <input id="pcbB1" name="pcbB1" type="number" step="0.01" class="form-control" placeholder="0" <?= $readonly ?>>
+                </td>
+                <td>
+                    <input id="pcbB2" name="pcbB2" type="number" step="0.01" class="form-control" placeholder="0" <?= $readonly ?>>
+                </td>
+                <td class="d-flex" style="text-align:center">
+                    <button class="btn btn-sm btn-danger" id="remove" style="background-color: #f06548;">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </td>
+            </tr>
+        </script>
+
         <!-- END layout-wrapper -->
 
         
@@ -352,6 +414,7 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
         <script type="text/javascript">
             var socsoRowCount = 0;
             var eisRowCount = 0;
+            var pcbRowCount = 0;
             $(document).ready(function() {
                 //Date picker
                 $('#mpobExpiry').flatpickr({
@@ -368,7 +431,6 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                 // Remove socso row
                 $("#socsoTable").on('click', 'button[id^="remove"]', function () {
                     $(this).parents("tr").remove();
-
                     socsoRowCount--;
                 });
 
@@ -391,7 +453,6 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                 // Remove eis row
                 $("#eisTable").on('click', 'button[id^="remove"]', function () {
                     $(this).parents("tr").remove();
-
                     eisRowCount--;
                 });
 
@@ -409,6 +470,26 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                 }
                 <?php endif; ?>
                 // End of EIS Contribution Table Section
+
+                // PCB Rate Table Section
+                $("#pcbTable").on('click', 'button[id^="remove"]', function () {
+                    $(this).parents("tr").remove();
+                    pcbRowCount--;
+                });
+
+                $("#addPcbRow").click(function(){
+                    addPcbRow();
+                });
+
+                <?php if($tax && $tax != ''): ?>
+                var pcbData = <?= $tax ?>;
+                if(pcbData && pcbData.length > 0) {
+                    pcbData.forEach(function(item) {
+                        addPcbRow(item.no, item.min, item.max, item.m, item.r, item.b1, item.b2);
+                    });
+                }
+                <?php endif; ?>
+                // End of PCB Rate Table Section
             });
 
             function addSocsoRow(no = null, min = '', max = '', employer = '', employee = '') {
@@ -443,6 +524,25 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                 $("#eisTable").find('#eisEmployee:last').attr('name', 'eisEmployee['+eisRowCount+']').attr("id", "eisEmployee" + eisRowCount).val(employee);
 
                 eisRowCount++;
+            }
+
+            function addPcbRow(no = null, min = '', max = '', m = '', r = '', b1 = '', b2 = '') {
+                var $addContents = $("#pcbDetail").clone();
+                $("#pcbTable").append($addContents.html());
+
+                $("#pcbTable").find('.details:last').attr("id", "detail" + pcbRowCount);
+                $("#pcbTable").find('.details:last').attr("data-index", pcbRowCount);
+                $("#pcbTable").find('#remove:last').attr("id", "remove" + pcbRowCount);
+
+                $("#pcbTable").find('#pcbNo:last').attr('name', 'pcbNo['+pcbRowCount+']').attr("id", "pcbNo" + pcbRowCount).val(no || (pcbRowCount + 1));
+                $("#pcbTable").find('#pcbMin:last').attr('name', 'pcbMin['+pcbRowCount+']').attr("id", "pcbMin" + pcbRowCount).val(min);
+                $("#pcbTable").find('#pcbMax:last').attr('name', 'pcbMax['+pcbRowCount+']').attr("id", "pcbMax" + pcbRowCount).val(max);
+                $("#pcbTable").find('#pcbM:last').attr('name', 'pcbM['+pcbRowCount+']').attr("id", "pcbM" + pcbRowCount).val(m);
+                $("#pcbTable").find('#pcbR:last').attr('name', 'pcbR['+pcbRowCount+']').attr("id", "pcbR" + pcbRowCount).val(r);
+                $("#pcbTable").find('#pcbB1:last').attr('name', 'pcbB1['+pcbRowCount+']').attr("id", "pcbB1" + pcbRowCount).val(b1);
+                $("#pcbTable").find('#pcbB2:last').attr('name', 'pcbB2['+pcbRowCount+']').attr("id", "pcbB2" + pcbRowCount).val(b2);
+
+                pcbRowCount++;
             }
         </script>
     </body>
