@@ -33,7 +33,7 @@ while ($row = $result2->fetch_assoc()) {
     } else if($row['name'] == 'ind_epf_relief') {
         $individualEpfReliefFund = $row['value'];
     }
-}//var_dump($socso, $eis, $tax, $nonResidentPcbRate, $individualReliefFund, $individualEpfReliefFund);exit;
+}
 $stmt2->close();
 
 $role = 'NORMAL';
