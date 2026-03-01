@@ -482,8 +482,9 @@ if(isset($_POST["file"])){
                                                 <th>Gross</th>
                                                 <th>Act. <br>Tare</th>
                                                 <th>Tare</th>
-                                                <th>Act. <br>Net WT.</th> 
+                                                <th>Ded.</th>
                                                 <th>Net WT.</th> 
+                                                <th>Act. <br>Net WT.</th> 
                                                 <th>Earn/Loss</th>
                                                 <th>IN</th>
                                                 <th>OUT</th>
@@ -498,6 +499,7 @@ if(isset($_POST["file"])){
                                             $grandTotalTare = 0;
                                             $grandTotalActNet = 0;
                                             $grandTotalNet = 0;
+                                            $grandTotalReduce = 0;
                                             $grandTotalEarnLoss = 0;
 
                                             foreach ($groupedData as $productRawMatCode => $data) {
@@ -507,6 +509,7 @@ if(isset($_POST["file"])){
                                                 $totalTare = 0;
                                                 $totalActNet = 0;
                                                 $totalNet = 0;
+                                                $totalReduce = 0;
                                                 $totalEarnLoss = 0;
 
                                                 // Product/Raw Material Code Header Row
@@ -517,16 +520,17 @@ if(isset($_POST["file"])){
                                                 ';
 
                                                 foreach ($data['records'] as $record) {
-                                                    $actNettWeight = (float)$record['nett_weight1'] ?? 0;
-                                                    $nettWeight = (float)$record['nett_deduction1'] ?? 0;
+                                                    $actNettWeight = (float)$record['nett_deduction1'] ?? 0;
+                                                    $nettWeight = (float)$record['nett_weight1'] ?? 0;
                                                     $earnLoss = $actNettWeight - $nettWeight;
 
-                                                    $totalActGross += (float)$record['gross_weight1'];
-                                                    $totalGross += (float)$record['gross_deduction1'];
-                                                    $totalActTare += (float)$record['tare_weight1'];
-                                                    $totalTare += (float)$record['tare_deduction1'];
-                                                    $totalActNet += (float)$record['nett_weight1'];
-                                                    $totalNet += (float)$record['nett_deduction1'];
+                                                    $totalActGross += (float)$record['gross_deduction1'];
+                                                    $totalGross += (float)$record['gross_weight1'];
+                                                    $totalActTare += (float)$record['tare_deduction1'];
+                                                    $totalTare += (float)$record['tare_weight1'];
+                                                    $totalActNet += (float)$record['nett_deduction1'];
+                                                    $totalNet += (float)$record['nett_weight1'];
+                                                    $totalReduce += (float)$record['reduce_weight'];
                                                     $totalEarnLoss += $earnLoss;
 
                                                     $timeInOut = date('d-m-Y H:i', strtotime($record['gross_weight1_date'])) . ' - ' . date('H:i', strtotime($record['tare_weight1_date']));
@@ -538,10 +542,11 @@ if(isset($_POST["file"])){
                                                             <td>' . $timeInOut . '</td>
                                                             <td>' . $record['transaction_id'] . '</td>
                                                             <td>' . $record['lorry_plate_no1'] . '</td>
-                                                            <td>' . number_format($record['gross_weight1']/1000, 2) . '</td>
                                                             <td>' . number_format($record['gross_deduction1']/1000, 2) . '</td>
-                                                            <td>' . number_format($record['tare_weight1']/1000, 2) . '</td>
+                                                            <td>' . number_format($record['gross_weight1']/1000, 2) . '</td>
                                                             <td>' . number_format($record['tare_deduction1']/1000, 2) . '</td>
+                                                            <td>' . number_format($record['tare_weight1']/1000, 2) . '</td>
+                                                            <td>' . number_format($record['reduce_weight']/1000, 2) . '</td>
                                                             <td>' . number_format($record['nett_weight1']/1000, 2) . '</td>
                                                             <td>' . number_format($record['nett_deduction1']/1000, 2) . '</td>
                                                             <td>' . number_format($earnLoss/1000, 2) . '</td>
@@ -560,8 +565,9 @@ if(isset($_POST["file"])){
                                                         <td style="border-top: 1px solid black;">' . number_format($totalGross/1000, 2) . '</td>
                                                         <td style="border-top: 1px solid black;">' . number_format($totalActTare/1000, 2) . '</td>
                                                         <td style="border-top: 1px solid black;">' . number_format($totalTare/1000, 2) . '</td>
-                                                        <td style="border-top: 1px solid black;">' . number_format($totalActNet/1000, 2) . '</td>
+                                                        <td style="border-top: 1px solid black;">' . number_format($totalReduce/1000, 2) . '</td>
                                                         <td style="border-top: 1px solid black;">' . number_format($totalNet/1000, 2) . '</td>
+                                                        <td style="border-top: 1px solid black;">' . number_format($totalActNet/1000, 2) . '</td>
                                                         <td style="border-top: 1px solid black;">' . number_format($totalEarnLoss/1000, 2) . '</td>
                                                         <td style="border-top: 1px solid black;"></td>
                                                         <td style="border-top: 1px solid black;"></td>
@@ -574,6 +580,7 @@ if(isset($_POST["file"])){
                                                 $grandTotalTare += $totalTare;
                                                 $grandTotalActNet += $totalActNet;
                                                 $grandTotalNet += $totalNet;
+                                                $grandTotalReduce += $totalReduce;
                                                 $grandTotalEarnLoss += $totalEarnLoss;
                                             }
 
@@ -586,8 +593,9 @@ if(isset($_POST["file"])){
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalGross/1000, 2) . '</td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalActTare/1000, 2) . '</td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalTare/1000, 2) . '</td>
-                                                    <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalActNet/1000, 2) . '</td>
+                                                    <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalReduce/1000, 2) . '</td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalNet/1000, 2) . '</td>
+                                                    <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalActNet/1000, 2) . '</td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalEarnLoss/1000, 2) . '</td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;"></td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;"></td>
