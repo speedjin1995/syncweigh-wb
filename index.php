@@ -2348,9 +2348,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     $(function () {
         var userRole = '<?=$role ?>';
         const dstatus = "<?= $dstatus ?>";
-        var autoDataJson = <?= json_encode($autoDataJson) ?>;
-        const autoCustomerJson = <?= json_encode($autoCustomerJson) ?>;
-        const autoSupplierJson = <?= json_encode($autoSupplierJson) ?>;
+        var autoDataJson = <?= $autoDataJson ?>;
+        const autoCustomerJson = JSON.parse('<?= $autoCustomerJson ?>');
+        const autoSupplierJson = JSON.parse('<?= $autoSupplierJson ?>');
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
@@ -3824,6 +3824,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             var data = event.data;
             console.log("Data:", data);
             var reading = parseWeight(data);
+            var autoData = JSON.parse(autoDataJson);
 
             if(dstatus === "Auto"){
                 for (const item of autoData) {
@@ -4188,6 +4189,15 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         });
 
         $('#addWeight').on('click', function(){
+            // Show Capture Buttons When Add New
+            const msg = buildMessage('ESC');
+            autoDataJson = '[]';
+                
+            if (msg){
+                //deductionValue = msg;
+                postMessage(msg);
+            }
+
             // Show Capture Buttons When Add New
             $('#addModal').find('#grossCapture').show();
             $('#addModal').find('#tareCapture').show();
@@ -5430,8 +5440,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#totalPriceDisplay').hide();
                         }
 
-                        if(dstatus === "Customer_Supplier"){
-
+                        if(dstatus === "Customer_Supplier" && obj.message.deduction.status == "Auto" && autoSupplierJson.includes(supplierId)){
+                            autoDataJson = obj.message.deduction.auto_data;
                         }
                     }
                     else if(obj.status === 'failed'){
@@ -5500,8 +5510,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#totalPriceDisplay').hide();
                         }
 
-                        if(dstatus === "Customer_Supplier"){
-
+                        if(dstatus === "Customer_Supplier" && obj.message.deduction.status == "Auto" && autoCustomerJson.includes(customerId)){
+                            autoDataJson = obj.message.deduction.auto_data;
                         }
                     }
                     else if(obj.status === 'failed'){

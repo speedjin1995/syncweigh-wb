@@ -1041,9 +1041,9 @@ if ($rowd = $resultd->fetch_assoc()) {
     $(function () {
         var userRole = '<?=$role ?>';
         const dstatus = "<?= $dstatus ?>";
-        var autoDataJson = <?= json_encode($autoDataJson) ?>;
-        const autoCustomerJson = <?= json_encode($autoCustomerJson) ?>;
-        const autoSupplierJson = <?= json_encode($autoSupplierJson) ?>;
+        var autoDataJson = <?= $autoDataJson ?>;
+        const autoCustomerJson = JSON.parse('<?= $autoCustomerJson ?>');
+        const autoSupplierJson = JSON.parse('<?= $autoSupplierJson ?>');
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
@@ -1942,6 +1942,7 @@ if ($rowd = $resultd->fetch_assoc()) {
         $('#addWeight').on('click', function(){
             // Show Capture Buttons When Add New
             const msg = buildMessage('ESC');
+            autoDataJson = '[]';
                 
             if (msg){
                 //deductionValue = msg;
@@ -3079,8 +3080,8 @@ if ($rowd = $resultd->fetch_assoc()) {
                         // $('#totalPriceDisplay').hide();
                     }
 
-                    if(dstatus === "Customer_Supplier"){
-
+                    if(dstatus === "Customer_Supplier" && obj.message.deduction.status == "Auto" && autoSupplierJson.includes(supplierId)){
+                        autoDataJson = obj.message.deduction.auto_data;
                     }
                 }
                 else if(obj.status === 'failed'){
@@ -3140,8 +3141,8 @@ if ($rowd = $resultd->fetch_assoc()) {
                         // $('#totalPriceDisplay').hide();
                     }
 
-                    if(dstatus === "Customer_Supplier"){
-
+                    if(dstatus === "Customer_Supplier" && obj.message.deduction.status == "Auto" && autoCustomerJson.includes(customerId)){
+                        autoDataJson = obj.message.deduction.auto_data;
                     }
                 }
                 else if(obj.status === 'failed'){
