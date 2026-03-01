@@ -6557,6 +6557,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     }
 
     function buildMessage(action) {
+        // don't generate messages when the pendrive isn't connected
+        if (!document.body.classList.contains('has-pendrive')) return null;
         // Bootstrap values from PHP
         const deductions = {
             F1: <?= (int)$F1 ?>,
@@ -6597,18 +6599,61 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         return "JS" + cfg.sign + padded + cfg.suffix;
     }
 
-    function postMessage(message) {
-        $.ajax({
-        url: 'http://127.0.0.1:5002/deduction',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ message: message }),
-        success: function (res) {
-            console.log("Sent:", message, "→", res);
-        },
-        error: function (xhr, status, err) {
-            console.warn("Error posting:", message, status, err);
+    function buildMessageAuto(config) {
+        if (!document.body.classList.contains('has-pendrive')) return null;
+
+        if (!config) return null;
+
+        // priority order (you can change if needed)
+        let sign = null;
+        let value = 0;
+        let suffix = null;
+
+        if (config.negativeKg > 0) { // KG deduction
+            sign = '-';
+            value = config.negativeKg;
+            suffix = '#';
         }
+        else if (config.positiveKg > 0) {
+            sign = '+';
+            value = config.positiveKg;
+            suffix = '#';
+        }
+        else if (config.negativePerc > 0) { // Percentage deduction
+            sign = '-';
+            value = config.negativePerc;
+            suffix = '%';
+        }
+        else if (config.positivePerc > 0) {
+            sign = '+';
+            value = config.positivePerc;
+            suffix = '%';
+        }
+        else {
+            return null; // nothing to send
+        }
+
+        // device requires 6 digit padding
+        const padded = String(value).padStart(6, '0');
+
+        return "JS" + sign + padded + suffix;
+    }
+
+    function postMessage(message) {
+        // skip if not connected
+        if (!document.body.classList.contains('has-pendrive') || !message) return;
+
+        $.ajax({
+            url: 'http://127.0.0.1:5002/deduction',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ message: message }),
+            success: function (res) {
+                console.log("Sent:", message, "→", res);
+            },
+            error: function (xhr, status, err) {
+                console.warn("Error posting:", message, status, err);
+            }
         });
     }
 

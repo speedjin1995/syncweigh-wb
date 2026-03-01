@@ -194,7 +194,7 @@
 
                                     if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["allowDeduct"] == 'Y'){
                                         echo '
-                                        <li class="nav-item">
+                                        <li class="nav-item deduction-field" id="deductionSetupMenu">
                                             <a href="deductionSetup.php" class="nav-link"><b>'.$languageArray['deduction_setup_code'][$language].'</b></a>
                                         </li> 
                                         ';

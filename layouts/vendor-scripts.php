@@ -6,6 +6,5 @@
 <script src="assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
 <script src="assets/js/plugins.js"></script>
 <script src="plugins/sheets/xlsx.full.min.js"></script>
-<script>
-    
-</script>
+<!-- websocket listener for pendrive status -->
+<script src="assets/js/pendrive-listener.js"></script>

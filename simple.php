@@ -4114,6 +4114,8 @@ if ($rowd = $resultd->fetch_assoc()) {
     }
 
     function buildMessage(action) {
+        // skip if pendrive not connected
+        if (!document.body.classList.contains('has-pendrive')) return null;
         // Bootstrap values from PHP
         const deductions = {
             F1: <?= (int)$F1 ?>,
@@ -4160,6 +4162,8 @@ if ($rowd = $resultd->fetch_assoc()) {
     }
 
     function buildMessageAuto(config) {
+        if (!document.body.classList.contains('has-pendrive')) return null;
+
         if (!config) return null;
 
         // priority order (you can change if needed)
@@ -4198,11 +4202,13 @@ if ($rowd = $resultd->fetch_assoc()) {
     }
 
     function postMessage(message) {
+        if (!document.body.classList.contains('has-pendrive') || !message) return;
+
         $.ajax({
-        url: 'http://127.0.0.1:5002/deduction',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ message: message }),
+            url: 'http://127.0.0.1:5002/deduction',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ message: message }),
             success: function (res) {
                 console.log("Sent:", message, "→", res);
             },

@@ -671,7 +671,8 @@ $(function () {
 
                     // Conditionally add Deduction Setup button
                     if (role === 'ADMIN' || role === 'SADMIN' || allowDeduct === 'Y') {
-                        dropdownHtml += '<li><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ', ' + row.supplier_deduction_id + ')">';
+                        // mark item so it will disappear when pendrive missing
+                        dropdownHtml += '<li class="deduction-field"><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ', ' + row.supplier_deduction_id + ')">';
                         dropdownHtml += '<i class="ri-subtract-fill align-bottom me-2 text-muted"></i> <?=$languageArray['deduction_setup_code'][$language] ?></a></li>';
                     }
 
