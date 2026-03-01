@@ -21,6 +21,9 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 	$mpobExpiryDate = null;
 	$mspoNo = null;
 	$mspoExpiryDate = null;
+	$epf = null;
+	$nonResidentPcbRate = null;
+	$individualReliefFund = null;
 	$today = date("Y-m-d H:i:s");
 	$id = '1';
 	$action = '2';
@@ -57,8 +60,12 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 		$mspoExpiryDate = DateTime::createFromFormat('d-m-Y', $_POST["mspoExpiry"])->format('Y-m-d H:i:s');
 	}
 
-	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?,  package=?, fax_no=?, name=?, mpob_no=?, mpob_expiry_date=?, mspo_no=?, mspo_expiry_date=?, include_price=?, include_container=?, include_display_setup=?, include_grading=?, modified_date=?, modified_by=? WHERE id=?")) {
-		$stmt2->bind_param('sssssssssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyPackage, $companyFax, $companyName, $mpobNo, $mpobExpiryDate, $mspoNo, $mspoExpiryDate, $_POST['includePrice'], $_POST['includeContainer'], $_POST['includeDisplaySetup'], $_POST['includeGrading'], $today, $username, $id);
+	if($_POST['employeeEpf'] != null && $_POST['employeeEpf'] != ""){
+		$employeeEpf = filter_input(INPUT_POST, 'employeeEpf', FILTER_SANITIZE_STRING);
+	}
+
+	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, package=?, fax_no=?, name=?, mpob_no=?, mpob_expiry_date=?, mspo_no=?, mspo_expiry_date=?, include_price=?, include_container=?, include_display_setup=?, include_grading=?, epf=?, modified_date=?, modified_by=? WHERE id=?")) {
+		$stmt2->bind_param('ssssssssssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyPackage, $companyFax, $companyName, $mpobNo, $mpobExpiryDate, $mspoNo, $mspoExpiryDate, $_POST['includePrice'], $_POST['includeContainer'], $_POST['includeDisplaySetup'], $_POST['includeGrading'],  $employeeEpf, $today, $username, $id);
 		
 		if($stmt2->execute()){
 			$stmt2->close();

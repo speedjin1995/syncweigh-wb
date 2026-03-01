@@ -9,11 +9,11 @@ require_once "layouts/config.php";
 // Check if the user is already logged in, if yes then redirect him to index page
 $user = $_SESSION['id'];
 $id = '1';
-$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, mpob_no, mpob_expiry_date, mspo_no, mspo_expiry_date, include_price, include_container, include_display_setup, include_grading from Company where id = ?");
+$stmt2 = $link->prepare("SELECT company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, package, fax_no, mpob_no, mpob_expiry_date, mspo_no, mspo_expiry_date, include_price, include_container, include_display_setup, include_grading, epf from Company where id = ?");
 mysqli_stmt_bind_param($stmt2, "s", $id);
 mysqli_stmt_execute($stmt2);
 mysqli_stmt_store_result($stmt2);
-mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $mpob_no, $mpob_expiry_date, $mspo_no, $mspo_expiry_date, $include_price, $include_container, $include_display_setup, $include_grading);
+mysqli_stmt_bind_result($stmt2, $company_reg_no, $name, $address_line_1, $address_line_2, $address_line_3, $phone_no, $package, $fax_no, $mpob_no, $mpob_expiry_date, $mspo_no, $mspo_expiry_date, $include_price, $include_container, $include_display_setup, $include_grading, $epf);
 if (mysqli_stmt_fetch($stmt2)) {
     $usercompany_reg_no = $company_reg_no;
     $username = $name;
@@ -31,6 +31,7 @@ if (mysqli_stmt_fetch($stmt2)) {
     $includeContainer = $include_container;
     $includeDisplaySetup = $include_display_setup;
     $includeGrading = $include_grading;
+    $epf = $epf;
 }
 
 $role = 'NORMAL';
@@ -62,6 +63,11 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
         <link rel="stylesheet" href="assets/libs/swiper/swiper-bundle.min.css">
 
         <?php include 'layouts/head-css.php'; ?>
+        
+        <!-- Include jQuery library -->
+        <script src="plugins/jquery/jquery.min.js"></script>
+        <!-- Include jQuery Validate plugin -->
+        <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
 
     </head>
 
@@ -80,23 +86,35 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                 <div class="page-content">
                     <div class="container-fluid">
                         <div class="row col-12">
-                            <div class="card bg-light">
+                            <div class="card">
                                 <div class="card-body">
                                     <form action="php/updateCompany.php" method="post">
                                         <div class="row">
+                                            <div class="col-12 mb-3 mt-4">
+                                                <h5 class="text-primary">Company Settings</h5>
+                                                <hr>
+                                            </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                    <label for="companyRegNo" class="col-sm-4 col-form-label">Company Reg No. *</label>
-                                                    <div class="col-sm-8">
+                                                    <div class="col-sm-6">
+                                                        <label for="companyRegNo" class="col-form-label">Company Reg No. *</label>
                                                         <input type="text" class="form-control input-readonly" id="companyRegNo" name="companyRegNo" placeholder="Company Reg No" value="<?=$usercompany_reg_no ?>" required <?= $readonly ?>>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="companyName" class="col-form-label">Company Name *</label>
+                                                        <input type="text" class="form-control input-readonly" id="companyName" name="companyName" placeholder="Company Name" value="<?=$username ?>" required <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                    <label for="companyName" class="col-sm-4 col-form-label">Company Name *</label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyName" name="companyName" placeholder="Company Name" value="<?=$username ?>" required <?= $readonly ?>>
+                                                    <div class="col-sm-6">
+                                                        <label for="companyPhone" class="col-form-label">Company Phone</label>
+                                                        <input type="text" class="form-control input-readonly" id="companyPhone" name="companyPhone" placeholder="Company Phone" value="<?=$userphone_no ?>" required <?= $readonly ?>>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="companyFax" class="col-form-label">Fax No.</label>
+                                                        <input type="text" class="form-control input-readonly" id="companyFax" name="companyFax" placeholder="Company Fax" value="<?=$userfax_no ?>" <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -121,22 +139,6 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                     <label for="companyAddress3" class="col-sm-4 col-form-label">Company Address 3</label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control input-readonly" id="companyAddress3" name="companyAddress3" placeholder="Company Address 3" value="<?=$useraddress_line_3 ?>" <?= $readonly ?>>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <div class="row">
-                                                    <label for="companyPhone" class="col-sm-4 col-form-label">Company Phone</label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyPhone" name="companyPhone" placeholder="Company Phone" value="<?=$userphone_no ?>" required <?= $readonly ?>>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <div class="row">
-                                                    <label for="companyFax" class="col-sm-4 col-form-label">Fax No.</label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyFax" name="companyFax" placeholder="Company Fax" value="<?=$userfax_no ?>" <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -176,41 +178,48 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div <?= $hidden ? 'style="display:none;"' : '' ?>>
-                                                <div class="col-12 mb-3">
-                                                    <div class="row">
-                                                        <label class="col-sm-4 col-form-label">Include Price</label>
-                                                        <div class="col-sm-8">
+                                            <div class="col-12 mb-3" <?= $hidden ? 'style="display:none;"' : '' ?>>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label class="col-form-label">Include Price</label>
+                                                        <div>
                                                             <input type="radio" class="form-check-input" id="includePriceYes" name="includePrice" value="Y" <?= $includePrice == 'Y' ? 'checked' : '' ?> <?= $readonly ?>> Yes
                                                             <input type="radio" class="form-check-input ms-3" id="includePriceNo" name="includePrice" value="N" <?= $includePrice == 'N' ? 'checked' : '' ?> <?= $readonly ?>> No
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-12 mb-3">
-                                                    <div class="row">
-                                                        <label class="col-sm-4 col-form-label">Include Container</label>
-                                                        <div class="col-sm-8">
+                                                    <div class="col-sm-6">
+                                                        <label class="col-form-label">Include Container</label>
+                                                        <div>
                                                             <input type="radio" class="form-check-input" id="includeContainerYes" name="includeContainer" value="Y" <?= $includeContainer == 'Y' ? 'checked' : '' ?> <?= $readonly ?>> Yes
                                                             <input type="radio" class="form-check-input ms-3" id="includeContainerNo" name="includeContainer" value="N" <?= $includeContainer == 'N' ? 'checked' : '' ?> <?= $readonly ?>> No
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-12 mb-3">
-                                                    <div class="row">
-                                                        <label class="col-sm-4 col-form-label">Include Display Setup</label>
-                                                        <div class="col-sm-8">
+                                                    <div class="col-sm-6">
+                                                        <label class="col-form-label">Include Display Setup</label>
+                                                        <div>
                                                             <input type="radio" class="form-check-input" id="includeDisplaySetupYes" name="includeDisplaySetup" value="Y" <?= $includeDisplaySetup == 'Y' ? 'checked' : '' ?> <?= $readonly ?>> Yes
                                                             <input type="radio" class="form-check-input ms-3" id="includeDisplaySetupNo" name="includeDisplaySetup" value="N" <?= $includeDisplaySetup == 'N' ? 'checked' : '' ?> <?= $readonly ?>> No
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-12 mb-3">
-                                                    <div class="row">
-                                                        <label class="col-sm-4 col-form-label">Include Grading</label>
-                                                        <div class="col-sm-8">
+                                                    <div class="col-sm-6">
+                                                        <label class="col-form-label">Include Grading</label>
+                                                        <div>
                                                             <input type="radio" class="form-check-input" id="includeGradingYes" name="includeGrading" value="Y" <?= $includeGrading == 'Y' ? 'checked' : '' ?> <?= $readonly ?>> Yes
                                                             <input type="radio" class="form-check-input ms-3" id="includeGradingNo" name="includeGrading" value="N" <?= $includeGrading == 'N' ? 'checked' : '' ?> <?= $readonly ?>> No
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-12 mb-3 mt-4">
+                                                <h5 class="text-primary">Payroll Settings</h5>
+                                                <hr>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                    <label for="employeeEpf" class="col-sm-4 col-form-label">Employee EPF (%)</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" step="0.01" class="form-control" id="employeeEpf" name="employeeEpf" placeholder="11" value="<?=$epf ?>" <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -247,14 +256,17 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
         <script src="assets/js/app.js"></script>
 
         <script type="text/javascript">
-            flatpickr("#mpobExpiry", {
-                dateFormat: "d-m-Y",
-                defaultDate: "<?= $mpobExpiry ? date('d-m-Y', strtotime($mpobExpiry)) : '' ?>"
-            });
+            $(document).ready(function() {
+                //Date picker
+                $('#mpobExpiry').flatpickr({
+                    dateFormat: "d-m-Y",
+                    defaultDate: "<?= $mpobExpiry ? date('d-m-Y', strtotime($mpobExpiry)) : '' ?>"
+                });
 
-            flatpickr("#mspoExpiry", {
-                dateFormat: "d-m-Y",
-                defaultDate: "<?= $mspoExpiry ? date('d-m-Y', strtotime($mspoExpiry)) : '' ?>"
+                $('#mspoExpiry').flatpickr({
+                    dateFormat: "d-m-Y",
+                    defaultDate: "<?= $mspoExpiry ? date('d-m-Y', strtotime($mspoExpiry)) : '' ?>"
+                });
             });
         </script>
     </body>

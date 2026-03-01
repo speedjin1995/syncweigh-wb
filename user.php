@@ -123,9 +123,13 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                         <th>Employee Code</th>
                                                         <th>Username</th>
                                                         <th>Name</th>
+                                                        <th>IC No</th>
                                                         <th>Email</th>
                                                         <th>Role</th>
                                                         <th>Plant Name</th>
+                                                        <?php if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'ADMIN'){ ?>
+                                                        <th>Basic Salary (RM)</th>
+                                                        <?php } ?>
                                                         <th><?=$languageArray['status_code'][$language]?></th>
                                                         <th><?=$languageArray['action_code'][$language]?></th>
                                                     </tr>
@@ -189,9 +193,33 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
+                                                <label for="nric" class="col-sm-4 col-form-label">IC No *</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="nric" name="nric" placeholder="IC No" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
                                                 <label for="useremail" class="col-sm-4 col-form-label">User Email</label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control" id="useremail" name="useremail" placeholder="User Email">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                <label for="position" class="col-sm-4 col-form-label">Position</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="position" name="position" placeholder="Position">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                <label for="department" class="col-sm-4 col-form-label">Department</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="department" name="department" placeholder="Department">
                                                     </div>
                                                 </div>
                                             </div>
@@ -216,6 +244,37 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                             <?php while(mysqli_stmt_fetch($stmt4)){ ?>
                                                                 <option value="<?=$pcode ?>"><?=$pname ?></option>
                                                             <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                <label for="basicSalary" class="col-sm-4 col-form-label">Basic Salary (RM)</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" class="form-control" id="basicSalary" name="basicSalary" placeholder="Basic Salary (RM)" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                <label for="pcbCategory" class="col-sm-4 col-form-label">PCB Category</label>
+                                                    <div class="col-sm-8">
+                                                        <select class="form-select" id="pcbCategory" name="pcbCategory" required>
+                                                            <option value="1" selected>Category 1 (Single)</option>
+                                                            <option value="2">Category 2 (Married - Spouse Not Working)</option>
+                                                            <option value="3">Category 3 (Married - Spouse Working)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="row">
+                                                    <label for="isResident" class="col-sm-4 col-form-label">Is Resident *</label>
+                                                    <div class="col-sm-8">
+                                                        <select id="isResident" name="isResident" class="form-control" required>
+                                                            <option value="Y">YES</option>
+                                                            <option value="N">NO</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -396,9 +455,14 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 { data: 'employee_code' },
                 { data: 'username' },
                 { data: 'name' },
+                { data: 'nric' },
                 { data: 'useremail' },
                 { data: 'role' },
                 { data: 'plant' },
+                <?php if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'ADMIN'){ ?>
+                { data: 'basic_salary' },
+                <?php } ?>
+
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -477,11 +541,17 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             $('#addModal').find('#employeeCode').val("");
             $('#addModal').find('#username').val("");
             $('#addModal').find('#name').val("");
+            $('#addModal').find('#nric').val("");
             $('#addModal').find('#useremail').val("");
-            $('#addModal').find('#roles').val("");
+            $('#addModal').find('#department').val("");
+            $('#addModal').find('#position').val("");
+            $('#addModal').find('#roles').val("").trigger('change');
             $('#addModal').find('#plantId').val('').trigger('change');
             $('#addModal').find('#allowManual').val("N");
             $('#addModal').find('#allowDeduct').val("N");
+            $('#addModal').find('#isResident').val("Y");
+            $('#addModal').find('#basicSalary').val("");
+            $('#addModal').find('#pcbCategory').val("");
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -656,10 +726,16 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 $('#addModal').find('#username').val(obj.message.username);
                 $('#addModal').find('#name').val(obj.message.name);
                 $('#addModal').find('#useremail').val(obj.message.useremail);
+                $('#addModal').find('#nric').val(obj.message.nric);
+                $('#addModal').find('#department').val(obj.message.department);
+                $('#addModal').find('#position').val(obj.message.position);
                 $('#addModal').find('#roles').val(obj.message.role_code).trigger('change');
                 $("#addModal").find("#plantId").val(JSON.parse(obj.message.plant)).trigger("change");
                 $('#addModal').find('#allowManual').val(obj.message.allow_manual);
                 $('#addModal').find('#allowDeduct').val(obj.message.allow_deduct);
+                $('#addModal').find('#isResident').val(obj.message.is_resident);
+                $('#addModal').find('#basicSalary').val(obj.message.basic_salary);
+                $('#addModal').find('#pcbCategory').val(obj.message.pcb_category);
 
                 // Remove Validation Error Message
                 $('#addModal .is-invalid').removeClass('is-invalid');

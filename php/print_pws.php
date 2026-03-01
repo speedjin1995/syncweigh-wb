@@ -418,14 +418,14 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     </tr>
                                     <tr>
                                         <td>Percent (%):</td>
-                                        <td>'.$gradingDetail['bunch_size_25'].'</td>
-                                        <td>'.$gradingDetail['bunch_size_10'].'</td>
-                                        <td>'.$gradingDetail['bunch_size_9_10'].'</td>
-                                        <td>'.$gradingDetail['bunch_size_8_9'].'</td>
-                                        <td>'.$gradingDetail['bunch_size_7_8'].'</td>
-                                        <td>'.$gradingDetail['bunch_size_6_7'].'</td>
-                                        <td>'.$gradingDetail['bunch_size_5_6'].'</td>
-                                        <td>'.$gradingDetail['bunch_size_5'].'</td>
+                                        <td>'.($gradingDetail['bunch_size_25'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['bunch_size_10'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['bunch_size_9_10'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['bunch_size_8_9'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['bunch_size_7_8'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['bunch_size_6_7'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['bunch_size_5_6'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['bunch_size_5'] ?? '0').'</td>
                                     </tr>
                                     <tr>
                                         <td>Quality Factors:</td>
@@ -440,18 +440,18 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     </tr>
                                     <tr>
                                         <td>Percent (%):</td>
-                                        <td>'.$gradingDetail['unripe'].'</td>
-                                        <td>'.$gradingDetail['underripe'].'</td>
-                                        <td>'.$gradingDetail['empty_bunch'].'</td>
-                                        <td>'.$gradingDetail['rotten_bunch'].'</td>
-                                        <td>'.$gradingDetail['long_stalks'].'</td>
-                                        <td>'.$gradingDetail['dirty_bunch'].'</td>
-                                        <td>'.$gradingDetail['dura_bunch'].'</td>
-                                        <td>'.$gradingDetail['old_bunch'].'</td>
+                                        <td>'.($gradingDetail['unripe'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['underripe'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['empty_bunch'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['rotten_bunch'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['long_stalks'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['dirty_bunch'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['dura_bunch'] ?? '0').'</td>
+                                        <td>'.($gradingDetail['old_bunch'] ?? '0').'</td>
                                     </tr>
                                     <tr>
                                         <td>Rejected Bunches:</td>
-                                        <td>'.number_format($row['reject_weight'], 2).'</td>
+                                        <td>'.number_format($row['reject_weight'] ?? 0, 2).'</td>
                                     </tr>
                                 </table>
                             ';
@@ -496,7 +496,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                         <td>Weighed By:</td>
                                         <td>'.$row['tare_weight_by1'].'</td>
                                         <td>MSPO</td>
-                                        <td>'.$gradingDetail['mspo_weight'].' KG</td>
+                                        <td>'.number_format($gradingDetail['mspo_weight'] ?? 0, 2).' KG</td>
                                         <td>Gross WT:</td>
                                         <td style="text-align: right">'.number_format($row['gross_weight1'], 0).' Kg</td>
                                     </tr>
@@ -504,7 +504,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                         <td>Driver Name:</td>
                                         <td>'.$row['driver_name'].'</td>
                                         <td>NON MSPO</td>
-                                        <td>'.number_format($gradingDetail['non_mspo_weight'], 2).' KG</td>
+                                        <td>'.number_format($gradingDetail['non_mspo_weight'] ?? 0, 2).' KG</td>
                                         <td>Tare WT:</td>
                                         <td style="border-bottom: 1px solid black; text-align: right">'.number_format($row['tare_weight1'], 0).' Kg</td>
                                     </tr>

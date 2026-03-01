@@ -5,7 +5,7 @@ require_once "db_connect.php";
 if(isset($_POST['userID'])){
 	$id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
 
-    if ($update_stmt = $db->prepare("SELECT * FROM Users WHERE id=?")) {
+    if ($update_stmt = $db->prepare("SELECT * FROM Payslip WHERE id=?")) {
         $update_stmt->bind_param('s', $id);
         
         // Execute the prepared query.
@@ -22,20 +22,18 @@ if(isset($_POST['userID'])){
             
             while ($row = $result->fetch_assoc()) {
                 $message['id'] = $row['id'];
-                $message['employee_code'] = $row['employee_code'];
-                $message['username'] = $row['username'];
-                $message['name'] = $row['name'];
-                $message['useremail'] = $row['useremail'];
-                $message['nric'] = $row['nric'];
-                $message['position'] = $row['position'];
-                $message['department'] = $row['department'];
-                $message['role_code'] = $row['role'];
-                $message['plant'] = $row['plant_id'];
-                $message['basic_salary'] = $row['basic_salary'];
-                $message['allow_manual'] = $row['allow_manual'];
-                $message['allow_deduct'] = $row['allow_deduct'];
-                $message['is_resident'] = $row['is_resident'];
-                $message['pcb_category'] = $row['pcb_category'];
+                $message['payslip_no'] = $row['payslip_no'];
+                $message['user_id'] = $row['user_id'];
+                $message['date'] = $row['date'];
+                $message['payment_type'] = $row['payment_type'];
+                $message['cheque_no'] = $row['cheque_no'];
+                $message['cashbook_id'] = $row['cashbook_id'];
+                $message['earnings_detail'] = json_decode($row['earnings_detail'], true);
+                $message['deductions_detail'] = json_decode($row['deductions_detail'], true);
+                $message['gross_pay'] = $row['gross_pay'];
+                $message['total_deductions'] = $row['total_deductions'];
+                $message['net_pay'] = $row['net_pay'];
+
             }
             
             echo json_encode(
