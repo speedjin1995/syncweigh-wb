@@ -8,7 +8,7 @@
 // elements marked with the `deduction-field` class are shown.
 
 (function () {
-    const WS_URL = "ws://localhost:5002/pendrive"; // adjust port if your Python server uses a different one
+    const WS_URL = "ws://localhost:5002/ws_license"; // adjust port if your Python server uses a different one
     let socket;
 
     // helper to show/hide deduction elements and sidebar
