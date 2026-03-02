@@ -522,6 +522,9 @@ if ($rowd = $resultd->fetch_assoc()) {
                                         <input type="hidden" id="transactionId" name="transactionId">
                                         <input type="hidden" id="deliveryNo" name="deliveryNo">
                                         <input type="hidden" id="reduceWeight" name="reduceWeight">
+                                        <input type="hidden" id="oGrossIncoming" name="oGrossIncoming">
+                                        <input type="hidden" id="oTareOutgoing" name="oTareOutgoing">
+                                        <input type="hidden" id="oNettWeight" name="oNettWeight">
 
                                         <div class="row col-12">
                                             <div class="hstack gap-2 justify-content-end">
@@ -2743,6 +2746,9 @@ if ($rowd = $resultd->fetch_assoc()) {
             // Update the Flatpickr instance
             grossIncomingDatePicker.setDate(new Date()); // sets it to current date/time
             $('#grossIncomingDate').trigger('change');
+
+            // Temporary set oGrossIncoming
+            $('#oGrossIncoming').val(gross);
         });
 
         $('#grossCapture').on('click', function(event){
@@ -2764,6 +2770,8 @@ if ($rowd = $resultd->fetch_assoc()) {
             tareOutgoingDatePicker.setDate(new Date()); // sets it to current date/time
             $('#tareOutgoingDate').trigger('change');
 
+            // Temporary set oTareOutgoing
+            $('#oTareOutgoing').val(tare);
         });
 
         $('#tareCapture').on('click', function(event){
@@ -2788,6 +2796,9 @@ if ($rowd = $resultd->fetch_assoc()) {
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
             //$('#finalWeight').trigger('change');
+
+            // Temporary set oNettWeight
+            $('#oNettWeight').val($(this).val());
         });
         
         $('#reduceWeight').on('change', function(){
@@ -3717,7 +3728,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                 }
                 else{
                     $('#vehiclePlateNo1Edit').val('EDIT');
-                    $('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
+                    $('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).select2('destroy').select2();
                     $('#manualVehicle').val(0);
                     $('#manualVehicle').prop("checked", false);
                     $('.index-vehicle').show();
@@ -3732,7 +3743,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                     $('#vehicleNoTxt2').show();
                 }
                 else{
-                    $('#vehiclePlateNo2').val(obj.message.lorry_plate_no2).trigger('change');
+                    $('#vehiclePlateNo2').val(obj.message.lorry_plate_no2).select2('destroy').select2();
                     $('#manualVehicle2').val(0);
                     $('#manualVehicle2').prop("checked", false);
                     $('.index-vehicle2').show();
@@ -3772,12 +3783,15 @@ if ($rowd = $resultd->fetch_assoc()) {
                 
                 $('#otherRemarks').val(obj.message.remarks);
                 $('#grossIncoming').val(obj.message.gross_weight1);
+                $('#oGrossIncoming').val(obj.message.o_gross_weight1);
                 grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
                 $('#grossWeightBy1').val(obj.message.gross_weight_by1);
                 $('#tareOutgoing').val(obj.message.tare_weight1);
+                $('#oTareOutgoing').val(obj.message.o_tare_weight1);
                 tareOutgoingDatePicker.setDate(obj.message.tare_weight1_date != null ? new Date(obj.message.tare_weight1_date) : null);
                 $('#tareWeightBy1').val(obj.message.tare_weight_by1);
                 $('#nettWeight').val(obj.message.nett_weight1);
+                $('#oNettWeight').val(obj.message.o_nett_weight1);
                 $('#vehicleWeight2').val(obj.message.lorry_no2_weight);
                 $('#emptyContainerWeight2').val(obj.message.empty_container2_weight);
                 $('#replacementContainer').val(obj.message.replacement_container).trigger('keyup');

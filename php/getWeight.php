@@ -401,12 +401,15 @@ if(isset($_POST['userID'])){
                             $message['destination'] = $row['destination'];
                             $message['remarks'] = $row['remarks'];
                             $message['gross_weight1'] = $row['gross_weight1'];
+                            $message['o_gross_weight1'] = $row['gross_deduction1'];
                             $message['gross_weight1_date'] = $row['gross_weight1_date'];
                             $message['gross_weight_by1'] = $row['gross_weight_by1'];
                             $message['tare_weight1'] = $row['tare_weight1'];
+                            $message['o_tare_weight1'] = $row['tare_deduction1'];
                             $message['tare_weight1_date'] = $row['tare_weight1_date'];
                             $message['tare_weight_by1'] = $row['tare_weight_by1'];
                             $message['nett_weight1'] = $row['nett_weight1'];
+                            $message['o_nett_weight1'] = $row['nett_deduction1'];
                             $message['lorry_no2_weight'] = $row['lorry_no2_weight'];
                             $message['empty_container2_weight'] = $row['empty_container2_weight'];
                             $message['replacement_container'] = $row['replacement_container'];

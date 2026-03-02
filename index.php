@@ -1557,6 +1557,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                         <input type="hidden" id="tareWeightBy1" name="tareWeightBy1">
                                                         <input type="hidden" id="grossWeightBy2" name="grossWeightBy2">
                                                         <input type="hidden" id="tareWeightBy2" name="tareWeightBy2">
+                                                        <input type="hidden" id="oGrossIncoming" name="oGrossIncoming">
+                                                        <input type="hidden" id="oTareOutgoing" name="oTareOutgoing">
+                                                        <input type="hidden" id="oNettWeight" name="oNettWeight">
                                                     </form>
                                                 </div>
                                             </div><!-- /.modal-content -->
@@ -5056,6 +5059,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             // Update the Flatpickr instance
             grossIncomingDatePicker.setDate(new Date()); // sets it to current date/time
             $('#grossIncomingDate').trigger('change');
+
+            // Temporary set oGrossIncoming
+            $('#oGrossIncoming').val(gross);
         });
 
         $('#grossCapture').on('click', function(event){
@@ -5077,6 +5083,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             tareOutgoingDatePicker.setDate(new Date()); // sets it to current date/time
             $('#tareOutgoingDate').trigger('change');
 
+            // Temporary set oTareOutgoing
+            $('#oTareOutgoing').val(tare);
         });
 
         $('#tareCapture').on('click', function(event){
@@ -5112,6 +5120,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
             //$('#finalWeight').trigger('change');
+
+            // Temporary set oNettWeight
+            $('#oNettWeight').val($(this).val());
         });
         
         $('#reduceWeight').on('change', function(){
@@ -6251,12 +6262,15 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 
                 $('#addModal').find('#otherRemarks').val(obj.message.remarks);
                 $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
+                $('#addModal').find('#oGrossIncoming').val(obj.message.o_gross_weight1);
                 grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
                 $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);
                 $('#addModal').find('#tareOutgoing').val(obj.message.tare_weight1);
+                $('#addModal').find('#oTareOutgoing').val(obj.message.o_tare_weight1);
                 tareOutgoingDatePicker.setDate(obj.message.tare_weight1_date != null ? new Date(obj.message.tare_weight1_date) : null);
                 $('#addModal').find('#tareWeightBy1').val(obj.message.tare_weight_by1);
                 $('#addModal').find('#nettWeight').val(obj.message.nett_weight1);
+                $('#addModal').find('#oNettWeight').val(obj.message.o_nett_weight1);
                 $('#addModal').find('#vehicleWeight2').val(obj.message.lorry_no2_weight);
                 $('#addModal').find('#emptyContainerWeight2').val(obj.message.empty_container2_weight);
                 $('#addModal').find('#replacementContainer').val(obj.message.replacement_container).trigger('keyup');
