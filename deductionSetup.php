@@ -441,6 +441,7 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                         $('#defaultView').hide();
                         $('#customerSupplierView').hide();
                     } else if (selectedValue == 'Auto') {
+                        loadAutoData();
                         $('#manualView').hide();
                         $('#autoView').show();
                         $('#autoNewBtn').removeClass('d-none');
