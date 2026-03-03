@@ -81,15 +81,15 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
             else{
                 $result2 = $update_stmt2->get_result();
 				$id = '1';
-				$transactionId = $plantCode.'/';
+				$transactionId = '';
 
 				if ($row2 = $result2->fetch_assoc()) {
 					//$id = $row2['misc_id'];
 
                     if ($weightType == 'Container'){
-                        $transactionId .= 'C/'.$row2['prefix'] . '/'.$today . '-';
+                        $transactionId .= 'C/'.$row2['prefix'] . '26';
                     }else{
-                        $transactionId .= $row2['prefix'] . '/' .$today . '-';
+                        $transactionId .= $row2['prefix'] . '26';
                         $diffContainerTransId = $transactionId;
                     }
 				} 
@@ -123,7 +123,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
 							$charSize = strlen($row['curcount']);
 							$misValue = $row['curcount'];
 		
-							for($i=0; $i<(4-(int)$charSize); $i++){
+							for($i=0; $i<(6-(int)$charSize); $i++){
 								$transactionId.='0';  // S0000
 							}
 					
