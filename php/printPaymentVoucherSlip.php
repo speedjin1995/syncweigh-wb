@@ -27,6 +27,9 @@ if(isset($_POST['customerSupplier'], $_POST['transactionDate'])) {
     $compname = 'SYNCTRONIX TECHNOLOGY (M) SDN BHD';
     $compreg = '123456789-X';
     $compaddress = 'No.34, Jalan Bagan 1, Taman Bagan, 13400 Butterworth. Penang.';
+    $compaddress1 = 'No.34, Jalan Bagan 1, Taman Bagan, 13400 Butterworth. Penang.';
+    $compaddress2 = '';
+    $compaddress3 = '';
     $compphone = '6043325822';
     
     $stmt = $db->prepare("SELECT * FROM Company WHERE id = 1");
@@ -36,6 +39,9 @@ if(isset($_POST['customerSupplier'], $_POST['transactionDate'])) {
         $compname = $row['name'];
         $compreg = $row['company_reg_no'];
         $compaddress = $row['address_line_1'] . ', ' . $row['address_line_2'] . ', ' . $row['address_line_3'];
+        $compaddress1 = $row['address_line_1'];
+        $compaddress2 = $row['address_line_2'];
+        $compaddress3 = $row['address_line_3'];
         $compphone = $row['phone_no'];
     }
     
@@ -48,7 +54,9 @@ if(isset($_POST['customerSupplier'], $_POST['transactionDate'])) {
         
         if ($row = $result->fetch_assoc()) {
             $voucherDate = date('d/m/Y', strtotime($row['voucher_date']));
-            
+            $pvLogoPath = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "pv_logo.png";
+            $pvLogoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($pvLogoPath));
+
             // Format date to Malay month and year
             $malayMonths = array(
                 1 => 'JANUARI', 2 => 'FEBRUARI', 3 => 'MAC', 4 => 'APRIL',
@@ -74,112 +82,127 @@ if(isset($_POST['customerSupplier'], $_POST['transactionDate'])) {
             
             $message = '
             <html>
-            <head>
-                <style>
-                    @media print {
-                        @page {
-                            size: A5 landscape;
-                            margin: 1in 1in;
-                        }
+            <style>
+                @media print {
+                    @page {
+                        size: A5 landscape;
+                        margin: 1in 1in;
                     }
-                    body {
-                        font-family: Arial, sans-serif;
-                        font-size: 11px;
-                        margin: 20px;
-                        padding: 0;
-                    }
-                    .header {
-                        text-align: center;
-                        margin-bottom: 15px;
-                    }
-                    .header h3 {
-                        margin: 0;
-                        font-size: 13px;
-                        font-weight: bold;
-                    }
-                    .header p {
-                        margin: 2px 0;
-                        font-size: 10px;
-                    }
-                    .title {
-                        text-align: center;
-                        font-size: 14px;
-                        font-weight: bold;
-                        margin: 10px 0;
-                        text-decoration: underline;
-                    }
-                    .info-row {
-                        display: flex;
-                        justify-content: space-between;
-                        margin-bottom: 10px;
-                        gap: 20px;
-                    }
-                    .info-item {
-                        display: flex;
-                        align-items: baseline;
-                        flex: 1;
-                    }
-                    .info-label {
-                        font-weight: bold;
-                        width: 100px;
-                        display: inline-block;
-                    }
-                    .info-value {
-                        border-bottom: 1px solid #000;
-                        flex: 1;
-                        display: inline-block;
-                    }
-                    table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin: 10px 0;
-                    }
-                    th, td {
-                        border: 1px solid #000;
-                        padding: 5px;
-                        text-align: center;
-                        font-size: 10px;
-                    }
-                    th {
-                        font-weight: bold;
-                        background-color: #f0f0f0;
-                    }
-                    .text-right {
-                        text-align: right;
-                    }
-                    .text-left {
-                        text-align: left;
-                    }
-                    .total-row {
-                        font-weight: bold;
-                    }
-                    .footer {
-                        margin-top: 15px;
-                        font-size: 10px;
-                    }
-                    .signature {
-                        margin-top: 50px;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-end;
-                    }
-                    .signature p {
-                        text-align: left;
-                        width: 200px;
-                        margin: 0;
-                    }
-                    .signature-line {
-                        border-top: 1px solid #000;
-                        width: 200px;
-                        margin-top: 50px;
-                    }
-                </style>
-            </head>
+                }
+                body {
+                    font-family: Arial, sans-serif;
+                    font-size: 11px;
+                    margin: 20px;
+                    padding: 0;
+                }
+                .header {
+                    position: relative;
+                    margin-bottom: 25px;
+                    text-align: center;
+                }
+                .header-logo {
+                    position: absolute;
+                    left: 50px;
+                    top: 10px;
+                    width: 80px;
+                    height: auto;
+                }
+                .header-text {
+                    text-align: center;
+                }
+                .header h3 {
+                    margin: 0;
+                    padding: 3px 0;
+                    font-size: 13px;
+                    font-weight: bold;
+                }
+                .header p {
+                    margin: 0;
+                    padding: 3px 0;
+                    font-size: 12px;
+                }
+                .title {
+                    text-align: center;
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin: 10px 0;
+                    text-decoration: underline;
+                }
+                .info-row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+                    gap: 20px;
+                }
+                .info-item {
+                    display: flex;
+                    align-items: baseline;
+                    flex: 1;
+                }
+                .info-label {
+                    font-weight: bold;
+                    width: 100px;
+                    display: inline-block;
+                }
+                .info-value {
+                    border-bottom: 1px solid #000;
+                    flex: 1;
+                    display: inline-block;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 10px 0;
+                }
+                th, td {
+                    border: 1px solid #000;
+                    padding: 5px;
+                    text-align: center;
+                    font-size: 10px;
+                }
+                th {
+                    font-weight: bold;
+                    background-color: #f0f0f0;
+                }
+                .text-right {
+                    text-align: right;
+                }
+                .text-left {
+                    text-align: left;
+                }
+                .total-row {
+                    font-weight: bold;
+                }
+                .footer {
+                    margin-top: 15px;
+                    font-size: 10px;
+                }
+                .signature {
+                    margin-top: 50px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                }
+                .signature p {
+                    text-align: left;
+                    width: 200px;
+                    margin: 0;
+                }
+                .signature-line {
+                    border-top: 1px solid #000;
+                    width: 200px;
+                    margin-top: 50px;
+                }
+            </style>
             <body>
                 <div class="header">
-                    <h3>'.$compname.' (No. Daftar: '.$compreg.')</h3>
-                    <p>'.$compaddress.'</p>
-                    <p>TEL: '.$compphone.'</p>
+                    <img src="'.$pvLogoBase64.'" alt="Logo" class="header-logo">
+                    
+                    <div class="header-text">
+                        <h3>'.$compname.' (No. Daftar: '.$compreg.')</h3>
+                        <p>'.$compaddress1.' '.$compaddress2.'</p>
+                        <p>'.$compaddress3.' TEL: '.$compphone.'</p>
+                    </div>
                 </div>
                 
                 <div class="title">BAUCER BAYARAN</div>
