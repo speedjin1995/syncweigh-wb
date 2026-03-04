@@ -2,7 +2,6 @@
 session_start();
 ## Database configuration
 require_once 'db_connect.php';
-require_once 'requires/lookup.php';
 
 ## Read value
 $draw = $_POST['draw'];
@@ -16,41 +15,30 @@ $searchValue = mysqli_real_escape_string($db,$_POST['search']['value']); // Sear
 ## Search 
 $searchQuery = " ";
 if($searchValue != ''){
-  $searchQuery = " and (name like '%".$searchValue."%' or company_reg_no like '%".$searchValue."%' or supplier_code like '%".$searchValue."%')";
+  $searchQuery = " and (grader_name like '%".$searchValue."%' or cert_id like '%".$searchValue."%')";
 }
 
 ## Total number of records without filtering
-$sel = mysqli_query($db,"select count(*) as allcount from Supplier");
+$sel = mysqli_query($db,"select count(*) as allcount from Grader");
 $records = mysqli_fetch_assoc($sel);
 $totalRecords = $records['allcount'];
 
 ## Total number of record with filtering
-$sel = mysqli_query($db,"select count(*) as allcount from Supplier WHERE status IN (0)".$searchQuery);
+$sel = mysqli_query($db,"select count(*) as allcount from Grader WHERE status IN (0)".$searchQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
-$empQuery = "select * from Supplier WHERE status IN (0)".$searchQuery."order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+$empQuery = "select * from Grader WHERE status IN (0)".$searchQuery."order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 $empRecords = mysqli_query($db, $empQuery);
 $data = array();
 
 while($row = mysqli_fetch_assoc($empRecords)) {
     $data[] = array( 
       "id"=>$row['id'],
-      "supplier_code"=>$row['supplier_code'],
-      "name"=>$row['name'],
-      "company_reg_no"=>$row['company_reg_no'],
-      "new_reg_no"=>$row['new_reg_no'],
-      "address_line_1"=>$row['address_line_1'],
-      "address_line_2"=>$row['address_line_2'],
-      "address_line_3"=>$row['address_line_3'],
-      "phone_no"=>$row['phone_no'],
-      "fax_no"=>$row['fax_no'],
-      "contact_name"=>$row['contact_name'],
-      "ic_no"=>$row['ic_no'],
-      "tin_no"=>$row['tin_no'],
-      "status"=>$row['status'],
-      "supplier_deduction_id"=>searchSupplierDeductionIdBySupplierId($row['id'], $db)
+      "grader_name"=>$row['grader_name'],
+      "cert_id"=>$row['cert_id'],
+      "status"=>$row['status']
     );
 }
 

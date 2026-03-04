@@ -240,6 +240,14 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
+                                                                                    <label for="mspoNo" class="col-sm-4 col-form-label"><?=$languageArray['mspo_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="mspoNo" name="mspoNo" placeholder="<?=$languageArray['mspo_code'][$language]?>">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
                                                                                     <label for="paymentTerm" class="col-sm-4 col-form-label"><?=$languageArray['payment_term_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <select id="paymentTerm" name="paymentTerm" class="form-select select2">
@@ -337,8 +345,8 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                             <div class="d-flex align-items-center">
                                                                 <label for="statusSwitch" class="col-form-label me-2">Mode</label>
                                                                 <select id="statusSwitch" name="statusSwitch" class="form-select select2" style="width: 150px;">
-                                                                    <option value="Manual" selected>Manual</option>
-                                                                    <option value="Auto">Auto</option>
+                                                                    <!--option value="Manual" selected>Manual</option-->
+                                                                    <option value="Auto" selected>Auto</option>
                                                                     <option value="Disable">Disable</option>
                                                                 </select>
                                                             </div>
@@ -662,10 +670,11 @@ $(function () {
                     dropdownHtml += '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>';
 
                     // Conditionally add Deduction Setup button
-                    // if (role === 'ADMIN' || role === 'SADMIN' || allowDeduct === 'Y') {
-                    //     dropdownHtml += '<li><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ')">';
-                    //     dropdownHtml += '<i class="ri-subtract-fill align-bottom me-2 text-muted"></i> <?=$languageArray['deduction_setup_code'][$language] ?></a></li>';
-                    // }
+                    if (role === 'ADMIN' || role === 'SADMIN' || allowDeduct === 'Y') {
+                        // mark item so it will disappear when pendrive missing
+                        dropdownHtml += '<li class="deduction-field"><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ', ' + row.supplier_deduction_id + ')">';
+                        dropdownHtml += '<i class="ri-subtract-fill align-bottom me-2 text-muted"></i> <?=$languageArray['deduction_setup_code'][$language] ?></a></li>';
+                    }
 
                     // Delete button
                     dropdownHtml += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')">';
@@ -783,6 +792,7 @@ $(function () {
         $('#addModal').find('#icNo').val("");
         $('#addModal').find('#tinNo').val("");
         $('#addModal').find('#mpob').val("");
+        $('#addModal').find('#mspoNo').val("");
         $('#addModal').find('#paymentTerm').val("Term").trigger('change');
         $('#addModal').find('#customer').val("").trigger('change');
 
@@ -1015,24 +1025,24 @@ $(function () {
         if($('#deductionForm').valid()){
             $('#deductionModal').modal('hide');
             // Switch modal to ask for password3
-            $('#passwordModal').find('#password2Div').hide();
-            $('#passwordModal').find('#password3Div').show();
-            $("#passwordModal").modal({
-                backdrop: 'static', // disable closing by clicking outside
-                keyboard: false // disable ESC close
-            }).modal("show");
+            // $('#passwordModal').find('#password2Div').hide();
+            // $('#passwordModal').find('#password3Div').show();
+            // $("#passwordModal").modal({
+            //     backdrop: 'static', // disable closing by clicking outside
+            //     keyboard: false // disable ESC close
+            // }).modal("show");
 
 
             // Handle password3 submit
-            $("#passwordCheckForm").off("submit").on("submit", function (e) {
-                e.preventDefault();
-                var password3 = $('#password3').val();
+            // $("#passwordCheckForm").off("submit").on("submit", function (e) {
+            //     e.preventDefault();
+            //     var password3 = $('#password3').val();
 
-                $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
-                    let obj = JSON.parse(data);
+            //     $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
+            //         let obj = JSON.parse(data);
 
-                    if (obj.status === "success") {
-                        $("#passwordModal").modal("hide");
+            //         if (obj.status === "success") {
+            //             $("#passwordModal").modal("hide");
 
                         // Proceed with saving form
                         $.post('php/deductions.php', $('#deductionForm').serialize(), function (data) {
@@ -1046,11 +1056,11 @@ $(function () {
                                 alert("Failed to update ports");
                             }
                         });
-                    } else {
-                        alert(obj.message);
-                    }
-                });
-            });
+            //         } else {
+            //             alert(obj.message);
+            //         }
+            //     });
+            // });
         }
     });
 
@@ -1209,6 +1219,7 @@ function edit(id){
             $('#addModal').find('#icNo').val(obj.message.ic_no);
             $('#addModal').find('#tinNo').val(obj.message.tin_no);
             $('#addModal').find('#mpob').val(obj.message.mpob);
+            $('#addModal').find('#mspoNo').val(obj.message.mspo_no);
             $('#addModal').find('#paymentTerm').val(obj.message.payment_term).trigger('change');
             $('#addModal').find('#customer').val(obj.message.customer_id).trigger('change');
 
@@ -1302,17 +1313,50 @@ function reactivate(id) {
   $('#spinnerLoading').hide();
 }
 
-function deduction(id) {
-    $('#deductionModal').find('#custSuppId').val(id);
-    $('#deductionModal').find('#deductionId').val('');
-    $('#passwordModal').find('#password2').val('');
-    $('#passwordModal').find('#password3').val('');
-    $('#passwordModal').find('#password2Div').show(); // show password2 input
-    $('#passwordModal').find('#password3Div').hide(); // hide password3 input
-    $("#passwordModal").modal({
-        backdrop: 'static', // disable closing by clicking outside
-        keyboard: false // disable ESC close
-    }).modal("show");
+function deduction(id, deductionId = '') {
+    $('#spinnerLoading').show();
+    $.post('php/getDeduction.php', {userID: deductionId, type: "Supplier"}, function(data)
+    {
+        var obj = JSON.parse(data);
+        if(obj.status === 'success'){
+            $('#deductionModal').find('#custSuppId').val(id);
+            $('#deductionModal').find('#deductionId').val(obj.message.id || deductionId);
+            $('#deductionModal').find('#statusSwitch').val(obj.message.status).trigger('change');
+            $('#deductionModal').find('#F1').val(obj.message.F1);
+            $('#deductionModal').find('#F2').val(obj.message.F2);
+            $('#deductionModal').find('#F3').val(obj.message.F3);
+            $('#deductionModal').find('#F4').val(obj.message.F4);
+            $('#deductionModal').find('#F5').val(obj.message.F5);
+            $('#deductionModal').find('#F6').val(obj.message.F6);
+            $('#deductionModal').find('#F7').val(obj.message.F7);
+            $('#deductionModal').find('#F8').val(obj.message.F8);
+            $('#deductionModal').find('#F9').val(obj.message.F9);
+            $('#deductionModal').find('#F10').val(obj.message.F10);
+            $('#deductionModal').find('#F11').val(obj.message.F11);
+            $('#deductionModal').find('#F12').val(obj.message.F12);
+            loadAutoDeductionData(obj.message.auto_data);
+            $('#deductionModal').modal('show');
+            // $('#passwordModal').find('#password2').val('');
+            // $('#passwordModal').find('#password3').val('');
+            // $('#passwordModal').find('#password2Div').show(); // show password2 input
+            // $('#passwordModal').find('#password3Div').hide(); // hide password3 input
+            // $("#passwordModal").modal({
+            //     backdrop: 'static', // disable closing by clicking outside
+            //     keyboard: false // disable ESC close
+            // }).modal("show");
+        }
+        else if(obj.status === 'failed'){
+            $('#spinnerLoading').hide();
+            $("#failBtn").attr('data-toast-text', obj.message );
+            $("#failBtn").click();
+        }
+        else{
+            $('#spinnerLoading').hide();
+            $("#failBtn").attr('data-toast-text', obj.message );
+            $("#failBtn").click();
+        }
+        $('#spinnerLoading').hide();
+    });
 }
 
 </script>

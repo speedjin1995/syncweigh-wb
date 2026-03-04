@@ -4,26 +4,50 @@
 <?php
 $plantId = $_SESSION['plant'];
 
-$customer2 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
-$supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
-$supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
+$user = $db->query("SELECT * FROM Users WHERE status = '0' ORDER BY name ASC");
+$cashbook = $db->query("SELECT * FROM Cash_Book WHERE deleted = '0' ORDER BY cash_book_no ASC");
 
 // Get Company Detail
 $stmt = $db->prepare("SELECT * from Company WHERE id = 1");
 $stmt->execute();
 $result = $stmt->get_result();
-
-$includePrice = '';
-$includeContainer = '';
+$epf = 0;
 if(($row = $result->fetch_assoc()) !== null){
-    $includePrice = $row['include_price'];
-    $includeContainer = $row['include_container'];
+    $epf = $row['epf'];
 }
+
+// Get Payslip Setting
+$socso = [];
+$eis = [];
+$tax = [];
+$nonResidentTaxRate = null;
+$individualReliefFund = null;
+$individualEpfReliefFund = null;
+$stmt2 = $db->prepare("SELECT name, value FROM miscellaneous WHERE name IN ('socso', 'eis', 'tax', 'non_res_epf', 'ind_relief', 'ind_epf_relief')");
+$stmt2->execute();
+$result2 = $stmt2->get_result();
+while ($row = $result2->fetch_assoc()) {
+    if($row['name'] == 'socso') {
+        $socso = !empty($row['value']) ? json_decode($row['value'], true) : [];
+    } else if($row['name'] == 'eis') {
+        $eis = !empty($row['value']) ? json_decode($row['value'], true) : [];
+    } else if($row['name'] == 'tax') {
+        $tax = !empty($row['value']) ? json_decode($row['value'], true) : [];
+    } else if($row['name'] == 'non_res_epf') {
+        $nonResidentTaxRate = $row['value'];
+    } else if($row['name'] == 'ind_relief') {
+        $individualReliefFund = $row['value'];
+    } else if($row['name'] == 'ind_epf_relief') {
+        $individualEpfReliefFund = $row['value'];
+    }
+}
+$stmt2->close();
+
 ?>
 
 <head>
 
-    <title><?=$languageArray['cash_book_code'][$language]?> | PWS - Weighing System</title>
+    <title><?=$languageArray['payslip_code'][$language]?> | PWS - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -138,18 +162,50 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="row mb-3">
                                                                     <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label"><?=$languageArray['cash_book_no_code'][$language]?></label>
-                                                                        <input type="text" class="form-control input-readonly" id="cashBookNo" name="cashBookNo" placeholder="<?=$languageArray['cash_book_no_code'][$language]?>" readonly>
+                                                                        <label class="form-label"><?=$languageArray['pay_slip_no_code'][$language]?></label>
+                                                                        <input type="text" class="form-control input-readonly" id="paySlipNo" name="paySlipNo" placeholder="<?=$languageArray['pay_slip_no_code'][$language]?>" readonly>
                                                                     </div>
                                                                     <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label"><?=$languageArray['date_code'][$language]?></label>
+                                                                        <label class="form-label"><?=$languageArray['date_code'][$language]?> *</label>
                                                                         <input type="text" class="form-control" id="date" name="date" required>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label"><?=$languageArray['employee_code'][$language]?> *</label>
+                                                                        <select id="employee" name="employee" class="form-select select2" required>
+                                                                            <option selected>-</option>
+                                                                            <?php while($rowUser=mysqli_fetch_assoc($user)){ ?>
+                                                                                <option value="<?=$rowUser['id'] ?>"><?=$rowUser['employee_code'] . ' - ' . $rowUser['name'] ?></option>
+                                                                            <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label"><?=$languageArray['payment_type_code'][$language]?> *</label>
+                                                                        <select id="paymentType" name="paymentType" class="form-select select2" required>
+                                                                            <option value="CASH">Cash</option>
+                                                                            <option value="BANK">Bank Transfer</option>
+                                                                            <option value="CHEQUE">Cheque</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4" id="chequeNoDiv" style="display:none">
+                                                                        <label class="form-label"><?=$languageArray['cheque_no_code'][$language]?></label>
+                                                                        <input type="text" class="form-control" id="chequeNo" name="chequeNo">
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label"><?=$languageArray['cash_book_code'][$language]?></label>
+                                                                        <select id="cashBook" name="cashBook" class="form-select select2" >
+                                                                            <option selected>-</option>
+                                                                            <?php while($rowCashBook=mysqli_fetch_assoc($cashbook)){ ?>
+                                                                                <option value="<?=$rowCashBook['id'] ?>"><?=$rowCashBook['cash_book_no'] ?></option>
+                                                                            <?php } ?>
+                                                                        </select>
                                                                     </div>
                                                                 </div>
 
                                                                 <div class="row mt-4">
                                                                     <div class="col-xxl-6 col-lg-6">
-                                                                        <h6 class="mb-2"><?=$languageArray['cash_book_code'][$language]?> (-)</h6>
+                                                                        <h6 class="mb-2"><?=$languageArray['earnings_code'][$language]?> (+)</h6>
                                                                         <table class="table table-bordered align-middle">
                                                                             <thead>
                                                                                 <tr>
@@ -157,6 +213,29 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                     <th width="30%"><?=$languageArray['type_code'][$language]?></th>
                                                                                     <th width="45%"><?=$languageArray['description_code'][$language]?></th>
                                                                                     <th width="15%"><?=$languageArray['amount_code'][$language]?></th>
+                                                                                    <th width="10%"><button type="button" class="btn btn-sm btn-success" id="addEarningsRow"><i class="bx bx-plus"></i></button></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="earningsTable">
+                                                                            </tbody>
+                                                                            <tfoot>
+                                                                                <tr>
+                                                                                    <th colspan="3" class="text-end"><?=$languageArray['total_code'][$language]?>:</th>
+                                                                                    <th><input type="number" class="form-control form-control-sm" id="grossPay" name="grossPay" readonly></th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </tfoot>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div class="col-xxl-6 col-lg-6">
+                                                                        <h6 class="mb-2"><?=$languageArray['deductions_code'][$language]?> (-)</h6>
+                                                                        <table class="table table-bordered align-middle">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th width="10%"><?=$languageArray['number_short_code'][$language]?></th>
+                                                                                    <th width="35%"><?=$languageArray['type_code'][$language]?></th>
+                                                                                    <th width="30%"><?=$languageArray['description_code'][$language]?></th>
+                                                                                    <th width="25%"><?=$languageArray['amount_code'][$language]?></th>
                                                                                     <th width="10%"><button type="button" class="btn btn-sm btn-success" id="addDeductionRow"><i class="bx bx-plus"></i></button></th>
                                                                                 </tr>
                                                                             </thead>
@@ -171,28 +250,24 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                             </tfoot>
                                                                         </table>
                                                                     </div>
-                                                                    <div class="col-xxl-6 col-lg-6">
-                                                                        <h6 class="mb-2"><?=$languageArray['cash_book_code'][$language]?> (+)</h6>
-                                                                        <table class="table table-bordered align-middle">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th width="10%"><?=$languageArray['number_short_code'][$language]?></th>
-                                                                                    <th width="35%"><?=$languageArray['type_code'][$language]?></th>
-                                                                                    <th width="30%"><?=$languageArray['description_code'][$language]?></th>
-                                                                                    <th width="25%"><?=$languageArray['amount_code'][$language]?></th>
-                                                                                    <th width="10%"><button type="button" class="btn btn-sm btn-success" id="addAdditionRow"><i class="bx bx-plus"></i></button></th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody id="additionTable">
-                                                                            </tbody>
-                                                                            <tfoot>
-                                                                                <tr>
-                                                                                    <th colspan="3" class="text-end"><?=$languageArray['total_code'][$language]?>:</th>
-                                                                                    <th><input type="number" class="form-control form-control-sm" id="totalAddition" name="totalAddition" readonly></th>
-                                                                                    <th></th>
-                                                                                </tr>
-                                                                            </tfoot>
-                                                                        </table>
+                                                                </div>
+
+                                                                <div class="row mt-4">
+                                                                    <div class="col-12">
+                                                                        <div class="card bg-light border-0">
+                                                                            <div class="card-body p-3">
+                                                                                <div class="row align-items-center">
+                                                                                    <div class="col-md-6">
+                                                                                        <h5 class="mb-0 text-primary"><?=$languageArray['net_pay_code'][$language]?></h5>
+                                                                                        <small class="text-muted"><?=$languageArray['gross_pay_code'][$language]?> - <?=$languageArray['deductions_code'][$language]?></small>
+                                                                                    </div>
+                                                                                    <div class="col-md-6 text-end">
+                                                                                        <h3 class="mb-0 text-success fw-bold">RM <span id="netPayDisplay">0.00</span></h3>
+                                                                                        <input type="hidden" id="netPay" name="netPay" value="0">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
 
@@ -251,14 +326,14 @@ if(($row = $result->fetch_assoc()) !== null){
                                                     <div class="card-header" >
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title text-white mb-0"><?=$languageArray['cash_book_payment_code'][$language]?></h5>
+                                                                <h5 class="card-title text-white mb-0"><?=$languageArray['payslip_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <button type="button" id="exportPdf" class="btn btn-info waves-effect waves-light">
+                                                                <!-- <button type="button" id="exportPdf" class="btn btn-info waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     Export Report
-                                                                </button>
-                                                                <button type="button" id="addCashBook" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                </button> -->
+                                                                <button type="button" id="addPayslip" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
@@ -275,9 +350,11 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['date_code'][$language]?></th>
-                                                                    <th><?=$languageArray['cash_book_no_code'][$language]?></th>
-                                                                    <th><?=$languageArray['total_deduction_code'][$language]?> (RM)</th>
-                                                                    <th><?=$languageArray['total_addition_code'][$language]?> (RM)</th>
+                                                                    <th><?=$languageArray['pay_slip_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['employee_code'][$language]?></th>
+                                                                    <th><?=$languageArray['gross_pay_code'][$language]?> (RM)</th>
+                                                                    <th><?=$languageArray['deductions_code'][$language]?> (RM)</th>
+                                                                    <th><?=$languageArray['net_pay_code'][$language]?> (RM)</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -303,6 +380,35 @@ if(($row = $result->fetch_assoc()) !== null){
 
     </div>
 
+    <script type="text/html" id="earningsDetail">
+        <tr class="details">
+            <td>
+                <input type="text" class="form-control" id="earningsNo" name="earningsNo" readonly>
+            </td>
+            <td>
+                <select class="form-select" id="earningsType" name="earningsType" required>
+                    <option value="BASIC">Basic Salary</option>
+                    <option value="ALLOWANCE">Allowance</option>
+                    <option value="OVERTIME">Overtime</option>
+                    <option value="BONUS">Bonus</option>
+                    <option value="COMMISSION">Commission</option>
+                    <option value="CLAIMS">Claims</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" class="form-control" id="earningsDesc" name="earningsDesc">
+            </td>
+            <td>
+                <input type="number" class="form-control" id="earningsAmt" name="earningsAmt" value="0" required>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger" id="remove">
+                    <i class="fa fa-times"></i>
+                </button>
+            </td>
+        </tr>
+    </script>
+
     <script type="text/html" id="deductionDetail">
         <tr class="details">
             <td>
@@ -310,52 +416,17 @@ if(($row = $result->fetch_assoc()) !== null){
             </td>
             <td>
                 <select class="form-select" id="deductionType" name="deductionType" required>
-                    <option value="CASHOUT">Cash Out (RM)</option>
-                    <option value="CREDITNOTE">Credit Note (RM)</option>
-                    <option value="CREDITFFBRAM">Credit FFB Advance (Ramp) (RM)</option>
-                    <option value="CREDITFFBHQ">Credit FFB Advance (HQ) (RM)</option>
-                    <option value="CREDITFFBADV">Credit FFB Advance (RM)</option>
-                    <option value="GENERAL">General Expenses (RM)</option>
-                    <option value="PETROL_DIESEL">Petrol/Diesel (RM)</option>
-                    <option value="STAFFADV">Staff Advance (RM)</option>
-                    <option value="STAFFSAL">Staff Salary (RM)</option>
-                    <option value="FFBSHORTAGE">FFB Shortage (MT)</option>
-                    <option value="CREDITFFBPAY">Credit FFB payment (RM)</option>
+                    <option value="EMP_EPF">Employee EPF</option>
+                    <option value="EMP_SOCSO">Employee SOCSO</option>
+                    <option value="TAX">Tax</option>
+                    <option value="EMP_EIS">Employee EIS</option>
                 </select>
             </td>
             <td>
-                <input type="text" class="form-control" id="deductionDesc" name="deductionDesc" style="background-color:white;" required>
+                <input type="text" class="form-control" id="deductionDesc" name="deductionDesc" style="background-color:white;">
             </td>
             <td>
                 <input type="number" class="form-control" id="deductionAmt" name="deductionAmt" style="background-color:white;" value="0" required>
-            </td>
-            <td class="d-flex" style="text-align:center">
-                <button class="btn btn-sm btn-danger" id="remove" style="background-color: #f06548;">
-                    <i class="fa fa-times"></i>
-                </button>
-            </td>
-        </tr>
-    </script>
-
-    <script type="text/html" id="additionDetail">
-        <tr class="details">
-            <td>
-                <input type="text" class="form-control" id="additionNo" name="additionNo" readonly>
-            </td>
-            <td>
-                <select class="form-select" id="additionType" name="additionType" required>
-                    <option value="CASHHQ">Cash From HQ (RM)</option>
-                    <option value="CASHRAM">Cash Received By Ramp (RM)</option>
-                    <option value="CASHFFBCUST">Cash Received By FFB Customer (RM)</option>
-                    <option value="DEBITNOTE">Debit Note (RM)</option>
-                    <option value="CASHIN">Cash In (RM)</option>
-                </select>
-            </td>
-            <td>
-                <input type="text" class="form-control" id="additionDesc" name="additionDesc" style="background-color:white;" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="additionAmt" name="additionAmt" style="background-color:white;" value="0" required>
             </td>
             <td class="d-flex" style="text-align:center">
                 <button class="btn btn-sm btn-danger" id="remove" style="background-color: #f06548;">
@@ -392,11 +463,23 @@ if(($row = $result->fetch_assoc()) !== null){
     <script src="assets/js/pages/datatables.init.js"></script>
     <!-- Additional js -->
     <script src="assets/js/additional.js"></script>
+    <script src="assets/js/calculate_pcb.js"></script>
 
     <script type="text/javascript">
     
+    var category = 1;
+    var isResident = 'Y';
+    var earningTypes = ['BASIC', 'ALLOWANCE', 'OVERTIME', 'BONUS', 'COMMISSION', 'CLAIMS'];
+    var deductionTypes = ['EMP_EPF', 'EMP_SOCSO', 'TAX', 'EMP_EIS'];
+    var epf = <?=$epf?>;
+    var nonResidentTaxRate = <?=$nonResidentTaxRate?>;
+    var individualReliefFund = <?=$individualReliefFund?>;
+    var individualEpfReliefFund = <?=$individualEpfReliefFund?>;
+    var socso = <?=json_encode($socso)?>;
+    var eis = <?=json_encode($eis)?>;
+    var tax = <?=json_encode($tax)?>;
+    var earningsRowCount = 0;
     var deductionRowCount = 0;
-    var additionRowCount = 0;
     const today = new Date();
     const tomorrow = new Date(today);
     const yesterday = new Date(today);
@@ -460,7 +543,7 @@ if(($row = $result->fetch_assoc()) !== null){
             'searching': false,
             'serverMethod': 'post',
             'ajax': {
-                'url':'php/filterCashBook.php',
+                'url':'php/filterPaySlip.php',
                 'data': {
                     fromDate: fromDateI,
                     toDate: toDateI
@@ -477,9 +560,11 @@ if(($row = $result->fetch_assoc()) !== null){
                     }
                 },
                 { data: 'date' },
-                { data: 'cash_book_no' },
-                { data: 'total_deduction' },
-                { data: 'total_addition' },
+                { data: 'payslip_no' },
+                { data: 'user_id' },
+                { data: 'gross_pay' },
+                { data: 'total_deductions' },
+                { data: 'net_pay' },
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -532,7 +617,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 'searching': false,
                 'serverMethod': 'post',
                 'ajax': {
-                    'url':'php/filterCashBook.php',
+                    'url':'php/filterPaySlip.php',
                     'data': {
                         fromDate: fromDateI,
                         toDate: toDateI
@@ -549,9 +634,11 @@ if(($row = $result->fetch_assoc()) !== null){
                         }
                     },
                     { data: 'date' },
-                    { data: 'cash_book_no' },
-                    { data: 'total_deduction' },
-                    { data: 'total_addition' },
+                    { data: 'payslip_no' },
+                    { data: 'user_id' },
+                    { data: 'gross_pay' },
+                    { data: 'total_deductions' },
+                    { data: 'net_pay' },
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {
@@ -583,19 +670,23 @@ if(($row = $result->fetch_assoc()) !== null){
             });
         });
 
-        $('#addCashBook').on('click', function(){
+        $('#addPayslip').on('click', function(){
             // Show Capture Buttons When Add New
             $('#addModal').find('#id').val("");
             $('#addModal').find('#date')[0]._flatpickr.setDate(formatDate2(today), true);
             $('#addModal').find('#date')[0]._flatpickr.set('clickOpens', true);
-            $('#addModal').find('#cashBookNo').val("");
+            $('#addModal').find('#paymentType').val("BANK").trigger('change');
+            $('#addModal').find('#cashBook').val("").trigger('change');
+            $('#addModal').find('#employee').val("").trigger('change');
+            $('#addModal').find('#grossPay').val("0");
             $('#addModal').find('#totalDeduction').val("0");
-            $('#addModal').find('#totalAddition').val("0");
+            $('#addModal').find('#netPay').val("0");
+            $('#addModal').find('#netPayDisplay').text("0.00");
 
+            earningsRowCount = 0;
             deductionRowCount = 0;
-            additionRowCount = 0;
+            $('#addModal').find('#earningsTable').html('');
             $('#addModal').find('#deductionTable').html('');
-            $('#addModal').find('#additionTable').html('');
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -632,7 +723,7 @@ if(($row = $result->fetch_assoc()) !== null){
             var formData = new FormData(this);
             
             $.ajax({
-                url: 'php/cashbook.php',
+                url: 'php/payslip.php',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -708,6 +799,19 @@ if(($row = $result->fetch_assoc()) !== null){
             });
         });
 
+        // Payment Type Change
+        $('#paymentType').on('change', function (){
+            var paymentType = $(this).val();
+
+            if (paymentType == 'CHEQUE') {
+                $('#chequeNoDiv').show();
+                $('#chequeNo').attr('required', true);
+            } else {
+                $('#chequeNoDiv').hide();
+                $('#chequeNo').attr('required', false);
+            }
+        });
+
         // Remove deduction row
         $("#deductionTable").on('click', 'button[id^="remove"]', function () {
             $(this).parents("tr").remove();
@@ -717,200 +821,447 @@ if(($row = $result->fetch_assoc()) !== null){
             });
 
             deductionRowCount--;
-            calculateTotals();
+            updateDeductionTypeOptions();
+            calculateNetPay();
         });
 
-        // Add deduction row
         $("#addDeductionRow").click(function(){
-            var $addContents = $("#deductionDetail").clone();
-            $("#deductionTable").append($addContents.html());
-
-            $("#deductionTable").find('.details:last').attr("id", "detail" + deductionRowCount);
-            $("#deductionTable").find('.details:last').attr("data-index", deductionRowCount);
-            $("#deductionTable").find('#remove:last').attr("id", "remove" + deductionRowCount);
-
-            $("#deductionTable").find('#deductionNo:last').attr('name', 'deductionNo['+deductionRowCount+']').attr("id", "deductionNo" + deductionRowCount).val(deductionRowCount + 1);
-            $("#deductionTable").find('#deductionType:last').attr('name', 'deductionType['+deductionRowCount+']').attr("id", "deductionType" + deductionRowCount);
-            $("#deductionTable").find('#deductionDesc:last').attr('name', 'deductionDesc['+deductionRowCount+']').attr("id", "deductionDesc" + deductionRowCount);
-            $("#deductionTable").find('#deductionAmt:last').attr('name', 'deductionAmt['+deductionRowCount+']').attr("id", "deductionAmt" + deductionRowCount);
-
-            deductionRowCount++;
-            calculateTotals();
+            // Count unique selected types in the table
+            var selectedTypes = [];
+            $('#deductionTable select[id^="deductionType"]').each(function() {
+                var val = $(this).val();
+                if (val && !selectedTypes.includes(val)) {
+                    selectedTypes.push(val);
+                }
+            });
+            
+            // If all types are selected, show error
+            if (selectedTypes.length >= deductionTypes.length) {
+                alert('All deduction types have been added. Please remove a row to add a different type.');
+                return;
+            }
+            
+            addDeductionRow();
         });
 
-        // Remove addition row
-        $("#additionTable").on('click', 'button[id^="remove"]', function () {
+        // Remove earnings row
+        $("#earningsTable").on('click', 'button[id^="remove"]', function () {
             $(this).parents("tr").remove();
 
-            $("#additionTable tr").each(function (index) {
-                $(this).find('input[name^="additionNo"]').val(index + 1);
+            $("#earningsTable tr").each(function (index) {
+                $(this).find('input[name^="earningsNo"]').val(index + 1);
             });
 
-            additionRowCount--;
-            calculateTotals();
+            earningsRowCount--;
+            updateEarningsTypeOptions();
+            calculateNetPay();
         });
 
-        // Add addition row
-        $("#addAdditionRow").click(function(){
-            var $addContents = $("#additionDetail").clone();
-            $("#additionTable").append($addContents.html());
-
-            $("#additionTable").find('.details:last').attr("id", "detail" + additionRowCount);
-            $("#additionTable").find('.details:last').attr("data-index", additionRowCount);
-            $("#additionTable").find('#remove:last').attr("id", "remove" + additionRowCount);
+        $("#addEarningsRow").click(function(){
+            // Count unique selected types in the table
+            var selectedTypes = [];
+            $('#earningsTable select[id^="earningsType"]').each(function() {
+                var val = $(this).val();
+                if (val && !selectedTypes.includes(val)) {
+                    selectedTypes.push(val);
+                }
+            });
             
-            $("#additionTable").find('#additionNo:last').attr('name', 'additionNo['+additionRowCount+']').attr("id", "additionNo" + additionRowCount).val(additionRowCount + 1);
-            $("#additionTable").find('#additionType:last').attr('name', 'additionType['+additionRowCount+']').attr("id", "additionType" + additionRowCount);
-            $("#additionTable").find('#additionDesc:last').attr('name', 'additionDesc['+additionRowCount+']').attr("id", "additionDesc" + additionRowCount);
-            $("#additionTable").find('#additionAmt:last').attr('name', 'additionAmt['+additionRowCount+']').attr("id", "additionAmt" + additionRowCount);
-
-            additionRowCount++;
-            calculateTotals();
+            // If all types are selected, show error
+            if (selectedTypes.length >= earningTypes.length) {
+                alert('All earnings types have been added. Please remove a row to add a different type.');
+                return;
+            }
+            
+            addEarningsRow();
         });
 
         // Trigger calculation on input change
-        $(document).on('input', 'input[id^="deductionAmt"], input[id^="additionAmt"]', function() {
-            calculateTotals();
+        $(document).on('input', 'input[id^="deductionAmt"]', function() {
+            calculateNetPay();
         });
 
-        // Handle deductionType change for CREDITFFBPAY
-        $(document).on('change', 'select[id^="deductionType"]', function() {
-            var rowIndex = $(this).attr('id').replace('deductionType', '');
-            var descField = $('#deductionDesc' + rowIndex);
-            
-            if($(this).val() == 'CREDITFFBPAY') {
-                var descFieldParent = descField.closest('td');
-                
-                // Add d-flex class to parent td if not exists
-                if(!descFieldParent.hasClass('d-flex')) {
-                    descFieldParent.addClass('d-flex gap-2');
-                }
-                
-                // Change description field to col-6
-                if(!descField.parent().hasClass('col-6')) {
-                    descField.wrap('<div class="col-6"></div>');
-                }
-                
-                // Add payment voucher select if not exists
-                if(descFieldParent.find('select[id^="pvSelect"]').length === 0) {
-                    $.post('php/getOutstandingPaymentVouchers.php', function(data) {
-                        var obj = JSON.parse(data);
-                        if(obj.status === 'success') {
-                            var selectHtml = '<div class="col-6"><select class="form-select" id="pvSelect' + rowIndex + '" name="pvSelect[' + rowIndex + ']" required>';
-                            selectHtml += '<option value="">Please Select Payment Voucher</option>';
-                            $.each(obj.message, function(i, voucher) {
-                                selectHtml += '<option value="' + voucher.id + '">' + voucher.voucher_no + ' - RM' + voucher.outstanding_amount + '</option>';
-                            });
-                            selectHtml += '</select></div>';
-                            descField.parent().after(selectHtml);
+        // Auto default earnings and deduction when select employee
+        $('#employee').on('change', function() {
+            var employee = $(this).val();
+            var payslipDate = $('#date').val();
+
+            if (employee) {
+                $('#spinnerLoading').show();
+                $.post('php/getUser.php', {userID: employee}, function(data){
+                    var obj = JSON.parse(data);
+                    
+                    if(obj.status === 'success'){
+                        // Clear existing rows
+                        $('#earningsTable').html('');
+                        earningsRowCount = 0;
+                        
+                        // Add basic salary if exists
+                        if(obj.message.basic_salary && parseFloat(obj.message.basic_salary) > 0) {
+                            addEarningsRow('BASIC', 'Basic Salary', obj.message.basic_salary);
                         }
-                    });
-                }
-            } else {
-                var descFieldParent = descField.closest('td');
-                // Remove payment voucher select if exists
-                descFieldParent.find('select[id^="pvSelect"]').parent().remove();
-                
-                // Remove d-flex class from parent td
-                descFieldParent.removeClass('d-flex gap-2');
-                
-                // Unwrap description field if wrapped
-                if(descField.parent().hasClass('col-6')) {
-                    descField.unwrap();
-                }
+
+                        // Add deduction rows (EPF, SOCSO, TAX, EIS) if allowed
+                        category = obj.message.pcb_category;
+                        isResident = obj.message.is_resident;
+                        $('#deductionTable').html('');
+                        deductionRowCount = 0;
+                        addDeductionRow('EMP_EPF', 'Employee EPF', calculateEPF(obj.message.basic_salary));
+                        addDeductionRow('EMP_SOCSO', 'Employee SOCSO', calculateSOCSO(obj.message.basic_salary));
+                        addDeductionRow('EMP_EIS', 'Employee EIS', calculateEIS(obj.message.basic_salary));
+                        addDeductionRow('TAX', 'Tax', calculatePCB(payslipDate, category, obj.message.basic_salary, 0, isResident, nonResidentTaxRate, tax, individualReliefFund, individualEpfReliefFund));
+                        
+                        $('#spinnerLoading').hide();
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        alert(obj.message);
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        alert(obj.message);
+                    }
+                });
             }
         });
 
+        // Handle deductionType change
+        $(document).on('change', 'select[id^="deductionType"]', function() {
+            updateDeductionTypeOptions();
+        });
+
+        // Handle earningsType change 
+        $(document).on('change', 'select[id^="earningsType"]', function() {
+            updateEarningsTypeOptions();
+            recalculateStatutoryDeductions();
+        });
+
+        // Trigger recalculation on earnings amount change
+        $(document).on('input', 'input[id^="earningsAmt"]', function() {
+            recalculateStatutoryDeductions();
+            calculateNetPay();
+        });
+
+        $('#date').on('change', function() {
+            recalculateStatutoryDeductions();
+            calculateNetPay();
+        });
     });
+
+    // Update earnings type options to disable already selected types
+    function updateEarningsTypeOptions() {
+        var selectedTypes = [];
+        $('#earningsTable select[id^="earningsType"]').each(function() {
+            var val = $(this).val();
+            if (val) selectedTypes.push(val);
+        });
+        
+        $('#earningsTable select[id^="earningsType"]').each(function() {
+            var currentVal = $(this).val();
+            $(this).find('option').each(function() {
+                var optVal = $(this).val();
+                $(this).prop('disabled', selectedTypes.includes(optVal) && optVal !== currentVal);
+            });
+        });
+    }
+
+    // Update deduction type options to disable already selected types
+    function updateDeductionTypeOptions() {
+        var selectedTypes = [];
+        $('#deductionTable select[id^="deductionType"]').each(function() {
+            var val = $(this).val();
+            if (val) selectedTypes.push(val);
+        });
+        
+        $('#deductionTable select[id^="deductionType"]').each(function() {
+            var currentVal = $(this).val();
+            $(this).find('option').each(function() {
+                var optVal = $(this).val();
+                $(this).prop('disabled', selectedTypes.includes(optVal) && optVal !== currentVal);
+            });
+        });
+    }
+
+    // Recalculate statutory deductions (EPF, SOCSO, EIS)
+    function recalculateStatutoryDeductions() {
+        var contributoryTypes = ['BASIC', 'ALLOWANCE', 'OVERTIME', 'BONUS', 'COMMISSION'];
+        var totalContributory = 0;
+        var basicSalary = 0;
+        var additionalRemunerationThisMonth = 0;
+        
+        $('select[id^="earningsType"]').each(function() {
+            var rowIndex = $(this).attr('id').replace('earningsType', '');
+            var type = $(this).val();
+            var amount = parseFloat($('#earningsAmt' + rowIndex).val()) || 0;
+            
+            if (type === 'BASIC') basicSalary = amount;
+            if (contributoryTypes.includes(type)) {
+                totalContributory += amount;
+            }
+        });
+
+        additionalRemunerationThisMonth = totalContributory - basicSalary;
+        
+        // Update EPF
+        $('select[id^="deductionType"]').each(function() {
+            var rowIndex = $(this).attr('id').replace('deductionType', '');
+            var type = $(this).val();
+            
+            if (type == 'EMP_EPF') {
+                $('#deductionAmt' + rowIndex).val(calculateEPF(basicSalary));
+            } else if (type == 'EMP_SOCSO') {
+                $('#deductionAmt' + rowIndex).val(calculateSOCSO(basicSalary));
+            } else if (type == 'EMP_EIS') {
+                $('#deductionAmt' + rowIndex).val(calculateEIS(basicSalary));
+            } else if (type == 'TAX') {
+                $('#deductionAmt' + rowIndex).val(calculatePCB($('#date').val(), category, basicSalary, additionalRemunerationThisMonth, isResident, nonResidentTaxRate, tax, individualReliefFund, individualEpfReliefFund));
+            }
+        });
+    }
+
+    // Calculate Employee EPF
+    function calculateEPF(amount) {
+        var rate = epf ? parseFloat(epf) : 0;
+        var amount = amount ? parseFloat(amount) : 0;
+        var epfAmount = 0;
+        if (amount > 0) {
+            epfAmount = (amount * rate) / 100;
+        }
+
+        return epfAmount.toFixed(2);
+    }
+
+    // Calculate Employee SOCSO
+    function calculateSOCSO(amount) {
+        var amount = amount ? parseFloat(amount) : 0;
+        if (amount <= 0 || !socso || socso.length === 0) return 0;
+        
+        for (var i = 0; i < socso.length; i++) {
+            var min = parseFloat(socso[i].min);
+            var max = socso[i].max === "" ? Infinity : parseFloat(socso[i].max);
+            
+            if (amount >= min && amount <= max) {
+                return parseFloat(socso[i].employee).toFixed(2);
+            }
+        }
+        
+        return 0;
+    }
+
+    // Calculate Employee EIS
+    function calculateEIS(amount) {
+        var amount = amount ? parseFloat(amount) : 0;
+        if (amount <= 0 || !eis || eis.length === 0) return 0;
+        
+        for (var i = 0; i < eis.length; i++) {
+            var min = parseFloat(eis[i].min);
+            var max = eis[i].max === "" ? Infinity : parseFloat(eis[i].max);
+            
+            if (amount >= min && amount <= max) {
+                return parseFloat(eis[i].employee).toFixed(2);
+            }
+        }
+        
+        return 0;
+    }
+
+    // Calculate PCB
+    function calculatePCB(date, userCategory, amount, additionalRemunerationThisMonth, isResident, companyNonResidentTaxRate, companyResidentTaxRate, individualReliefFund, individualEpfReliefFund) {
+        if (isResident == 'N') {
+            var rate = companyNonResidentTaxRate ? parseFloat(companyNonResidentTaxRate) : 0;
+            var taxAmount = calculatePCBNonResident(parseFloat(amount) + parseFloat(additionalRemunerationThisMonth || 0), rate);
+            return taxAmount.toFixed(2);
+        } else {
+            if (parseFloat(additionalRemunerationThisMonth) > 0) {
+                // If there is additional remuneration
+                var opts = {
+                    // PCB category:
+                    // - Use 1 for Category 1 & 3 (uses b1 from your table) — most employees.
+                    // - Use 2 for Category 2 (uses b2 from your table) — special case.
+                    category: userCategory || 1,
+
+                    // Pnormal = annual chargeable income (WITHOUT additional remuneration like bonus),
+                    // simplified as:
+                    //   (monthly basic * 12) - individual relief - EPF relief
+                    // IMPORTANT:
+                    // - individualReliefFund example: 9000
+                    // - individualEpfReliefFund example: 4000 (EPF relief cap)
+                    // - if you have other taxable earnings/deductions, include them in Pnormal too.
+                    Pnormal: (parseFloat(amount) * 12) - parseFloat(individualReliefFund || 0) - parseFloat(individualEpfReliefFund || 0),
+
+                    // Ptotal = annual chargeable income (WITH additional remuneration like bonus),
+                    // i.e. same as Pnormal but include bonus/commission/etc (annualized as needed).
+                    // You should calculate Ptotal upstream and pass it in here.
+                    PTotal: ((parseFloat(amount) * 12) + parseFloat(additionalRemunerationThisMonth || 0)) - parseFloat(individualReliefFund || 0) - parseFloat(individualEpfReliefFund || 0),
+
+                    // X = accumulated PCB already deducted year-to-date (YTD),
+                    // used to "catch up" correctly when calculating current month PCB.
+                    // If employee joined mid-year or had previous employer, this matters.
+                    X: 0,
+
+                    // Z = accumulated zakat paid year-to-date (excluding current month zakat),
+                    // used as an offset in the computerized PCB method (if you support zakat).
+                    Z: 0,
+
+                    // nPlus1 = remaining months in the year INCLUDING current month:
+                    // Jan=12, Feb=11, ... Dec=1.
+                    // Using your helper that derives this from a date.
+                    nPlus1: getNPlus1(date)
+                    };
+
+                var taxAmount = calculatePCBAnnualizedRemuneration(amount, additionalRemunerationThisMonth, companyResidentTaxRate, opts)
+            } else {
+                // No additional remuneration
+                var opts = {
+                    // 1) Category selection for B value
+                    // - If you don’t know, use 1 (Category 1 & 3 uses b1)
+                    // - If employee is Category 2 (per LHDN spec table), use 2 (uses b2)
+                    category: userCategory || 1,
+
+                    // 2) Annual chargeable income P (if you want more accurate than salary*12)
+                    // If omitted: P = monthlySalary * 12
+                    // Use this when you include other taxable earnings (allowances/bonus/commission)
+                    // and/or subtract deductions/reliefs (EPF, etc.) before annualising.
+                    P: (parseFloat(amount) * 12) - parseFloat(individualReliefFund || 0) - parseFloat(individualEpfReliefFund || 0), // example: 66000
+
+                    // 3) Accumulated PCB already deducted year-to-date (X)
+                    // Needed when calculating mid-year or when employee joined later,
+                    // or when there is previous employer MTD.
+                    X: 0,
+
+                    // 4) Accumulated zakat paid year-to-date excluding current month (Z)
+                    // Only if you handle zakat offset.
+                    Z: 0,
+
+                    // 5) Remaining months in year INCLUDING current month (n+1)
+                    // If omitted: 12
+                    // Example:
+                    //   Jan = 12, Feb = 11, ... Dec = 1
+                    nPlus1: getNPlus1(date)
+                };
+                var taxAmount = calculatePCBNormal(amount, companyResidentTaxRate, opts)
+            }
+
+            return taxAmount.toFixed(2);
+        }
+    }
+
+    // Add deduction row
+    function addDeductionRow(type = null, desc = '', amt = 0) {
+        var $addContents = $("#deductionDetail").clone();
+        $("#deductionTable").append($addContents.html());
+
+        $("#deductionTable").find('.details:last').attr("id", "detail" + deductionRowCount);
+        $("#deductionTable").find('.details:last').attr("data-index", deductionRowCount);
+        $("#deductionTable").find('#remove:last').attr("id", "remove" + deductionRowCount);
+
+        $("#deductionTable").find('#deductionNo:last').attr('name', 'deductionNo['+deductionRowCount+']').attr("id", "deductionNo" + deductionRowCount).val(deductionRowCount + 1);
+        var lastSelect = $("#deductionTable").find('#deductionType:last').attr('name', 'deductionType['+deductionRowCount+']').attr("id", "deductionType" + deductionRowCount);
+        $("#deductionTable").find('#deductionDesc:last').attr('name', 'deductionDesc['+deductionRowCount+']').attr("id", "deductionDesc" + deductionRowCount).val(desc);
+        $("#deductionTable").find('#deductionAmt:last').attr('name', 'deductionAmt['+deductionRowCount+']').attr("id", "deductionAmt" + deductionRowCount).val(amt);
+
+        // Set the type first
+        if (type) {
+            lastSelect.val(type);
+        } else {
+            // Get already selected types to find first available
+            var selectedTypes = [];
+            $('#deductionTable select[id^="deductionType"]').not(lastSelect).each(function() {
+                var val = $(this).val();
+                if (val) selectedTypes.push(val);
+            });
+            
+            // Find first non-selected option
+            var firstAvailable = null;
+            lastSelect.find('option').each(function() {
+                var optVal = $(this).val();
+                if (optVal && !selectedTypes.includes(optVal)) {
+                    firstAvailable = optVal;
+                    return false; // break
+                }
+            });
+            lastSelect.val(firstAvailable);
+        }
+        
+        deductionRowCount++;
+        updateDeductionTypeOptions();
+        calculateNetPay();
+    }
+
+    // Add earnings row
+    function addEarningsRow(type = null, desc = '', amt = 0) {
+        var $addContents = $("#earningsDetail").clone();
+        $("#earningsTable").append($addContents.html());
+
+        $("#earningsTable").find('.details:last').attr("id", "detail" + earningsRowCount);
+        $("#earningsTable").find('.details:last').attr("data-index", earningsRowCount);
+        $("#earningsTable").find('#remove:last').attr("id", "remove" + earningsRowCount);
+
+        $("#earningsTable").find('#earningsNo:last').attr('name', 'earningsNo['+earningsRowCount+']').attr("id", "earningsNo" + earningsRowCount).val(earningsRowCount + 1);
+        var lastSelect = $("#earningsTable").find('#earningsType:last').attr('name', 'earningsType['+earningsRowCount+']').attr("id", "earningsType" + earningsRowCount);
+        $("#earningsTable").find('#earningsDesc:last').attr('name', 'earningsDesc['+earningsRowCount+']').attr("id", "earningsDesc" + earningsRowCount).val(desc);
+        $("#earningsTable").find('#earningsAmt:last').attr('name', 'earningsAmt['+earningsRowCount+']').attr("id", "earningsAmt" + earningsRowCount).val(amt);
+
+        // Set the type first
+        if (type) {
+            lastSelect.val(type);
+        } else {
+            // Get already selected types to find first available
+            var selectedTypes = [];
+            $('#earningsTable select[id^="earningsType"]').not(lastSelect).each(function() {
+                var val = $(this).val();
+                if (val) selectedTypes.push(val);
+            });
+            
+            // Find first non-selected option
+            var firstAvailable = null;
+            lastSelect.find('option').each(function() {
+                var optVal = $(this).val();
+                if (optVal && !selectedTypes.includes(optVal)) {
+                    firstAvailable = optVal;
+                    return false; // break
+                }
+            });
+            lastSelect.val(firstAvailable);
+        }
+
+        earningsRowCount++;
+        updateEarningsTypeOptions();
+        calculateNetPay();
+    }
 
     function edit(id){
         $('#spinnerLoading').show();
-        $.post('php/getCashBook.php', {userID: id}, function(data)
+        $.post('php/getPayslip.php', {userID: id}, function(data)
         {
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
                 $('#addModal').find('#id').val(obj.message.id);
-                $('#addModal').find('#cashBookNo').val(obj.message.cash_book_no);
+                $('#addModal').find('#paySlipNo').val(obj.message.payslip_no);
                 $('#addModal').find('#date')[0]._flatpickr.setDate(formatDate2(new Date(obj.message.date)), true);
                 $('#addModal').find('#date')[0]._flatpickr.set('clickOpens', false);
-                $('#addModal').find('#totalDeduction').val(obj.message.total_deduction);
-                $('#addModal').find('#totalAddition').val(obj.message.total_addition);
+                $('#addModal').find('#employee').val(obj.message.user_id).select2('destroy').select2();
+                $('#addModal').find('#paymentType').val(obj.message.payment_type).trigger('change');
+                $('#addModal').find('#chequeNo').val(obj.message.cheque_no);
+                $('#addModal').find('#cashBook').val(obj.message.cashbook_id).trigger('change');
+
+                // Earnings Details
+                $('#earningsTable').html('');
+                earningsRowCount = 0;
+                if (obj.message.earnings_detail && obj.message.earnings_detail.length > 0){
+                    for(var i = 0; i < obj.message.earnings_detail.length; i++){
+                        var item = obj.message.earnings_detail[i];
+                        addEarningsRow(item.type, item.desc, item.amt);
+                    }
+                }
 
                 // Deduction Details
                 $('#deductionTable').html('');
                 deductionRowCount = 0;
-                if (obj.message.deduction_details.length > 0){
-                    for(var i = 0; i < obj.message.deduction_details.length; i++){
-                        var item = obj.message.deduction_details[i];
-                        var $addContents = $("#deductionDetail").clone();
-                        $("#deductionTable").append($addContents.html());
-
-                        $("#deductionTable").find('.details:last').attr("id", "detail" + deductionRowCount);
-                        $("#deductionTable").find('.details:last').attr("data-index", deductionRowCount);
-                        $("#deductionTable").find('#remove:last').attr("id", "remove" + deductionRowCount);
-
-                        $("#deductionTable").find('#deductionNo:last').attr('name', 'deductionNo['+deductionRowCount+']').attr("id", "deductionNo" + deductionRowCount).val(deductionRowCount + 1);
-                        $("#deductionTable").find('#deductionType:last').attr('name', 'deductionType['+deductionRowCount+']').attr("id", "deductionType" + deductionRowCount).val(item.type);
-                        $("#deductionTable").find('#deductionDesc:last').attr('name', 'deductionDesc['+deductionRowCount+']').attr("id", "deductionDesc" + deductionRowCount);
-                        $("#deductionTable").find('#deductionAmt:last').attr('name', 'deductionAmt['+deductionRowCount+']').attr("id", "deductionAmt" + deductionRowCount).val(item.amount);
-                        
-                        if(item.type == 'CREDITFFBPAY') {
-                            var descFieldParent = $('#deductionDesc' + deductionRowCount).closest('td');
-                            
-                            // Add d-flex class to parent td
-                            if(!descFieldParent.hasClass('d-flex')) {
-                                descFieldParent.addClass('d-flex gap-2');
-                            }
-                            
-                            // Wrap description field in col-6
-                            if(!$('#deductionDesc' + deductionRowCount).parent().hasClass('col-6')) {
-                                $('#deductionDesc' + deductionRowCount).wrap('<div class="col-6"></div>');
-                            }
-                            
-                            $('#deductionDesc' + deductionRowCount).val(item.desc);
-                            
-                            (function(rowIdx, pvId) {
-                                $.post('php/getOutstandingPaymentVouchers.php', {selectedId: pvId}, function(data) {
-                                    var obj2 = JSON.parse(data);
-                                    if(obj2.status === 'success') {
-                                        var selectHtml = '<div class="col-6"><select class="form-select" id="pvSelect' + rowIdx + '" name="pvSelect[' + rowIdx + ']" required>';
-                                        selectHtml += '<option value="">Please Select Payment Voucher</option>';
-                                        $.each(obj2.message, function(j, voucher) {
-                                            var selected = voucher.id == pvId ? 'selected' : '';
-                                            selectHtml += '<option value="' + voucher.id + '" ' + selected + '>' + voucher.voucher_no + ' - RM' + voucher.outstanding_amount + '</option>';
-                                        });
-                                        selectHtml += '</select></div>';
-                                        $('#deductionDesc' + rowIdx).parent().after(selectHtml);
-                                    }
-                                });
-                            })(deductionRowCount, item.pv_id);
-                        } else {
-                            $("#deductionDesc" + deductionRowCount).val(item.desc);
-                        }
-
-                        deductionRowCount++;
-                    }
-                }
-
-                // Addition Details
-                $('#additionTable').html('');
-                additionRowCount = 0;
-                if (obj.message.addition_details.length > 0){
-                    for(var i = 0; i < obj.message.addition_details.length; i++){
-                        var item = obj.message.addition_details[i];
-                        var $addContents = $("#additionDetail").clone();
-                        $("#additionTable").append($addContents.html());
-
-                        $("#additionTable").find('.details:last').attr("id", "detail" + additionRowCount);
-                        $("#additionTable").find('.details:last').attr("data-index", additionRowCount);
-                        $("#additionTable").find('#remove:last').attr("id", "remove" + additionRowCount);
-
-                        $("#additionTable").find('#additionNo:last').attr('name', 'additionNo['+additionRowCount+']').attr("id", "additionNo" + additionRowCount).val(additionRowCount + 1);
-                        $("#additionTable").find('#additionType:last').attr('name', 'additionType['+additionRowCount+']').attr("id", "additionType" + additionRowCount).val(item.type);
-                        $("#additionTable").find('#additionDesc:last').attr('name', 'additionDesc['+additionRowCount+']').attr("id", "additionDesc" + additionRowCount).val(item.desc);
-                        $("#additionTable").find('#additionAmt:last').attr('name', 'additionAmt['+additionRowCount+']').attr("id", "additionAmt" + additionRowCount).val(item.amount);
-
-                        additionRowCount++;
+                if (obj.message.deductions_detail && obj.message.deductions_detail.length > 0){
+                    for(var i = 0; i < obj.message.deductions_detail.length; i++){
+                        var item = obj.message.deductions_detail[i];
+                        addDeductionRow(item.type, item.desc, item.amt);
                     }
                 }
 
@@ -974,26 +1325,28 @@ if(($row = $result->fetch_assoc()) !== null){
         });
     }
 
-    function calculateTotals() {
-        var totalDeductions = 0;
-        var totalAdditions = 0;
-        $('input[id^="deductionAmt"]').each(function() {
-            var index = $(this).attr('id').replace('deductionAmt', '');
-            var type = $('#deductionType' + index).val();
-            if (type !== 'FFBSHORTAGE') {
-                totalDeductions += parseFloat($(this).val()) || 0;
-            }
-        });
-        $('input[id^="additionAmt"]').each(function() { 
-            totalAdditions += parseFloat($(this).val()) || 0; 
+    function calculateNetPay() {
+        var grossPay = 0;
+        var totalDeduction = 0;
+        
+        $('input[id^="earningsAmt"]').each(function() {
+            grossPay += parseFloat($(this).val()) || 0;
         });
         
-        $('#totalDeduction').val(totalDeductions.toFixed(2));
-        $('#totalAddition').val(totalAdditions.toFixed(2));
+        $('input[id^="deductionAmt"]').each(function() {
+            totalDeduction += parseFloat($(this).val()) || 0;
+        });
+        
+        var netPay = grossPay - totalDeduction;
+        
+        $('#grossPay').val(grossPay.toFixed(2));
+        $('#totalDeduction').val(totalDeduction.toFixed(2));
+        $('#netPay').val(netPay.toFixed(2));
+        $('#netPayDisplay').text(netPay.toFixed(2));
     }
 
     function print(id) {
-        $.post('php/printExpenseReport.php', { userID: id }, function(response){
+        $.post('php/printPayslip.php', { userID: id }, function(response){
             var obj = JSON.parse(response);
 
             if(obj.status === 'success'){

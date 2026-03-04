@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once 'db_connect.php';
+require_once 'requires/function.php';
+require_once 'requires/lookup.php';
 
 function groupWeighingByProduct($weighingRecords, $transactionStatus) {
     $grouped = [];
@@ -45,6 +47,7 @@ if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION[
 if(isset($_POST['fromDate']) && $_POST['fromDate'] != null && $_POST['fromDate'] != ''){
     $date = DateTime::createFromFormat('d-m-Y', $_POST['fromDate']);
     $formatted_date = $date->format('Y-m-d 00:00:00');
+    $fromDateYmd = $date->format('Y-m-d');
     $fromDate = $date->format('d/m/Y');
 
     if($_POST["file"] == 'weight'){
@@ -58,6 +61,7 @@ if(isset($_POST['fromDate']) && $_POST['fromDate'] != null && $_POST['fromDate']
 if(isset($_POST['toDate']) && $_POST['toDate'] != null && $_POST['toDate'] != ''){
     $date = DateTime::createFromFormat('d-m-Y', $_POST['toDate']);
     $formatted_date = $date->format('Y-m-d 23:59:59');
+    $toDateYmd = $date->format('Y-m-d');
     $toDate = $date->format('d/m/Y');
 
     if($_POST["file"] == 'weight'){
@@ -165,7 +169,7 @@ if(isset($_POST['plant']) && $_POST['plant'] != null && $_POST['plant'] != '' &&
     }
 }
 
-if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
+if(isset($_POST['status']) && $_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
     if ($_POST['status'] == 'Complete'){
         $searchQuery .= " and is_complete = 'Y'";
     }elseif ($_POST['status'] == 'Cancelled'){
@@ -246,7 +250,7 @@ if(isset($_POST["file"])){
         }
 
         $sql = '';
-        if ($_POST['reportType'] == 'DR') {
+        if ($_POST['reportType'] == 'DFI') {
             if ($isMulti == 'Y'){
                 $id = $_POST['id'];
                 $sql = "select * from Weight WHERE id IN ($id) ORDER BY transaction_id ASC";
@@ -394,7 +398,7 @@ if(isset($_POST["file"])){
                     ));
             }
         }
-        else if ($_POST['reportType'] == 'DMR') {
+        else if ($_POST['reportType'] == 'DMFI') {
             if ($isMulti == 'Y'){
                 $id = $_POST['id'];
                 $sql = "select * from Weight WHERE id IN ($id) ORDER BY transaction_id ASC";
@@ -478,8 +482,9 @@ if(isset($_POST["file"])){
                                                 <th>Gross</th>
                                                 <th>Act. <br>Tare</th>
                                                 <th>Tare</th>
-                                                <th>Act. <br>Net WT.</th> 
+                                                <th>Ded.</th>
                                                 <th>Net WT.</th> 
+                                                <th>Act. <br>Net WT.</th> 
                                                 <th>Earn/Loss</th>
                                                 <th>IN</th>
                                                 <th>OUT</th>
@@ -494,6 +499,7 @@ if(isset($_POST["file"])){
                                             $grandTotalTare = 0;
                                             $grandTotalActNet = 0;
                                             $grandTotalNet = 0;
+                                            $grandTotalReduce = 0;
                                             $grandTotalEarnLoss = 0;
 
                                             foreach ($groupedData as $productRawMatCode => $data) {
@@ -503,6 +509,7 @@ if(isset($_POST["file"])){
                                                 $totalTare = 0;
                                                 $totalActNet = 0;
                                                 $totalNet = 0;
+                                                $totalReduce = 0;
                                                 $totalEarnLoss = 0;
 
                                                 // Product/Raw Material Code Header Row
@@ -513,16 +520,17 @@ if(isset($_POST["file"])){
                                                 ';
 
                                                 foreach ($data['records'] as $record) {
-                                                    $actNettWeight = (float)$record['nett_weight1'] ?? 0;
-                                                    $nettWeight = (float)$record['nett_deduction1'] ?? 0;
+                                                    $actNettWeight = (float)$record['nett_deduction1'] ?? 0;
+                                                    $nettWeight = (float)$record['nett_weight1'] ?? 0;
                                                     $earnLoss = $actNettWeight - $nettWeight;
 
-                                                    $totalActGross += (float)$record['gross_weight1'];
-                                                    $totalGross += (float)$record['gross_deduction1'];
-                                                    $totalActTare += (float)$record['tare_weight1'];
-                                                    $totalTare += (float)$record['tare_deduction1'];
-                                                    $totalActNet += (float)$record['nett_weight1'];
-                                                    $totalNet += (float)$record['nett_deduction1'];
+                                                    $totalActGross += (float)$record['gross_deduction1'];
+                                                    $totalGross += (float)$record['gross_weight1'];
+                                                    $totalActTare += (float)$record['tare_deduction1'];
+                                                    $totalTare += (float)$record['tare_weight1'];
+                                                    $totalActNet += (float)$record['nett_deduction1'];
+                                                    $totalNet += (float)$record['nett_weight1'];
+                                                    $totalReduce += (float)$record['reduce_weight'];
                                                     $totalEarnLoss += $earnLoss;
 
                                                     $timeInOut = date('d-m-Y H:i', strtotime($record['gross_weight1_date'])) . ' - ' . date('H:i', strtotime($record['tare_weight1_date']));
@@ -534,10 +542,11 @@ if(isset($_POST["file"])){
                                                             <td>' . $timeInOut . '</td>
                                                             <td>' . $record['transaction_id'] . '</td>
                                                             <td>' . $record['lorry_plate_no1'] . '</td>
-                                                            <td>' . number_format($record['gross_weight1']/1000, 2) . '</td>
                                                             <td>' . number_format($record['gross_deduction1']/1000, 2) . '</td>
-                                                            <td>' . number_format($record['tare_weight1']/1000, 2) . '</td>
+                                                            <td>' . number_format($record['gross_weight1']/1000, 2) . '</td>
                                                             <td>' . number_format($record['tare_deduction1']/1000, 2) . '</td>
+                                                            <td>' . number_format($record['tare_weight1']/1000, 2) . '</td>
+                                                            <td>' . number_format($record['reduce_weight']/1000, 2) . '</td>
                                                             <td>' . number_format($record['nett_weight1']/1000, 2) . '</td>
                                                             <td>' . number_format($record['nett_deduction1']/1000, 2) . '</td>
                                                             <td>' . number_format($earnLoss/1000, 2) . '</td>
@@ -556,8 +565,9 @@ if(isset($_POST["file"])){
                                                         <td style="border-top: 1px solid black;">' . number_format($totalGross/1000, 2) . '</td>
                                                         <td style="border-top: 1px solid black;">' . number_format($totalActTare/1000, 2) . '</td>
                                                         <td style="border-top: 1px solid black;">' . number_format($totalTare/1000, 2) . '</td>
-                                                        <td style="border-top: 1px solid black;">' . number_format($totalActNet/1000, 2) . '</td>
+                                                        <td style="border-top: 1px solid black;">' . number_format($totalReduce/1000, 2) . '</td>
                                                         <td style="border-top: 1px solid black;">' . number_format($totalNet/1000, 2) . '</td>
+                                                        <td style="border-top: 1px solid black;">' . number_format($totalActNet/1000, 2) . '</td>
                                                         <td style="border-top: 1px solid black;">' . number_format($totalEarnLoss/1000, 2) . '</td>
                                                         <td style="border-top: 1px solid black;"></td>
                                                         <td style="border-top: 1px solid black;"></td>
@@ -570,6 +580,7 @@ if(isset($_POST["file"])){
                                                 $grandTotalTare += $totalTare;
                                                 $grandTotalActNet += $totalActNet;
                                                 $grandTotalNet += $totalNet;
+                                                $grandTotalReduce += $totalReduce;
                                                 $grandTotalEarnLoss += $totalEarnLoss;
                                             }
 
@@ -582,8 +593,9 @@ if(isset($_POST["file"])){
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalGross/1000, 2) . '</td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalActTare/1000, 2) . '</td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalTare/1000, 2) . '</td>
-                                                    <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalActNet/1000, 2) . '</td>
+                                                    <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalReduce/1000, 2) . '</td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalNet/1000, 2) . '</td>
+                                                    <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalActNet/1000, 2) . '</td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;">' . number_format($grandTotalEarnLoss/1000, 2) . '</td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;"></td>
                                                     <td style="border-top: 1px solid black; border-bottom: 1px solid black;"></td>
@@ -599,6 +611,576 @@ if(isset($_POST["file"])){
                     
 
 
+                    echo json_encode(
+                        array(
+                            "status" => "success",
+                            "message" => $message
+                        )
+                    );
+                }
+            }
+            else{
+                echo json_encode(
+                    array(
+                        "status" => "failed",
+                        "message" => "Something Goes Wrong"
+                    ));
+            }
+        }
+        else if ($_POST['reportType'] == 'DR') {
+            $sql = "SELECT * FROM Cash_Book WHERE DATE(date) >= ? AND DATE(date) <= ? AND deleted = 0 ORDER BY date ASC";
+
+            if ($select_stmt = $db->prepare($sql)){
+                $select_stmt->bind_param('ss', $fromDateYmd, $toDateYmd);
+                // Execute the prepared query.
+                if (! $select_stmt->execute()) {
+                    echo json_encode(
+                        array(
+                            "status" => "failed",
+                            "message" => "Something went wrong"
+                        )); 
+                }
+                else{
+                    $result = $select_stmt->get_result();
+
+                    $cashBooks = [];
+                    while ($row = $result->fetch_assoc()) {
+                        $cashBooks[] = $row;
+                    }
+
+                    $cashbooks = groupCashbookByDay($cashBooks);
+
+                    ############## Weighing Records ##############
+                    $weights = [];
+                    if ($weigh_stmt = $db->prepare("SELECT * FROM Weight WHERE DATE(transaction_date) >= ? AND DATE(transaction_date) <= ? AND is_complete='Y' AND is_cancel <> 'Y' AND status=0 ORDER BY id ASC")){
+                        $weigh_stmt->bind_param('ss', $fromDateYmd, $toDateYmd);
+
+                        // Execute the prepared query.
+                        if (! $weigh_stmt->execute()) {
+                            echo json_encode(
+                                array(
+                                    "status" => "failed",
+                                    "message" => "Something went wrong"
+                                )); 
+                        }
+                        else{
+                            $result2 = $weigh_stmt->get_result();
+                        
+                            while ($row2 = $result2->fetch_assoc()) {
+                                $weights[] = $row2;
+                            }
+
+                            $weights = groupByTransactionStatus($weights);
+                        }
+                    }
+                    
+                    ##############################################
+
+                    $message = '
+                        <html>
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>Daily Report</title>
+                            <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
+                            <style>
+                                @page {
+                                    size: A4;
+                                    margin-top: 35mm;
+                                    margin-bottom: 20mm;
+                                    margin-left: 10mm;
+                                    margin-right: 10mm;
+                                    @top-center {
+                                        content: element(header);
+                                    }
+                                    @bottom-center {
+                                        content: "PAGE " counter(page);
+                                    }
+                                }
+
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    font-size: 9pt;
+                                }
+
+                                #header {
+                                    position: running(header);
+                                    text-align: left;
+                                    margin-top: 20px;
+                                    padding-bottom: 10px;
+                                }
+
+                                h1 {
+                                    margin: 0;
+                                    font-size: 16pt;
+                                }
+
+                                .report-info {
+                                    font-size: 10pt;
+                                    margin: 5px 0;
+                                }
+
+                                table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                    margin-top: 10px;
+                                }
+
+                                th {
+                                    border-bottom: 1px solid #000;
+                                    padding: 5px;
+                                    font-size: 10pt;
+                                    text-align: left;
+                                }
+
+                                td {
+                                    padding: 4px;
+                                    font-size: 10pt;
+                                }
+
+                                .text-right {
+                                    text-align: right;
+                                }
+
+                                .bold-underline {
+                                    font-weight: bold;
+                                    text-decoration: underline;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div id="header">
+                                <h1>'.$companyName.'</h1>
+                                <div class="report-info"><strong>Daily Report</strong></div>
+                                <div class="report-info"><strong>Period:</strong> '.$fromDate.' To '.$toDate.'</div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th width="15%" style="text-align: left;">Date</th>
+                                            <th width="55%" style="text-align: left;">Description</th>
+                                            <th width="15%" style="text-align: right;">QTY</th>
+                                            <th width="15%" style="text-align: right;">Amount</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+
+                            <table>
+                                <tbody>
+                                    <thead style="display:none;">
+                                        <tr>
+                                            <th width="15%" style="text-align: left;">Date</th>
+                                            <th width="55%" style="text-align: left;">Description</th>
+                                            <th width="15%" style="text-align: right;">QTY</th>
+                                            <th width="15%" style="text-align: right;">Amount</th>
+                                        </tr>
+                                    </thead> ';
+
+                                    if (!empty($weights['Purchase'])) {
+                                        $message .= '
+                                            <tr>
+                                                <td class="bold-underline">CASH</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        ';
+
+                                        foreach ($weights['Purchase'] as $weight) {
+                                            $paymentTerm = searchSupplierTermByCode($weight['supplier_code'], $db);
+                                            if ($paymentTerm == 'Cash'){
+                                                $message .= '
+                                                    <tr>
+                                                        <td>'.date('d/m/Y', strtotime($weight['transaction_date'])).'</td>
+                                                        <td>'.$weight['transaction_id'].' FFB '.number_format(formatWeight($weight['nett_weight1']/1000), 2).' MT ('.strtoupper($weight['supplier_name']).')</td>
+                                                        <td>'.number_format(formatWeight($weight['nett_weight1']/1000), 2).'</td>
+                                                        <td>'.number_format($weight['total_price'], 2).'</td>
+                                                    </tr>
+                                                ';
+                                            }
+                                        }
+                                    }
+
+                                    if (!empty($cashbooks)){
+                                        $cashInRows = '';
+                                        $cashOutRows = '';
+                                        $creditNoteRows = '';
+                                        $creditAdvRampRows = '';
+                                        $creditAdvHqRows = '';
+                                        $creditAdvRows = '';
+                                        $ffbShortageRows = '';
+                                        $generalExpensesRows = '';
+                                        $petrolDieselRows = '';
+                                        $staffAdvancesRows = '';
+                                        $staffSalaryRows = '';
+                                        
+                                        foreach ($cashbooks as $date => $cashbook) {
+                                            if (!empty($cashbook['Additions']['CASHIN'])){
+                                                if (empty($cashInRows)) {
+                                                    $cashInRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">CASH IN</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">CASH IN</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                                
+                                                foreach($cashbook['Additions']['CASHIN'] as $cashIn) {
+                                                    $cashInRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($cashIn['description']) ? $cashIn['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($cashIn['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+
+                                            if (!empty($cashbook['Deductions']['CASHOUT'])){
+                                                if (empty($cashOutRows)) {
+                                                    $cashOutRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">CASH OUT</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">CASH OUT</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                                
+                                                foreach($cashbook['Deductions']['CASHOUT'] as $cashOut) {
+                                                    $cashOutRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($cashOut['description']) ? $cashOut['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($cashOut['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+
+                                            if (!empty($cashbook['Deductions']['CREDITNOTE'])){
+                                                if (empty($creditNoteRows)) {
+                                                    $creditNoteRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">CREDIT NOTES</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">CREDIT NOTES</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+
+                                                foreach($cashbook['Deductions']['CREDITNOTE'] as $creditNote) {
+                                                    $creditNoteRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($creditNote['description']) ? $creditNote['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($creditNote['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+
+                                            ######## CREDIT ADV RAMP Sections ##########
+                                            if (!empty($cashbook['Deductions']['CREDITFFBRAM'])){
+                                                if (empty($creditAdvRampRows)) {
+                                                    $creditAdvRampRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">CREDIT FFB ADVANCE (RAMP)</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">CREDIT FFB ADVANCE (RAMP)</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                                
+                                                foreach($cashbook['Deductions']['CREDITFFBRAM'] as $creditAdvRamp) {
+                                                    $creditAdvRampRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($creditAdvRamp['description']) ? $creditAdvRamp['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($creditAdvRamp['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+                                            ####################################
+
+                                            ######## CREDIT ADV HQ Sections ##########
+                                            if (!empty($cashbook['Deductions']['CREDITFFBHQ'])){
+                                                if (empty($creditAdvHqRows)) {
+                                                    $creditAdvHqRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">CREDIT FFB ADVANCE (HQ)</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">CREDIT FFB ADVANCE (HQ)</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                                
+                                                foreach($cashbook['Deductions']['CREDITFFBHQ'] as $creditAdvHq) {
+                                                    $creditAdvHqRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($creditAdvHq['description']) ? $creditAdvHq['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($creditAdvHq['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+                                            ####################################
+
+                                            ######## CREDIT ADV Sections ##########
+                                            if (!empty($cashbook['Deductions']['CREDITFFBADV'])){
+                                                if (empty($creditAdvRows)) {
+                                                    $creditAdvRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">CREDIT FFB ADVANCE</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">CREDIT FFB ADVANCE</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                                
+                                                foreach($cashbook['Deductions']['CREDITFFBADV'] as $creditAdv) {
+                                                    $creditAdvRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($creditAdv['description']) ? $creditAdv['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($creditAdv['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+                                            ####################################
+
+                                            ######## FFB SHORTAGES Sections ##########
+                                            if (!empty($cashbook['Deductions']['FFBSHORTAGE'])){
+                                                if (empty($ffbShortageRows)) {
+                                                    $ffbShortageRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">FFB SHORTAGES</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">FFB SHORTAGES</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                                
+                                                foreach($cashbook['Deductions']['FFBSHORTAGE'] as $ffbShortage) {
+                                                    $ffbShortageRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($ffbShortage['description']) ? $ffbShortage['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($ffbShortage['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+                                            ####################################
+
+                                            ######## GENERAL EXPENSES Sections ##########
+                                            if (!empty($cashbook['Deductions']['GENERAL'])){
+                                                if (empty($generalExpensesRows)) {
+                                                    $generalExpensesRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">GENERAL EXPENSES</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">GENERAL EXPENSES</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                                
+                                                foreach($cashbook['Deductions']['GENERAL'] as $generalExpense) {
+                                                    $generalExpensesRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($generalExpense['description']) ? $generalExpense['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($generalExpense['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+                                            ####################################
+
+                                            ######## PETROL/DIESEL Sections ##########
+                                            if (!empty($cashbook['Deductions']['PETROL_DIESEL'])){
+                                                if (empty($petrolDieselRows)) {
+                                                    $petrolDieselRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">PETROL/DIESEL</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">PETROL/DIESEL</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                                
+                                                foreach($cashbook['Deductions']['PETROL_DIESEL'] as $petrolDieselExpense) {
+                                                    $petrolDieselRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($petrolDieselExpense['description']) ? $petrolDieselExpense['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($petrolDieselExpense['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+                                            ####################################
+
+                                            ######## STAFF ADVANCES Sections ##########
+                                            if (!empty($cashbook['Deductions']['STAFFADV'])){
+                                                if (empty($staffAdvancesRows)) {
+                                                    $staffAdvancesRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">STAFF ADVANCES</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">STAFF ADVANCES</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                                
+                                                foreach($cashbook['Deductions']['STAFFADV'] as $staffAdvance) {
+                                                    $staffAdvancesRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($staffAdvance['description']) ? $staffAdvance['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($staffAdvance['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+                                            ####################################
+
+                                            ######## STAFF SALARY Sections ##########
+                                            if (!empty($cashbook['Deductions']['STAFFSAL'])){
+                                                if (empty($staffSalaryRows)) {
+                                                    $staffSalaryRows .= '
+                                                        <tr style="visibility:hidden;">
+                                                            <td class="bold-underline">STAFF SALARY</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="bold-underline">STAFF SALARY</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                                
+                                                foreach($cashbook['Deductions']['STAFFSAL'] as $staffSalary) {
+                                                    $staffSalaryRows .= '
+                                                        <tr>
+                                                            <td>'.date('d/m/Y', strtotime($date)).'</td>
+                                                            <td>'.(!empty($staffSalary['description']) ? $staffSalary['description'] : '').'</td>
+                                                            <td></td>
+                                                            <td>'.number_format($staffSalary['amount'], 2).'</td>
+                                                        </tr>
+                                                    ';
+                                                }
+                                            }
+                                            ####################################
+                                        }
+                                        
+                                        $message .= $cashInRows;
+                                        $message .= $cashOutRows;
+                                        $message .= $creditNoteRows;
+                                        $message .= $creditAdvRampRows;
+                                        $message .= $creditAdvHqRows;
+                                        $message .= $creditAdvRows;
+                                        $message .= $ffbShortageRows;
+                                        $message .= $generalExpensesRows;
+                                        $message .= $petrolDieselRows;
+                                        $message .= $staffAdvancesRows;
+                                        $message .= $staffSalaryRows;
+                                    }
+
+                                    $message .= '
+                                </tbody>
+                            </table>
+                        </body>
+                        </html>
+                    ';
+    
                     echo json_encode(
                         array(
                             "status" => "success",

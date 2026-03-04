@@ -35,8 +35,26 @@ if(isset($_POST['userID'])){
                 $message['ic_no'] = $row['ic_no'];
                 $message['tin_no'] = $row['tin_no'];
                 $message['mpob'] = $row['mpob'];
+                $message['mspo_no'] = $row['mspo_no'];
                 $message['payment_term'] = $row['payment_term'];
                 $message['customer_id'] = $row['customer_id'];
+
+                // Get Deduction
+                if ($deduction_stmt = $db->prepare("SELECT * FROM Supplier_Deduction WHERE supplier_id=? and status = 'auto'")) {
+                    $deduction_stmt->bind_param('s', $id);
+                    
+                    // Execute the prepared query.
+                    $deduction_stmt->execute();
+                    $result2 = $deduction_stmt->get_result();
+                    if($row2 = $result2->fetch_assoc()){
+                        $message['deduction'] = $row2;
+                    }
+                    else{
+                        $message['deduction'] = [];
+                    }
+
+                    $deduction_stmt->close();
+                }
             }
             
             echo json_encode(

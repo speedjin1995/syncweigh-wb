@@ -2,13 +2,12 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <?php
-    $customer = $db->query("SELECT * FROM Customer WHERE status = '0'");
-    $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0'");
-    $transporter = $db->query("SELECT * FROM Transporter WHERE status = '0'");
+$role = $_SESSION["roles"];
+$allowDeduct = $_SESSION["allowDeduct"];
 ?>
 
 <head>
-    <title>Vehicle | PWS - Weighing System</title>
+    <title>Grader | PWS - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -113,7 +112,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form role="form" id="vehicleForm" class="needs-validation" novalidate autocomplete="off">
+                                                    <form role="form" id="graderForm" class="needs-validation" novalidate autocomplete="off">
                                                         <div class=" row col-12">
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="card bg-light">
@@ -121,86 +120,31 @@
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="vehicleNo" class="col-sm-4 col-form-label">Vehicle No</label>
+                                                                                    <label for="graderName" class="col-sm-4 col-form-label"><?=$languageArray['grader_name_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="Vehicle No" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            Please fill in the field.
-                                                                                        </div>
+                                                                                        <input type="text" class="form-control" id="graderName" name="graderName" placeholder="<?=$languageArray['grader_name_code'][$language]?>" required>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="vehicleWeight" class="col-sm-4 col-form-label">Vehicle Weight</label>
+                                                                                    <label for="graderCertId" class="col-sm-4 col-form-label"><?=$languageArray['certificate_id_code'][$language]?> </label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="vehicleWeight" name="vehicleWeight" placeholder="Vehicle Weight">
-                                                                                        <div class="invalid-feedback">
-                                                                                            Please fill in the field.
-                                                                                        </div>
+                                                                                        <input type="text" class="form-control" id="graderCertId" name="graderCertId" placeholder="<?=$languageArray['certificate_id_code'][$language]?>" required>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none">
-                                                                                <div class="row">
-                                                                                    <label for="transporter" class="col-sm-4 col-form-label">Transporter</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-control select2" id="transporter" name="transporter">
-                                                                                            <option value="" selected disabled hidden>Please Select</option>
-                                                                                            <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
-                                                                                                <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="customer" class="col-sm-4 col-form-label">Customer</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="customer" name="customer">
-                                                                                            <option selected>-</option>
-                                                                                            <?php while($rowC=mysqli_fetch_assoc($customer)){ ?>
-                                                                                                <option value="<?=$rowC['name'] ?>" data-code="<?=$rowC['customer_code'] ?>"><?=$rowC['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>        
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="supplier" class="col-sm-4 col-form-label">Supplier</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="supplier" name="supplier">
-                                                                                            <option selected>-</option>
-                                                                                            <?php while($rowS=mysqli_fetch_assoc($supplier)){ ?>
-                                                                                                <option value="<?=$rowS['name'] ?>" data-code="<?=$rowS['supplier_code'] ?>"><?=$rowS['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>        
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-
                                                                             <input type="hidden" class="form-control" id="id" name="id">
-                                                                            <input type="hidden" id="transporterCode" name="transporterCode">
-                                                                            <input type="hidden" id="customerCode" name="customerCode">
-                                                                            <input type="hidden" id="supplierCode" name="supplierCode">
-                                                                                                                                                         
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-
                                                         </div>
                                                         
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
                                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitVehicle"><?=$languageArray['submit_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitGrader"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
                                                         </div><!--end col-->                                                               
                                                     </form>
@@ -208,7 +152,8 @@
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
                                     </div><!-- /.modal -->
-                                    <div class="modal fade" id="uploadModal" style="display:none">
+
+                                    <div class="modal fade" id="uploadModal">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
                                             <div class="modal-content">
                                                 <form role="form" id="uploadForm">
@@ -223,12 +168,13 @@
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
                                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                        <button type="button" class="btn btn-success" id="uploadVehicle"><?=$languageArray['submit_code'][$language]?></button>
+                                                        <button type="button" class="btn btn-success" id="submitWeights"><?=$languageArray['submit_code'][$language]?></button>
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
-                                    </div> 
+                                    </div>
+
                                     <div class="modal fade" id="errorModal" style="display:none">
                                         <div class="modal-dialog modal-xl" style="max-width: 50%;">
                                             <div class="modal-content">
@@ -262,9 +208,9 @@
                                                                 <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <a href="template/Vehicle_Template.xlsx" download>
-                                                                    <button type="button" id="downloadTemplate" class="btn btn-info waves-effect waves-light">
-                                                                        <i class="ri-file-pdf-line align-middle me-1"></i>
+                                                                <a href="template/Grader_Template.xlsx" download>
+                                                                    <button type="button" class="btn btn-info waves-effect waves-light">
+                                                                        <i class="mdi mdi-file-import-outline align-middle me-1"></i>
                                                                         <?=$languageArray['download_template_code'][$language]?>
                                                                     </button>
                                                                 </a>
@@ -276,24 +222,20 @@
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
-                                                                <button type="button" id="addVehicle" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
-                                                                    <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                    <?=$languageArray['add_new_code'][$language]?>
+                                                                <button type="button" id="addGraders" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                <i class="ri-add-circle-line align-middle me-1"></i>
+                                                                <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
                                                             </div> 
                                                         </div> 
                                                     </div>
                                                     <div class="card-body">
-                                                        <table id="vehicleTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
+                                                        <table id="graderTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Vehicle No</th>
-                                                                    <th>Vehicle Weight</th>
-                                                                    <!-- <th>EX-Quarry/Delivered</th>
-                                                                    <th>Transporter</th> -->
-                                                                    <th>Customer</th>
-                                                                    <th>Supplier</th>
+                                                                    <th><?=$languageArray['grader_name_code'][$language]?></th>
+                                                                    <th><?=$languageArray['certificate_id_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -350,11 +292,12 @@
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
 
-
-
 <script type="text/javascript">
 
 var table;
+var role = '<?=$role?>';
+var allowDeduct = '<?=$allowDeduct?>';
+var rowCount = 0;
 
 $(function () {
     // Initialize all Select2 elements in the modal
@@ -376,14 +319,14 @@ $(function () {
         'height': 'auto'
     });
 
-    table = $("#vehicleTable").DataTable({
+    table = $("#graderTable").DataTable({
         "responsive": true,
         "autoWidth": false,
         'processing': true,
         'serverSide': true,
         'serverMethod': 'post',
         'ajax': {
-            'url':'php/loadVehicle.php'
+            'url':'php/loadGrader.php'
         },
         'columns': [
             {
@@ -395,54 +338,55 @@ $(function () {
                     return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                 }
             },
-            { data: 'veh_number' },
-            { data: 'vehicle_weight' },
-            //{ data: 'vehicle_weight' },
-            /*{ 
-                data: 'ex_del',
-                render: function ( data, type, row ) {
-                    if (data == 'EX'){
-                        return "EX-Quarry";
-                    }else{
-                        return "Delivered";
-                    }
-                }
-            },*/
-            // { data: 'transporter_name' },
-            { data: 'customer_name' },
-            { data: 'supplier_name' },
-            { data: 'status' },
+            { data: 'grader_name' },
+            { data: 'cert_id' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
-                    if(row.status == 'Inactive'){
-                        return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                        '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item remove-item-btn" id="reactivate'+data+'" onclick="reactivate('+data+')">Reactivate </a></li></ul></div>';
+                    if (row.status == '1'){
+                        return '<button title="Reactivate" type="button" id="reactivate'+data+'" onclick="reactivate('+data+')" class="btn btn-warning btn-sm">Reactivate</button>';
+                    }else{
+                        return 'Active';
                     }
-                    else{
-                        // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
-                        return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                        '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                        '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
-                    }
+                }
+            },
+            { 
+                data: 'id',
+                render: function (data, type, row) {
+                    let dropdownHtml = '';
+
+                    dropdownHtml += '<div class="dropdown d-inline-block">';
+                    dropdownHtml += '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">';
+                    dropdownHtml += '<i class="ri-more-fill align-middle"></i></button>';
+                    dropdownHtml += '<ul class="dropdown-menu dropdown-menu-end">';
+
+                    // Edit button
+                    dropdownHtml += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')">';
+                    dropdownHtml += '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>';
+
+                    // Delete button
+                    dropdownHtml += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')">';
+                    dropdownHtml += '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li>';
+
+                    dropdownHtml += '</ul></div>';
+
+                    return dropdownHtml;
                 }
             }
         ]       
     });
 
     $('#selectAllCheckbox').on('change', function() {
-        var checkboxes = $('#vehicleTable tbody input[type="checkbox"]');
+        var checkboxes = $('#graderTable tbody input[type="checkbox"]');
         checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
     });
     
     // $.validator.setDefaults({
     //     submitHandler: function() {
-    $('#submitVehicle').on('click', function(){
-        if($('#vehicleForm').valid()){
+    $('#submitGrader').on('click', function(){
+        if($('#graderForm').valid()){
             $('#spinnerLoading').show();
-            $.post('php/vehicle.php', $('#vehicleForm').serialize(), function(data){
+            $.post('php/grader.php', $('#graderForm').serialize(), function(data){
                 var obj = JSON.parse(data); 
                 if(obj.status === 'success')
                 {
@@ -467,59 +411,7 @@ $(function () {
         // }
     });
 
-    $('#addVehicle').on('click', function(){
-        $('#addModal').find('#id').val("");
-        $('#addModal').find('#vehicleNo').val("");
-        $('#addModal').find('#vehicleWeight').val("");
-        $('#addModal').find('#transporter').val("");
-        $('#addModal').find('#transporterCode').val("");
-        $('#addModal').find('#customer').val("").trigger('change');
-        $('#addModal').find('#customerCode').val("");
-        $('#addModal').find('#supplier').val("").trigger('change');
-        $('#addModal').find('#supplierCode').val("");
-        $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true).trigger('change');
-        // Remove Validation Error Message
-        $('#addModal .is-invalid').removeClass('is-invalid');
-
-        $('#addModal').modal('show');
-        
-        $('#vehicleForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
-    });
-
-    $('#vehicleNo').on('keyup', function(){
-        var x = $('#vehicleNo').val();
-        x = x.toUpperCase();
-        $('#addModal').find('#vehicleNo').val(x);
-    });
-
-    //transporter
-    $('#transporter').on('change', function(){
-        $('#transporterCode').val($('#transporter :selected').data('code'));
-    });
-
-    //customer
-    $('#customer').on('change', function(){
-        $('#customerCode').val($('#customer :selected').data('code'));
-    });
-
-    //supplier
-    $('#supplier').on('change', function(){
-        $('#supplierCode').val($('#supplier :selected').data('code'));
-    });
-
-    $('#uploadVehicle').on('click', function(){
+    $('#submitWeights').on('click', function(){
         $('#spinnerLoading').show();
         var formData = $('#uploadForm').serializeArray();
         var data = [];
@@ -539,7 +431,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/uploadVehicle.php',
+            url: 'php/uploadGrader.php',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -550,7 +442,7 @@ $(function () {
                     $('#uploadModal').modal('hide');
                     $("#successBtn").attr('data-toast-text', obj.message);
                     $("#successBtn").click();
-                    $('#vehicleTable').DataTable().ajax.reload(null, false);
+                    table.ajax.reload();
                 } 
                 else if (obj.status === 'failed') {
                     $('#spinnerLoading').hide();
@@ -560,10 +452,7 @@ $(function () {
                 else if (obj.status === 'error') {
                     $('#spinnerLoading').hide();
                     $('#uploadModal').modal('hide');
-                    // alert(obj.message);
-                    // $("#failBtn").attr('data-toast-text', obj.message );
-                    // $("#failBtn").click();
-                    $('#vehicleTable').DataTable().ajax.reload(null, false);
+                    table.ajax.reload();
                     $('#errorModal').find('#errorList').empty();
                     var errorMessage = obj.message;
                     for (var i = 0; i < errorMessage.length; i++) {
@@ -576,6 +465,31 @@ $(function () {
                     $("#failBtn").attr('data-toast-text', 'Failed to save');
                     $("#failBtn").click();
                 }
+            }
+        });
+    });
+
+    $('#addGraders').on('click', function(){
+        $('#addModal').find('#id').val("");
+        $('#addModal').find('#graderName').val("");
+        $('#addModal').find('#graderCertId').val("");
+
+        // Remove Validation Error Message
+        $('#addModal .is-invalid').removeClass('is-invalid');
+
+        $('#addModal').modal('show');
+        
+        $('#graderForm').validate({
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
             }
         });
     });
@@ -596,8 +510,8 @@ $(function () {
                 $(element).removeClass('is-invalid');
             }
         });
-    });  
-    
+    });
+
     $('#uploadModal').find('#previewButton').on('click', function(){
         var fileInput = document.getElementById('fileInput');
         var file = fileInput.files[0];
@@ -613,10 +527,9 @@ $(function () {
     });
 
     $('#multiDeactivate').on('click', function () {
-        $('#spinnerLoading').show();
         var selectedIds = []; // An array to store the selected 'id' values
 
-        $("#vehicleTable tbody input[type='checkbox']").each(function () {
+        $("#graderTable tbody input[type='checkbox']").each(function () {
             if (this.checked) {
                 selectedIds.push($(this).val());
             }
@@ -624,53 +537,45 @@ $(function () {
 
         if (selectedIds.length > 0) {
             if (confirm('Are you sure you want to cancel these items?')) {
-                $.post('php/deleteVehicle.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                $('#spinnerLoading').show();
+                $.post('php/deleteGrader.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
                         table.ajax.reload();
-                        toastr["success"](obj.message, "Success:");
+                        $("#successBtn").attr('data-toast-text', obj.message);
+                        $("#successBtn").click();
                         $('#spinnerLoading').hide();
                     }
                     else if(obj.status === 'failed'){
-                        toastr["error"](obj.message, "Failed:");
+                        $("#failBtn").attr('data-toast-text', obj.message );
+                        $("#failBtn").click();
                         $('#spinnerLoading').hide();
                     }
                     else{
-                        toastr["error"]("Something wrong when activate", "Failed:");
+                        $("#failBtn").attr('data-toast-text', "Something wrong when deleting graders" );
+                        $("#failBtn").click();
                         $('#spinnerLoading').hide();
                     }
                 });
             }
-
-            $('#spinnerLoading').hide();
         } 
         else {
             // Optionally, you can display a message or take another action if no IDs are selected
-            alert("Please select at least one vehicle to delete.");
-            $('#spinnerLoading').hide();
+            alert("Please select at least one grader to delete.");
         }     
     });
 });
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/getVehicle.php', {userID: id}, function(data)
+    $.post('php/getGrader.php', {userID: id}, function(data)
     {
         var obj = JSON.parse(data);
         if(obj.status === 'success'){
             $('#addModal').find('#id').val(obj.message.id);
-            $('#addModal').find('#vehicleNo').val(obj.message.veh_number);
-            $('#addModal').find('#vehicleWeight').val(obj.message.vehicle_weight);
-            $('#addModal').find('#transporter').val(obj.message.transporter_name).trigger('change');
-            $('#addModal').find('#transporterCode').val(obj.message.transporter_code);
-            if (obj.message.ex_del == 'EX'){
-                $('#addModal').find("input[name='exDel'][value='true']").prop("checked", true);
-            }else{
-                $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true);
-            }
-            $('#addModal').find('#customer').val(obj.message.customer_name).trigger('change');
-            $('#addModal').find('#supplier').val(obj.message.supplier_name).trigger('change');
+            $('#addModal').find('#graderName').val(obj.message.grader_name);
+            $('#addModal').find('#graderCertId').val(obj.message.cert_id);
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -694,7 +599,7 @@ function edit(id){
 function deactivate(id){
     $('#spinnerLoading').show();
     if (confirm('Are you sure you want to cancel this item?')) {
-        $.post('php/deleteVehicle.php', {userID: id}, function(data){
+        $.post('php/deleteGrader.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
             
             if(obj.status === 'success'){
@@ -732,13 +637,13 @@ function displayPreview(data) {
     // Get the headers
     var headers = jsonData[0];
 
-    // Ensure we handle cases where there may be less than 6 columns
-    while (headers.length < 6) {
-        headers.push(''); // Adding empty headers to reach 6 columns
+    // Ensure we handle cases where there may be less than 2 columns
+    while (headers.length < 2) {
+        headers.push(''); // Adding empty headers to reach 2 columns
     }
 
     // Create HTML table headers
-    var htmlTable = '<table style="width:50%;"><thead><tr>';
+    var htmlTable = '<table style="width:30%;"><thead><tr>';
     headers.forEach(function(header) {
         htmlTable += '<th>' + header + '</th>';
     });
@@ -749,12 +654,12 @@ function displayPreview(data) {
         htmlTable += '<tr>';
         var rowData = jsonData[i];
 
-        // Ensure we handle cases where there may be less than 6 cells in a row
-        while (rowData.length < 6) {
-            rowData.push(''); // Adding empty cells to reach 6 columns
+        // Ensure we handle cases where there may be less than 2 cells in a row
+        while (rowData.length < 2) {
+            rowData.push(''); // Adding empty cells to reach 2 columns
         }
 
-        for (var j = 0; j < 6; j++) {
+        for (var j = 0; j < 2; j++) {
             var cellData = rowData[j];
             var formattedData = cellData;
 
@@ -777,7 +682,7 @@ function displayPreview(data) {
 function reactivate(id) {
   if (confirm('Do you want to reactivate this item?')) {
     $('#spinnerLoading').show();
-    $.post('php/reactivateMasterData.php', {userID: id, type: "Vehicle"}, function(data){
+    $.post('php/reactivateMasterData.php', {userID: id, type: "Customer"}, function(data){
         var obj = JSON.parse(data);
 
         if(obj.status === 'success'){
@@ -804,7 +709,7 @@ function reactivate(id) {
   $('#spinnerLoading').hide();
 }
 
-$('#vehicleForm').validate({
+$('#graderForm').validate({
     errorElement: 'span',
     errorPlacement: function (error, element) {
       error.addClass('invalid-feedback');

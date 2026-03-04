@@ -103,6 +103,12 @@ if (isset($_POST['supplierCode'])) {
         $mpob = trim($_POST["mpob"]);
     }
 
+    if (empty($_POST["mspoNo"])) {
+        $mspoNo = null;
+    } else {
+        $mspoNo = trim($_POST["mspoNo"]);
+    }
+
     if (empty($_POST["paymentTerm"])) {
         $paymentTerm = null;
     } else {
@@ -119,9 +125,9 @@ if (isset($_POST['supplierCode'])) {
     {
         // $sql = "UPDATE Customer SET company_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, created_by=?, modified_by=? WHERE customer_code=?";
         $action = "2";
-        if ($update_stmt = $db->prepare("UPDATE Supplier SET supplier_code=?, company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, mpob=?, payment_term=?, customer_id=?, created_by=?, modified_by=? WHERE id=?")) 
+        if ($update_stmt = $db->prepare("UPDATE Supplier SET supplier_code=?, company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, mpob=?, mspo_no=?, payment_term=?, customer_id=?, created_by=?, modified_by=? WHERE id=?")) 
         {
-            $update_stmt->bind_param('ssssssssssssssssss', $supplierCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $mpob, $paymentTerm, $customer, $username, $username, $supplierId);
+            $update_stmt->bind_param('sssssssssssssssssss', $supplierCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $mpob, $mspoNo, $paymentTerm, $customer, $username, $username, $supplierId);
 
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
@@ -158,8 +164,8 @@ if (isset($_POST['supplierCode'])) {
     else
     {
         $action = "1";
-        if ($insert_stmt = $db->prepare("INSERT INTO Supplier (supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, payment_term, customer_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            $insert_stmt->bind_param('sssssssssssssssss', $supplierCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $mpob, $paymentTerm, $customer, $username, $username);
+        if ($insert_stmt = $db->prepare("INSERT INTO Supplier (supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, customer_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            $insert_stmt->bind_param('ssssssssssssssssss', $supplierCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $mpob, $mspoNo, $paymentTerm, $customer, $username, $username);
 
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {

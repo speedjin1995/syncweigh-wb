@@ -69,7 +69,16 @@
                             </li>
                             <li class="nav-item">
                                 <a href="accountingReport.php" class="nav-link"><b><?=$languageArray['daily_cash_report_code'][$language]?></b></a>
-                            </li>          
+                            </li>
+                            <?php
+                            if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
+                                echo '
+                                    <li class="nav-item">
+                                        <a href="payslip.php" class="nav-link"><b>'.$languageArray['payslip_code'][$language].'</b></a>
+                                    </li>
+                                ';
+                            }
+                            ?>
                         </ul>
                     </div>
                 </li>
@@ -110,6 +119,9 @@
                                                 </li>
                                                 <li class="nav-item">
                                                     <a href="user.php" class="nav-link"><b>'.$languageArray['staff_code'][$language].'</b></a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="grader.php" class="nav-link"><b>'.$languageArray['grader_code'][$language].'</b></a>
                                                 </li>';
 
                                             if($_SESSION['package'] != 'Lite'){
@@ -180,14 +192,31 @@
                                         ';
                                     }
 
+                                    if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["allowDeduct"] == 'Y'){
+                                        echo '
+                                        <li class="nav-item deduction-field" id="deductionSetupMenu">
+                                            <a href="deductionSetup.php" class="nav-link"><b>'.$languageArray['deduction_setup_code'][$language].'</b></a>
+                                        </li> 
+                                        ';
+                                    }
+
                                     if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
                                         echo '
-                                        <li class="nav-item">
-                                            <a href="portSetup.php" class="nav-link"><b>'.$languageArray['port_setup_code'][$language].'</b></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="displaySetup.php" class="nav-link"><b>'.$languageArray['display_setup_code'][$language].'</b></a>
-                                        </li>';
+                                            <li class="nav-item">
+                                                <a href="portSetup.php" class="nav-link"><b>'.$languageArray['port_setup_code'][$language].'</b></a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="payslipSetting.php" class="nav-link"><b>'.$languageArray['payslip_setting_code'][$language].'</b></a>
+                                            </li>
+                                        ';
+
+                                        if ($_SESSION['includeDisplaySetup'] == 'Y'){
+                                            echo '
+                                                <li class="nav-item">
+                                                    <a href="displaySetup.php" class="nav-link"><b>'.$languageArray['display_setup_code'][$language].'</b></a>
+                                                </li> 
+                                            ';
+                                        }   
                                     }
                                 ?>
                                 
