@@ -103,9 +103,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                     $low = '';
 
                     $transactionDate = date("d/m/Y", strtotime($row['transaction_date']));
-                    $grossWeightTime = date("d/m/Y - H:i:s", strtotime($row['gross_weight1_date']));
-                    $tareWeightTime = date("d/m/Y - H:i:s", strtotime($row['tare_weight1_date']));
-
+                    $grossWeightTime = $row['gross_weight1_date'] != null ? date("d/m/Y - H:i:s", strtotime($row['gross_weight1_date'])) : "";
+                    $tareWeightTime = $row['tare_weight1_date'] != null ? date("d/m/Y - H:i:s", strtotime($row['tare_weight1_date'])) : "";
                     $orderSuppWeight = 0;
                     $weightDifference = $row['weight_different'];
                     $finalWeight = $row['final_weight'];
@@ -318,12 +317,12 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                                         </p>
                                     </td>
                                     <td style="vertical-align: top;">
-                                        <p style="vertical-align: top; font-size: 14px;">
+                                        <p style="vertical-align: top; font-size: 16px;">
                                             <span style="font-size: 24px; font-weight: bold; margin-bottom: 5px; display: inline-block;">'. $languageArray[$transacationStatus][$language] . ' ' . $languageArray['slip_code'][$language].'</span><br>
-                                            <span>'. $languageArray['ticket_no_code'][$language].' &nbsp;:&nbsp; <b>'.$row['transaction_id'].'</b></span><br>
-                                            <span>'. $languageArray['date_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 1.5px;">:&nbsp;&nbsp;'.$transactionDate.'</span><br>
-                                            <span>'. $languageArray['do_no_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;</span><span>:&nbsp;&nbsp;'.$row['delivery_no'].'</span><br>
-                                            <span>'. $languageArray['po_no_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left:2.5px">:&nbsp;&nbsp;'.$row['purchase_order'].'</span><br>
+                                            <span style="display: inline-block; width: 100px;">'. $languageArray['ticket_no_code'][$language].'</span>: <b>'.$row['transaction_id'].'</b><br>
+                                            <span style="display: inline-block; width: 100px;">'. $languageArray['date_code'][$language].'</span>: '.$transactionDate.'<br>
+                                            <span style="display: inline-block; width: 100px;">'. $languageArray['do_no_code'][$language].'</span>: '.$row['delivery_no'].'<br>
+                                            <span style="display: inline-block; width: 100px;">'. $languageArray['po_no_code'][$language].'</span>: '.$row['purchase_order'].'<br>
                                         </p>
                                     </td>
                                 </tr>
@@ -332,10 +331,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                                 </tr>
                                 <tr style="border-top: 1px solid black;">
                                     <td style="vertical-align: top;">
-                                        <p style="margin-top: 5px; font-size: 14px;">
-                                            <span">'.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $languageArray['customer_code'][$language] : $languageArray['supplier_code'][$language].'&nbsp;&nbsp;').' &nbsp;&nbsp;</span><span style="margin-left: 23px">:&nbsp; <b>'.$customer.'</b></span><br>
-                                            <span">'.$languageArray['transporter_code'][$language].' &nbsp;&nbsp;</span><span style="margin-left: 12.5px">:&nbsp; '.$row['transporter'].'</span><br>
-                                            <span">'.$languageArray['destination_code'][$language].'&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 12.5px">:&nbsp; '.$row['destination'].'</span>
+                                        <p style="margin-top: 5px; font-size: 16px;">
+                                            <span style="display: inline-block; width: 100px;">'.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $languageArray['customer_code'][$language] : $languageArray['supplier_code'][$language]).'</span>: <b>'.$customer.'</b><br>
+                                            <span style="display: inline-block; width: 100px;">'.$languageArray['transporter_code'][$language].'</span>: '.$row['transporter'].'<br>
+                                            <span style="display: inline-block; width: 100px;">'.$languageArray['destination_code'][$language].'</span>: '.$row['destination'].'
                                         </p>';
 
                                         // $message .= '
@@ -353,10 +352,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                                         $message .= '
                                     </td>
                                     <td style="vertical-align: top;">
-                                        <p style="margin-top: 5px; font-size: 14px;">
-                                            <span">'.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $languageArray['order_weight_code'][$language] : $languageArray['supply_weight_code'][$language]).'</span><span style="margin-left: 10px">:&nbsp; <b>'.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $row['order_weight'] : $row['supplier_weight']).'</b></span><br>
-                                            <span">'.$languageArray['variance_code'][$language].'</span><span style="margin-left: 37px">:&nbsp; '.$row['weight_different'].'</span><br>
-                                            <span">% '.$languageArray['variance_code'][$language].'</span><span style="margin-left: 22px">:&nbsp; '.$row['weight_different_perc'].'</span>
+                                        <p style="margin-top: 5px; font-size: 16px;">
+                                            <span style="display: inline-block; width: 100px;">'.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $languageArray['order_weight_code'][$language] : $languageArray['supply_weight_code'][$language]).'</span>: <b>'.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $row['order_weight'] : $row['supplier_weight']).'</b><br>
+                                            <span style="display: inline-block; width: 100px;">'.$languageArray['variance_code'][$language].'</span>: '.$row['weight_different'].'<br>
+                                            <span style="display: inline-block; width: 100px;">% '.$languageArray['variance_code'][$language].'</span>: '.$row['weight_different_perc'].'
                                         </p>
                                     </td>
                                 </tr>';
@@ -827,9 +826,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                                     $message .= '<br>
                                     <table style="width:100%; border:0px solid black; margin-top: -10px;">
                                         <tr>
-                                            <th style="border:1px solid black;font-size: 18px;text-align: center;" width="20%">'.$languageArray['vehicle_no_code'][$language].'</th>
-                                            <th colspan="2" style="border:1px solid black;font-size: 18px;text-align: center;" width="30%">'.$languageArray['product_description_code'][$language].'</th>
-                                            <th style="border:1px solid black;font-size: 18px;text-align: center;" width="25%">'.$languageArray['datetime_code'][$language].'</th>
+                                            <th style="border:1px solid black;font-size: 18px;text-align: center;" width="15%">'.$languageArray['vehicle_no_code'][$language].'</th>
+                                            <th colspan="2" style="border:1px solid black;font-size: 18px;text-align: center;" width="35%">'.$languageArray['product_description_code'][$language].'</th>
+                                            <th style="border-top: 1px solid black; border-right: none" width="5%"></th>
+                                            <th style="border-top: 1px solid black; border-left: none;font-size: 18px;text-align: center;" width="25%">'.$languageArray['datetime_code'][$language].'</th>
                                             <th colspan="2" style="border:1px solid black;font-size: 18px;text-align: center;" width="20%">'.$languageArray['weight_code'][$language].' ('.$languageArray['kg_code'][$language].')</th>
                                         </tr>
                                         <tr style="font-size: 16px;text-align: center;">
@@ -842,28 +842,28 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                                             }
 
                                         $message .= '    
-                                            <td style="border:1px solid black;">'.$grossWeightTime.'</td>
                                             <td style="border:1px solid black; font-weight: bold;">'.$languageArray['in_code'][$language].'</td>
+                                            <td style="border:1px solid black;">'.$grossWeightTime.'</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['gross_weight1']).' kg</td>
                                         </tr>
                                         <tr style="font-size: 16px;text-align: center;">
-                                            <td style="border:1px solid black;">'.$tareWeightTime.'</td>
                                             <td style="border:1px solid black; font-weight: bold;">'.$languageArray['out_code'][$language].'</td>
+                                            <td style="border:1px solid black;">'.$tareWeightTime.'</td>
                                             <td style="border:1px solid black;">'.formatWeight($row['tare_weight1']).' kg</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4">'.$languageArray['remarks_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; <span style="margin-left: 10px">'.$row['remarks'].'</span></td>
-                                            <td style="border:1px solid black;font-size: 16px;text-align: center;">'.$languageArray['reduce_code'][$language].($row['reduce_weight_type'] == '%' ? '<br> (%)' : '').'</td>
+                                            <td colspan="3">'.$languageArray['remarks_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; <span style="margin-left: 10px">'.$row['remarks'].'</span></td>
+                                            <td colspan="2" style="border:1px solid black;font-size: 16px;text-align: center;">'.$languageArray['reduce_weight_code'][$language].($row['reduce_weight_type'] == '%' ? '<br> (%)' : '').'</td>
                                             <td style="border:1px solid black;font-size: 16px;text-align: center;">'.($row['reduce_weight_type'] == '%' ? $row['reduce_weight_input'].'% <br> ('.formatWeight($row['reduce_weight']).' kg)' : formatWeight($row['reduce_weight']).' kg').'</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4"></td>
-                                            <td style="border:1px solid black;font-size: 16px;text-align: center;">'.$languageArray['tare_code'][$language].($row['tare_weight_type'] == '%' ? '<br> (%)' : '').'</td>
+                                            <td colspan="3"></td>
+                                            <td colspan="2" style="border:1px solid black;font-size: 16px;text-align: center;">'.$languageArray['tare_weight_code'][$language].($row['tare_weight_type'] == '%' ? '<br> (%)' : '').'</td>
                                             <td style="border:1px solid black;font-size: 16px;text-align: center;">'.($row['tare_weight_type'] == '%' ? $row['tare_weight_input'].'% <br> ('.formatWeight($row['tare_weight']).' kg)' : formatWeight($row['tare_weight']).' kg').'</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4"></td>
-                                            <td style="border:1px solid black;font-size: 16px;font-weight:bold;text-align: center;">'.$languageArray['nett_code'][$language].'</td>
+                                            <td colspan="3"></td>
+                                            <td colspan="2" style="border:1px solid black;font-size: 16px;font-weight:bold;text-align: center;">'.$languageArray['nett_weight_code'][$language].'</td>
                                             <td style="border:1px solid black;font-size: 16px;font-weight:bold;text-align: center;">'.formatWeight($row['final_weight']).' kg</td>
                                         </tr>
                                     </table><br>';
