@@ -1002,13 +1002,83 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="row">
+                                                                                <div class="row mb-3">
                                                                                     <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                         <div class="row">
                                                                                             <label for="otherRemarks" class="col-sm-2 col-form-label" style="width: 11%;">Other Remarks</label>
                                                                                             <div class="col-sm-10" style="width: 89%;">
                                                                                                 <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
                                                                                             </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-12 col-lg-12" id="priceCard" style="display:<?php if($includePrice == 'N'): ?>none<?php else: ?>block<?php endif; ?>;">
+                                                                                        <div class="card border">
+                                                                                            <div class="card-body">
+                                                                                                <h5 class="card-title mb-3"><i class="mdi mdi-receipt"></i> Pricing Details</h5>
+                                                                                                <div style="display:none;">
+                                                                                                    <div class="row mb-3" id="divOrderWeight">
+                                                                                                        <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
+                                                                                                        <div class="col-sm-8">
+                                                                                                            <div class="input-group">
+                                                                                                                <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
+                                                                                                                <div class="input-group-text">Kg</div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="row mb-3" id="divWeightDifference">
+                                                                                                        <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
+                                                                                                        <div class="col-sm-8">
+                                                                                                            <div class="input-group">
+                                                                                                                <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
+                                                                                                                <div class="input-group-text">Kg</div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <!--div class="row mb-3">
+                                                                                                        <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
+                                                                                                        <div class="col-sm-8">
+                                                                                                            <div class="input-group">
+                                                                                                                <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
+                                                                                                                <div class="input-group-text">Kg</div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div-->
+                                                                                                </div>
+                                                                                                <div class="row mb-3">
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Unit Price</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control" id="unitPrice" name="unitPrice" placeholder="0">
+                                                                                                            <span class="input-group-text">RM</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Subtotal</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
+                                                                                                            <span class="input-group-text bg-light">RM</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="row">
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Tax</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control" id="sstPrice" name="sstPrice" placeholder="0">
+                                                                                                            <span class="input-group-text">%</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Total Price</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
+                                                                                                            <span class="input-group-text bg-primary text-white">RM</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>                 
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -1168,77 +1238,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>                                                                    
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-xxl-4 col-lg-4" id="priceCard" style="display:<?php if($includePrice == 'N'): ?>none<?php else: ?>block<?php endif; ?>;">
-                                                                        <div class="card bg-light" style="min-height: 385px;">
-                                                                            <div class="card-body">
-                                                                                <div style="display:none;">
-                                                                                    <div class="row mb-3" id="divOrderWeight">
-                                                                                        <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
-                                                                                        <div class="col-sm-8">
-                                                                                            <div class="input-group">
-                                                                                                <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
-                                                                                                <div class="input-group-text">Kg</div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="row mb-3" id="divWeightDifference">
-                                                                                        <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
-                                                                                        <div class="col-sm-8">
-                                                                                            <div class="input-group">
-                                                                                                <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
-                                                                                                <div class="input-group-text">Kg</div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <!--div class="row mb-3">
-                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div-->
-                                                                                <div class="row mb-3" id="unitPriceDisplay">
-                                                                                    <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0">
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3" id="subTotalPriceDisplay">
-                                                                                    <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3" id="sstDisplay">
-                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label">Tax</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0">
-                                                                                            <div class="input-group-text">%</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3" id="totalPriceDisplay">
-                                                                                    <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>                 
                                                                         </div>
                                                                     </div>
                                                                 </div>
