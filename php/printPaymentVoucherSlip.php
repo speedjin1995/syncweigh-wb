@@ -63,6 +63,9 @@ if(isset($_POST['slipType'], $_POST['transactionStatus'], $_POST['weightType'], 
             $outstandingAmount = number_format($row['outstanding_amount'] ?? 0, 2);
 
             if ($slipType == 'pv') {
+                $pvLogoPath = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "pv_logo.png";
+                $pvLogoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($pvLogoPath));
+
                 // Format date to Malay month and year
                 $malayMonths = array(
                     1 => 'JANUARI', 2 => 'FEBRUARI', 3 => 'MAC', 4 => 'APRIL',
@@ -100,17 +103,30 @@ if(isset($_POST['slipType'], $_POST['transactionStatus'], $_POST['weightType'], 
                             padding: 0;
                         }
                         .header {
+                            position: relative;
+                            margin-bottom: 25px;
                             text-align: center;
-                            margin-bottom: 15px;
+                        }
+                        .header-logo {
+                            position: absolute;
+                            left: 50px;
+                            top: 10px;
+                            width: 80px;
+                            height: auto;
+                        }
+                        .header-text {
+                            text-align: center;
                         }
                         .header h3 {
                             margin: 0;
+                            padding: 3px 0;
                             font-size: 13px;
                             font-weight: bold;
                         }
                         .header p {
-                            margin: 2px 0;
-                            font-size: 10px;
+                            margin: 0;
+                            padding: 3px 0;
+                            font-size: 12px;
                         }
                         .title {
                             text-align: center;
@@ -188,9 +204,13 @@ if(isset($_POST['slipType'], $_POST['transactionStatus'], $_POST['weightType'], 
                 </head>
                 <body>
                     <div class="header">
-                        <h3>'.$compname.' (No. Daftar: '.$compreg.')</h3>
-                        <p>'.$compaddress.'</p>
-                        <p>TEL: '.$compphone.'</p>
+                        <img src="'.$pvLogoBase64.'" alt="Logo" class="header-logo">
+                        
+                        <div class="header-text">
+                            <h3>'.$compname.' (No. Daftar: '.$compreg.')</h3>
+                            <p>'.$compaddress1.' '.$compaddress2.'</p>
+                            <p>'.$compaddress3.' TEL: '.$compphone.'</p>
+                        </div>
                     </div>
                     
                     <div class="title">BAUCER BAYARAN</div>
