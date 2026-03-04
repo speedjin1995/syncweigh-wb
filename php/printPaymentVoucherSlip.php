@@ -30,7 +30,7 @@ if(isset($_POST['slipType'], $_POST['transactionStatus'], $_POST['weightType'], 
     $compname = 'SYNCTRONIX TECHNOLOGY (M) SDN BHD';
     $compreg = '123456789-X';
     $compaddress = 'No.34, Jalan Bagan 1, Taman Bagan, 13400 Butterworth. Penang.';
-    $compaddress1 = 'No.34, Jalan Bagan 1, Taman Bagan, 13400 Butterworth. Penang.';
+    $compaddress1 = '';
     $compaddress2 = '';
     $compaddress3 = '';
     $compphone = '6043325822';
@@ -56,164 +56,161 @@ if(isset($_POST['slipType'], $_POST['transactionStatus'], $_POST['weightType'], 
         $result = $stmt->get_result();
         
         if ($row = $result->fetch_assoc()) {
-            $voucherDate = date('d/m/Y', strtotime($row['voucher_date']));
-            $pvLogoPath = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "pv_logo.png";
-            $pvLogoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($pvLogoPath));
-
-            // Format date to Malay month and year
-            $malayMonths = array(
-                1 => 'JANUARI', 2 => 'FEBRUARI', 3 => 'MAC', 4 => 'APRIL',
-                5 => 'MEI', 6 => 'JUN', 7 => 'JULAI', 8 => 'OGOS',
-                9 => 'SEPTEMBER', 10 => 'OKTOBER', 11 => 'NOVEMBER', 12 => 'DISEMBER'
-            );
-            $month = date('n', strtotime($row['voucher_date']));
-            $year = date('Y', strtotime($row['voucher_date']));
-            $formatVoucherDate = $malayMonths[$month] . ' ' . $year;
-            
             $supplierName = $row['customer_supplier'];
             $voucherDate = date('d/m/Y', strtotime($row['voucher_date']));
             $invoiceNo = $row['invoice_no'] ?? '';
-            $accountNo = $row['account_no'] ?? '';
-            $deductions = json_decode($row['deduction_details'], true);
-            $additions = json_decode($row['addition_details'], true);
-            $unitPrice = floatval($row['unit_price']);
-            $totalNettWeight = floatval($row['total_nett_weight']);
-            $totalAmount = floatval(str_replace('RM ', '', $row['total_amount']));
-            $totalDeductions = floatval($row['deduction_amount']);
-            $totalAdditions = floatval($row['addition_amount']);
-            $finalAmount = floatval($row['final_amount']);
-            
-            $message = '
-            <html>
-            <style>
-                @media print {
-                    @page {
-                        size: A5 landscape;
-                        margin: 1in 1in;
-                    }
-                }
-                body {
-                    font-family: Arial, sans-serif;
-                    font-size: 11px;
-                    margin: 20px;
-                    padding: 0;
-                }
-                .header {
-                    position: relative;
-                    margin-bottom: 25px;
-                    text-align: center;
-                }
-                .header-logo {
-                    position: absolute;
-                    left: 50px;
-                    top: 10px;
-                    width: 80px;
-                    height: auto;
-                }
-                .header-text {
-                    text-align: center;
-                }
-                .header h3 {
-                    margin: 0;
-                    padding: 3px 0;
-                    font-size: 13px;
-                    font-weight: bold;
-                }
-                .header p {
-                    margin: 0;
-                    padding: 3px 0;
-                    font-size: 12px;
-                }
-                .title {
-                    text-align: center;
-                    font-size: 14px;
-                    font-weight: bold;
-                    margin: 10px 0;
-                    text-decoration: underline;
-                }
-                .info-row {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 10px;
-                    gap: 20px;
-                }
-                .info-item {
-                    display: flex;
-                    align-items: baseline;
-                    flex: 1;
-                }
-                .info-label {
-                    font-weight: bold;
-                    width: 100px;
-                    display: inline-block;
-                }
-                .info-value {
-                    border-bottom: 1px solid #000;
-                    flex: 1;
-                    display: inline-block;
-                }
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 10px 0;
-                }
-                th, td {
-                    border: 1px solid #000;
-                    padding: 5px;
-                    text-align: center;
-                    font-size: 10px;
-                }
-                th {
-                    font-weight: bold;
-                    background-color: #f0f0f0;
-                }
-                .text-right {
-                    text-align: right;
-                }
-                .text-left {
-                    text-align: left;
-                }
-                .total-row {
-                    font-weight: bold;
-                }
-                .footer {
-                    margin-top: 15px;
-                    font-size: 10px;
-                }
-                .signature {
-                    margin-top: 50px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-end;
-                }
-                .signature p {
-                    text-align: left;
-                    width: 200px;
-                    margin: 0;
-                }
-                .signature-line {
-                    border-top: 1px solid #000;
-                    width: 200px;
-                    margin-top: 50px;
-                }
-            </style>
-            <body>
-                <div class="header">
-                    <img src="'.$pvLogoBase64.'" alt="Logo" class="header-logo">
-                    
-                    <div class="header-text">
-                        <h3>'.$compname.' (No. Daftar: '.$compreg.')</h3>
-                        <p>'.$compaddress1.' '.$compaddress2.'</p>
-                        <p>'.$compaddress3.' TEL: '.$compphone.'</p>
-                    </div>
-                </div>
+            $outstandingDetails = json_decode($row['outstanding_details'], true);
+            $outstandingAmount = number_format($row['outstanding_amount'] ?? 0, 2);
+
+            if ($slipType == 'pv') {
+                $pvLogoPath = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "pv_logo.png";
+                $pvLogoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($pvLogoPath));
+
+                // Format date to Malay month and year
+                $malayMonths = array(
+                    1 => 'JANUARI', 2 => 'FEBRUARI', 3 => 'MAC', 4 => 'APRIL',
+                    5 => 'MEI', 6 => 'JUN', 7 => 'JULAI', 8 => 'OGOS',
+                    9 => 'SEPTEMBER', 10 => 'OKTOBER', 11 => 'NOVEMBER', 12 => 'DISEMBER'
+                );
+                $month = date('n', strtotime($row['voucher_date']));
+                $year = date('Y', strtotime($row['voucher_date']));
+                $formatVoucherDate = $malayMonths[$month] . ' ' . $year;
                 
-                <div class="title">BAUCER BAYARAN</div>
+                $accountNo = $row['account_no'] ?? '';
+                $deductions = json_decode($row['deduction_details'], true);
+                $additions = json_decode($row['addition_details'], true);
+                $unitPrice = floatval($row['unit_price']);
+                $totalNettWeight = floatval($row['total_nett_weight']);
+                $totalAmount = floatval(str_replace('RM ', '', $row['total_amount']));
+                $totalDeductions = floatval($row['deduction_amount']);
+                $totalAdditions = floatval($row['addition_amount']);
+                $finalAmount = floatval($row['final_amount']);
                 
-                <div class="info-row">
-                    <div class="info-item">
-                        <span class="info-label">NAMA :</span>
-                        <span class="info-value">'.$supplierName.'</span>
+                $message = '
+                <html>
+                <head>
+                    <style>
+                        @media print {
+                            @page {
+                                size: A5 landscape;
+                                margin: 1in 1in;
+                            }
+                        }
+                        body {
+                            font-family: Arial, sans-serif;
+                            font-size: 11px;
+                            margin: 20px;
+                            padding: 0;
+                        }
+                        .header {
+                            position: relative;
+                            margin-bottom: 25px;
+                            text-align: center;
+                        }
+                        .header-logo {
+                            position: absolute;
+                            left: 50px;
+                            top: 10px;
+                            width: 80px;
+                            height: auto;
+                        }
+                        .header-text {
+                            text-align: center;
+                        }
+                        .header h3 {
+                            margin: 0;
+                            padding: 3px 0;
+                            font-size: 13px;
+                            font-weight: bold;
+                        }
+                        .header p {
+                            margin: 0;
+                            padding: 3px 0;
+                            font-size: 12px;
+                        }
+                        .title {
+                            text-align: center;
+                            font-size: 14px;
+                            font-weight: bold;
+                            margin: 10px 0;
+                            text-decoration: underline;
+                        }
+                        .info-row {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 10px;
+                            gap: 20px;
+                        }
+                        .info-item {
+                            display: flex;
+                            align-items: baseline;
+                            flex: 1;
+                        }
+                        .info-label {
+                            font-weight: bold;
+                            width: 100px;
+                            display: inline-block;
+                        }
+                        .info-value {
+                            border-bottom: 1px solid #000;
+                            flex: 1;
+                            display: inline-block;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 10px 0;
+                        }
+                        th, td {
+                            border: 1px solid #000;
+                            padding: 5px;
+                            text-align: center;
+                            font-size: 10px;
+                        }
+                        th {
+                            font-weight: bold;
+                            background-color: #f0f0f0;
+                        }
+                        .text-right {
+                            text-align: right;
+                        }
+                        .text-left {
+                            text-align: left;
+                        }
+                        .total-row {
+                            font-weight: bold;
+                        }
+                        .footer {
+                            margin-top: 15px;
+                            font-size: 10px;
+                        }
+                        .signature {
+                            margin-top: 50px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-end;
+                        }
+                        .signature p {
+                            text-align: left;
+                            width: 200px;
+                            margin: 0;
+                        }
+                        .signature-line {
+                            border-top: 1px solid #000;
+                            width: 200px;
+                            margin-top: 50px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <img src="'.$pvLogoBase64.'" alt="Logo" class="header-logo">
+                        
+                        <div class="header-text">
+                            <h3>'.$compname.' (No. Daftar: '.$compreg.')</h3>
+                            <p>'.$compaddress1.' '.$compaddress2.'</p>
+                            <p>'.$compaddress3.' TEL: '.$compphone.'</p>
+                        </div>
                     </div>
                     
                     <div class="title">BAUCER BAYARAN</div>
