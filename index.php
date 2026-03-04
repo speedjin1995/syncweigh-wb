@@ -3736,7 +3736,7 @@ if(($row = $result->fetch_assoc()) !== null){
                         var supplierName = obj.message.supplier_name;
                         var supplierCode = obj.message.supplier_code;
 
-                        if ((transactionStatus == 'Sales' || transactionStatus) == 'Misc' && customerName && customerCode){
+                        if ((transactionStatus == 'Sales' || transactionStatus == 'Misc') && customerName && customerCode){
                             $('#addModal').find('#customerName').val(customerName).trigger('change');
                             $('#addModal').find('#customerCode').val(customerCode);
                         }else{
@@ -3777,7 +3777,7 @@ if(($row = $result->fetch_assoc()) !== null){
                         var supplierName = obj.message.supplier_name;
                         var supplierCode = obj.message.supplier_code;
 
-                        if ((transactionStatus == 'Sales' || transactionStatus) == 'Misc' && customerName && customerCode){
+                        if ((transactionStatus == 'Sales' || transactionStatus == 'Misc') && customerName && customerCode){
                             $('#addModal').find('#customerName').val(customerName).trigger('change');
                             $('#addModal').find('#customerCode').val(customerCode);
                         }else{
