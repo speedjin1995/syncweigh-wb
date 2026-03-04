@@ -51,7 +51,7 @@ if($_POST['invoice'] != null && $_POST['invoice'] != '' && $_POST['invoice'] != 
 }
 
 if($_POST['batch'] != null && $_POST['batch'] != '' && $_POST['batch'] != '-'){
-	$searchQuery .= " and is_complete = '".$_POST['batch']."' AND is_cancel = 'N'";
+	$searchQuery .= " and is_complete = '".$_POST['batch']."'";
 }
 
 if($_POST['product'] != null && $_POST['product'] != '' && $_POST['product'] != '-'){
@@ -115,7 +115,7 @@ if ($_POST['batch'] == 'N') { //if pending
   ## Total number of record with filtering
   $filteredQuery = "select count(*) as allcount from (SELECT * FROM Weight where status = '0'".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0'".$searchQuery.") AS combined"; 
   $filteredQuery2 = "select * from (SELECT * FROM Weight where status = '0'".$searchQuery2." UNION ALL SELECT * FROM Weight_Container where status = '0'".$searchQuery2.") AS combined"; 
-  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY'){
+  if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != '' && $_SESSION["roles"] != 'AUTHORITY'){
     $username = implode("', '", $_SESSION["plant"]);
     $filteredQuery = "select count(*) as allcount from (SELECT * FROM Weight where status = '0' and plant_code IN ('$username')".$searchQuery." UNION ALL SELECT * FROM Weight_Container where status = '0' and plant_code IN ('$username')".$searchQuery.") AS combined";
     $filteredQuery2 = "select * from (SELECT * FROM Weight where status = '0' and plant_code IN ('$username')".$searchQuery2." UNION ALL SELECT * FROM Weight_Container where status = '0' and plant_code IN ('$username')".$searchQuery2.") AS combined";

@@ -26,7 +26,7 @@ if (isset($_POST['vehicleNo'])) {
     }
 
     if (empty($_POST["vehicleWeight"])) {
-        $vehicleWeight = null;
+        $vehicleWeight = 0;
     } else {
         $vehicleWeight = trim($_POST["vehicleWeight"]);
     }

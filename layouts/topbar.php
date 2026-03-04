@@ -663,7 +663,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                     </div>
                 </div-->
 
-                <!--div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
+                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
                     <span class="fw-bold">LW</span>
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
                         id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
@@ -708,6 +708,12 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                             <?=$languageArray['public_code'][$language] ?> <?php echo (count($localList) == 0 ? '' : '('.count($localList).')'); ?>
                                         </a>
                                     </li>
+                                    <!-- <li class="nav-item waves-effect waves-light">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#misc-tab" role="tab"
+                                            aria-selected="false">
+                                            <?=$languageArray['miscellaneous_code'][$language] ?> <?php echo (count($miscList) == 0 ? '' : '('.count($miscList).')'); ?>
+                                        </a>
+                                    </li> -->
                                 </ul>
                             </div>
 
@@ -795,7 +801,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                             </div>
                         </div>
                     </div>
-                </div-->
+                </div>
 
                 <div class="dropdown topbar-head-dropdown ms-1 header-item" id="cwNotificationDropdown" style="<?= $includeContainer == 'N' ? 'display:none' : '' ?>">
                     <span class="fw-bold">CW</span>

@@ -41,24 +41,6 @@ function searchSupplierByCode($value, $db) {
     return $id;
 }
 
-function searchSupplierTermByCode($value, $db) {
-    $id = '';
-
-    if(isset($value)){
-        if ($select_stmt = $db->prepare("SELECT * FROM Supplier WHERE supplier_code=? AND status='0'")) {
-            $select_stmt->bind_param('s', $value);
-            $select_stmt->execute();
-            $result = $select_stmt->get_result();
-            if ($row = $result->fetch_assoc()) {
-                $id = $row['payment_term'];
-            }
-            $select_stmt->close();
-        }
-    }
-
-    return $id;
-}
-
 function searchProductNameByCode($value, $db) {
     $id = '';
 
@@ -271,38 +253,6 @@ function searchNamebyId($value, $db) {
     return $id;
 }
 
-function searchUserById($value, $db) {
-    $id = null;
-
-    if ($select_stmt = $db->prepare("SELECT * FROM Users WHERE id=?")) {
-        $select_stmt->bind_param('s', $value);
-        $select_stmt->execute();
-        $result = $select_stmt->get_result();
-        if ($row = $result->fetch_assoc()) {
-            $id = $row;
-        }
-        $select_stmt->close();
-    }
-
-    return $id;
-}
-
-function searchCompanyNameById($value, $db) {
-    $id = null;
-
-    if ($select_stmt = $db->prepare("SELECT * FROM Company WHERE id=?")) {
-        $select_stmt->bind_param('s', $value);
-        $select_stmt->execute();
-        $result = $select_stmt->get_result();
-        if ($row = $result->fetch_assoc()) {
-            $id = $row['name'];
-        }
-        $select_stmt->close();
-    }
-
-    return $id;
-}
-
 function searchActionNameById($value, $db) {
     $id = null;
 
@@ -312,38 +262,6 @@ function searchActionNameById($value, $db) {
         $result = $select_stmt->get_result();
         if ($row = $result->fetch_assoc()) {
             $id = $row['description'];
-        }
-        $select_stmt->close();
-    }
-
-    return $id;
-}
-
-function searchCustomerDeductionIdByCustomerId($value, $db) {
-    $id = null;
-
-    if ($select_stmt = $db->prepare("SELECT * FROM Customer_Deduction WHERE customer_id=?")) {
-        $select_stmt->bind_param('s', $value);
-        $select_stmt->execute();
-        $result = $select_stmt->get_result();
-        if ($row = $result->fetch_assoc()) {
-            $id = $row['id'];
-        }
-        $select_stmt->close();
-    }
-
-    return $id;
-}
-
-function searchSupplierDeductionIdBySupplierId($value, $db) {
-    $id = null;
-
-    if ($select_stmt = $db->prepare("SELECT * FROM Supplier_Deduction WHERE supplier_id=?")) {
-        $select_stmt->bind_param('s', $value);
-        $select_stmt->execute();
-        $result = $select_stmt->get_result();
-        if ($row = $result->fetch_assoc()) {
-            $id = $row['id'];
         }
         $select_stmt->close();
     }

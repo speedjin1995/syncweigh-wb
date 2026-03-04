@@ -18,18 +18,18 @@ if(isset($_POST['fromDate']) && $_POST['fromDate'] != null && $_POST['fromDate']
     $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['fromDate']);
     $formatted_date = $dateTime->format('Y-m-d 00:00:00');
     $fromDate = $dateTime->format('d/m/Y');
-    $searchQuery .= " and Weight.transaction_date >= '".$formatted_date."'";
+    $searchQuery .= " and Weight.tare_weight1_date >= '".$formatted_date."'";
 }
 
 if(isset($_POST['toDate']) && $_POST['toDate'] != null && $_POST['toDate'] != ''){
     $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['toDate']);
     $formatted_date = $dateTime->format('Y-m-d 23:59:59');
     $toDate = $dateTime->format('d/m/Y');
-    $searchQuery .= " and Weight.transaction_date <= '".$formatted_date."'";
+    $searchQuery .= " and Weight.tare_weight1_date <= '".$formatted_date."'";
 }
 
-if(isset($_POST['transactionStatus']) && $_POST['transactionStatus'] != null && $_POST['transactionStatus'] != '' && $_POST['transactionStatus'] != '-'){
-    $searchQuery .= " and Weight.transaction_status = '".$_POST['transactionStatus']."'";	
+if(isset($_POST['status']) && $_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
+    $searchQuery .= " and Weight.transaction_status = '".$_POST['status']."'";	
 }
 
 if(isset($_POST['customer']) && $_POST['customer'] != null && $_POST['customer'] != '' && $_POST['customer'] != '-'){
@@ -66,16 +66,6 @@ if(isset($_POST['destination']) && $_POST['destination'] != null && $_POST['dest
 
 if(isset($_POST['plant']) && $_POST['plant'] != null && $_POST['plant'] != '' && $_POST['plant'] != '-'){
     $searchQuery .= " and Weight.plant_code = '".$_POST['plant']."'";
-}
-
-if(isset($_POST['status']) && $_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
-  if ($_POST['status'] == 'Complete'){
-    $searchQuery .= " and Weight.is_complete = 'Y' AND Weight.is_cancel = 'N'";
-  }elseif ($_POST['status'] == 'Cancelled'){
-    $searchQuery .= " and Weight.is_cancel = 'Y'";
-  }
-}else{
-  $searchQuery .= " and Weight.is_complete = 'Y' AND Weight.is_cancel = 'N'";
 }
 
 // if(isset($_POST['batchDrum']) && $_POST['batchDrum'] != null && $_POST['batchDrum'] != '' && $_POST['batchDrum'] != '-'){
@@ -185,7 +175,7 @@ function callLookup($group, $groupValue, $db){
     return $value;
 }
 
-if(isset($_POST["transactionStatus"])){
+if(isset($_POST["status"])){
     $companyCode = '';
     $companyName = '';
 
@@ -207,8 +197,8 @@ if(isset($_POST["transactionStatus"])){
 
     $sql = '';
 
-    if($_POST["transactionStatus"] == 'Sales' || $_POST['transactionStatus'] == 'Local'){
-        if ($_POST['transactionStatus'] == 'Local') {
+    if($_POST["status"] == 'Sales' || $_POST['status'] == 'Local'){
+        if ($_POST['status'] == 'Local') {
             $reportType = "Public";
         }
         else {
@@ -217,9 +207,9 @@ if(isset($_POST["transactionStatus"])){
 
         if ($isMulti == 'Y'){
             $id = $_POST['id'];
-            $sql = "select * from Weight WHERE id IN ($id) ORDER BY transaction_date";
+            $sql = "select * from Weight WHERE id IN ($id) ORDER BY tare_weight1_date";
         }else{
-            $sql = "select * from Weight WHERE is_complete = 'Y'".$searchQuery.' ORDER BY transaction_date';
+            $sql = "select * from Weight WHERE is_complete = 'Y' AND is_cancel <> 'Y'".$searchQuery.' ORDER BY tare_weight1_date';
         }
 
         if ($select_stmt = $db->prepare($sql)) {
@@ -1146,12 +1136,12 @@ if(isset($_POST["transactionStatus"])){
         }
 
         $db->close();
-    }elseif($_POST["transactionStatus"] == 'Purchase'){
+    }elseif($_POST["status"] == 'Purchase'){
         if ($isMulti == 'Y'){
             $id = $_POST['id'];
-            $sql = "select * from Weight WHERE id IN ($id) ORDER BY transaction_date";
+            $sql = "select * from Weight WHERE id IN ($id) ORDER BY tare_weight1_date";
         }else{
-            $sql = "select * from Weight WHERE is_complete = 'Y'".$searchQuery.' ORDER BY transaction_date';
+            $sql = "select * from Weight WHERE is_complete = 'Y' AND is_cancel <> 'Y'".$searchQuery.' ORDER BY tare_weight1_date';
         }
 
         if ($select_stmt = $db->prepare($sql)) {

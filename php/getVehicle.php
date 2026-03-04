@@ -13,36 +13,36 @@ if(isset($_POST['userID'])){
     }
 
     if (!empty($type) && $type == 'lookup'){
-        // if ($veh_chk_stmt = $db->prepare("SELECT COUNT(*) AS COUNT FROM `Weight` WHERE lorry_plate_no1 = ? AND is_complete='N'")){
-        //     $veh_chk_stmt->bind_param('s', $id);
+        if ($veh_chk_stmt = $db->prepare("SELECT COUNT(*) AS COUNT FROM `Weight` WHERE lorry_plate_no1 = ? AND is_complete='N'")){
+            $veh_chk_stmt->bind_param('s', $id);
             
-        //     // Execute the prepared query.
-        //     if (! $veh_chk_stmt->execute()) {
-        //         echo json_encode(
-        //             array(
-        //                 "status" => "failed",
-        //                 "message" => "Something went wrong"
-        //             )); 
-        //     }
-        //     else{
-        //         $vehicleExist = false;
+            // Execute the prepared query.
+            if (! $veh_chk_stmt->execute()) {
+                echo json_encode(
+                    array(
+                        "status" => "failed",
+                        "message" => "Something went wrong"
+                    )); 
+            }
+            else{
+                $vehicleExist = false;
 
-        //         $vehResult = $veh_chk_stmt->get_result();
-        //         while ($vehRow = $vehResult->fetch_assoc()) {
-        //             if ($vehRow['COUNT'] > 0){
-        //                 $vehicleExist = true;
-        //             }else{
-        //                 $vehicleExist = false;
-        //             }
-        //         }
+                $vehResult = $veh_chk_stmt->get_result();
+                while ($vehRow = $vehResult->fetch_assoc()) {
+                    if ($vehRow['COUNT'] > 0){
+                        $vehicleExist = true;
+                    }else{
+                        $vehicleExist = false;
+                    }
+                }
 
-        //         if ($vehicleExist){
-        //             echo json_encode(
-        //                 array(
-        //                     "status" => "error",
-        //                     "message" => 'There is a pending record for this vehicle'
-        //                 ));  
-        //         }else{
+                if ($vehicleExist){
+                    echo json_encode(
+                        array(
+                            "status" => "error",
+                            "message" => 'There is a pending record for this vehicle'
+                        ));  
+                }else{
                     if ($update_stmt = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=? AND status='0'")) {
                         $update_stmt->bind_param('s', $id);
                         
@@ -78,9 +78,9 @@ if(isset($_POST['userID'])){
                                 ));   
                         }
                     }
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
     }else if($type == 'pullCustomer'){
         if ($update_stmt = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=? AND status='0'")) {
             $update_stmt->bind_param('s', $id);

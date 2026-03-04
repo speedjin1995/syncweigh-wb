@@ -2,14 +2,11 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <?php
-$pid = "1";
-$pid2 = "2";
 $user = $_SESSION['id'];
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
-$allowManual = $_SESSION['allowManual'];
-$stmt = $db->prepare("SELECT * from Port WHERE id = ?");
-$stmt->bind_param('s', $pid);
+$stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
+$stmt->bind_param('s', $user);
 $stmt->execute();
 $result = $stmt->get_result();
 //$role = 'NORMAL';
@@ -30,20 +27,6 @@ if(($row = $result->fetch_assoc()) !== null){
     $indicator = $row['indicator'];
 }
 
-
-$stmt2 = $db->prepare("SELECT * from Port WHERE id = ?");
-$stmt2->bind_param('s', $pid2);
-$stmt2->execute();
-$result2 = $stmt2->get_result();
-
-if(($row2 = $result2->fetch_assoc()) !== null){
-    $port2 = $row2['com_port'];
-    $baudrate2 = $row2['bits_per_second'];
-    $databits2 = $row2['data_bits'];
-    $parity2 = $row2['parity'];
-    $stopbits2 = $row2['stop_bits'];
-    $indicator2 = $row2['indicator'];
-}
 $plantName = '-';
 
 if($plantId != null && count($plantId) > 0){
@@ -71,8 +54,6 @@ if ($user != null && $user != ''){
 
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
-$vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
-$vehicles2 = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
 $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $customer2 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $product = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
@@ -81,8 +62,6 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name 
 $supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
-$graders = $db->query("SELECT * FROM Grader WHERE status = '0' ORDER BY grader_name ASC");
-$drivers = $db->query("SELECT * FROM Driver WHERE status = '0' ORDER BY driver_name ASC");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
@@ -98,64 +77,6 @@ if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
 }
 else{
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0'");
-}
-
-
-// Get Company Detail
-$stmt = $db->prepare("SELECT * from Company WHERE id = 1");
-$stmt->execute();
-$result = $stmt->get_result();
-
-$includePrice = '';
-$includeContainer = '';
-$includeGrading = '';
-$package = '';
-
-if(($row = $result->fetch_assoc()) !== null){
-    $includePrice = $row['include_price'];
-    $includeContainer = $row['include_container'];
-    $includeGrading = $row['include_grading'];
-    $package = $row['package'];
-}
-
-if ($package == 'Standard') {
-    echo "<script>window.location = 'index.php';</script>";
-}
-
-// For Deductions
-$did = '1';
-$status = 'Disable';
-$F1 = $F2 = $F3 = $F4 = $F5 = $F6 = $F7 = $F8 = $F9 = $F10 = $F11 = $F12 = 0;
-$autoDataJson = '[]';
-$autoCustomerJson = '[]';
-$autoSupplierJson = '[]';
-$default_range_min = $default_range_max = $default_range_weight = 0;
-
-$stmtd = $db->prepare("SELECT * FROM Deduction WHERE id = ? LIMIT 1");
-$stmtd->bind_param('s', $did);
-$stmtd->execute();
-$resultd = $stmtd->get_result();
-
-if ($rowd = $resultd->fetch_assoc()) {
-    $dstatus = $rowd['status'] ?? 'Disable';
-    $F1 = $rowd['F1'] ?? 0;
-    $F2 = $rowd['F2'] ?? 0;
-    $F3 = $rowd['F3'] ?? 0;
-    $F4 = $rowd['F4'] ?? 0;
-    $F5 = $rowd['F5'] ?? 0;
-    $F6 = $rowd['F6'] ?? 0;
-    $F7 = $rowd['F7'] ?? 0;
-    $F8 = $rowd['F8'] ?? 0;
-    $F9 = $rowd['F9'] ?? 0;
-    $F10 = $rowd['F10'] ?? 0;
-    $F11 = $rowd['F11'] ?? 0;
-    $F12 = $rowd['F12'] ?? 0;
-    $autoDataJson = $dstatus == 'Auto' ? $rowd['auto_data'] ?? '[]' : '[]';
-    $autoCustomerJson = $rowd['customers'] ?? '[]';
-    $autoSupplierJson = $rowd['suppliers'] ?? '[]';
-    //$autoDataArray = json_decode($autoDataJson, true) ?? [];
-    //$default_range_min = $rowd['default_range_min'] ?? 0;
-    //$default_range_max = $rowd['default_range_max'] ?? 0  ;
 }
 ?>
 
@@ -190,14 +111,6 @@ if ($rowd = $resultd->fetch_assoc()) {
         .modal-header {
             padding: var(1rem, 1rem) !important;
         }
-
-        #gradingModal {
-            z-index: 1055 !important;
-        }
-
-        #gradingModal .modal-backdrop {
-            z-index: 1050 !important;
-        }
     </style>
 </head>
 
@@ -212,7 +125,7 @@ if ($rowd = $resultd->fetch_assoc()) {
 <!-- Begin page -->
 <div id="layout-wrapper">
 
-    <?php include 'layouts/menu.php'; ?>
+    <?php include 'layouts/menu2.php'; ?>
 
     <!-- ============================================================== -->
     <!-- Start right Content here -->
@@ -250,7 +163,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                             <div class="col-12">
                                                 <div class="hstack gap-2 justify-content-center">
                                                     <div class="col-xl-12 col-md-12 col-md-12">
-                                                        <div class="card bg-danger">
+                                                        <div class="card bg-primary">
                                                             <div class="card-body">
                                                                 <div class="d-flex justify-content-between">
                                                                     <div>
@@ -274,10 +187,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                             <div class="col-12">
                                                 <div class="card bg-light">
                                                     <div class="card-body">
-                                                        <div class="col-12 mb-3" <?php 
-                                                            if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'AUTHORITY' && $_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'MANAGER' && $allowManual == 'N'){
-                                                                echo 'style="display:none;"';
-                                                            }?>>
+                                                        <div class="col-12">
                                                             <div class="row">
                                                                 <label for="manualWeight" class="col-sm-4 col-form-label">Manual Weight</label>
                                                                 <div class="col-sm-8">
@@ -299,7 +209,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                         </div>
                                                         <div class="col-12">
                                                             <div class="row">
-                                                                <label for="transactionStatus" class="col-sm-4 col-form-label">Trans Status</label>
+                                                                <label for="transactionStatus" class="col-sm-4 col-form-label">Transaction Status</label>
                                                                 <div class="col-sm-8">
                                                                     <select id="transactionStatus" name="transactionStatus" class="form-select select2">
                                                                         <option value="Sales" selected>Sales</option>
@@ -309,120 +219,79 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                 </div>
                                                             </div>
                                                         </div><br>
-                                                        <div class="row">
-                                                            <label for="vehiclePlateNo1" class="col-sm-4 col-form-label">
-                                                                Vehicle Plate No.
-                                                            </label>
-                                                            <div class="col-sm-8">
-                                                                <div class="input-group">
-                                                                    <div class="input-group-text">
-                                                                        <input class="form-check-input mt-0" id="manualVehicle" name="manualVehicle" type="checkbox" value="0" aria-label="Checkbox for following text input">
-                                                                    </div>
-                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No" style="display:none" >
-                                                                    <div class="col-10 index-vehicle">
-                                                                        <select class="form-select select2" id="vehiclePlateNo1" name="vehiclePlateNo1" >
-                                                                            <option selected="-">-</option>
-                                                                            <?php while($row2=mysqli_fetch_assoc($vehicles)){ ?>
-                                                                                <option value="<?=$row2['veh_number'] ?>" data-weight="<?=$row2['vehicle_weight'] ?>"><?=$row2['veh_number'] ?></option>
-                                                                            <?php } ?>
-                                                                        </select>
-                                                                        <input type="text" class="form-control" id="vehiclePlateNo1Edit" name="vehiclePlateNo1Edit" hidden>
-                                                                    </div>
-                                                                    <!--div class="invalid-feedback">
-                                                                        Please fill in the field.
-                                                                    </div-->
+                                                        <div class="col-12">
+                                                            <div class="row" id="productNameDisplay">
+                                                                <label for="productName" class="col-sm-4 col-form-label">Product</label>
+                                                                <div class="col-sm-8">
+                                                                    <select class="form-select select2" id="productName" name="productName" required>
+                                                                        <option selected="-">-</option>
+                                                                        <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
+                                                                            <option 
+                                                                                value="<?=$rowProduct['name'] ?>" 
+                                                                                data-price="<?=$rowProduct['price'] ?>" 
+                                                                                data-code="<?=$rowProduct['product_code'] ?>" 
+                                                                                data-high="<?=$rowProduct['high'] ?>" 
+                                                                                data-low="<?=$rowProduct['low'] ?>" 
+                                                                                data-variance="<?=$rowProduct['variance'] ?>" 
+                                                                                data-description="<?=$rowProduct['description'] ?>">
+                                                                                <?=$rowProduct['product_code'] ?>
+                                                                            </option>
+                                                                        <?php } ?>
+                                                                    </select>                                                                                        
                                                                 </div>
                                                             </div>
-                                                            <!--div class="col-sm-8">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No">
+                                                            <div class="row" id="rawMaterialDisplay" style="display:none;">
+                                                                <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material</label>
+                                                                <div class="col-sm-8">
+                                                                    <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
+                                                                        <option selected="-">-</option>
+                                                                        <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
+                                                                            <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
+                                                                        <?php } ?>
+                                                                    </select>           
                                                                 </div>
-                                                            </div-->
+                                                            </div>
                                                         </div><br>
-                                                        <div class="row">
-                                                            <div class="col-12" id="divCustomerName">
-                                                                <div class="row">
-                                                                    <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
-                                                                    <div class="col-sm-8">
-                                                                        <select class="form-select js-choice select2" id="customerName" name="customerName" required>
-                                                                            <option selected="-">-</option>
-                                                                            <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
-                                                                                <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>" data-id="<?=$rowCustomer['id'] ?>"><?=$rowCustomer['name'] ?></option>
-                                                                            <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-12" id="divSupplierName" style="display:none;">
-                                                                <div class="row">
-                                                                    <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
-                                                                    <div class="col-sm-8">
-                                                                        <select class="form-select select2" id="supplierName" name="supplierName" required>
-                                                                            <option selected="-">-</option>
-                                                                            <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
-                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>" data-id="<?=$rowSupplier['id'] ?>"><?=$rowSupplier['name'] ?></option>
-                                                                            <?php } ?>
-                                                                        </select>
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <label for="containerNo" class="col-sm-4 col-form-label">
+                                                                    Container No.
+                                                                </label>
+                                                                <div class="col-sm-8">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control" id="containerNo" name="containerNo" placeholder="Container No">
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div><br>
-                                                        <div class="row" id="productNameDisplay">
-                                                            <label for="productName" class="col-sm-4 col-form-label">Product</label>
-                                                            <div class="col-sm-8">
-                                                                <select class="form-select select2" id="productName" name="productName" required>
-                                                                    <option selected="-">-</option>
-                                                                    <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
-                                                                        <option 
-                                                                            value="<?=$rowProduct['name'] ?>" 
-                                                                            data-price="<?=$rowProduct['price'] ?>" 
-                                                                            data-code="<?=$rowProduct['product_code'] ?>" 
-                                                                            data-high="<?=$rowProduct['high'] ?>" 
-                                                                            data-low="<?=$rowProduct['low'] ?>" 
-                                                                            data-variance="<?=$rowProduct['variance'] ?>" 
-                                                                            data-description="<?=$rowProduct['description'] ?>">
-                                                                            <?=$rowProduct['product_code'] ?>
-                                                                        </option>
-                                                                    <?php } ?>
-                                                                </select>                                                                                        
-                                                            </div>
-                                                        </div>
-                                                        <div class="row" id="rawMaterialDisplay" style="display:none;">
-                                                            <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material</label>
-                                                            <div class="col-sm-8">
-                                                                <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
-                                                                    <option selected="-">-</option>
-                                                                    <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                                                                        <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
-                                                                    <?php } ?>
-                                                                </select>           
-                                                            </div>
-                                                        </div><br>
-                                                        <div class="row" id="unitPriceDisplay" style="display:none;">
-                                                            <label for="unitPrice" class="col-sm-4 col-form-label">
-                                                                Unit Price
-                                                            </label>
-                                                            <div class="col-sm-8">
-                                                                <div class="input-group">
-                                                                    <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0">
-                                                                    <div class="input-group-text">RM</div>
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <label for="vehiclePlateNo1" class="col-sm-4 col-form-label">
+                                                                    Vehicle Plate No.
+                                                                </label>
+                                                                <div class="col-sm-8">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No">
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <br id="unitPriceBr" style="display:none;">
+                                                        </div><br>
                                                         <div class="col-12">
                                                             <div class="row">
                                                                 <label for="grossIncoming" class="col-sm-4 col-form-label">Incoming</label>
                                                                 <div class="col-sm-8">
                                                                     <div class="input-group">
+                                                                        <!-- <div class="input-group-text">
+                                                                            <input class="form-check-input mt-0" id="manual" name="manual" type="checkbox" value="0" aria-label="Checkbox for following text input">
+                                                                        </div>                                                                                             -->
                                                                         <input type="number" class="form-control input-readonly" id="grossIncoming" name="grossIncoming" placeholder="0" readonly>
                                                                         <div class="input-group-text">Kg</div>
                                                                         <button class="input-group-text btn btn-success fs-5" id="grossCapture" type="button"><i class="mdi mdi-sync"></i></button>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-12" style="display:none;">
+                                                        </div><br>
+                                                        <div class="col-12">
                                                             <div class="row">
                                                                 <label for="grossIncomingDate" class="col-sm-4 col-form-label">Incoming Date</label>
                                                                 <div class="col-sm-8">
@@ -444,8 +313,8 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                     </div>                                                                                       
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-12" style="display:none;">
+                                                        </div><br>
+                                                        <div class="col-12">
                                                             <div class="row">
                                                                 <label for="tareOutgoingDate" class="col-sm-4 col-form-label">Outgoing Date</label>
                                                                 <div class="col-sm-8">
@@ -462,23 +331,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                         <div class="input-group-text">Kg</div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div><br>
-                                                        <div class="row">
-                                                            <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
-                                                            <div class="col-sm-8">
-                                                                <select class="form-select js-choice select2" id="driverName" name="driverName">
-                                                                    <option selected="-">-</option>
-                                                                    <?php while($rowDriver=mysqli_fetch_assoc($drivers)){ ?>
-                                                                        <option value="<?=$rowDriver['driver_name'] ?>" data-code="<?=$rowDriver['driver_ic'] ?>"><?=$rowDriver['driver_name'] ?></option>
-                                                                    <?php } ?>
-                                                                </select>
-                                                            </div>
-                                                        </div><br>
-                                                        <div class="row">
-                                                            <label for="driverIc" class="col-sm-4 col-form-label">Driver IC</label>
-                                                            <div class="col-sm-8">
-                                                                <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
                                                             </div>
                                                         </div><br>
                                                         <div class="col-12">
@@ -520,16 +372,11 @@ if ($rowd = $resultd->fetch_assoc()) {
                                         <input type="hidden" id="tareWeightBy2" name="tareWeightBy2">
                                         <input type="hidden" id="transactionDate" name="transactionDate">
                                         <input type="hidden" id="transactionId" name="transactionId">
-                                        <input type="hidden" id="deliveryNo" name="deliveryNo">
-                                        <input type="hidden" id="reduceWeight" name="reduceWeight">
-                                        <input type="hidden" id="oGrossIncoming" name="oGrossIncoming">
-                                        <input type="hidden" id="oTareOutgoing" name="oTareOutgoing">
-                                        <input type="hidden" id="oNettWeight" name="oNettWeight">
 
                                         <div class="row col-12">
                                             <div class="hstack gap-2 justify-content-end">
                                                 <button type="button" class="btn btn-warning" id="addWeight">New</button>
-                                                <button type="button" class="btn btn-success" id="submitWeightPrint"><?=$languageArray['submit_print_code'][$language]?></button>
+                                                <button type="button" class="btn btn-success" id="submitWeightPrint">Submit & Print</button>
                                                 <button type="button" class="btn btn-primary" id="submitWeight"><?=$languageArray['submit_code'][$language]?></button>
                                             </div>
                                         </div><!--end col--> 
@@ -541,7 +388,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                             <div class="h-100">
                                                 <div class="col-xxl-12 col-lg-12">
                                                     <div class="card">
-                                                        <div class="card-header fs-5" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" >
+                                                        <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSearch" >
                                                             <i class="mdi mdi-chevron-down pull-right"></i>
                                                             Search Records
                                                         </div>
@@ -581,7 +428,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->
-                                                                        <div class="col-3" id="customerSearchDisplay">
+                                                                        <!--div class="col-3" id="customerSearchDisplay">
                                                                             <div class="mb-3">
                                                                                 <label for="customerNoSearch" class="form-label">Customer No</label>
                                                                                 <select id="customerNoSearch" class="form-select select2" >
@@ -592,7 +439,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->
-                                                                        <div class="col-3" id="supplierSearchDisplay" style="display:none">
+                                                                        <!--div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                                             <div class="mb-3">
                                                                                 <label for="supplierSearch" class="form-label">Supplier No</label>
                                                                                 <select id="supplierSearch" class="form-select select2" >
@@ -621,7 +468,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->                       
-                                                                        <div class="col-3" id="productSearchDisplay">
+                                                                        <!--div class="col-3" id="productSearchDisplay">
                                                                             <div class="mb-3">
                                                                                 <label for="productSearch" class="form-label">Product</label>
                                                                                 <select id="productSearch" class="form-select select2" >
@@ -632,7 +479,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->
-                                                                        <div class="col-3" id="rawMatSearchDisplay" style="display:none">
+                                                                        <!--div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                                             <div class="mb-3">
                                                                                 <label for="rawMatSearch" class="form-label">Raw Material</label>
                                                                                 <select id="rawMatSearch" class="form-select select2" >
@@ -643,13 +490,13 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                                 </select>
                                                                             </div>
                                                                         </div><!--end col-->
-                                                                        <!--div class="col-3">
+                                                                        <div class="col-3">
                                                                             <div class="mb-3">
                                                                                 <label for="containerNoSearch" class="form-label">Container No</label>
                                                                                 <input type="text" class="form-control" id="containerNoSearch" name="containerNoSearch" placeholder="Container No">                                                                                  
                                                                             </div>
                                                                         </div><!--end col-->
-                                                                        <div class="col-3">
+                                                                        <div class="col-6">
                                                                             <div class="text-end">
                                                                                 <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> <?=$languageArray['search_code'][$language]?></button>
                                                                             </div>
@@ -677,7 +524,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                         <tr>
                                                                             <th>No.</th>
                                                                             <th><?=$languageArray['status_code'][$language]?></th>
-                                                                            <!--th>Customer/<br>Supplier</th-->
                                                                             <th>Vehicle</th>
                                                                             <th>Incoming</th>
                                                                             <th>Incoming <br>Date</th>
@@ -692,217 +538,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                                             </div> <!-- end .h-100-->
                                         </div> <!-- end col -->
                                     </div><!-- container-fluid -->
-                                </div>
-                            </div> <!-- end row-->
-
-                            <div class="row">
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="modal fade" id="gradingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Grading Entry</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form role="form" id="gradingForm" class="needs-validation" novalidate autocomplete="off">
-                                                        <div class="row col-12">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="row mb-3">
-                                                                    <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label">Transaction ID</label>
-                                                                        <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" readonly>
-                                                                    </div>
-                                                                    <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label">Vehicle No</label>
-                                                                        <input type="text" class="form-control input-readonly" id="vehicleNo" name="vehicleNo" readonly>
-                                                                    </div>
-                                                                    <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label">Ticket/DO</label>
-                                                                        <input type="text" class="form-control input-readonly" id="ticketDo" name="ticketDo">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row mb-3">
-                                                                    <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label">Nett Weight (MT)</label>
-                                                                        <input type="text" class="form-control input-readonly" id="nettWeight" name="nettWeight" readonly>
-                                                                    </div>
-                                                                    <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label">Reduce Weight (MT)</label>
-                                                                        <input type="text" class="form-control input-readonly" id="reduceWeight" name="reduceWeight">
-                                                                    </div>
-                                                                    <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label">Final Weight (MT)</label>
-                                                                        <input type="number" class="form-control input-readonly" id="finalWeight" name="finalWeight" readonly>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row mb-3">
-                                                                    <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label">Reject Weight (MT)</label>
-                                                                        <input type="text" class="form-control input-readonly" id="rejectWeight" name="rejectWeight" value="0">
-                                                                    </div>
-                                                                    <div class="col-xxl-4 col-lg-4">
-                                                                        <label class="form-label">Graded By</label>
-                                                                        <select class="form-select select2" id="grader" name="grader" required>
-                                                                            <option value="">-</option>
-                                                                            <?php while($rowGrader=mysqli_fetch_assoc($graders)){ ?>
-                                                                                <option value="<?=$rowGrader['id'] ?>"><?=$rowGrader['grader_name'] ?></option>
-                                                                            <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="row mb-3 mt-4">
-                                                                    <div class="col-xxl-12 col-lg-12">
-                                                                        <h6 class="mb-2">MSPO Certification</h6>
-                                                                        <table class="table table-bordered align-middle">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th>Type</th>
-                                                                                    <th>Percent (%)</th>
-                                                                                    <th>Weight (KG)</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <tr>
-                                                                                    <td>MSPO</td>
-                                                                                    <td><input type="number" class="form-control" id="mspoPerc" name="mspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control input-readonly" id="mspoWeight" name="mspoWeight" value="0.00" readonly></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>NON MSPO</td>
-                                                                                    <td><input type="number" class="form-control" id="nonMspoPerc" name="nonMspoPerc" value="0.00"></td>
-                                                                                    <td><input type="number" class="form-control input-readonly" id="nonMspoWeight" name="nonMspoWeight" value="0.00" readonly></td>
-                                                                                </tr>
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="row mt-4">
-                                                                    <div class="col-xxl-6 col-lg-6">
-                                                                        <h6 class="mb-2">Base Extraction Rate</h6>
-                                                                        <table class="table table-bordered align-middle">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th width="50%">Bunch Size</th>
-                                                                                    <th width="50%">Percent (%)</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <tr>
-                                                                                    <td>> 25</td>
-                                                                                    <td><input type="number" class="form-control" id="bunchSize25" name="bunchSize25" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>> 10</td>
-                                                                                    <td><input type="number" class="form-control" id="bunchSize10" name="bunchSize10" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>> 9-10</td>
-                                                                                    <td><input type="number" class="form-control" id="bunchSize9_10" name="bunchSize9_10" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>> 8-9</td>
-                                                                                    <td><input type="number" class="form-control" id="bunchSize8_9" name="bunchSize8_9" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>> 7-8</td>
-                                                                                    <td><input type="number" class="form-control" id="bunchSize7_8" name="bunchSize7_8" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>> 6-7</td>
-                                                                                    <td><input type="number" class="form-control" id="bunchSize6_7" name="bunchSize6_7" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>> 5-6</td>
-                                                                                    <td><input type="number" class="form-control" id="bunchSize5_6" name="bunchSize5_6" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>5 <</td>
-                                                                                    <td><input type="number" class="form-control" id="bunchSize5" name="bunchSize5" value="0.00"></td>
-                                                                                </tr>
-                                                                            </tbody>
-                                                                            <tfoot>
-                                                                                <tr>
-                                                                                    <th>Total (%)</th>
-                                                                                    <th><input type="number" class="form-control" id="totalPercent" name="totalPercent" value="0.00" readonly></th>
-                                                                                </tr>
-                                                                            </tfoot>
-                                                                        </table>
-                                                                    </div>
-                                                                    <div class="col-xxl-6 col-lg-6">
-                                                                        <h6 class="mb-2">Quality Factors</h6>
-                                                                        <table class="table table-bordered align-middle">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th width="50%">Factors</th>
-                                                                                    <th width="50%">Percent (%)</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <tr>
-                                                                                    <td>Unripe Bunch (UR)</td>
-                                                                                    <td><input type="number" class="form-control" id="unripe" name="unripe" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>Underripe (UD)</td>
-                                                                                    <td><input type="number" class="form-control" id="underripe" name="underripe" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>Empty Bunch (EM)</td>
-                                                                                    <td><input type="number" class="form-control" id="emptyBunch" name="emptyBunch" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>Rotten Bunch (RB)</td>
-                                                                                    <td><input type="number" class="form-control" id="rottenBunch" name="rottenBunch" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>Long Stalks (LS)</td>
-                                                                                    <td><input type="number" class="form-control" id="longStalks" name="longStalks" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>Dirty Bunch (DB)</td>
-                                                                                    <td><input type="number" class="form-control" id="dirtyBunch" name="dirtyBunch" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>Dura Bunch (DD)</td>
-                                                                                    <td><input type="number" class="form-control" id="duraBunch" name="duraBunch" value="0.00"></td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>Old Bunch (OB)</td>
-                                                                                    <td><input type="number" class="form-control" id="oldBunch" name="oldBunch" value="0.00"></td>
-                                                                                </tr>
-                                                                            </tbody>
-                                                                            <tfoot>
-                                                                                <tr>
-                                                                                    <th>Total (%)</th>
-                                                                                    <th><input type="number" class="form-control" id="totalQualityFactor" name="totalQualityFactor" value="0.00" readonly></th>
-                                                                                </tr>
-                                                                            </tfoot>
-                                                                        </table>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <input type="hidden" id="id" name="id">
-                                                            <input type="hidden" id="submitPrint" name="submitPrint">
-                                                            <input type="hidden" id="transactionStatus" name="transactionStatus">
-                                                            <input type="hidden" id="isEmptyContainer" name="isEmptyContainer">
-                                                        </div>
-                                                        
-                                                        <div class="col-xxl-12 col-lg-12">
-                                                            <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitGrading"><?=$languageArray['submit_code'][$language]?></button>
-                                                            </div>
-                                                        </div><!--end col-->                                                               
-                                                    </form>
-                                                </div>
-                                            </div><!-- /.modal-content -->
-                                        </div><!-- /.modal-dialog -->
-                                    </div><!-- /.modal -->
                                 </div>
                             </div> <!-- end row-->
                         </div> <!-- end .h-100-->
@@ -925,12 +560,6 @@ if ($rowd = $resultd->fetch_assoc()) {
 
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label>Indicator</label>
-                                        <input class="form-control" type="text" id="indicator" name="indicator" value="<?=$indicator ?>">
-                                    </div>
-                                </div>
                                 <div class="col-4">
                                     <div class="form-group">
                                         <label>Serial Port</label>
@@ -1000,7 +629,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                     </div>
                 </div>
             </div>
-            
             <?php include 'layouts/footer.php'; ?>
         </div>
         <!-- end main content-->
@@ -1033,9 +661,7 @@ if ($rowd = $resultd->fetch_assoc()) {
     var table = null;
     var emptyContainerTable = null;
     let clickTimer = null;
-    var includeGrading = '<?= $includeGrading ?>';
-    var deductionValue = "-0";
-    var ind = '<?=$indicator ?>';
+
     var grossIncomingDatePicker;
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
@@ -1043,36 +669,18 @@ if ($rowd = $resultd->fetch_assoc()) {
 
     $(function () {
         var userRole = '<?=$role ?>';
-        const dstatus = "<?= $dstatus ?>";
-        var autoDataJson = <?= json_encode($autoDataJson) ?>;
-        const autoCustomerJson = JSON.parse('<?= $autoCustomerJson ?>');
-        // track last automatically generated message to avoid reposting same content
-        var lastAutoMsg = null;
-        const autoSupplierJson = JSON.parse('<?= $autoSupplierJson ?>');
+        var ind = '<?=$indicator ?>';
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
         yesterday.setDate(yesterday.getDate() - 1);
-        const ws = new WebSocket("ws://localhost:5002/ws");
 
         // Initialize all Select2 elements in the modal
-        $('#weightForm .select2').select2({
+        $('#addModal .select2').select2({
             allowClear: true,
             placeholder: "Please Select",
-            dropdownParent: $('#weightForm') // Ensures dropdown is not cut off
-        });
-
-        // Apply custom styling to Select2 elements in addModal
-        $('.select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('.select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
+            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
         });
 
         $('#fromDateSearch').flatpickr({
@@ -1255,97 +863,22 @@ if ($rowd = $resultd->fetch_assoc()) {
             pass = true;
             var isValid = true;
 
-            // Check if grossIncoming is empty
-            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
-                alert('Please capture Incoming weight before saving.');
-                return false;
-            }
-
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
                     var obj = JSON.parse(data); 
                     if(obj.status === 'success'){
+                        <?php
+                            if(isset($_GET['weight'])){
+                                echo "window.location = 'simple.php';";
+                            }
+                        ?>
+                        table.ajax.reload();
+                        window.location = 'simple.php';
                         $('#spinnerLoading').hide();
                         $('#addModal').modal('hide');
-
-                        // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
-                            $.post('php/getWeight.php', { userID: obj.id }, function (data) {
-                                var obj = JSON.parse(data);
-                                if (obj.status === 'success') {
-                                    $('#gradingModal').find('#id').val(obj.message.id);
-                                    $('#gradingModal').find('#submitPrint').val('N');
-                                    $('#gradingModal').find('#transactionId').val(obj.message.transaction_id);
-                                    $('#gradingModal').find('#vehicleNo').val(obj.message.lorry_plate_no1);
-                                    $('#gradingModal').find('#ticketDo').val(obj.message.delivery_no);
-                                    $('#gradingModal').find('#nettWeight').val(obj.message.nett_weight1 ? (parseFloat(obj.message.nett_weight1)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#reduceWeight').val(obj.message.reduce_weight ? (parseFloat(obj.message.reduce_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#finalWeight').val(obj.message.final_weight ? (parseFloat(obj.message.final_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#rejectWeight').val(obj.message.reject_weight ? (parseFloat(obj.message.reject_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
-
-                                    var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
-                                    $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
-                                    $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
-                                    $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
-                                    $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
-                                    $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
-                                    $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
-                                    $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
-                                    $('#gradingModal').find('#bunchSize8_9').val(gradingDetail.bunch_size_8_9 || '0.00');
-                                    $('#gradingModal').find('#bunchSize7_8').val(gradingDetail.bunch_size_7_8 || '0.00');
-                                    $('#gradingModal').find('#bunchSize6_7').val(gradingDetail.bunch_size_6_7 || '0.00');
-                                    $('#gradingModal').find('#bunchSize5_6').val(gradingDetail.bunch_size_5_6 || '0.00');
-                                    $('#gradingModal').find('#bunchSize5').val(gradingDetail.bunch_size_5 || '0.00');
-                                    $('#gradingModal').find('#totalPercent').val(gradingDetail.total_percent || '0.00');
-                                    $('#gradingModal').find('#unripe').val(gradingDetail.unripe || '0.00');
-                                    $('#gradingModal').find('#underripe').val(gradingDetail.underripe || '0.00');
-                                    $('#gradingModal').find('#emptyBunch').val(gradingDetail.empty_bunch || '0.00');
-                                    $('#gradingModal').find('#rottenBunch').val(gradingDetail.rotten_bunch || '0.00');
-                                    $('#gradingModal').find('#longStalks').val(gradingDetail.long_stalks || '0.00');
-                                    $('#gradingModal').find('#dirtyBunch').val(gradingDetail.dirty_bunch || '0.00');
-                                    $('#gradingModal').find('#duraBunch').val(gradingDetail.dura_bunch || '0.00');
-                                    $('#gradingModal').find('#oldBunch').val(gradingDetail.old_bunch || '0.00');
-                                    $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
-
-                                    if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        var mspoPerc = gradingDetail.mspo_perc || 100;
-                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
-                                    }else{
-                                        var mspoPerc = gradingDetail.mspo_perc || 0;
-                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
-                                    }
-
-                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
-                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
-                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
-                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
-
-                                    $('#gradingModal').modal('show');
-                                }
-                            });
-
-                            // <?php
-                            //     if(isset($_GET['weight'])){
-                            //         echo "window.location = 'simple.php';";
-                            //     }
-                            // ?>
-                            // table.ajax.reload();
-                            // window.location = 'simple.php';
-                            // $("#successBtn").attr('data-toast-text', obj.message);
-                            // $("#successBtn").click();
-                        }else{
-                            <?php
-                                if(isset($_GET['weight'])){
-                                    echo "window.location = 'simple.php';";
-                                }
-                            ?>
-                            table.ajax.reload();
-                            window.location = 'simple.php';
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-                        }
+                        $("#successBtn").attr('data-toast-text', obj.message);
+                        $("#successBtn").click();
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -1472,12 +1005,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                 isEmptyContainer = 'Y';
             }
 
-            // Check if grossIncoming is empty
-            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
-                alert('Please capture Incoming weight before saving.');
-                return false;
-            }
-
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
@@ -1485,116 +1012,52 @@ if ($rowd = $resultd->fetch_assoc()) {
                     if(obj.status === 'success'){
                         $('#spinnerLoading').hide();
                         $('#addModal').modal('hide');
+                        $("#successBtn").attr('data-toast-text', obj.message);
+                        $("#successBtn").click();
 
-                        // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
-                            $.post('php/getWeight.php', { userID: obj.id }, function (data) {
-                                var obj = JSON.parse(data);
-                                if (obj.status === 'success') {
-                                    $('#gradingModal').find('#id').val(obj.message.id);
-                                    $('#gradingModal').find('#submitPrint').val('Y');
-                                    $('#gradingModal').find('#transactionStatus').val(transactionStatus);
-                                    $('#gradingModal').find('#isEmptyContainer').val(isEmptyContainer);
-                                    $('#gradingModal').find('#transactionId').val(obj.message.transaction_id);
-                                    $('#gradingModal').find('#vehicleNo').val(obj.message.lorry_plate_no1);
-                                    $('#gradingModal').find('#ticketDo').val(obj.message.delivery_no);
-                                    $('#gradingModal').find('#nettWeight').val(obj.message.nett_weight1 ? (parseFloat(obj.message.nett_weight1)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#reduceWeight').val(obj.message.reduce_weight ? (parseFloat(obj.message.reduce_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#finalWeight').val(obj.message.final_weight ? (parseFloat(obj.message.final_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#rejectWeight').val(obj.message.reject_weight ? (parseFloat(obj.message.reject_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
+                        $.post('php/print2.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+                            var obj2 = JSON.parse(data);
 
-                                    var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
-                                    $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
-                                    $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
-                                    $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
-                                    $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
-                                    $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
-                                    $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
-                                    $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
-                                    $('#gradingModal').find('#bunchSize8_9').val(gradingDetail.bunch_size_8_9 || '0.00');
-                                    $('#gradingModal').find('#bunchSize7_8').val(gradingDetail.bunch_size_7_8 || '0.00');
-                                    $('#gradingModal').find('#bunchSize6_7').val(gradingDetail.bunch_size_6_7 || '0.00');
-                                    $('#gradingModal').find('#bunchSize5_6').val(gradingDetail.bunch_size_5_6 || '0.00');
-                                    $('#gradingModal').find('#bunchSize5').val(gradingDetail.bunch_size_5 || '0.00');
-                                    $('#gradingModal').find('#totalPercent').val(gradingDetail.total_percent || '0.00');
-                                    $('#gradingModal').find('#unripe').val(gradingDetail.unripe || '0.00');
-                                    $('#gradingModal').find('#underripe').val(gradingDetail.underripe || '0.00');
-                                    $('#gradingModal').find('#emptyBunch').val(gradingDetail.empty_bunch || '0.00');
-                                    $('#gradingModal').find('#rottenBunch').val(gradingDetail.rotten_bunch || '0.00');
-                                    $('#gradingModal').find('#longStalks').val(gradingDetail.long_stalks || '0.00');
-                                    $('#gradingModal').find('#dirtyBunch').val(gradingDetail.dirty_bunch || '0.00');
-                                    $('#gradingModal').find('#duraBunch').val(gradingDetail.dura_bunch || '0.00');
-                                    $('#gradingModal').find('#oldBunch').val(gradingDetail.old_bunch || '0.00');
-                                    $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
-
-                                    if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        var mspoPerc = gradingDetail.mspo_perc || 100;
-                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
-                                    }else{
-                                        var mspoPerc = gradingDetail.mspo_perc || 0;
-                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
-                                    }
-
-                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
-                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
-                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
-                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
-
-                                    $('#gradingModal').modal('show');
-                                }
-                            });
-                        }else{
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-
-                            var transactionStatus = $('#transactionStatus').val();
-                            print(obj.id, transactionStatus, isEmptyContainer);
-                        }
-
-                        // $.post('php/print2.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-                        //     var obj2 = JSON.parse(data);
-
-                        //     if(obj2.status === 'success'){
-                        //         var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        //         printWindow.document.write(obj2.message);
-                        //         printWindow.document.close();
-                        //         setTimeout(function(){
-                        //             printWindow.print();
-                        //             printWindow.close();
-                        //             table.ajax.reload();
-                        //             window.location = 'simple.php';
+                            if(obj2.status === 'success'){
+                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                                printWindow.document.write(obj2.message);
+                                printWindow.document.close();
+                                setTimeout(function(){
+                                    printWindow.print();
+                                    printWindow.close();
+                                    table.ajax.reload();
+                                    window.location = 'simple.php';
                                     
-                        //             /*setTimeout(function () {
-                        //                 if (confirm("Do you need to reprint?")) {
-                        //                     $.post('php/print2.php', { userID: obj.id, file: 'weight' }, function (data) {
-                        //                         var obj = JSON.parse(data);
-                        //                         if (obj.status === 'success') {
-                        //                             var reprintWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        //                             reprintWindow.document.write(obj.message);
-                        //                             reprintWindow.document.close();
-                        //                             setTimeout(function () {
-                        //                                 reprintWindow.print();
-                        //                                 reprintWindow.close();
-                        //                             }, 500);
-                        //                         } 
-                        //                         else {
-                        //                             window.location = 'simple.php';
-                        //                         }
-                        //                     });
-                        //                 }
-                        //             }, 500);*/
-                        //         }, 500);
-                        //     }
-                        //     else if(obj.status === 'failed'){
-                        //         $("#failBtn").attr('data-toast-text', obj.message );
-                        //         $("#failBtn").click();
-                        //     }
-                        //     else{
-                        //         $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                        //         $("#failBtn").click();
-                        //     }
-                        // });
+                                    /*setTimeout(function () {
+                                        if (confirm("Do you need to reprint?")) {
+                                            $.post('php/print2.php', { userID: obj.id, file: 'weight' }, function (data) {
+                                                var obj = JSON.parse(data);
+                                                if (obj.status === 'success') {
+                                                    var reprintWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                                                    reprintWindow.document.write(obj.message);
+                                                    reprintWindow.document.close();
+                                                    setTimeout(function () {
+                                                        reprintWindow.print();
+                                                        reprintWindow.close();
+                                                    }, 500);
+                                                } 
+                                                else {
+                                                    window.location = 'simple.php';
+                                                }
+                                            });
+                                        }
+                                    }, 500);*/
+                                }, 500);
+                            }
+                            else if(obj.status === 'failed'){
+                                $("#failBtn").attr('data-toast-text', obj.message );
+                                $("#failBtn").click();
+                            }
+                            else{
+                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                                $("#failBtn").click();
+                            }
+                        });
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -1660,42 +1123,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                     });
                 }
             }*/
-        });
-
-        $('#submitGrading').on('click', function(){
-            if($('#gradingForm').valid()){
-                $('#spinnerLoading').show();
-                $.post('php/updateWeightGrade.php', $('#gradingForm').serialize(), function(data){
-                    var obj = JSON.parse(data); 
-                    if(obj.status === 'success'){
-                        var printSlip = $('#gradingModal').find('#submitPrint').val();
-                        var id = $('#gradingModal').find('#id').val();
-                        var transactionStatus = $('#gradingModal').find('#transactionStatus').val();
-                        var isEmptyContainer = $('#gradingModal').find('#isEmptyContainer').val();
-
-                        $('#spinnerLoading').hide();
-                        $('#gradingModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
-
-                        if (printSlip == 'Y'){
-                            print(id, transactionStatus, isEmptyContainer);
-                        }else{
-                            window.location.reload();
-                        }
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
-                        $("#failBtn").click();
-                    }
-                });
-            }
         });
 
         $('#submitWeights').on('click', function(){
@@ -1785,79 +1212,63 @@ if ($rowd = $resultd->fetch_assoc()) {
                 $('#checkingConnection').addClass('bg-danger');
                 //$('#captureWeight').attr('disabled', true);
             }
-
-            const msg = buildMessage('ESC');
-            
-            if (msg){
-                postMessage(msg);
-                postMessage(msg);
-            }
         });
 
-        ws.onmessage = function(event){
-            var data = event.data;
-            console.log("Data:", data);
-            var reading = parseWeight(data);
-            var autoData = JSON.parse(autoDataJson);
-
-            // determine a message based on status/ranges, but only post when it changes
-            let msgToPost = null;
-            if (dstatus === "Auto" || dstatus === "Customer_Supplier") {
-                console.log("Auto Data:", autoData);
-                for (const item of autoData) {
-                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
-                        msgToPost = buildMessageAuto(item);
-                        console.log("Matched Range:", item.rangeFrom, "-", item.rangeTo, "→ Message:", msgToPost);
-                        break;
+        setInterval(function () {
+            $.post('http://127.0.0.1:5002/handshaking', function(data){
+                if(data != "Error"){
+                    console.log("Data Received:" + data);
+                    console.log(ind);
+                    
+                    if(ind == 'X2S' || ind == 'X722'){
+                        if(data.includes("GS")){
+                            var text = data.split(" ");
+                            var text2 = text[text.length - 1];
+                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
+                            $('#indicatorWeight').html(text2);
+                            $('#indicatorConnected').addClass('bg-primary');
+                            $('#checkingConnection').removeClass('bg-danger');
+                        }
+                    }
+                    else if(ind == 'BDI'){
+                        if(data.includes("GS") || data.includes("NT") || data.includes("ST") || data.includes("US")){
+                            var text = data.split(" ");
+                            var text2 = text[text.length - 1];
+                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
+                            $('#indicatorWeight').html(text2);
+                            $('#indicatorConnected').addClass('bg-primary');
+                            $('#checkingConnection').removeClass('bg-danger');
+                        }
+                    }
+                    else if(ind == 'EX2001'){
+                        data = data.replace("kg", "").replace("KG", "").replace("Kg", "").replace("g", "");
+                        if(data != null && data != ''){
+                            var text = data.split(",");
+                            var text2 = text[text.length - 1];
+                            //text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
+                            $('#indicatorWeight').html(parseInt(text2.replaceAll(",", "").trim()).toString());
+                            $('#indicatorConnected').addClass('bg-primary');
+                            $('#checkingConnection').removeClass('bg-danger');
+                        }
+                    }
+                    else if(ind == 'D2008'){
+                        if(data.includes("GS")){
+                            var text = data.split(",");
+                            var text2 = text[text.length - 1];
+                            text2 = text2.replace("kg", "").replace("KG", "").replace("Kg", "");
+                            $('#indicatorWeight').html(parseInt(text2).toString());
+                            $('#indicatorConnected').addClass('bg-primary');
+                            $('#checkingConnection').removeClass('bg-danger');
+                        }
                     }
                 }
-            }
-
-            if (msgToPost && msgToPost !== lastAutoMsg) {
-                console.log("Posting Auto Message:", msgToPost);
-                postMessage(msgToPost);
-                lastAutoMsg = msgToPost;
-            }
-
-            setConnectedUI(true);
-        };
-
-        ws.onclose = function(){
-            setConnectedUI(false);
-        };
-
-        if(dstatus === "Manual"){
-            $(document).on('keydown', function(e) {
-                const k = e.key; // 'F1'...'F12', 'Escape'
-                if (!k) return;
-
-                const accepted = new Set(['F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12','Escape']);
-                if (!accepted.has(k)) return;
-
-                // prevent browser defaults (F1 help, F11 fullscreen, etc.)
-                e.preventDefault();
-
-                // map Escape → ESC
-                const action = (k === 'Escape') ? 'ESC' : k;
-
-                // optionally include context
-                const payload = {};
-                payload.focused = document.activeElement
-                    ? (document.activeElement.name || document.activeElement.id || document.activeElement.tagName)
-                    : null;
-
-                // construct message and send
-                const msg = buildMessage(action);
-                
-                if (msg){
-                    //deductionValue = msg;
-                    postMessage(msg);
-                } 
+                else{
+                    $('#indicatorWeight').html('0');
+                    $('#indicatorConnected').removeClass('bg-primary');
+                    $('#checkingConnection').addClass('bg-danger');
+                }
             });
-        }
-        /*else if(dstatus === "Default"){
-
-        }*/
+        }, 500);
 
         $('#filterSearch').on('click', function(){
             var fromDateI = $('#fromDateSearch').val();
@@ -1945,13 +1356,6 @@ if ($rowd = $resultd->fetch_assoc()) {
 
         $('#addWeight').on('click', function(){
             // Show Capture Buttons When Add New
-            const msg = buildMessage('ESC');
-                
-            if (msg){
-                postMessage(msg);
-                postMessage(msg);
-            }
-
             $('#grossCapture').show();
             $('#tareCapture').show();
             $('#id').val("");
@@ -2037,7 +1441,6 @@ if ($rowd = $resultd->fetch_assoc()) {
             $('#containerNo').val("");
             $('#containerNo2').val("");
             $('#sealNo2').val("");
-            $('#driverName').val("").trigger('change');
 
             // Show select and hide input readonly
             $('#salesOrderEdit').val("").hide();
@@ -2469,6 +1872,31 @@ if ($rowd = $resultd->fetch_assoc()) {
             $('#replaceContainerText').text(replacementContainer);
         });
 
+        /*$('#customerType').on('change', function(){
+            var transactionStatus = $('#transactionStatus').val();
+            if (transactionStatus == 'Purchase'){
+                $('#unitPriceDisplay').hide();
+                $('#subTotalPriceDisplay').hide();
+                $('#sstDisplay').hide();
+                $('#totalPriceDisplay').hide();
+            }else{
+                if($(this).val() == "Cash")
+                {
+                    $('#unitPriceDisplay').show();
+                    $('#subTotalPriceDisplay').show();
+                    $('#sstDisplay').show();
+                    $('#totalPriceDisplay').show();
+                }
+                else
+                {
+                    $('#unitPriceDisplay').hide();
+                    $('#subTotalPriceDisplay').hide();
+                    $('#sstDisplay').hide();
+                    $('#totalPriceDisplay').hide();
+                }
+            }
+        });*/
+
         $('#manualVehicle').on('change', function(){
             if($(this).is(':checked')){
                 $(this).val(1);
@@ -2491,45 +1919,6 @@ if ($rowd = $resultd->fetch_assoc()) {
             var transactionStatus = $('#transactionStatus').val();
 
             if (x){
-                $.post('php/getVehicle.php', {userID: x, type: 'lookup'}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
-
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#customerName').val(customerName).trigger('change');
-                            $('#customerCode').val(customerCode);
-                        }else{
-                            $('#supplierName').val(supplierName).trigger('change');
-                            $('#supplierCode').val(supplierCode);
-                        }
-
-                        if (obj.message.vehicle_weight){
-                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
-                        }
-                    }
-                    else if(obj.status === 'error'){
-                        alert(obj.message);
-                        //$('#vehicleNoTxt').val('');
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }
-
-            /*if (x){
                 $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
@@ -2562,53 +1951,13 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
-            }*/
+            }
         });
 
         $('#vehiclePlateNo1').on('change', function(){
             var vehiclePlateNo1 = $(this).val();
             var transactionStatus = $('#transactionStatus').val();
-
             if (vehiclePlateNo1){
-                $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'lookup'}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
-
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#customerName').val(customerName).trigger('change');
-                            $('#customerCode').val(customerCode);
-                        }else{
-                            $('#supplierName').val(supplierName).trigger('change');
-                            $('#supplierCode').val(supplierCode);
-                        }
-                        
-                        if (obj.message.vehicle_weight){
-                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
-                        }
-                    }
-                    else if(obj.status === 'error'){
-                        alert(obj.message);
-                        $('#vehicleNoTxt').val('');
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }
-
-            /*if (vehiclePlateNo1){
                 $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
@@ -2641,7 +1990,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                         $("#failBtn").click();
                     }
                 });
-            }*/
+            }
         });
 
         $('#manualVehicle2').on('change', function(){
@@ -2746,9 +2095,6 @@ if ($rowd = $resultd->fetch_assoc()) {
             // Update the Flatpickr instance
             grossIncomingDatePicker.setDate(new Date()); // sets it to current date/time
             $('#grossIncomingDate').trigger('change');
-
-            // Temporary set oGrossIncoming
-            $('#oGrossIncoming').val(gross);
         });
 
         $('#grossCapture').on('click', function(event){
@@ -2770,8 +2116,6 @@ if ($rowd = $resultd->fetch_assoc()) {
             tareOutgoingDatePicker.setDate(new Date()); // sets it to current date/time
             $('#tareOutgoingDate').trigger('change');
 
-            // Temporary set oTareOutgoing
-            $('#oTareOutgoing').val(tare);
         });
 
         $('#tareCapture').on('click', function(event){
@@ -2796,9 +2140,6 @@ if ($rowd = $resultd->fetch_assoc()) {
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
             //$('#finalWeight').trigger('change');
-
-            // Temporary set oNettWeight
-            $('#oNettWeight').val($(this).val());
         });
         
         $('#reduceWeight').on('change', function(){
@@ -3069,72 +2410,7 @@ if ($rowd = $resultd->fetch_assoc()) {
 
         //supplierName
         $('#supplierName').on('change', function(){
-            var supplierId = $('#supplierName :selected').data('id');
             $('#supplierCode').val($('#supplierName :selected').data('code'));
-
-            // Check if selected supplier is cash or term. If cash, show price fields. If term, hide price fields.
-            $.post('php/getSupplier.php', {userID: supplierId}, function(data){
-                var obj = JSON.parse(data);
-
-                if (obj.status == 'success'){
-                    if (obj.message.payment_term == 'Cash'){
-                        $('#unitPriceDisplay').show();
-                        $('#unitPriceBr').show();
-                        // $('#subTotalPriceDisplay').show();
-                        // $('#sstDisplay').show();
-                        // $('#totalPriceDisplay').show();
-                    }else{
-                        $('#unitPriceDisplay').hide();
-                        $('#unitPriceBr').hide();
-                        // $('#subTotalPriceDisplay').hide();
-                        // $('#sstDisplay').hide();
-                        // $('#totalPriceDisplay').hide();
-                    }
-
-                    var customerList = [];
-                    if (typeof autoSupplierJson === 'string') {
-                        customerList = JSON.parse(autoSupplierJson);
-                    } else if (Array.isArray(autoSupplierJson)) {
-                        customerList = autoSupplierJson;
-                    } else if (typeof autoSupplierJson === 'object') {
-                        customerList = Object.keys(autoSupplierJson);
-                    }
-                    console.log("Customer List:", customerList);
-                    console.log("Current Customer ID:", supplierId);
-
-                    if(dstatus === "Customer_Supplier"){
-                        if(obj.message.deduction.status == "Auto" && customerList.includes(String(supplierId))){
-                            const msg = buildMessage('ESC');   
-                            console.log(obj.message.deduction.auto_data); 
-                            autoDataJson = obj.message.deduction.auto_data;
-
-                            if (msg){
-                                postMessage(msg);
-                                postMessage(msg);
-                            }
-                        }
-                        else{
-                            const msg = buildMessage('ESC');
-                            autoDataJson = '[]';
-                                
-                            if (msg){
-                                postMessage(msg);
-                                postMessage(msg);
-                            }
-                        }
-                    }
-                }
-                else if(obj.status === 'failed'){
-                    $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-                else{
-                    $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-            });
         });
 
         //transporter
@@ -3159,72 +2435,7 @@ if ($rowd = $resultd->fetch_assoc()) {
 
         //customerName
         $('#customerName').on('change', function(){
-            var customerId = $('#customerName :selected').data('id');
             $('#customerCode').val($('#customerName :selected').data('code'));
-
-            // Check if selected customer is cash or term. If cash, show price fields. If term, hide price fields.
-            $.post('php/getCustomer.php', {userID: customerId}, function(data){
-                var obj = JSON.parse(data);
-
-                if (obj.status == 'success'){
-                    if (obj.message.payment_term == 'Cash'){
-                        $('#unitPriceDisplay').show();
-                        $('#unitPriceBr').show();
-                        // $('#subTotalPriceDisplay').show();
-                        // $('#sstDisplay').show();
-                        // $('#totalPriceDisplay').show();
-                    }else{
-                        $('#unitPriceDisplay').hide();
-                        $('#unitPriceBr').hide();
-                        // $('#subTotalPriceDisplay').hide();
-                        // $('#sstDisplay').hide();
-                        // $('#totalPriceDisplay').hide();
-                    }
-
-                    // Parse customer list and check if current customer is in it
-                    var customerList = [];
-                    if (typeof autoCustomerJson === 'string') {
-                        customerList = JSON.parse(autoCustomerJson);
-                    } else if (Array.isArray(autoCustomerJson)) {
-                        customerList = autoCustomerJson;
-                    } else if (typeof autoCustomerJson === 'object') {
-                        customerList = Object.keys(autoCustomerJson);
-                    }
-                    console.log("Customer List:", customerList);
-                    console.log("Current Customer ID:", customerId);
-
-                    if(dstatus === "Customer_Supplier"){
-                        if(obj.message.deduction.status == "Auto" && customerList.includes(String(customerId))){
-                            const msg = buildMessage('ESC');
-                            autoDataJson = obj.message.deduction.auto_data;
-
-                            if (msg){
-                                postMessage(msg);
-                                postMessage(msg);
-                            }
-                        }
-                        else{
-                            const msg = buildMessage('ESC');
-                            autoDataJson = '[]';
-                                
-                            if (msg){
-                                postMessage(msg);
-                                postMessage(msg);
-                            }
-                        }
-                    }
-                }
-                else if(obj.status === 'failed'){
-                    $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-                else{
-                    $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-            });
         });
 
         $('input[name="exDel"]').change(function() {
@@ -3437,91 +2648,6 @@ if ($rowd = $resultd->fetch_assoc()) {
             x = x.toUpperCase();
             $('#sealNoSearch').val(x);
         });
-
-        $('#driverName').on('change', function(){
-            $('#driverIc').val($('#driverName :selected').data('code'));
-        });
-
-        // Grading Modal Trigger Start //
-        $('#gradingModal').find('#reduceWeight').on('keyup', function(){
-            var reduceWeight = $(this).val() ? parseFloat($(this).val()) : 0;
-            var nettWeight = $('#gradingModal').find('#nettWeight').val() ? parseFloat($('#gradingModal').find('#nettWeight').val()) : 0;
-            var finalWeight = Math.abs(nettWeight - reduceWeight);
-            $('#gradingModal').find('#finalWeight').val(finalWeight.toFixed(2));
-        });
-
-        $('#bunchSize25, #bunchSize10, #bunchSize9_10, #bunchSize8_9, #bunchSize7_8, #bunchSize6_7, #bunchSize5_6, #bunchSize5').on('keyup', function(){
-            var total = 0;
-            $('#bunchSize25, #bunchSize10, #bunchSize9_10, #bunchSize8_9, #bunchSize7_8, #bunchSize6_7, #bunchSize5_6, #bunchSize5').each(function(){
-                total += parseFloat($(this).val()) || 0;
-            });
-            
-            if(total > 100){
-                alert('Total percentage cannot exceed 100%');
-                $(this).val(0);
-                total = 0;
-                $('#bunchSize25, #bunchSize10, #bunchSize9_10, #bunchSize8_9, #bunchSize7_8, #bunchSize6_7, #bunchSize5_6, #bunchSize5').each(function(){
-                    total += parseFloat($(this).val()) || 0;
-                });
-            }
-            
-            $('#totalPercent').val(total.toFixed(2));
-        });
-
-        $('#unripe, #underripe, #emptyBunch, #rottenBunch, #longStalks, #dirtyBunch, #duraBunch, #oldBunch').on('keyup', function(){
-            var total = 0;
-            $('#unripe, #underripe, #emptyBunch, #rottenBunch, #longStalks, #dirtyBunch, #duraBunch, #oldBunch').each(function(){
-                total += parseFloat($(this).val()) || 0;
-            });
-            
-            if(total > 100){
-                alert('Total percentage cannot exceed 100%');
-                $(this).val(0);
-                total = 0;
-                $('#unripe, #underripe, #emptyBunch, #rottenBunch, #longStalks, #dirtyBunch, #duraBunch, #oldBunch').each(function(){
-                    total += parseFloat($(this).val()) || 0;
-                });
-            }
-            
-            $('#totalQualityFactor').val(total.toFixed(2));
-        });
-
-        $('#mspoPerc').on('keyup', function(){
-            var percentage = parseFloat($(this).val()) || 0;
-            if (percentage < 0){
-                alert('Percentage cannot be negative');
-                $(this).val(0);
-                percentage = 0;
-            }else if (percentage > 100){
-                alert('Percentage cannot exceed 100%');
-                $(this).val(0);
-                percentage = 0;
-            }
-
-            var nettWeight = $('#weightForm').find('#nettWeight').val() ? parseFloat($('#weightForm').find('#nettWeight').val()) : 0;
-            var mspoWeight = (percentage / 100) * nettWeight;
-
-            $('#mspoWeight').val(mspoWeight.toFixed(2));
-        });
-
-        $('#nonMspoPerc').on('keyup', function(){
-            var percentage = parseFloat($(this).val()) || 0;
-            if (percentage < 0){
-                alert('Percentage cannot be negative');
-                $(this).val(0);
-                percentage = 0;
-            }else if (percentage > 100){
-                alert('Percentage cannot exceed 100%');
-                $(this).val(0);
-                percentage = 0;
-            }
-
-            var nettWeight = $('#weightForm').find('#nettWeight').val() ? parseFloat($('#weightForm').find('#nettWeight').val()) : 0;
-            var nonMspoWeight = (percentage / 100) * nettWeight;
-
-            $('#nonMspoWeight').val(nonMspoWeight.toFixed(2));
-        });
-        // Grading Modal Trigger End //
 
         <?php
             if(isset($_GET['weight'])){
@@ -3786,7 +2912,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                 }
                 else{
                     $('#vehiclePlateNo1Edit').val('EDIT');
-                    $('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).select2('destroy').select2();
+                    $('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
                     $('#manualVehicle').val(0);
                     $('#manualVehicle').prop("checked", false);
                     $('.index-vehicle').show();
@@ -3801,7 +2927,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                     $('#vehicleNoTxt2').show();
                 }
                 else{
-                    $('#vehiclePlateNo2').val(obj.message.lorry_plate_no2).select2('destroy').select2();
+                    $('#vehiclePlateNo2').val(obj.message.lorry_plate_no2).trigger('change');
                     $('#manualVehicle2').val(0);
                     $('#manualVehicle2').prop("checked", false);
                     $('.index-vehicle2').show();
@@ -3815,7 +2941,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                     $("input[name='exDel'][value='false']").prop("checked", true);
                 }
                 
-                $('#driverName').val(obj.message.driver_name).trigger('change');
                 $('#purchaseOrder').val(obj.message.purchase_order);
                 $('#invoiceNo').val(obj.message.invoice_no);
                 $('#deliveryNo').val(obj.message.delivery_no);
@@ -3841,15 +2966,12 @@ if ($rowd = $resultd->fetch_assoc()) {
                 
                 $('#otherRemarks').val(obj.message.remarks);
                 $('#grossIncoming').val(obj.message.gross_weight1);
-                $('#oGrossIncoming').val(obj.message.o_gross_weight1);
                 grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
                 $('#grossWeightBy1').val(obj.message.gross_weight_by1);
                 $('#tareOutgoing').val(obj.message.tare_weight1);
-                $('#oTareOutgoing').val(obj.message.o_tare_weight1);
                 tareOutgoingDatePicker.setDate(obj.message.tare_weight1_date != null ? new Date(obj.message.tare_weight1_date) : null);
                 $('#tareWeightBy1').val(obj.message.tare_weight_by1);
                 $('#nettWeight').val(obj.message.nett_weight1);
-                $('#oNettWeight').val(obj.message.o_nett_weight1);
                 $('#vehicleWeight2').val(obj.message.lorry_no2_weight);
                 $('#emptyContainerWeight2').val(obj.message.empty_container2_weight);
                 $('#replacementContainer').val(obj.message.replacement_container).trigger('keyup');
@@ -3936,6 +3058,37 @@ if ($rowd = $resultd->fetch_assoc()) {
                         });
                     });
                 }
+
+                // Load these field after PO/SO is loaded
+                /*$('#addModal').on('orderLoaded', function() {
+                    $('#customerCode').val(obj.message.customer_code);
+                    $('#customerName').val(obj.message.customer_name).trigger('change');
+                    $('#supplierCode').val(obj.message.supplier_code);
+                    $('#supplierName').val(obj.message.supplier_name).trigger('change')
+                    $('#siteCode').val(obj.message.site_code);
+                    $('#siteName').val(obj.message.site_name).trigger('change');
+                    $('#agent').val(obj.message.agent_name).trigger('change');
+                    $('#agentCode').val(obj.message.agent_code);
+                    $('#rawMaterialCode').val(obj.message.raw_mat_code);
+                    $('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
+                    $('#productName').val(obj.message.product_name).trigger('change');
+                    $('#productCode').val(obj.message.product_code);
+                    $('#supplierWeight').val(obj.message.supplier_weight);
+                    $('#orderWeight').val(obj.message.order_weight);
+                    $('#destinationCode').val(obj.message.destination_code);
+                    $('#destination').val(obj.message.destination).trigger('change');
+                    $('#plant').val(obj.message.plant_name).trigger('change');
+                    $('#plantCode').val(obj.message.plant_code);
+
+                    // Hide select and show input readonly
+                    // if (obj.message.transaction_status == 'Purchase'){
+                    //     $('#purchaseOrder').next('.select2-container').hide();
+                    //     $('#purchaseOrderEdit').val(obj.message.purchase_order).show();
+                    // }else{
+                    //     $('#salesOrder').next('.select2-container').hide();
+                    //     $('#salesOrderEdit').val(obj.message.purchase_order).show();
+                    // }
+                });*/
 
                 // Initialize all Select2 elements in the modal
                 $('#addModal .select2').select2({
@@ -4070,6 +3223,23 @@ if ($rowd = $resultd->fetch_assoc()) {
 
     function deactivate(id, isEmptyContainer) {
         if (confirm('Are you sure you want to cancel this item?')) {
+            /*$('#cancelModal').find('#id').val(id);
+            $('#cancelModal').find('#isEmptyContainer').val(isEmptyContainer);
+            $('#cancelModal').modal('show');
+
+            $('#cancelForm').validate({
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });*/
             $.post('php/deleteWeight.php', {id: id, cancelReason: 'Cancelled', isEmptyContainer:'N'}, function(data){
                 var obj = JSON.parse(data);
                 
@@ -4095,197 +3265,97 @@ if ($rowd = $resultd->fetch_assoc()) {
         }
     }
 
-    function print(id, transactionStatus, isEmptyContainer = 'N') {
-        var prePrintStatus = 'N';
+    // function deactivate(id){
         
-        if(includeGrading == 'Y'){
-            $.post('php/print_pws.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
-                var obj = JSON.parse(data);
+    //     $('#spinnerLoading').show();
+    //     $.post('php/deleteWeight.php', {userID: id}, function(data){
+    //         var obj = JSON.parse(data);
+            
+    //         if(obj.status === 'success'){
+    //             table.ajax.reload();
+    //             $('#spinnerLoading').hide();
+    //             $("#successBtn").attr('data-toast-text', obj.message);
+    //             $("#successBtn").click();
+    //         }
+    //         else if(obj.status === 'failed'){
+    //             $('#spinnerLoading').hide();
+    //             $("#failBtn").attr('data-toast-text', obj.message );
+    //             $("#failBtn").click();
+    //         }
+    //         else{
+    //             $('#spinnerLoading').hide();
+    //             $("#failBtn").attr('data-toast-text', obj.message );
+    //             $("#failBtn").click();
+    //         }
+    //     });
+    // }
 
-                if(obj.status === 'success'){
-                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                    printWindow.document.write(obj.message);
-                    printWindow.document.close();
-                    setTimeout(function(){
-                        printWindow.print();
-                        printWindow.close();
-                    }, 500);
+    function print(id, transactionStatus, isEmptyContainer = 'N') {
+        /*if (transactionStatus == "Sales"){
+            $('#prePrintModal').find('#id').val(id);
+            $('#prePrintModal').find('#prePrint').val("");
+            $("#prePrintModal").modal("show");
 
-                    $('#spinnerLoading').hide();
+            $('#prePrintForm').validate({
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
                 }
-                else if(obj.status === 'failed'){
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-                else{
-                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                    $("#failBtn").click();
-                }
-            }); 
-        }
-        else{
-            $.post('php/print.php', {userID: id, file: 'weight', prePrintHeader: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
-                var obj = JSON.parse(data);
-
-                if(obj.status === 'success'){
-                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                    printWindow.document.write(obj.message);
-                    printWindow.document.close();
-                    setTimeout(function(){
-                        printWindow.print();
-                        printWindow.close();
-                    }, 500);
-
-                    $('#spinnerLoading').hide();
-                }
-                else if(obj.status === 'failed'){
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-                else{
-                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                    $("#failBtn").click();
-                }
-            }); 
-        }
-    }
-
-    // Indicator Functions
-    function parseWeight(data){
-        var reading = "0";
-
-        if(ind == 'X2S' || ind == 'X722'){
-            var text = data.split(" ");
-            var val = text[text.length - 1].replace(/kg|KG|Kg/g,"");
-            reading = val.trim();
-            $('#indicatorWeight').html(val);
-        }
-        else if(ind == 'BX23' || ind == '205'){
-            var text = data.split(" ");
-            var newtext = text.slice(1, -1).join("");
-            reading = newtext.trim();
-            $('#indicatorWeight').html(newtext.trim());
-        }
-
-        return reading;
-    }
-
-    function setConnectedUI(state){
-        if(state){
-            $('#indicatorConnected').addClass('bg-primary');
-            $('#checkingConnection').removeClass('bg-danger');
-            $('#indicatorActive').removeClass('d-none').addClass('d-flex');
-            $('#indicatorInactive').addClass('d-none');
+            });
         }else{
-            $('#indicatorWeight').html('0');
-            $('#indicatorConnected').removeClass('bg-primary');
-            $('#checkingConnection').addClass('bg-danger');
-            $('#indicatorInactive').removeClass('d-none').addClass('d-flex');
-            $('#indicatorActive').addClass('d-none');
-        }
-    }
+            $.post('php/print2.php', {userID: id, file: 'weight'}, function(data){
+                var obj = JSON.parse(data);
 
-    function buildMessage(action) {
-        // skip if pendrive not connected
-        if (!document.body.classList.contains('has-pendrive')) return null;
-        // Bootstrap values from PHP
-        const deductions = {
-            F1: <?= (int)$F1 ?>,
-            F2: <?= (int)$F2 ?>,
-            F3: <?= (int)$F3 ?>,
-            F4: <?= (int)$F4 ?>,
-            F5: <?= (int)$F5 ?>,
-            F6: <?= (int)$F6 ?>,
-            F7: <?= (int)$F7 ?>,
-            F8: <?= (int)$F8 ?>,
-            F9: <?= (int)$F9 ?>,
-            F10: <?= (int)$F10 ?>,
-            F11: <?= (int)$F11 ?>,
-            F12: <?= (int)$F12 ?>
-        };
+                if(obj.status === 'success'){
+                    var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                    printWindow.document.write(obj.message);
+                    printWindow.document.close();
+                    setTimeout(function(){
+                        printWindow.print();
+                        printWindow.close();
+                    }, 500);
+                }
+                else if(obj.status === 'failed'){
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                    $("#failBtn").click();
+                }
+            });
+        }*/
+        //var id = $('#prePrintModal').find('#id').val();
+        var prePrintStatus = 'N';
 
-        // Map F key → input name + format
-        const mapping = {
-            F1: { field: 'F1', sign: '-', suffix: '#' },
-            F2: { field: 'F2', sign: '-', suffix: '#' },
-            F3: { field: 'F3', sign: '-', suffix: '#' },
-            F4: { field: 'F4', sign: '+', suffix: '#' },
-            F5: { field: 'F5', sign: '+', suffix: '#' },
-            F6: { field: 'F6', sign: '+', suffix: '#' },
-            F7: { field: 'F7', sign: '-', suffix: '%' },
-            F8: { field: 'F8', sign: '-', suffix: '%' },
-            F9: { field: 'F9', sign: '-', suffix: '%' },
-            F10: { field: 'F10', sign: '+', suffix: '%' },
-            F11: { field: 'F11', sign: '+', suffix: '%' },
-            F12: { field: 'F12', sign: '+', suffix: '%' }
-        };
+        $.post('php/print2.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+            var obj = JSON.parse(data);
 
-        const cfg = mapping[action];
-        if (!cfg && action != 'ESC') {
-            return null;
-        }
-        else if (action == 'ESC') {
-            return "JQ-------$"; // Special case for ESC
-        }
+            if(obj.status === 'success'){
+                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                printWindow.document.write(obj.message);
+                printWindow.document.close();
+                setTimeout(function(){
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
 
-        const val = deductions[action] || 0;
-        const padded = String(val).padStart(6, '0');
-        return "JS" + cfg.sign + padded + cfg.suffix;
-    }
-
-    function buildMessageAuto(config) {
-        if (!document.body.classList.contains('has-pendrive')) return null;
-
-        if (!config) return null;
-
-        // priority order (you can change if needed)
-        let sign = null;
-        let value = 0;
-        let suffix = null;
-
-        if (config.negativeKg > 0) { // KG deduction
-            sign = '-';
-            value = config.negativeKg;
-            suffix = '#';
-        }
-        else if (config.positiveKg > 0) {
-            sign = '+';
-            value = config.positiveKg;
-            suffix = '#';
-        }
-        else if (config.negativePerc > 0) { // Percentage deduction
-            sign = '-';
-            value = config.negativePerc;
-            suffix = '%';
-        }
-        else if (config.positivePerc > 0) {
-            sign = '+';
-            value = config.positivePerc;
-            suffix = '%';
-        }
-        else {
-            return null; // nothing to send
-        }
-
-        // device requires 6 digit padding
-        const padded = String(value).padStart(6, '0');
-
-        return "JS" + sign + padded + suffix;
-    }
-
-    function postMessage(message) {
-        if (!document.body.classList.contains('has-pendrive') || !message) return;
-
-        $.ajax({
-            url: 'http://127.0.0.1:5002/deduction',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ message: message }),
-            success: function (res) {
-                console.log("Sent:", message, "→", res);
-            },
-            error: function (xhr, status, err) {
-                console.warn("Error posting:", message, status, err);
+                $('#spinnerLoading').hide();
+            }
+            else if(obj.status === 'failed'){
+                $("#failBtn").attr('data-toast-text', obj.message );
+                $("#failBtn").click();
+            }
+            else{
+                $("#failBtn").attr('data-toast-text', "Something wrong when print");
+                $("#failBtn").click();
             }
         });
     }

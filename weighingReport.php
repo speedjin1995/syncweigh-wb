@@ -152,6 +152,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <div class="mb-3">
                                                             <label for="transactionStatusSearch" class="form-label">Transaction Status</label>
                                                             <select id="transactionStatusSearch" class="form-select">
+                                                                <option selected>-</option>
                                                                 <option value="Sales" selected>Sales</option>
                                                                 <option value="Purchase">Purchase</option>
                                                                 <option value="Local">Public</option>
@@ -593,8 +594,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                             </div>
                                             <input type="hidden" class="form-control" id="fromDate" name="fromDate">                                   
                                             <input type="hidden" class="form-control" id="toDate" name="toDate">                                   
-                                            <input type="hidden" class="form-control" id="status" name="status">
-                                            <input type="hidden" class="form-control" id="transactionStatus" name="transactionStatus">
+                                            <input type="hidden" class="form-control" id="status" name="status">                                   
                                             <input type="hidden" class="form-control" id="customer" name="customer">     
                                             <input type="hidden" class="form-control" id="supplier" name="supplier"> 
                                             <input type="hidden" class="form-control" id="vehicle" name="vehicle">     
@@ -623,65 +623,6 @@ if(($row = $result->fetch_assoc()) !== null){
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
-    </div>
-
-    <div class="modal fade" id="exportExcelModal" tabindex="-1" role="dialog" aria-labelledby="exportExcelModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exportExcelModalTitle">Select Report to Export</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="exportExcelForm">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="exportReportType" class="form-label">Report Type *</label>
-                            <select id="exportReportType" name="exportReportType" class="form-select" required>
-                                <option value="weight">Weighing Records</option>
-                                <option value="purchase_grading">Purchase Grading (MPOB)</option>
-                            </select>
-                        </div>
-                    </div> 
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success">Export</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="prePrintModal">
-        <div class="modal-dialog" style="max-width: 500px;">
-            <div class="modal-content">
-                <form role="form" id="prePrintForm">
-                    <div class="modal-header bg-gray-dark color-palette">
-                        <h4 class="modal-title"><?=$languageArray['print_slip_code'][$language]?></h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="d-flex gap-3 justify-content-center">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="prePrintHeaderWith" name="prePrintHeader" value="with" checked>
-                                <label class="form-check-label" for="prePrintHeaderWith"><?=$languageArray['print_with_letter_header_code'][$language]?></label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="prePrintHeaderWithout" name="prePrintHeader" value="without">
-                                <label class="form-check-label" for="prePrintHeaderWithout"><?=$languageArray['print_without_letter_header_code'][$language]?></label>
-                            </div>
-                        </div>
-                        <input type="hidden" class="form-control" id="userID" name="userID">                                   
-                        <input type="hidden" class="form-control" id="file" name="file">                                   
-                        <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">                                   
-                    </div>
-                    <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                        <button type="button" class="btn btn-success" id="submitPrePrint"><?=$languageArray['submit_code'][$language]?></button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
     <?php include 'layouts/customizer.php'; ?>
@@ -1028,8 +969,7 @@ if(($row = $result->fetch_assoc()) !== null){
 
                     $('#exportSoRepForm').find('#fromDate').val(fromDateI);
                     $('#exportSoRepForm').find('#toDate').val(toDateI);
-                    $('#exportSoRepForm').find('#status').val(statusI);
-                    $('#exportSoRepForm').find('#transactionStatus').val(transactionStatusI);
+                    $('#exportSoRepForm').find('#status').val(transactionStatusI);
                     $('#exportSoRepForm').find('#customer').val(customerNoI);
                     $('#exportSoRepForm').find('#supplier').val(supplierNoI);
                     $('#exportSoRepForm').find('#vehicle').val(vehicleNoI);
@@ -1060,42 +1000,6 @@ if(($row = $result->fetch_assoc()) !== null){
                         console.error("Error exporting PDF:", error);
                         alert("An error occurred while generating the PDF.");
                     });
-                }
-                else if($('#exportExcelModal').hasClass('show')){
-                    var reportType = $('#exportReportType').val();
-                    var fromDateI = $('#fromDateSearch').val();
-                    var toDateI = $('#toDateSearch').val();
-                    var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
-                    var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-                    var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-                    var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-                    var weightTypeI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-                    var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
-                    var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
-                    var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-                    var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
-                    var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-                    var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-
-                    var selectedIds = []; // An array to store the selected 'id' values
-
-                    $("#weightTable tbody input[type='checkbox']").each(function () {
-                        if (this.checked) {
-                            selectedIds.push($(this).val());
-                        }
-                    });
-
-                    if (selectedIds.length > 0) {
-                        window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
-                        "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                        "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+"&destination="+destinationI+"&plant="+plantI+
-                        "&status="+statusI+"&reportType="+reportType+"&isMulti=Y&ids="+selectedIds);
-                    } else {
-                        window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
-                        "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                        "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+"&destination="+destinationI+"&plant="+plantI+
-                        "&status="+statusI+"&reportType="+reportType+"&isMulti=N");
-                    }
                 }
             }
         });
@@ -1243,84 +1147,41 @@ if(($row = $result->fetch_assoc()) !== null){
             });
         });
 
-        // Handle group selection changes to disable selected options in other groups
-        $('#exportSoRepModal').on('change', 'select[id^="group"]', function() {
-            var selectedValues = [];
-            $('#exportSoRepModal select[id^="group"]').each(function() {
-                var val = $(this).val();
-                if (val) selectedValues.push(val);
-            });
-
-            $('#exportSoRepModal select[id^="group"]').each(function() {
-                var currentSelect = $(this);
-                var currentValue = currentSelect.val();
-
-                currentSelect.find('option').each(function() {
-                    var optionValue = $(this).val();
-                    if (optionValue && optionValue !== currentValue && selectedValues.includes(optionValue)) {
-                        $(this).prop('disabled', true);
-                    } else {
-                        $(this).prop('disabled', false);
-                    }
-                });
-            });
-        });
-
         $('#exportExcel').on('click', function(){
-            $('#exportReportType').val('weight');
-            $('#exportExcelModal').modal('show');
+            var fromDateI = $('#fromDateSearch').val();
+            var toDateI = $('#toDateSearch').val();
+            var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
+            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+            var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+            var weightTypeI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
+            var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
+            var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
+            var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+            var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
+            var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+            
+            var selectedIds = []; // An array to store the selected 'id' values
 
-            $('#exportExcelForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
+            $("#weightTable tbody input[type='checkbox']").each(function () {
+                if (this.checked) {
+                    selectedIds.push($(this).val());
                 }
             });
+
+            if (selectedIds.length > 0) {
+                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
+                "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
+                "&destination="+destinationI+"&plant="+plantI+"&status="+statusI+"&isMulti=Y&ids="+selectedIds);
+            } else {
+                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
+                "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
+                "&destination="+destinationI+"&plant="+plantI+"&status="+statusI+"&isMulti=N");
+            }
         });
-
-        // $('#exportExcelForm').on('submit', function(e){
-        //     e.preventDefault();
-        //     var reportType = $('#exportReportType').val();
-        //     var fromDateI = $('#fromDateSearch').val();
-        //     var toDateI = $('#toDateSearch').val();
-        //     var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
-        //     var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-        //     var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-        //     var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-        //     var weightTypeI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-        //     var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
-        //     var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
-        //     var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-        //     var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
-        //     var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-        //     var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-            
-        //     var selectedIds = [];
-        //     $("#weightTable tbody input[type='checkbox']").each(function () {
-        //         if (this.checked) selectedIds.push($(this).val());
-        //     });
-
-        //     var url = "php/export.php?file="+reportType+"&fromDate="+fromDateI+"&toDate="+toDateI+
-        //         "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-        //         "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
-        //         "&destination="+destinationI+"&plant="+plantI+"&status="+statusI;
-
-        //     if (selectedIds.length > 0) {
-        //         url += "&isMulti=Y&ids="+selectedIds;
-        //     } else {
-        //         url += "&isMulti=N";
-        //     }
-
-        //     $('#exportExcelModal').modal('hide');
-        //     window.open(url);
-        // });
 
         $('#transactionStatusSearch').on('change', function(){
             var status = $(this).val();
@@ -1481,50 +1342,26 @@ if(($row = $result->fetch_assoc()) !== null){
     }
 
     function print(id) {
-        $('#prePrintModal').find('#userID').val(id);
-        $('#prePrintModal').find('#file').val('weight');
-        $('#prePrintModal').find('#isEmptyContainer').val('N');
-        $('#prePrintModal').modal('show');
+        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N'}, function(data){
+            var obj = JSON.parse(data);
+
+            if(obj.status === 'success'){
+                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+                printWindow.document.write(obj.message);
+                printWindow.document.close();
+                setTimeout(function(){
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
+            }
+            else if(obj.status === 'failed'){
+                toastr["error"](obj.message, "Failed:");
+            }
+            else{
+                toastr["error"]("Something wrong when activate", "Failed:");
+            }
+        });
     }
-
-    $('#submitPrePrint').on('click', function(){
-        if($('#prePrintForm').valid()){
-            $('#spinnerLoading').show();
-            var formData = new FormData($('#prePrintForm')[0]);
-
-            $.ajax({
-                url: 'php/print.php',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(data){
-                    var obj = JSON.parse(data);
-
-                    if(obj.status === 'success'){
-                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        printWindow.document.write(obj.message);
-                        printWindow.document.close();
-                        setTimeout(function(){
-                            printWindow.print();
-                            printWindow.close();
-                        }, 500);
-
-                        $('#spinnerLoading').hide();
-                        $('#prePrintModal').modal('hide');
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        toastr["error"](obj.message, "Failed:");
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        toastr["error"]("Something wrong when print", "Failed:");
-                    }
-                }
-            });
-        }
-    });
     </script>
 </body>
 </html>

@@ -401,15 +401,12 @@ if(isset($_POST['userID'])){
                             $message['destination'] = $row['destination'];
                             $message['remarks'] = $row['remarks'];
                             $message['gross_weight1'] = $row['gross_weight1'];
-                            $message['o_gross_weight1'] = $row['gross_deduction1'];
                             $message['gross_weight1_date'] = $row['gross_weight1_date'];
                             $message['gross_weight_by1'] = $row['gross_weight_by1'];
                             $message['tare_weight1'] = $row['tare_weight1'];
-                            $message['o_tare_weight1'] = $row['tare_deduction1'];
                             $message['tare_weight1_date'] = $row['tare_weight1_date'];
                             $message['tare_weight_by1'] = $row['tare_weight_by1'];
                             $message['nett_weight1'] = $row['nett_weight1'];
-                            $message['o_nett_weight1'] = $row['nett_deduction1'];
                             $message['lorry_no2_weight'] = $row['lorry_no2_weight'];
                             $message['empty_container2_weight'] = $row['empty_container2_weight'];
                             $message['replacement_container'] = $row['replacement_container'];
@@ -422,15 +419,12 @@ if(isset($_POST['userID'])){
                             $message['nett_weight2'] = $row['nett_weight2'];
                             $message['reduce_weight'] = $row['reduce_weight'];
                             $message['final_weight'] = $row['final_weight'];
-                            $message['reject_weight'] = $row['reject_weight'];
                             $message['weight_different'] = $row['weight_different'];
                             $message['is_complete'] = $row['is_complete'];
                             $message['is_cancel'] = $row['is_cancel'];
                             $message['manual_weight'] = $row['manual_weight'];
                             $message['indicator_id'] = $row['indicator_id'];
                             $message['weighbridge_id'] = $row['weighbridge_id'];
-                            $message['grader_id'] = $row['grader_id'];
-                            $message['grade_detail'] = $row['grade_detail'];
                             $message['created_date'] = $row['created_date'];
                             $message['created_by'] = $row['created_by'];
                             $message['modified_date'] = $row['modified_date'];
@@ -501,18 +495,6 @@ if(isset($_POST['userID'])){
                             else {
                                 // Log error if the statement couldn't be prepared
                                 $message['vehicleNoTxt2'] = $db->error;
-                            }
-
-                            if ($row['transaction_status'] == 'Purchase'){
-                                if ($update_stmt3 = $db->prepare("SELECT * FROM Supplier WHERE supplier_code=? AND status = '0'")) {
-                                    $update_stmt3->bind_param('s', $row['supplier_code']);
-                                    $update_stmt3->execute();
-                                    $result3 = $update_stmt3->get_result();
-                                    
-                                    if ($row3 = $result3->fetch_assoc()) {
-                                        $message['supplier_detail'] = $row3;
-                                    }
-                                } 
                             }
                         }
                     }

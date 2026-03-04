@@ -18,7 +18,7 @@ $searchQuery = "";
 if($_POST['fromDate'] != null && $_POST['fromDate'] != ''){
   $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['fromDate']);
   $fromDateTime = $dateTime->format('Y-m-d 00:00:00');
-  $searchQuery .= " and transaction_date >= '".$fromDateTime."'";
+  $searchQuery = " and transaction_date >= '".$fromDateTime."'";
 }
 
 if($_POST['toDate'] != null && $_POST['toDate'] != ''){
@@ -69,12 +69,12 @@ if($_POST['plant'] != null && $_POST['plant'] != '' && $_POST['plant'] != '-'){
 
 if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
   if ($_POST['status'] == 'Complete'){
-    $searchQuery .= " and is_complete = 'Y' AND is_cancel = 'N'";
+    $searchQuery .= " and is_complete = 'Y'";
   }elseif ($_POST['status'] == 'Cancelled'){
     $searchQuery .= " and is_cancel = 'Y'";
   }
 }else{
-  $searchQuery .= " and is_complete = 'Y' AND is_cancel = 'N'";
+  $searchQuery .= " and is_complete = 'Y'";
 }
 
 if($_POST['invDelPo'] != null && $_POST['invDelPo'] != '' && $_POST['invDelPo'] != '-'){

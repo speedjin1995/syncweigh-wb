@@ -36,8 +36,8 @@
                     <a href="dashboard.php" class="nav-link"><i class="mdi mdi-billboard"></i><?=$lang['t-billboard']?></a>
                 </li-->
                 <li class="nav-item">
-                    <a href="<?php if($_SESSION['package'] == 'Standard') echo 'index.php'; else echo 'simple.php'; ?>" class="nav-link"><b><i class="mdi mdi-weight"></i> <span><?=$languageArray['daily_weighing_code'][$language]?></span></b></a>
-                </li>
+                    <a href="index.php" class="nav-link"><b><i class="mdi mdi-weight"></i> <span><?=$languageArray['daily_weighing_code'][$language]?></span></b></a>
+                </li>              
                 <!--li class="nav-item">
                     <a href="bitumen.php" class="nav-link"><i class="mdi mdi-domain"></i></i><?=$lang['t-bitumen']?></a>
                 </li-->         
@@ -54,37 +54,29 @@
                         </ul>
                     </div>
                 </li> -->
-                <li class="nav-item">
+                <!--li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAccounting" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarAccounting">
-                        <b><i class="ri-pages-line"></i> <span><?=$languageArray['accounting_code'][$language]?></b></span>
+                        <i class="ri-pages-line"></i> <span><?=$lang['t-accounting']?></span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarAccounting">
-                        <ul class="nav nav-sm flex-column">              
+                        <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="paymentVoucher.php" class="nav-link"><b><?=$languageArray['payment_voucher_code'][$language]?></b></a>
+                                <a href="salesOrder.php" class="nav-link"><?=$lang['t-so']?></a>
                             </li>
                             <li class="nav-item">
-                                <a href="cashBookPayment.php" class="nav-link"><b><?=$languageArray['cash_book_payment_code'][$language]?></b></a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="accountingReport.php" class="nav-link"><b><?=$languageArray['daily_cash_report_code'][$language]?></b></a>
-                            </li>
-                            <?php
-                            if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
-                                echo '
-                                    <li class="nav-item">
-                                        <a href="payslip.php" class="nav-link"><b>'.$languageArray['payslip_code'][$language].'</b></a>
-                                    </li>
-                                ';
-                            }
-                            ?>
+                                <a href="purchaseOrder.php" class="nav-link"><?=$lang['t-po']?></a>
+                            </li>               
                         </ul>
                     </div>
-                </li>
+                </li-->
                 <?php
                     if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
-                        echo '<li class="nav-item">
+
+                        echo '<!--li class="nav-item">
+                                <a href="inventory.php" class="nav-link"><i class="mdi mdi-shipping-pallet"></i></i>'.$lang['t-inventory'].'</a>
+                            </li--> 
+                            <li class="nav-item">
                                 <a class="nav-link menu-link" href="#sidebarMasterdata" data-bs-toggle="collapse" role="button"
                                     aria-expanded="false" aria-controls="sidebarMasterdata">
                                     <b><i class="ri-pages-line"></i> <span>'.$languageArray['master_data_code'][$language].'</span></b>
@@ -92,54 +84,56 @@
                                 <div class="collapse menu-dropdown" id="sidebarMasterdata">
                                     <ul class="nav nav-sm flex-column">';
 
-                                        if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
-                                            echo '<li class="nav-item">
-                                                <a href="message.php" class="nav-link"><b>'.$languageArray['message_resource_code'][$language].'</b></a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a href="plant.php" class="nav-link"><b>'.$languageArray['plant_code'][$language].'</b></a>
-                                            </li> ';
-                                        }
+                        if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
+                            echo '<li class="nav-item">
+                                <a href="message.php" class="nav-link"><b>'.$languageArray['message_resource_code'][$language].'</b></a>
+                            </li>
+			    <li class="nav-item">
+                                <a href="plant.php" class="nav-link"><b>'.$languageArray['plant_code'][$language].'</b></a>
+                            </li> ';
+                        }
 
-                                        if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
-                                            echo '<li class="nav-item">
-                                                    <a href="customer.php" class="nav-link"><b>'.$languageArray['customer_code'][$language].'</b></a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="product.php" class="nav-link"><b>'.$languageArray['product_code'][$language].'</b></a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="rawMaterial.php" class="nav-link"><b>'.$languageArray['raw_material_code'][$language].'</b></a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="supplier.php" class="nav-link"><b>'.$languageArray['supplier_code'][$language].'</b></a>
-                                                </li>       
-                                                <li class="nav-item">
-                                                    <a href="vehicle.php" class="nav-link"><b>'.$languageArray['vehicle_code'][$language].'</b></a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="user.php" class="nav-link"><b>'.$languageArray['staff_code'][$language].'</b></a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="grader.php" class="nav-link"><b>'.$languageArray['grader_code'][$language].'</b></a>
-                                                </li>';
-
-                                            if($_SESSION['package'] != 'Lite'){
-                                                echo '<li class="nav-item">
-                                                    <a href="destination.php" class="nav-link"><b>'.$languageArray['destination_code'][$language].'</b></a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="driver.php" class="nav-link"><b>'.$languageArray['driver_code'][$language].'</b></a>
-                                                </li>             
-                                                <li class="nav-item">
-                                                    <a href="transporter.php" class="nav-link"><b>'.$languageArray['transporter_code'][$language].'</b></a>
-                                                </li>';
-                                            }
-                                        }
-                                        
-                            echo '</ul>
-                            </div>
-                        </li>';
+                        if($_SESSION["roles"] == 'MANAGER' || $_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
+                            echo '<li class="nav-item">
+                                            <a href="customer.php" class="nav-link"><b>'.$languageArray['customer_code'][$language].'</b></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="destination.php" class="nav-link"><b>'.$languageArray['destination_code'][$language].'</b></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="product.php" class="nav-link"><b>'.$languageArray['product_code'][$language].'</b></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="rawMaterial.php" class="nav-link"><b>'.$languageArray['raw_material_code'][$language].'</b></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="supplier.php" class="nav-link"><b>'.$languageArray['supplier_code'][$language].'</b></a>
+                                        </li>       
+                                        <li class="nav-item">
+                                            <a href="vehicle.php" class="nav-link"><b>'.$languageArray['vehicle_code'][$language].'</b></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="driver.php" class="nav-link"><b>'.$languageArray['driver_code'][$language].'</b></a>
+                                        </li>             
+                                        <li class="nav-item">
+                                            <a href="transporter.php" class="nav-link"><b>'.$languageArray['transporter_code'][$language].'</b></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="user.php" class="nav-link"><b>'.$languageArray['staff_code'][$language].'</b></a>
+                                        </li>
+                                        <!--li class="nav-item">
+                                            <a href="unit.php" class="nav-link">'.$lang['t-unit'].'</a>
+                                        </li-->                           
+                                        <!--li class="nav-item">
+                                            <a href="agent.php" class="nav-link">'.$lang['t-agent'].'</a>
+                                        </li-->                           
+                                        <!--li class="nav-item">
+                                            <a href="site.php" class="nav-link">'.$lang['t-site'].'</a>
+                                        </li-->    
+                                    </ul>
+                                </div>
+                            </li>';
+                        }
                     }
                 ?>
 
@@ -153,7 +147,7 @@
                             <li class="nav-item">
                                 <li class="nav-item">
                                     <a href="weighingReport.php" class="nav-link"><b><?=$languageArray['weighing_report_code'][$language]?></b></a>
-                                </li>
+                                </li-->
                                 <!--li class="nav-item">
                                     <a href="salesReport.php" class="nav-link"><?=$lang['t-soReport']?></a>
                                 </li>
@@ -192,31 +186,14 @@
                                         ';
                                     }
 
-                                    if ($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN' || $_SESSION["allowDeduct"] == 'Y'){
-                                        echo '
-                                        <li class="nav-item deduction-field" id="deductionSetupMenu">
-                                            <a href="deductionSetup.php" class="nav-link"><b>'.$languageArray['deduction_setup_code'][$language].'</b></a>
-                                        </li> 
-                                        ';
-                                    }
-
                                     if($_SESSION["roles"] == 'SADMIN' || $_SESSION["roles"] == 'AUTHORITY'){
                                         echo '
-                                            <li class="nav-item">
-                                                <a href="portSetup.php" class="nav-link"><b>'.$languageArray['port_setup_code'][$language].'</b></a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a href="payslipSetting.php" class="nav-link"><b>'.$languageArray['payslip_setting_code'][$language].'</b></a>
-                                            </li>
-                                        ';
-
-                                        if ($_SESSION['includeDisplaySetup'] == 'Y'){
-                                            echo '
-                                                <li class="nav-item">
-                                                    <a href="displaySetup.php" class="nav-link"><b>'.$languageArray['display_setup_code'][$language].'</b></a>
-                                                </li> 
-                                            ';
-                                        }   
+                                        <li class="nav-item">
+                                            <a href="portSetup.php" class="nav-link"><b>'.$languageArray['port_setup_code'][$language].'</b></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="displaySetup.php" class="nav-link"><b>'.$languageArray['display_setup_code'][$language].'</b></a>
+                                        </li>';
                                     }
                                 ?>
                                 

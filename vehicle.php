@@ -135,7 +135,7 @@
                                                                                 <div class="row">
                                                                                     <label for="vehicleWeight" class="col-sm-4 col-form-label">Vehicle Weight</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="vehicleWeight" name="vehicleWeight" placeholder="Vehicle Weight">
+                                                                                        <input type="text" class="form-control" id="vehicleWeight" name="vehicleWeight" placeholder="Vehicle Weight" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div>

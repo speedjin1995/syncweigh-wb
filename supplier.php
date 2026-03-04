@@ -4,7 +4,6 @@
 <?php
 $role = $_SESSION["roles"];
 $allowDeduct = $_SESSION["allowDeduct"];
-$customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 ?>
 
 <head>
@@ -121,9 +120,9 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="supplierCode" class="col-sm-4 col-form-label"><?=$languageArray['supplier_code_code'][$language]?></label>
+                                                                                    <label for="supplierCode" class="col-sm-4 col-form-label">Supplier Code</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="supplierCode" name="supplierCode" placeholder="<?=$languageArray['supplier_code_code'][$language]?>" required>
+                                                                                        <input type="text" class="form-control" id="supplierCode" name="supplierCode" placeholder="Supplier Code" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div>
@@ -132,7 +131,7 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="companyRegNo" class="col-sm-4 col-form-label"><?=$languageArray['reg_no_code'][$language]?></label>
+                                                                                    <label for="companyRegNo" class="col-sm-4 col-form-label">Company Reg No</label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="row">
                                                                                             <div class="col-sm-4">
@@ -140,7 +139,7 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                                                             </div>
                                                                                             <div class="col-sm-8">
                                                                                                 <div class="row">
-                                                                                                    <label for="newRegNo" class="col-sm-4 col-form-label"><?=$languageArray['new_reg_no_code'][$language]?></label>
+                                                                                                    <label for="newRegNo" class="col-sm-4 col-form-label">New Reg No</label>
                                                                                                     <div class="col-sm-8">
                                                                                                         <input type="text" class="form-control" id="newRegNo" name="newRegNo" required>
                                                                                                     </div>
@@ -152,33 +151,33 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="companyName" class="col-sm-4 col-form-label"><?=$languageArray['supplier_name_code'][$language]?></label>
+                                                                                    <label for="companyName" class="col-sm-4 col-form-label">Company Name</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="companyName" name="companyName" placeholder="<?=$languageArray['supplier_name_code'][$language]?>">
+                                                                                        <input type="text" class="form-control" id="companyName" name="companyName" placeholder="Customer Code">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 1</label>
+                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label">Address Line 1</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="<?=$languageArray['address_code'][$language]?> 1">
+                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="Address Line 1">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 2</label>
+                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label">Address Line 2</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="<?=$languageArray['address_code'][$language]?> 2">
+                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="Address Line 2">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 3</label>
+                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label">Address Line 3</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="<?=$languageArray['address_code'][$language]?> 3">
+                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="Address Line 3">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -192,41 +191,41 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                                             </div> -->
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="phoneNo" class="col-sm-4 col-form-label"><?=$languageArray['phone_code'][$language]?></label>
+                                                                                    <label for="phoneNo" class="col-sm-4 col-form-label">Phone No</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?=$languageArray['phone_code'][$language]?>">
+                                                                                        <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="Phone No">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="faxNo" class="col-sm-4 col-form-label"><?=$languageArray['fax_code'][$language]?></label>
+                                                                                    <label for="faxNo" class="col-sm-4 col-form-label">Fax No</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="<?=$languageArray['fax_code'][$language]?>">
+                                                                                        <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="Fax No">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="contactName" class="col-sm-4 col-form-label"><?=$languageArray['pic_code'][$language]?></label>
+                                                                                    <label for="contactName" class="col-sm-4 col-form-label">Contact Name</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="contactName" name="contactName" placeholder="<?=$languageArray['pic_code'][$language]?>">
+                                                                                        <input type="text" class="form-control" id="contactName" name="contactName" placeholder="Contact Name">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="icNo" class="col-sm-4 col-form-label"><?=$languageArray['ic_code'][$language]?></label>
+                                                                                    <label for="icNo" class="col-sm-4 col-form-label">I/C No</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="icNo" name="icNo" placeholder="<?=$languageArray['ic_code'][$language]?>">
+                                                                                        <input type="text" class="form-control" id="icNo" name="icNo" placeholder="I/C No">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="tinNo" class="col-sm-4 col-form-label"><?=$languageArray['tin_code'][$language]?></label>
+                                                                                    <label for="tinNo" class="col-sm-4 col-form-label">Tin No</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="<?=$languageArray['tin_code'][$language]?>">
+                                                                                        <input type="text" class="form-control" id="tinNo" name="tinNo" placeholder="Tin No">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -235,38 +234,6 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                                                     <label for="mpob" class="col-sm-4 col-form-label"><?=$languageArray['mpob_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="mpob" name="mpob" placeholder="<?=$languageArray['mpob_code'][$language]?>">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="mspoNo" class="col-sm-4 col-form-label"><?=$languageArray['mspo_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="mspoNo" name="mspoNo" placeholder="<?=$languageArray['mspo_code'][$language]?>">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="paymentTerm" class="col-sm-4 col-form-label"><?=$languageArray['payment_term_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select id="paymentTerm" name="paymentTerm" class="form-select select2">
-                                                                                            <option value="Term"><?=$languageArray['term_code'][$language]?></option>
-                                                                                            <option value="Cash"><?=$languageArray['cash_code'][$language]?></option>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="customer" class="col-sm-4 col-form-label"><?=$languageArray['customer_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select id="customer" name="customer" class="form-select select2">
-                                                                                            <option selected>-</option>
-                                                                                            <?php while($rowCustomer = mysqli_fetch_assoc($customer)){ ?>
-                                                                                                <option value="<?=$rowCustomer['id'] ?>"><?=$rowCustomer['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -345,8 +312,8 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                             <div class="d-flex align-items-center">
                                                                 <label for="statusSwitch" class="col-form-label me-2">Mode</label>
                                                                 <select id="statusSwitch" name="statusSwitch" class="form-select select2" style="width: 150px;">
-                                                                    <!--option value="Manual" selected>Manual</option-->
-                                                                    <option value="Auto" selected>Auto</option>
+                                                                    <option value="Manual" selected>Manual</option>
+                                                                    <option value="Auto">Auto</option>
                                                                     <option value="Disable">Disable</option>
                                                                 </select>
                                                             </div>
@@ -491,18 +458,18 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th><?=$languageArray['supplier_code_code'][$language]?></th>
-                                                                    <th><?=$languageArray['reg_no_code'][$language]?></th>
-                                                                    <th><?=$languageArray['new_reg_no_code'][$language]?></th>
-                                                                    <th><?=$languageArray['supplier_name_code'][$language]?></th>
-                                                                    <th><?=$languageArray['address_code'][$language]?> 1</th>
-                                                                    <th><?=$languageArray['address_code'][$language]?> 2</th>
-                                                                    <th><?=$languageArray['address_code'][$language]?> 3</th>
-                                                                    <th><?=$languageArray['phone_code'][$language]?></th>
-                                                                    <th><?=$languageArray['fax_code'][$language]?></th>
-                                                                    <th><?=$languageArray['pic_code'][$language]?></th>
-                                                                    <th><?=$languageArray['ic_code'][$language]?></th>
-                                                                    <th><?=$languageArray['tin_code'][$language]?></th>
+                                                                    <th>Supplier Code</th>
+                                                                    <th>Company Reg No</th>
+                                                                    <th>New Reg No</th>
+                                                                    <th>Company Name</th>
+                                                                    <th>Address Line 1</th>
+                                                                    <th>Address Line 2</th>
+                                                                    <th>Address Line 3</th>
+                                                                    <th>Phone No</th>
+                                                                    <th>Fax No</th>
+                                                                    <th>Contact Name</th>
+                                                                    <th>I/C No</th>
+                                                                    <th>Tin No</th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -595,24 +562,6 @@ var allowDeduct = '<?=$allowDeduct?>';
 var rowCount = 0;
 
 $(function () {
-    // Initialize all Select2 elements in the modal
-    $('#addModal .select2').select2({
-        allowClear: true,
-        placeholder: "Please Select",
-        dropdownParent: $('#addModal') // Ensures dropdown is not cut off
-    });
-
-    // Apply custom styling to Select2 elements in addModal
-    $('#addModal .select2-container .select2-selection--single').css({
-        'padding-top': '4px',
-        'padding-bottom': '4px',
-        'height': 'auto'
-    });
-
-    $('#addModal .select2-container .select2-selection__arrow').css({
-        'padding-top': '33px',
-        'height': 'auto'
-    });
 
     table = $("#supplierTable").DataTable({
         "responsive": true,
@@ -670,11 +619,10 @@ $(function () {
                     dropdownHtml += '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>';
 
                     // Conditionally add Deduction Setup button
-                    if (role === 'ADMIN' || role === 'SADMIN' || allowDeduct === 'Y') {
-                        // mark item so it will disappear when pendrive missing
-                        dropdownHtml += '<li class="deduction-field"><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ', ' + row.supplier_deduction_id + ')">';
-                        dropdownHtml += '<i class="ri-subtract-fill align-bottom me-2 text-muted"></i> <?=$languageArray['deduction_setup_code'][$language] ?></a></li>';
-                    }
+                    // if (role === 'ADMIN' || role === 'SADMIN' || allowDeduct === 'Y') {
+                    //     dropdownHtml += '<li><a class="dropdown-item" id="deduction' + data + '" onclick="deduction(' + data + ')">';
+                    //     dropdownHtml += '<i class="ri-subtract-fill align-bottom me-2 text-muted"></i> <?=$languageArray['deduction_setup_code'][$language] ?></a></li>';
+                    // }
 
                     // Delete button
                     dropdownHtml += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')">';
@@ -792,9 +740,6 @@ $(function () {
         $('#addModal').find('#icNo').val("");
         $('#addModal').find('#tinNo').val("");
         $('#addModal').find('#mpob').val("");
-        $('#addModal').find('#mspoNo').val("");
-        $('#addModal').find('#paymentTerm').val("Term").trigger('change');
-        $('#addModal').find('#customer').val("").trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -1025,24 +970,24 @@ $(function () {
         if($('#deductionForm').valid()){
             $('#deductionModal').modal('hide');
             // Switch modal to ask for password3
-            // $('#passwordModal').find('#password2Div').hide();
-            // $('#passwordModal').find('#password3Div').show();
-            // $("#passwordModal").modal({
-            //     backdrop: 'static', // disable closing by clicking outside
-            //     keyboard: false // disable ESC close
-            // }).modal("show");
+            $('#passwordModal').find('#password2Div').hide();
+            $('#passwordModal').find('#password3Div').show();
+            $("#passwordModal").modal({
+                backdrop: 'static', // disable closing by clicking outside
+                keyboard: false // disable ESC close
+            }).modal("show");
 
 
             // Handle password3 submit
-            // $("#passwordCheckForm").off("submit").on("submit", function (e) {
-            //     e.preventDefault();
-            //     var password3 = $('#password3').val();
+            $("#passwordCheckForm").off("submit").on("submit", function (e) {
+                e.preventDefault();
+                var password3 = $('#password3').val();
 
-            //     $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
-            //         let obj = JSON.parse(data);
+                $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
+                    let obj = JSON.parse(data);
 
-            //         if (obj.status === "success") {
-            //             $("#passwordModal").modal("hide");
+                    if (obj.status === "success") {
+                        $("#passwordModal").modal("hide");
 
                         // Proceed with saving form
                         $.post('php/deductions.php', $('#deductionForm').serialize(), function (data) {
@@ -1056,11 +1001,11 @@ $(function () {
                                 alert("Failed to update ports");
                             }
                         });
-            //         } else {
-            //             alert(obj.message);
-            //         }
-            //     });
-            // });
+                    } else {
+                        alert(obj.message);
+                    }
+                });
+            });
         }
     });
 
@@ -1219,9 +1164,6 @@ function edit(id){
             $('#addModal').find('#icNo').val(obj.message.ic_no);
             $('#addModal').find('#tinNo').val(obj.message.tin_no);
             $('#addModal').find('#mpob').val(obj.message.mpob);
-            $('#addModal').find('#mspoNo').val(obj.message.mspo_no);
-            $('#addModal').find('#paymentTerm').val(obj.message.payment_term).trigger('change');
-            $('#addModal').find('#customer').val(obj.message.customer_id).trigger('change');
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -1313,50 +1255,17 @@ function reactivate(id) {
   $('#spinnerLoading').hide();
 }
 
-function deduction(id, deductionId = '') {
-    $('#spinnerLoading').show();
-    $.post('php/getDeduction.php', {userID: deductionId, type: "Supplier"}, function(data)
-    {
-        var obj = JSON.parse(data);
-        if(obj.status === 'success'){
-            $('#deductionModal').find('#custSuppId').val(id);
-            $('#deductionModal').find('#deductionId').val(obj.message.id || deductionId);
-            $('#deductionModal').find('#statusSwitch').val(obj.message.status).trigger('change');
-            $('#deductionModal').find('#F1').val(obj.message.F1);
-            $('#deductionModal').find('#F2').val(obj.message.F2);
-            $('#deductionModal').find('#F3').val(obj.message.F3);
-            $('#deductionModal').find('#F4').val(obj.message.F4);
-            $('#deductionModal').find('#F5').val(obj.message.F5);
-            $('#deductionModal').find('#F6').val(obj.message.F6);
-            $('#deductionModal').find('#F7').val(obj.message.F7);
-            $('#deductionModal').find('#F8').val(obj.message.F8);
-            $('#deductionModal').find('#F9').val(obj.message.F9);
-            $('#deductionModal').find('#F10').val(obj.message.F10);
-            $('#deductionModal').find('#F11').val(obj.message.F11);
-            $('#deductionModal').find('#F12').val(obj.message.F12);
-            loadAutoDeductionData(obj.message.auto_data);
-            $('#deductionModal').modal('show');
-            // $('#passwordModal').find('#password2').val('');
-            // $('#passwordModal').find('#password3').val('');
-            // $('#passwordModal').find('#password2Div').show(); // show password2 input
-            // $('#passwordModal').find('#password3Div').hide(); // hide password3 input
-            // $("#passwordModal").modal({
-            //     backdrop: 'static', // disable closing by clicking outside
-            //     keyboard: false // disable ESC close
-            // }).modal("show");
-        }
-        else if(obj.status === 'failed'){
-            $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
-        }
-        else{
-            $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
-        }
-        $('#spinnerLoading').hide();
-    });
+function deduction(id) {
+    $('#deductionModal').find('#custSuppId').val(id);
+    $('#deductionModal').find('#deductionId').val('');
+    $('#passwordModal').find('#password2').val('');
+    $('#passwordModal').find('#password3').val('');
+    $('#passwordModal').find('#password2Div').show(); // show password2 input
+    $('#passwordModal').find('#password3Div').hide(); // hide password3 input
+    $("#passwordModal").modal({
+        backdrop: 'static', // disable closing by clicking outside
+        keyboard: false // disable ESC close
+    }).modal("show");
 }
 
 </script>

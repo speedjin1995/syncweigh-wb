@@ -95,7 +95,7 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                                 <select id="statusSwitch" name="statusSwitch" class="form-select">
                                                     <option value="Manual" <?php if ($status == 'Manual') echo 'selected'; ?>>Manual</option>
                                                     <option value="Auto" <?php if ($status == 'Auto') echo 'selected'; ?>>Auto</option>
-                                                    <!--option value="Default" <?php if ($status == 'Default') echo 'selected'; ?>>Default</option-->
+                                                    <option value="Default" <?php if ($status == 'Default') echo 'selected'; ?>>Default</option>
                                                     <option value="Customer_Supplier" <?php if ($status == 'Customer_Supplier') echo 'selected'; ?>>Customer/Supplier</option>
                                                     <option value="Disable" <?php if ($status == 'Disable') echo 'selected'; ?>>Disable</option>
                                                 </select>
@@ -295,10 +295,9 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
         </script>
 
         <script type="text/javascript">
-            const status = "<?= $status ?>";
-            const autoData = <?= json_encode($autoData ? json_decode($autoData, true) : []) ?>;
-
             $(function () {
+                const status = "<?= $status ?>";
+                const autoData = <?= json_encode($autoData ? json_decode($autoData, true) : []) ?>;
                 var rowCount = 0;
 
                 // Initialize all Select2 elements in the modal
@@ -330,7 +329,7 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                     $(".page-content").show();
                 });
 
-                // $("#passwordModal").modal("show");
+                $("#passwordModal").modal("show");
 
                 $("#passwordCheckForm").on("submit", function (e) {
                     e.preventDefault();
@@ -354,30 +353,30 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                         $('#spinnerLoading').show();
 
                         // Switch modal to ask for password3
-                        // $('#passwordModal').find('#password2Div').val('').hide();
-                        // $('#passwordModal').find('#password3Div').val('').show();
+                        $('#passwordModal').find('#password2Div').val('').hide();
+                        $('#passwordModal').find('#password3Div').val('').show();
 
-                        // $("#passwordModal").modal({
-                        //     backdrop: 'static',
-                        //     keyboard: false
-                        // }).on("shown.bs.modal", function () {
-                        //     $(".page-content").addClass("blur");
-                        // }).on("hidden.bs.modal", function () {
-                        //     $(".page-content").removeClass("blur");
-                        // });
+                        $("#passwordModal").modal({
+                            backdrop: 'static',
+                            keyboard: false
+                        }).on("shown.bs.modal", function () {
+                            $(".page-content").addClass("blur");
+                        }).on("hidden.bs.modal", function () {
+                            $(".page-content").removeClass("blur");
+                        });
 
-                        // $("#passwordModal").modal("show");
+                        $("#passwordModal").modal("show");
 
-                        // // Handle password3 submit
-                        // $("#passwordCheckForm").off("submit").on("submit", function (e) {
-                        //     e.preventDefault();
-                        //     var password3 = $('#password3').val();
+                        // Handle password3 submit
+                        $("#passwordCheckForm").off("submit").on("submit", function (e) {
+                            e.preventDefault();
+                            var password3 = $('#password3').val();
 
-                        //     $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
-                        //         let obj = JSON.parse(data);
+                            $.post("php/checkPasswords.php", { type: 'save', password3: password3 }, function (data) {
+                                let obj = JSON.parse(data);
 
-                        //         if (obj.status === "success") {
-                        //             $("#passwordModal").modal("hide");
+                                if (obj.status === "success") {
+                                    $("#passwordModal").modal("hide");
 
                                     // Proceed with saving form
                                     $.post('php/updateDeduction.php', $('#profileForm').serialize(), function (data) {
@@ -397,12 +396,12 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                         }
                                     });
 
-                        //         } else {
-                        //             alert(obj.message);
-                        //             window.location.href = "index.php";
-                        //         }
-                        //     });
-                        // });
+                                } else {
+                                    alert(obj.message);
+                                    window.location.href = "index.php";
+                                }
+                            });
+                        });
                     }
                 });
                 
@@ -441,7 +440,6 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                         $('#defaultView').hide();
                         $('#customerSupplierView').hide();
                     } else if (selectedValue == 'Auto') {
-                        loadAutoData();
                         $('#manualView').hide();
                         $('#autoView').show();
                         $('#autoNewBtn').removeClass('d-none');

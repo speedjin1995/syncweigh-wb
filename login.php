@@ -93,19 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             $_SESSION['plant']=$plantlist;
 
-                            $stmt = $link->prepare("SELECT * from Company WHERE id = 1");
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-
-                            $package = 'Standard';
-                            $_SESSION['includeDisplaySetup'] = 'N';
-                            
-                            if(($row = $result->fetch_assoc()) !== null){
-                                $package = $row['package'] ?? 'Standard';
-                                $_SESSION['includeDisplaySetup'] = $row['include_display_setup'] ?? 'N';
-                            }
-
-                            if($package == 'Lite'){
+                            if($roles == 'USERS'){
                                 // Redirect user to welcome page
                                 header("location: simple.php");
                             }

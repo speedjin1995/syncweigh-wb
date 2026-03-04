@@ -492,12 +492,12 @@ $(function () {
 
     $(".flatpickrStart").flatpickr({
         defaultDate: new Date(startDate), 
-        dateFormat: "d-m-Y"
+        dateFormat: "y-m-d"
     });
 
     $(".flatpickrEnd").flatpickr({
         defaultDate: new Date(), 
-        dateFormat: "d-m-Y"
+        dateFormat: "y-m-d"
     });
 
     // Add event listener for opening and closing details on row click

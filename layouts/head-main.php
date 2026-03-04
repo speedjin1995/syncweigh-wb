@@ -7,7 +7,6 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     $language = $_SESSION['language'];
 
     // Load message
-    $db->set_charset("utf8mb4");
     $message_resource = $db->query("SELECT * FROM message_resource");
     $languageArray = Array();
 
@@ -16,19 +15,6 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     }
 
     $_SESSION['languageArray'] = $languageArray;
-
-    // Get Company Detail
-    $stmt = $db->prepare("SELECT * from Company WHERE id = 1");
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    $package = 'Standard';
-    
-    if(($row = $result->fetch_assoc()) !== null){
-        $package = $row['package'] ?? 'Standard';
-    }
-
-    $_SESSION['package'] = $package;
 }
 
 $isScssconverted = false;
