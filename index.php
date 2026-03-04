@@ -5528,7 +5528,17 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#totalPriceDisplay').hide();
                         }
 
-                        if(dstatus === "Customer_Supplier" && obj.message.deduction.status == "Auto" && autoCustomerJson.includes(customerId)){
+                        // Parse customer list and check if current customer is in it
+                        let customerList = [];
+                        if (typeof autoCustomerJson === 'string') {
+                            customerList = JSON.parse(autoCustomerJson);
+                        } else if (Array.isArray(autoCustomerJson)) {
+                            customerList = autoCustomerJson;
+                        } else if (typeof autoCustomerJson === 'object') {
+                            customerList = Object.keys(autoCustomerJson);
+                        }
+
+                        if(dstatus === "Customer_Supplier" && obj.message.deduction.status == "Auto" && customerList.includes(String(customerId))){
                             autoDataJson = obj.message.deduction.auto_data;
                         }
                     }

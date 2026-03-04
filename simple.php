@@ -150,7 +150,7 @@ if ($rowd = $resultd->fetch_assoc()) {
     $F10 = $rowd['F10'] ?? 0;
     $F11 = $rowd['F11'] ?? 0;
     $F12 = $rowd['F12'] ?? 0;
-    $autoDataJson = $rowd['auto_data'] ?? '[]';
+    $autoDataJson = $dstatus == 'Auto' ? $rowd['auto_data'] ?? '[]' : '[]';
     $autoCustomerJson = $rowd['customers'] ?? '[]';
     $autoSupplierJson = $rowd['suppliers'] ?? '[]';
     //$autoDataArray = json_decode($autoDataJson, true) ?? [];
@@ -1044,8 +1044,10 @@ if ($rowd = $resultd->fetch_assoc()) {
     $(function () {
         var userRole = '<?=$role ?>';
         const dstatus = "<?= $dstatus ?>";
-        var autoDataJson = <?= $autoDataJson ?>;
+        var autoDataJson = <?= json_encode($autoDataJson) ?>;
         const autoCustomerJson = JSON.parse('<?= $autoCustomerJson ?>');
+        // track last automatically generated message to avoid reposting same content
+        var lastAutoMsg = null;
         const autoSupplierJson = JSON.parse('<?= $autoSupplierJson ?>');
         const today = new Date();
         const tomorrow = new Date(today);
@@ -1783,6 +1785,13 @@ if ($rowd = $resultd->fetch_assoc()) {
                 $('#checkingConnection').addClass('bg-danger');
                 //$('#captureWeight').attr('disabled', true);
             }
+
+            const msg = buildMessage('ESC');
+            
+            if (msg){
+                postMessage(msg);
+                postMessage(msg);
+            }
         });
 
         ws.onmessage = function(event){
@@ -1791,31 +1800,23 @@ if ($rowd = $resultd->fetch_assoc()) {
             var reading = parseWeight(data);
             var autoData = JSON.parse(autoDataJson);
 
-            if(dstatus === "Auto"){
+            // determine a message based on status/ranges, but only post when it changes
+            let msgToPost = null;
+            if (dstatus === "Auto" || dstatus === "Customer_Supplier") {
+                console.log("Auto Data:", autoData);
                 for (const item of autoData) {
                     if (reading >= item.rangeFrom && reading <= item.rangeTo) {
-                        console.log("Matched Range:", item);
-                        const msg = buildMessageAuto(item);
-                
-                        if (msg){
-                            postMessage(msg);
-                        } 
+                        msgToPost = buildMessageAuto(item);
+                        console.log("Matched Range:", item.rangeFrom, "-", item.rangeTo, "→ Message:", msgToPost);
                         break;
                     }
                 }
             }
-            else if(dstatus === "Customer_Supplier"){
-                for (const item of autoData) {
-                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
-                        console.log("Matched Range:", item);
-                        const msg = buildMessageAuto(item);
-                
-                        if (msg){
-                            postMessage(msg);
-                        } 
-                        break;
-                    }
-                }
+
+            if (msgToPost && msgToPost !== lastAutoMsg) {
+                console.log("Posting Auto Message:", msgToPost);
+                postMessage(msgToPost);
+                lastAutoMsg = msgToPost;
             }
 
             setConnectedUI(true);
@@ -1945,10 +1946,9 @@ if ($rowd = $resultd->fetch_assoc()) {
         $('#addWeight').on('click', function(){
             // Show Capture Buttons When Add New
             const msg = buildMessage('ESC');
-            autoDataJson = '[]';
                 
             if (msg){
-                //deductionValue = msg;
+                postMessage(msg);
                 postMessage(msg);
             }
 
@@ -3091,8 +3091,37 @@ if ($rowd = $resultd->fetch_assoc()) {
                         // $('#totalPriceDisplay').hide();
                     }
 
-                    if(dstatus === "Customer_Supplier" && obj.message.deduction.status == "Auto" && autoSupplierJson.includes(supplierId)){
-                        autoDataJson = obj.message.deduction.auto_data;
+                    var customerList = [];
+                    if (typeof autoSupplierJson === 'string') {
+                        customerList = JSON.parse(autoSupplierJson);
+                    } else if (Array.isArray(autoSupplierJson)) {
+                        customerList = autoSupplierJson;
+                    } else if (typeof autoSupplierJson === 'object') {
+                        customerList = Object.keys(autoSupplierJson);
+                    }
+                    console.log("Customer List:", customerList);
+                    console.log("Current Customer ID:", supplierId);
+
+                    if(dstatus === "Customer_Supplier"){
+                        if(obj.message.deduction.status == "Auto" && customerList.includes(String(supplierId))){
+                            const msg = buildMessage('ESC');   
+                            console.log(obj.message.deduction.auto_data); 
+                            autoDataJson = obj.message.deduction.auto_data;
+
+                            if (msg){
+                                postMessage(msg);
+                                postMessage(msg);
+                            }
+                        }
+                        else{
+                            const msg = buildMessage('ESC');
+                            autoDataJson = '[]';
+                                
+                            if (msg){
+                                postMessage(msg);
+                                postMessage(msg);
+                            }
+                        }
                     }
                 }
                 else if(obj.status === 'failed'){
@@ -3152,8 +3181,37 @@ if ($rowd = $resultd->fetch_assoc()) {
                         // $('#totalPriceDisplay').hide();
                     }
 
-                    if(dstatus === "Customer_Supplier" && obj.message.deduction.status == "Auto" && autoCustomerJson.includes(customerId)){
-                        autoDataJson = obj.message.deduction.auto_data;
+                    // Parse customer list and check if current customer is in it
+                    var customerList = [];
+                    if (typeof autoCustomerJson === 'string') {
+                        customerList = JSON.parse(autoCustomerJson);
+                    } else if (Array.isArray(autoCustomerJson)) {
+                        customerList = autoCustomerJson;
+                    } else if (typeof autoCustomerJson === 'object') {
+                        customerList = Object.keys(autoCustomerJson);
+                    }
+                    console.log("Customer List:", customerList);
+                    console.log("Current Customer ID:", customerId);
+
+                    if(dstatus === "Customer_Supplier"){
+                        if(obj.message.deduction.status == "Auto" && customerList.includes(String(customerId))){
+                            const msg = buildMessage('ESC');
+                            autoDataJson = obj.message.deduction.auto_data;
+
+                            if (msg){
+                                postMessage(msg);
+                                postMessage(msg);
+                            }
+                        }
+                        else{
+                            const msg = buildMessage('ESC');
+                            autoDataJson = '[]';
+                                
+                            if (msg){
+                                postMessage(msg);
+                                postMessage(msg);
+                            }
+                        }
                     }
                 }
                 else if(obj.status === 'failed'){
