@@ -2500,12 +2500,14 @@ if ($rowd = $resultd->fetch_assoc()) {
                         var supplierName = obj.message.supplier_name;
                         var supplierCode = obj.message.supplier_code;
 
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                        if ((transactionStatus == 'Sales' || transactionStatus == 'Misc') && customerName && customerCode){
                             $('#customerName').val(customerName).trigger('change');
                             $('#customerCode').val(customerCode);
                         }else{
-                            $('#supplierName').val(supplierName).trigger('change');
-                            $('#supplierCode').val(supplierCode);
+                            if(supplierName && supplierCode){
+                                $('#supplierName').val(supplierName).trigger('change');
+                                $('#supplierCode').val(supplierCode);
+                            }
                         }
 
                         if (obj.message.vehicle_weight){
@@ -2579,12 +2581,14 @@ if ($rowd = $resultd->fetch_assoc()) {
                         var supplierName = obj.message.supplier_name;
                         var supplierCode = obj.message.supplier_code;
 
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                        if ((transactionStatus == 'Sales' || transactionStatus == 'Misc') && customerName && customerCode){
                             $('#customerName').val(customerName).trigger('change');
                             $('#customerCode').val(customerCode);
                         }else{
-                            $('#supplierName').val(supplierName).trigger('change');
-                            $('#supplierCode').val(supplierCode);
+                            if(supplierName && supplierCode){
+                                $('#supplierName').val(supplierName).trigger('change');
+                                $('#supplierCode').val(supplierCode);
+                            }
                         }
                         
                         if (obj.message.vehicle_weight){
