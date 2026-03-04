@@ -1211,21 +1211,21 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="row mb-3" id="sstDisplay">
-                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
                                                                                 <div class="row mb-3" id="subTotalPriceDisplay">
                                                                                     <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
                                                                                     <div class="col-sm-8">
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
                                                                                             <div class="input-group-text">RM</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3" id="sstDisplay">
+                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label">Tax</label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <div class="input-group">
+                                                                                            <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0">
+                                                                                            <div class="input-group-text">%</div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -5171,14 +5171,21 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#weightDifference').val(current.toFixed(0));
 
             // Update Price
-            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()).toFixed(2) : 0.00;
-            var weight = nett1;
+            var price = $('#addModal').find('#unitPrice').val() ? parseFloat($('#addModal').find('#unitPrice').val()).toFixed(2) : 0.00;
+            var taxPercentage = $('#addModal').find('#sstPrice').val() ? parseFloat($('#addModal').find('#sstPrice').val()).toFixed(2) : 0.00;
+            var weight = (parseFloat(nett1)/1000).toFixed(2);console.log(weight);
             var subTotalPrice = price * weight;
-            var sstPrice = subTotalPrice * 0.06;
-            var totalPrice = subTotalPrice + sstPrice;
+            var totalPrice = subTotalPrice * (1 + (taxPercentage/100));
             $('#subTotalPrice').val(subTotalPrice.toFixed(2));
-            $('#sstPrice').val(sstPrice.toFixed(2));
             $('#totalPrice').val(totalPrice.toFixed(2));
+        });
+
+        $('#unitPrice').on('keyup', function(){
+            $('#finalWeight').trigger('change');
+        });
+
+        $('#sstPrice').on('keyup', function(){
+            $('#finalWeight').trigger('change');
         });
 
         $('#orderWeight').on('change', function(){
@@ -5318,13 +5325,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         });
 
         $('#currentWeight').on('change', function(){
-            var price = $('#productPrice').val() ? parseFloat($('#productPrice').val()).toFixed(2) : 0.00;
-            var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;
+            // Update Price
+            var price = $('#addModal').find('#unitPrice').val() ? parseFloat($('#addModal').find('#unitPrice').val()).toFixed(2) : 0.00;
+            var taxPercentage = $('#addModal').find('#sstPrice').val() ? parseFloat($('#addModal').find('#sstPrice').val()).toFixed(2) : 0.00;
+            var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;;
             var subTotalPrice = price * weight;
-            var sstPrice = subTotalPrice * 0.08;
-            var totalPrice = subTotalPrice + sstPrice;
+            var totalPrice = subTotalPrice * (1 + (taxPercentage/100));
             $('#subTotalPrice').val(subTotalPrice.toFixed(2));
-            $('#sstPrice').val(sstPrice.toFixed(2));
             $('#totalPrice').val(totalPrice.toFixed(2));
         });
 
