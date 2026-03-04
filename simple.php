@@ -398,18 +398,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                 </select>           
                                                             </div>
                                                         </div><br>
-                                                        <div class="row" id="unitPriceDisplay" style="display:none;">
-                                                            <label for="unitPrice" class="col-sm-4 col-form-label">
-                                                                Unit Price
-                                                            </label>
-                                                            <div class="col-sm-8">
-                                                                <div class="input-group">
-                                                                    <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0">
-                                                                    <div class="input-group-text">RM</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <br id="unitPriceBr" style="display:none;">
                                                         <div class="col-12">
                                                             <div class="row">
                                                                 <label for="grossIncoming" class="col-sm-4 col-form-label">Incoming</label>
@@ -481,6 +469,45 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                 <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
                                                             </div>
                                                         </div><br>
+                                                        <div id="priceCard" style="display:none;">
+                                                            <div class="card border">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title mb-3"><i class="mdi mdi-receipt"></i> Pricing Details</h5>
+                                                                    <div class="row mb-3">
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">Unit Price</label>
+                                                                            <div class="input-group">
+                                                                                <input type="number" class="form-control" id="unitPrice" name="unitPrice" placeholder="0">
+                                                                                <span class="input-group-text">RM</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">Sub-Total Price</label>
+                                                                            <div class="input-group">
+                                                                                <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
+                                                                                <span class="input-group-text bg-light">RM</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">Tax</label>
+                                                                            <div class="input-group">
+                                                                                <input type="number" class="form-control" id="sstPrice" name="sstPrice" placeholder="0">
+                                                                                <span class="input-group-text">%</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">Total Price</label>
+                                                                            <div class="input-group">
+                                                                                <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
+                                                                                <span class="input-group-text bg-primary text-white">RM</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="col-12">
                                                             <div class="row">
                                                                 <label for="otherRemarks" class="col-4 col-form-label">Remarks</label>
@@ -2803,6 +2830,24 @@ if ($rowd = $resultd->fetch_assoc()) {
 
             // Temporary set oNettWeight
             $('#oNettWeight').val($(this).val());
+
+            // Calculate Pricing
+            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()) : 0;
+            var weight = $(this).val() ? (parseFloat($(this).val())/1000).toFixed(2) : 0;
+            var subtotalPrice = price * weight;
+            var taxPercentage = $('#sstPrice').val() ? parseFloat($('#sstPrice').val()) : 0;
+            var totalPrice = subtotalPrice * (1 + (taxPercentage/100));
+
+            $('#subTotalPrice').val(subtotalPrice.toFixed(2));
+            $('#totalPrice').val(totalPrice.toFixed(2));
+        });
+
+        $('#unitPrice').on('keyup', function(){
+            $('#nettWeight').trigger('change');
+        });
+
+        $('#sstPrice').on('keyup', function(){
+            $('#nettWeight').trigger('change');
         });
         
         $('#reduceWeight').on('change', function(){
@@ -3082,14 +3127,12 @@ if ($rowd = $resultd->fetch_assoc()) {
 
                 if (obj.status == 'success'){
                     if (obj.message.payment_term == 'Cash'){
-                        $('#unitPriceDisplay').show();
-                        $('#unitPriceBr').show();
+                        $('#priceCard').show();
                         // $('#subTotalPriceDisplay').show();
                         // $('#sstDisplay').show();
                         // $('#totalPriceDisplay').show();
                     }else{
-                        $('#unitPriceDisplay').hide();
-                        $('#unitPriceBr').hide();
+                        $('#priceCard').hide();
                         // $('#subTotalPriceDisplay').hide();
                         // $('#sstDisplay').hide();
                         // $('#totalPriceDisplay').hide();
@@ -3103,8 +3146,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                     } else if (typeof autoSupplierJson === 'object') {
                         customerList = Object.keys(autoSupplierJson);
                     }
-                    console.log("Customer List:", customerList);
-                    console.log("Current Customer ID:", supplierId);
 
                     if(dstatus === "Customer_Supplier"){
                         if(obj.message.deduction.status == "Auto" && customerList.includes(String(supplierId))){
@@ -3172,14 +3213,12 @@ if ($rowd = $resultd->fetch_assoc()) {
 
                 if (obj.status == 'success'){
                     if (obj.message.payment_term == 'Cash'){
-                        $('#unitPriceDisplay').show();
-                        $('#unitPriceBr').show();
+                        $('#priceCard').show();
                         // $('#subTotalPriceDisplay').show();
                         // $('#sstDisplay').show();
                         // $('#totalPriceDisplay').show();
                     }else{
-                        $('#unitPriceDisplay').hide();
-                        $('#unitPriceBr').hide();
+                        $('#priceCard').hide();
                         // $('#subTotalPriceDisplay').hide();
                         // $('#sstDisplay').hide();
                         // $('#totalPriceDisplay').hide();
