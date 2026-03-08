@@ -671,7 +671,27 @@ $(function () {
                     return dropdownHtml;
                 }
             }
-        ]       
+        ],
+        'drawCallback': function() {
+            const pendriveConnected = document.body.classList.contains('has-pendrive');
+            if (!pendriveConnected) {
+                $('.deduction-field').hide();
+            } else {
+                $('.deduction-field').show();
+            }
+        }  
+    });
+
+    // Handle dropdown open events for responsive child rows
+    $('#customerTable').on('click', '.dropdown', function() {
+        setTimeout(function() {
+            const pendriveConnected = document.body.classList.contains('has-pendrive');
+            if (!pendriveConnected) {
+                $('.deduction-field').hide();
+            } else {
+                $('.deduction-field').show();
+            }
+        }, 10);
     });
 
     $('#selectAllCheckbox').on('change', function() {
