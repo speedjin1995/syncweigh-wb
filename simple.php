@@ -1829,7 +1829,7 @@ if ($rowd = $resultd->fetch_assoc()) {
             var autoData = JSON.parse(autoDataJson);
 
             // determine a message based on status/ranges, but only post when it changes
-            let msgToPost = null;
+            var msgToPost = null;
             if (dstatus === "Auto" || dstatus === "Customer_Supplier") {
                 console.log("Auto Data:", autoData);
                 for (const item of autoData) {
@@ -1878,7 +1878,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                 const msg = buildMessage(action);
                 
                 if (msg){
-                    //deductionValue = msg;
                     postMessage(msg);
                 } 
             });
