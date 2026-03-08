@@ -1790,7 +1790,6 @@ if ($rowd = $resultd->fetch_assoc()) {
             
             if (msg){
                 postMessage(msg);
-                postMessage(msg);
             }
         });
 
@@ -1948,7 +1947,6 @@ if ($rowd = $resultd->fetch_assoc()) {
             const msg = buildMessage('ESC');
                 
             if (msg){
-                postMessage(msg);
                 postMessage(msg);
             }
 
@@ -3110,7 +3108,6 @@ if ($rowd = $resultd->fetch_assoc()) {
 
                             if (msg){
                                 postMessage(msg);
-                                postMessage(msg);
                             }
                         }
                         else{
@@ -3118,7 +3115,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                             autoDataJson = '[]';
                                 
                             if (msg){
-                                postMessage(msg);
                                 postMessage(msg);
                             }
                         }
@@ -3200,7 +3196,6 @@ if ($rowd = $resultd->fetch_assoc()) {
 
                             if (msg){
                                 postMessage(msg);
-                                postMessage(msg);
                             }
                         }
                         else{
@@ -3208,7 +3203,6 @@ if ($rowd = $resultd->fetch_assoc()) {
                             autoDataJson = '[]';
                                 
                             if (msg){
-                                postMessage(msg);
                                 postMessage(msg);
                             }
                         }
