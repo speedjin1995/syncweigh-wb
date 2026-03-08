@@ -923,16 +923,16 @@ $(function () {
     });
 
     // Validate that "To" value is greater than "From" value
-    $("#autoTable").on('blur', '.range-from, .range-to', function() {
-        var row = $(this).closest('tr');
-        var fromValue = parseFloat(row.find('.range-from').val()) || 0;
-        var toValue = parseFloat(row.find('.range-to').val()) || 0;
+    // $("#autoTable").on('blur', '.range-from, .range-to', function() {
+    //     var row = $(this).closest('tr');
+    //     var fromValue = parseFloat(row.find('.range-from').val()) || 0;
+    //     var toValue = parseFloat(row.find('.range-to').val()) || 0;
 
-        if (fromValue > 0 && toValue > 0 && fromValue >= toValue) {
-            alert('The "To" value must be greater than the "From" value.');
-            $(this).focus();
-        }
-    });
+    //     if (fromValue > 0 && toValue > 0 && fromValue >= toValue) {
+    //         alert('The "To" value must be greater than the "From" value.');
+    //         $(this).focus();
+    //     }
+    // });
 
     $("#passwordCheckForm").on("submit", function (e) {
         e.preventDefault();
@@ -1023,7 +1023,6 @@ $(function () {
 
     $('#submitDeduction').on('click', function(){
         if($('#deductionForm').valid()){
-            $('#deductionModal').modal('hide');
             // Switch modal to ask for password3
             // $('#passwordModal').find('#password2Div').hide();
             // $('#passwordModal').find('#password3Div').show();
@@ -1044,11 +1043,42 @@ $(function () {
             //         if (obj.status === "success") {
             //             $("#passwordModal").modal("hide");
 
+                        // Validate Auto mode ranges before submit
+                        if ($('#statusSwitch').val() == 'Auto') {
+                            var isValid = true;
+                            var prevTo = 0;
+                            
+                            $('#autoTable tr').each(function(index) {
+                                var fromValue = parseFloat($(this).find('.range-from').val()) || 0;
+                                var toValue = parseFloat($(this).find('.range-to').val()) || 0;
+                                
+                                if (fromValue > 0 && toValue > 0 && fromValue >= toValue) {
+                                    alert('All "To" values must be greater than "From" values.');
+                                    isValid = false;
+                                    return false;
+                                }
+                                
+                                if (index > 0 && fromValue <= prevTo) {
+                                    alert('Each row must have higher range values than the previous row.');
+                                    isValid = false;
+                                    return false;
+                                }
+                                
+                                prevTo = toValue;
+                            });
+                            
+                            if (!isValid) {
+                                $('#spinnerLoading').hide();
+                                return false;
+                            }
+                        }
+
                         // Proceed with saving form
                         $.post('php/deductions.php', $('#deductionForm').serialize(), function (data) {
                             var obj = JSON.parse(data);
 
                             if (obj.status === 'success') {
+                                $('#deductionModal').modal('hide');
                                 window.location.reload();
                             } else if (obj.status === 'failed') {
                                 alert(obj.message);
