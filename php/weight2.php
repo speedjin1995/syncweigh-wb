@@ -113,9 +113,24 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['grossInc
         $unitPrice = trim($_POST["unitPrice"]);
     }
 
-    $subTotalPrice = '0.00';
-    $sstPrice = '0.00';
-    $totalPrice = '0.00';
+    if (empty($_POST["subTotalPrice"])) {
+        $subTotalPrice = '0.00';
+    } else {
+        $subTotalPrice = trim($_POST["subTotalPrice"]);
+    }
+
+    if (empty($_POST["sstPrice"])) {
+        $sstPrice = '0.00';
+    } else {
+        $sstPrice = trim($_POST["sstPrice"]);
+    }
+
+    if (empty($_POST["totalPrice"])) {
+        $totalPrice = '0.00';
+    } else {
+        $totalPrice = trim($_POST["totalPrice"]);
+    }
+
     $customerType = 'Normal';
     $transactionDate = date('Y-m-d H:i:s');
     $poSupplyWeight = null;

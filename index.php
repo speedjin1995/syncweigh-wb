@@ -106,8 +106,8 @@ if ($rowd = $resultd->fetch_assoc()) {
 }
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
-$vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
-$vehicles2 = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
+$vehicles = $db->query("SELECT DISTINCT veh_number, vehicle_weight FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
+$vehicles2 = $db->query("SELECT DISTINCT veh_number, vehicle_weight FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
 $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $customer2 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $product = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
@@ -1002,13 +1002,83 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="row">
+                                                                                <div class="row mb-3">
                                                                                     <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                         <div class="row">
                                                                                             <label for="otherRemarks" class="col-sm-2 col-form-label" style="width: 11%;">Other Remarks</label>
                                                                                             <div class="col-sm-10" style="width: 89%;">
                                                                                                 <textarea class="form-control" id="otherRemarks" name="otherRemarks" rows="3" placeholder="Other Remarks"></textarea>
                                                                                             </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xxl-12 col-lg-12" id="priceCard" style="display:<?php if($includePrice == 'N'): ?>none<?php else: ?>block<?php endif; ?>;">
+                                                                                        <div class="card border">
+                                                                                            <div class="card-body">
+                                                                                                <h5 class="card-title mb-3"><i class="mdi mdi-receipt"></i> Pricing Details</h5>
+                                                                                                <div style="display:none;">
+                                                                                                    <div class="row mb-3" id="divOrderWeight">
+                                                                                                        <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
+                                                                                                        <div class="col-sm-8">
+                                                                                                            <div class="input-group">
+                                                                                                                <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
+                                                                                                                <div class="input-group-text">Kg</div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="row mb-3" id="divWeightDifference">
+                                                                                                        <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
+                                                                                                        <div class="col-sm-8">
+                                                                                                            <div class="input-group">
+                                                                                                                <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
+                                                                                                                <div class="input-group-text">Kg</div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <!--div class="row mb-3">
+                                                                                                        <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
+                                                                                                        <div class="col-sm-8">
+                                                                                                            <div class="input-group">
+                                                                                                                <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
+                                                                                                                <div class="input-group-text">Kg</div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div-->
+                                                                                                </div>
+                                                                                                <div class="row mb-3">
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Unit Price</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control" id="unitPrice" name="unitPrice" placeholder="0">
+                                                                                                            <span class="input-group-text">RM</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Subtotal</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
+                                                                                                            <span class="input-group-text bg-light">RM</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="row">
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Tax</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control" id="sstPrice" name="sstPrice" placeholder="0">
+                                                                                                            <span class="input-group-text">%</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Total Price</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
+                                                                                                            <span class="input-group-text bg-primary text-white">RM</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>                 
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -1168,77 +1238,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                     </div>
                                                                                 </div>                                                                    
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-xxl-4 col-lg-4" id="priceCard" style="display:<?php if($includePrice == 'N'): ?>none<?php else: ?>block<?php endif; ?>;">
-                                                                        <div class="card bg-light" style="min-height: 385px;">
-                                                                            <div class="card-body">
-                                                                                <div style="display:none;">
-                                                                                    <div class="row mb-3" id="divOrderWeight">
-                                                                                        <label for="orderWeight" class="col-sm-4 col-form-label">Order Weight</label>
-                                                                                        <div class="col-sm-8">
-                                                                                            <div class="input-group">
-                                                                                                <input type="number" class="form-control" id="orderWeight" name="orderWeight"  placeholder="Order Weight">
-                                                                                                <div class="input-group-text">Kg</div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="row mb-3" id="divWeightDifference">
-                                                                                        <label for="weightDifference" class="col-sm-4 col-form-label">Weight Difference</label>
-                                                                                        <div class="col-sm-8">
-                                                                                            <div class="input-group">
-                                                                                                <input type="number" class="form-control input-readonly" id="weightDifference" name="weightDifference" placeholder="Weight Difference" readonly>
-                                                                                                <div class="input-group-text">Kg</div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <!--div class="row mb-3">
-                                                                                    <label for="reduceWeight" class="col-sm-4 col-form-label">Reduce Weight</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control" id="reduceWeight" name="reduceWeight" placeholder="0">
-                                                                                            <div class="input-group-text">Kg</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div-->
-                                                                                <div class="row mb-3" id="unitPriceDisplay">
-                                                                                    <label for="unitPrice" class="col-sm-4 col-form-label">Unit Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0">
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3" id="sstDisplay">
-                                                                                    <label for="sstPrice" class="col-sm-4 col-form-label">SST (6%)</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3" id="subTotalPriceDisplay">
-                                                                                    <label for="subTotalPrice" class="col-sm-4 col-form-label">Sub-Total Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3" id="totalPriceDisplay">
-                                                                                    <label for="totalPrice" class="col-sm-4 col-form-label">Total Price</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <div class="input-group">
-                                                                                            <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
-                                                                                            <div class="input-group-text">RM</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>                 
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -2347,6 +2346,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
     var rowCount = $("#productTable").find(".details").length;
+    var customerOptions = $('#customerName option').clone();
+    var supplierOptions = $('#supplierName option').clone();
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -4809,21 +4810,91 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
+                        if (obj.message.length > 0){
+                            if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                                if (obj.message.length == 1){
+                                    if (obj.message[0].customer){
+                                        var customerName = obj.message[0].customer.name;
+                                        var customerCode = obj.message[0].customer.customer_code;
+                                        var customerId = obj.message[0].customer.id;
 
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#customerName').val(customerName).trigger('change');
-                            $('#customerCode').val(customerCode);
+                                        if (customerName && customerCode){
+                                            $('#customerName').html('');
+                                            $('#customerName').append(`<option value="${customerName}" data-code="${customerCode}" data-id="${customerId}" selected>${customerName}</option>`).trigger('change');
+                                            $('#customerCode').val(customerCode);
+                                        }
+                                    }else{
+                                        $('#customerName').html('').append(customerOptions).val('').trigger('change');
+                                    }
+                                }else{
+                                    $('#customerName').html('');
+                                    var hasCustomer = false;
+                                    
+                                    for (var i = 0; i < obj.message.length; i++) {
+                                        if (obj.message[i].customer) {
+                                            hasCustomer = true;
+                                            var customerName = obj.message[i].customer.name;
+                                            var customerCode = obj.message[i].customer.customer_code;
+                                            var customerId = obj.message[i].customer.id;
+
+                                            $('#customerName').append(
+                                                `<option value="${customerName}" data-code="${customerCode}" data-id="${customerId}">${customerName}</option>`
+                                            );  
+                                        }
+                                    }
+                                    
+                                    if (!hasCustomer) {
+                                        $('#customerName').html('').append(customerOptions);
+                                    }
+                                    
+                                    $('#customerName').val('').trigger('change');
+                                    $('#customerCode').val('');
+                                }
+                            }else{
+                                if (obj.message.length == 1){
+                                    if (obj.message[0].supplier){
+                                        var supplierName = obj.message[0].supplier.name;
+                                        var supplierCode = obj.message[0].supplier.supplier_code;
+                                        var supplierId = obj.message[0].supplier.id;
+
+                                        $('#supplierName').html('');
+                                        $('#supplierName').append(`<option value="${supplierName}" data-code="${supplierCode}" data-id="${supplierId}" selected>${supplierName}</option>`).trigger('change');
+                                        $('#supplierCode').val(supplierCode);
+                                    }else{
+                                        $('#supplierName').html('').append(supplierOptions).val('').trigger('change');
+                                    }
+                                }else {
+                                    $('#supplierName').html('');
+                                    var hasSupplier = false;
+                                    
+                                    for (var i = 0; i < obj.message.length; i++) {
+                                        if (obj.message[i].supplier) {
+                                            hasSupplier = true;
+                                            var supplierName = obj.message[i].supplier.name;
+                                            var supplierCode = obj.message[i].supplier.supplier_code;
+                                            var supplierId = obj.message[i].supplier.id;
+
+                                            $('#supplierName').append(
+                                                `<option value="${supplierName}" data-code="${supplierCode}" data-id="${supplierId}">${supplierName}</option>`
+                                            );  
+                                        }
+                                    }
+                                    
+                                    if (!hasSupplier) {
+                                        $('#supplierName').html('').append(supplierOptions);
+                                    }
+                                    
+                                    $('#supplierName').val('').trigger('change');
+                                    $('#supplierCode').val('');
+                                }
+                            }
                         }else{
-                            $('#supplierName').val(supplierName).trigger('change');
-                            $('#supplierCode').val(supplierCode);
+                            $('#customerName').html('').append(customerOptions).val('').trigger('change');
+                            $('#supplierName').html('').append(supplierOptions).val('').trigger('change');
                         }
-                        
-                        if (obj.message.vehicle_weight){
-                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+
+                        if(obj.vehicle_weight){
+                            $('#grossIncoming').val(obj.vehicle_weight).trigger('keyup');
                         }
                     }
                     else if(obj.status === 'error'){
@@ -4887,21 +4958,91 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
+                        if (obj.message.length > 0){
+                            if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                                if (obj.message.length == 1){
+                                    if (obj.message[0].customer){
+                                        var customerName = obj.message[0].customer.name;
+                                        var customerCode = obj.message[0].customer.customer_code;
+                                        var customerId = obj.message[0].customer.id;
 
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#customerName').val(customerName).trigger('change');
-                            $('#customerCode').val(customerCode);
+                                        if (customerName && customerCode){
+                                            $('#customerName').html('');
+                                            $('#customerName').append(`<option value="${customerName}" data-code="${customerCode}" data-id="${customerId}" selected>${customerName}</option>`).trigger('change');
+                                            $('#customerCode').val(customerCode);
+                                        }
+                                    }else{
+                                        $('#customerName').html('').append(customerOptions).val('').trigger('change');
+                                    }
+                                }else{
+                                    $('#customerName').html('');
+                                    var hasCustomer = false;
+                                    
+                                    for (var i = 0; i < obj.message.length; i++) {
+                                        if (obj.message[i].customer) {
+                                            hasCustomer = true;
+                                            var customerName = obj.message[i].customer.name;
+                                            var customerCode = obj.message[i].customer.customer_code;
+                                            var customerId = obj.message[i].customer.id;
+
+                                            $('#customerName').append(
+                                                `<option value="${customerName}" data-code="${customerCode}" data-id="${customerId}">${customerName}</option>`
+                                            );  
+                                        }
+                                    }
+                                    
+                                    if (!hasCustomer) {
+                                        $('#customerName').html('').append(customerOptions);
+                                    }
+                                    
+                                    $('#customerName').val('').trigger('change');
+                                    $('#customerCode').val('');
+                                }
+                            }else{
+                                if (obj.message.length == 1){
+                                    if (obj.message[0].supplier){
+                                        var supplierName = obj.message[0].supplier.name;
+                                        var supplierCode = obj.message[0].supplier.supplier_code;
+                                        var supplierId = obj.message[0].supplier.id;
+
+                                        $('#supplierName').html('');
+                                        $('#supplierName').append(`<option value="${supplierName}" data-code="${supplierCode}" data-id="${supplierId}" selected>${supplierName}</option>`).trigger('change');
+                                        $('#supplierCode').val(supplierCode);
+                                    }else{
+                                        $('#supplierName').html('').append(supplierOptions).val('').trigger('change');
+                                    }
+                                }else {
+                                    $('#supplierName').html('');
+                                    var hasSupplier = false;
+                                    
+                                    for (var i = 0; i < obj.message.length; i++) {
+                                        if (obj.message[i].supplier) {
+                                            hasSupplier = true;
+                                            var supplierName = obj.message[i].supplier.name;
+                                            var supplierCode = obj.message[i].supplier.supplier_code;
+                                            var supplierId = obj.message[i].supplier.id;
+
+                                            $('#supplierName').append(
+                                                `<option value="${supplierName}" data-code="${supplierCode}" data-id="${supplierId}">${supplierName}</option>`
+                                            );  
+                                        }
+                                    }
+                                    
+                                    if (!hasSupplier) {
+                                        $('#supplierName').html('').append(supplierOptions);
+                                    }
+                                    
+                                    $('#supplierName').val('').trigger('change');
+                                    $('#supplierCode').val('');
+                                }
+                            }
                         }else{
-                            $('#supplierName').val(supplierName).trigger('change');
-                            $('#supplierCode').val(supplierCode);
+                            $('#customerName').html('').append(customerOptions).val('').trigger('change');
+                            $('#supplierName').html('').append(supplierOptions).val('').trigger('change');
                         }
 
-                        if (obj.message.vehicle_weight){
-                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        if(obj.vehicle_weight){
+                            $('#grossIncoming').val(obj.vehicle_weight).trigger('keyup');
                         }
                     }
                     else if(obj.status === 'error'){
@@ -5171,14 +5312,21 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#weightDifference').val(current.toFixed(0));
 
             // Update Price
-            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()).toFixed(2) : 0.00;
-            var weight = nett1;
+            var price = $('#addModal').find('#unitPrice').val() ? parseFloat($('#addModal').find('#unitPrice').val()).toFixed(2) : 0.00;
+            var taxPercentage = $('#addModal').find('#sstPrice').val() ? parseFloat($('#addModal').find('#sstPrice').val()).toFixed(2) : 0.00;
+            var weight = (parseFloat(nett1)/1000).toFixed(2);
             var subTotalPrice = price * weight;
-            var sstPrice = subTotalPrice * 0.06;
-            var totalPrice = subTotalPrice + sstPrice;
+            var totalPrice = subTotalPrice * (1 + (taxPercentage/100));
             $('#subTotalPrice').val(subTotalPrice.toFixed(2));
-            $('#sstPrice').val(sstPrice.toFixed(2));
             $('#totalPrice').val(totalPrice.toFixed(2));
+        });
+
+        $('#unitPrice').on('keyup', function(){
+            $('#finalWeight').trigger('change');
+        });
+
+        $('#sstPrice').on('keyup', function(){
+            $('#finalWeight').trigger('change');
         });
 
         $('#orderWeight').on('change', function(){
@@ -5318,13 +5466,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         });
 
         $('#currentWeight').on('change', function(){
-            var price = $('#productPrice').val() ? parseFloat($('#productPrice').val()).toFixed(2) : 0.00;
-            var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;
+            // Update Price
+            var price = $('#addModal').find('#unitPrice').val() ? parseFloat($('#addModal').find('#unitPrice').val()).toFixed(2) : 0.00;
+            var taxPercentage = $('#addModal').find('#sstPrice').val() ? parseFloat($('#addModal').find('#sstPrice').val()).toFixed(2) : 0.00;
+            var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;;
             var subTotalPrice = price * weight;
-            var sstPrice = subTotalPrice * 0.08;
-            var totalPrice = subTotalPrice + sstPrice;
+            var totalPrice = subTotalPrice * (1 + (taxPercentage/100));
             $('#subTotalPrice').val(subTotalPrice.toFixed(2));
-            $('#sstPrice').val(sstPrice.toFixed(2));
             $('#totalPrice').val(totalPrice.toFixed(2));
         });
 
