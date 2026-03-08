@@ -71,8 +71,8 @@ if ($user != null && $user != ''){
 
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
-$vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
-$vehicles2 = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
+$vehicles = $db->query("SELECT DISTINCT veh_number, vehicle_weight FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
+$vehicles2 = $db->query("SELECT DISTINCT veh_number, vehicle_weight FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
 $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $customer2 = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name ASC");
 $product = $db->query("SELECT * FROM Product WHERE status = '0' ORDER BY name ASC");
@@ -1067,6 +1067,8 @@ if ($rowd = $resultd->fetch_assoc()) {
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
+    var customerOptions = $('#customerName option').clone();
+    var supplierOptions = $('#supplierName option').clone();
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -2522,23 +2524,91 @@ if ($rowd = $resultd->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
+                        if (obj.message.length > 0){
+                            if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                                if (obj.message.length == 1){
+                                    if (obj.message[0].customer){
+                                        var customerName = obj.message[0].customer.name;
+                                        var customerCode = obj.message[0].customer.customer_code;
+                                        var customerId = obj.message[0].customer.id;
 
-                        if ((transactionStatus == 'Sales' || transactionStatus == 'Misc') && customerName && customerCode){
-                            $('#customerName').val(customerName).trigger('change');
-                            $('#customerCode').val(customerCode);
-                        }else{
-                            if(supplierName && supplierCode){
-                                $('#supplierName').val(supplierName).trigger('change');
-                                $('#supplierCode').val(supplierCode);
+                                        if (customerName && customerCode){
+                                            $('#customerName').html('');
+                                            $('#customerName').append(`<option value="${customerName}" data-code="${customerCode}" data-id="${customerId}" selected>${customerName}</option>`).trigger('change');
+                                            $('#customerCode').val(customerCode);
+                                        }
+                                    }else{
+                                        $('#customerName').html('').append(customerOptions).val('').trigger('change');
+                                    }
+                                }else{
+                                    $('#customerName').html('');
+                                    var hasCustomer = false;
+                                    
+                                    for (var i = 0; i < obj.message.length; i++) {
+                                        if (obj.message[i].customer) {
+                                            hasCustomer = true;
+                                            var customerName = obj.message[i].customer.name;
+                                            var customerCode = obj.message[i].customer.customer_code;
+                                            var customerId = obj.message[i].customer.id;
+
+                                            $('#customerName').append(
+                                                `<option value="${customerName}" data-code="${customerCode}" data-id="${customerId}">${customerName}</option>`
+                                            );  
+                                        }
+                                    }
+                                    
+                                    if (!hasCustomer) {
+                                        $('#customerName').html('').append(customerOptions);
+                                    }
+                                    
+                                    $('#customerName').val('').trigger('change');
+                                    $('#customerCode').val('');
+                                }
+                            }else{
+                                if (obj.message.length == 1){
+                                    if (obj.message[0].supplier){
+                                        var supplierName = obj.message[0].supplier.name;
+                                        var supplierCode = obj.message[0].supplier.supplier_code;
+                                        var supplierId = obj.message[0].supplier.id;
+
+                                        $('#supplierName').html('');
+                                        $('#supplierName').append(`<option value="${supplierName}" data-code="${supplierCode}" data-id="${supplierId}" selected>${supplierName}</option>`).trigger('change');
+                                        $('#supplierCode').val(supplierCode);
+                                    }else{
+                                        $('#supplierName').html('').append(supplierOptions).val('').trigger('change');
+                                    }
+                                }else {
+                                    $('#supplierName').html('');
+                                    var hasSupplier = false;
+                                    
+                                    for (var i = 0; i < obj.message.length; i++) {
+                                        if (obj.message[i].supplier) {
+                                            hasSupplier = true;
+                                            var supplierName = obj.message[i].supplier.name;
+                                            var supplierCode = obj.message[i].supplier.supplier_code;
+                                            var supplierId = obj.message[i].supplier.id;
+
+                                            $('#supplierName').append(
+                                                `<option value="${supplierName}" data-code="${supplierCode}" data-id="${supplierId}">${supplierName}</option>`
+                                            );  
+                                        }
+                                    }
+                                    
+                                    if (!hasSupplier) {
+                                        $('#supplierName').html('').append(supplierOptions);
+                                    }
+                                    
+                                    $('#supplierName').val('').trigger('change');
+                                    $('#supplierCode').val('');
+                                }
                             }
+                        }else{
+                            $('#customerName').html('').append(customerOptions).val('').trigger('change');
+                            $('#supplierName').html('').append(supplierOptions).val('').trigger('change');
                         }
 
-                        if (obj.message.vehicle_weight){
-                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+                        if(obj.vehicle_weight){
+                            $('#grossIncoming').val(obj.vehicle_weight).trigger('keyup');
                         }
                     }
                     else if(obj.status === 'error'){
@@ -2603,23 +2673,91 @@ if ($rowd = $resultd->fetch_assoc()) {
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
+                        if (obj.message.length > 0){
+                            if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                                if (obj.message.length == 1){
+                                    if (obj.message[0].customer){
+                                        var customerName = obj.message[0].customer.name;
+                                        var customerCode = obj.message[0].customer.customer_code;
+                                        var customerId = obj.message[0].customer.id;
 
-                        if ((transactionStatus == 'Sales' || transactionStatus == 'Misc') && customerName && customerCode){
-                            $('#customerName').val(customerName).trigger('change');
-                            $('#customerCode').val(customerCode);
-                        }else{
-                            if(supplierName && supplierCode){
-                                $('#supplierName').val(supplierName).trigger('change');
-                                $('#supplierCode').val(supplierCode);
+                                        if (customerName && customerCode){
+                                            $('#customerName').html('');
+                                            $('#customerName').append(`<option value="${customerName}" data-code="${customerCode}" data-id="${customerId}" selected>${customerName}</option>`).trigger('change');
+                                            $('#customerCode').val(customerCode);
+                                        }
+                                    }else{
+                                        $('#customerName').html('').append(customerOptions).val('').trigger('change');
+                                    }
+                                }else{
+                                    $('#customerName').html('');
+                                    var hasCustomer = false;
+                                    
+                                    for (var i = 0; i < obj.message.length; i++) {
+                                        if (obj.message[i].customer) {
+                                            hasCustomer = true;
+                                            var customerName = obj.message[i].customer.name;
+                                            var customerCode = obj.message[i].customer.customer_code;
+                                            var customerId = obj.message[i].customer.id;
+
+                                            $('#customerName').append(
+                                                `<option value="${customerName}" data-code="${customerCode}" data-id="${customerId}">${customerName}</option>`
+                                            );  
+                                        }
+                                    }
+                                    
+                                    if (!hasCustomer) {
+                                        $('#customerName').html('').append(customerOptions);
+                                    }
+                                    
+                                    $('#customerName').val('').trigger('change');
+                                    $('#customerCode').val('');
+                                }
+                            }else{
+                                if (obj.message.length == 1){
+                                    if (obj.message[0].supplier){
+                                        var supplierName = obj.message[0].supplier.name;
+                                        var supplierCode = obj.message[0].supplier.supplier_code;
+                                        var supplierId = obj.message[0].supplier.id;
+
+                                        $('#supplierName').html('');
+                                        $('#supplierName').append(`<option value="${supplierName}" data-code="${supplierCode}" data-id="${supplierId}" selected>${supplierName}</option>`).trigger('change');
+                                        $('#supplierCode').val(supplierCode);
+                                    }else{
+                                        $('#supplierName').html('').append(supplierOptions).val('').trigger('change');
+                                    }
+                                }else {
+                                    $('#supplierName').html('');
+                                    var hasSupplier = false;
+                                    
+                                    for (var i = 0; i < obj.message.length; i++) {
+                                        if (obj.message[i].supplier) {
+                                            hasSupplier = true;
+                                            var supplierName = obj.message[i].supplier.name;
+                                            var supplierCode = obj.message[i].supplier.supplier_code;
+                                            var supplierId = obj.message[i].supplier.id;
+
+                                            $('#supplierName').append(
+                                                `<option value="${supplierName}" data-code="${supplierCode}" data-id="${supplierId}">${supplierName}</option>`
+                                            );  
+                                        }
+                                    }
+                                    
+                                    if (!hasSupplier) {
+                                        $('#supplierName').html('').append(supplierOptions);
+                                    }
+                                    
+                                    $('#supplierName').val('').trigger('change');
+                                    $('#supplierCode').val('');
+                                }
                             }
+                        }else{
+                            $('#customerName').html('').append(customerOptions).val('').trigger('change');
+                            $('#supplierName').html('').append(supplierOptions).val('').trigger('change');
                         }
-                        
-                        if (obj.message.vehicle_weight){
-                            $('#grossIncoming').val(obj.message.vehicle_weight).trigger('keyup');
+
+                        if(obj.vehicle_weight){
+                            $('#grossIncoming').val(obj.vehicle_weight).trigger('keyup');
                         }
                     }
                     else if(obj.status === 'error'){
