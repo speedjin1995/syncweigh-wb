@@ -8,7 +8,7 @@ if(!isset($_SESSION['id'])){
 	$username = $_SESSION["username"];
 }
 
-if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress'], $_POST['companyPhone'], $_POST['includePrice'], $_POST['includeContainer'], $_POST['includeDisplaySetup'])){
+if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress'], $_POST['companyPhone'], $_POST['includePrice'], $_POST['includeContainer'], $_POST['includeDisplaySetup'], $_POST['includeGrading'])) {
 	$companyRegNo = filter_input(INPUT_POST, 'companyRegNo', FILTER_SANITIZE_STRING);
 	$companyName = filter_input(INPUT_POST, 'companyName', FILTER_SANITIZE_STRING);
 	$companyAddress = filter_input(INPUT_POST, 'companyAddress', FILTER_SANITIZE_STRING);
@@ -17,6 +17,13 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 	$companyAddress3 = null;
 	$companyFax = null;
 	$companyPackage = null;
+	$mpobNo = null;
+	$mpobExpiryDate = null;
+	$mspoNo = null;
+	$mspoExpiryDate = null;
+	$epf = null;
+	$nonResidentPcbRate = null;
+	$individualReliefFund = null;
 	$today = date("Y-m-d H:i:s");
 	$id = '1';
 	$action = '2';
@@ -37,8 +44,28 @@ if(isset($_POST['companyRegNo'], $_POST['companyName'], $_POST['companyAddress']
 		$companyPackage = filter_input(INPUT_POST, 'companyPackage', FILTER_SANITIZE_STRING);
 	}
 
-	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?,  package=?, fax_no=?, name=?, include_price=?, include_container=?, include_display_setup=?, modified_date=?, modified_by=? WHERE id=?")) {
-		$stmt2->bind_param('ssssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyPackage, $companyFax, $companyName, $_POST['includePrice'], $_POST['includeContainer'], $_POST['includeDisplaySetup'], $today, $username, $id);
+	if($_POST['mpobNo'] != null && $_POST['mpobNo'] != ""){
+		$mpobNo = filter_input(INPUT_POST, 'mpobNo', FILTER_SANITIZE_STRING);
+	}
+	
+	if($_POST['mpobExpiry'] != null && $_POST['mpobExpiry'] != ""){
+		$mpobExpiryDate = DateTime::createFromFormat('d-m-Y', $_POST["mpobExpiry"])->format('Y-m-d H:i:s');
+	}
+
+	if($_POST['mspoNo'] != null && $_POST['mspoNo'] != ""){
+		$mspoNo = filter_input(INPUT_POST, 'mspoNo', FILTER_SANITIZE_STRING);
+	}
+
+	if($_POST['mspoExpiry'] != null && $_POST['mspoExpiry'] != ""){
+		$mspoExpiryDate = DateTime::createFromFormat('d-m-Y', $_POST["mspoExpiry"])->format('Y-m-d H:i:s');
+	}
+
+	if($_POST['employeeEpf'] != null && $_POST['employeeEpf'] != ""){
+		$employeeEpf = filter_input(INPUT_POST, 'employeeEpf', FILTER_SANITIZE_STRING);
+	}
+
+	if ($stmt2 = $db->prepare("UPDATE Company SET company_reg_no=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, package=?, fax_no=?, name=?, mpob_no=?, mpob_expiry_date=?, mspo_no=?, mspo_expiry_date=?, include_price=?, include_container=?, include_display_setup=?, include_grading=?, epf=?, modified_date=?, modified_by=? WHERE id=?")) {
+		$stmt2->bind_param('ssssssssssssssssssss', $companyRegNo, $companyAddress, $companyAddress2, $companyAddress3, $companyPhone, $companyPackage, $companyFax, $companyName, $mpobNo, $mpobExpiryDate, $mspoNo, $mspoExpiryDate, $_POST['includePrice'], $_POST['includeContainer'], $_POST['includeDisplaySetup'], $_POST['includeGrading'],  $employeeEpf, $today, $username, $id);
 		
 		if($stmt2->execute()){
 			$stmt2->close();

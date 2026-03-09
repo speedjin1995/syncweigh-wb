@@ -75,3 +75,67 @@ function calculateFFBSales($weighingRecords, $db){
 
     return $dataReturn;
 }
+
+######### Calculate Daily Deductions Grouped by Day #########
+function groupCashbookByDay($cashBookRecords) {
+    $cashbook = [];
+
+    foreach ($cashBookRecords as $record) {
+        $date = date('Y-m-d', strtotime($record['date']));
+        $additions = json_decode($record['addition_details'], true);
+        $deductions = json_decode($record['deduction_details'], true);
+        
+        if (!isset($cashbook[$date])) {
+            $cashbook[$date]['Additions'] = [
+                'CASHIN' => []
+            ];
+            $cashbook[$date]['Deductions'] = [
+                'CASHOUT' => [],
+                'CREDITNOTE' => [],
+                'CREDITFFBRAM' => [],
+                'CREDITFFBHQ' => [],
+                'CREDITFFBADV' => [],
+                'GENERAL' => [],
+                'PETROL_DIESEL' => [],
+                'STAFFADV' => [],
+                'STAFFSAL' => [],
+                'FFBSHORTAGE' => [],
+            ];
+        }
+
+        foreach ($additions as $addition) {
+            $type = $addition['type'];
+            if (isset($cashbook[$date]['Additions'][$type])) {
+                $cashbook[$date]['Additions'][$type][] = [
+                    'description' => $addition['desc'],
+                    'amount' => floatval($addition['amount']),
+                ];
+            }
+        }
+
+        foreach ($deductions as $deduction) {
+            $type = $deduction['type'];
+            if (isset($cashbook[$date]['Deductions'][$type])) {
+                $cashbook[$date]['Deductions'][$type][] = [
+                    'description' => $deduction['desc'],
+                    'amount' => floatval($deduction['amount']),
+                ];
+            }
+        }
+    }
+
+    return $cashbook;
+}
+##############################################
+
+// Format Weight String
+function formatWeight($weight){
+    if ($weight != 0){
+        $formatted = number_format(ltrim($weight, '0'), 2, '.', ',');
+        $formatted = preg_replace('/\.00$/', '', $formatted);    
+    }else{
+        $formatted = $weight;
+    }
+
+    return $formatted;
+}

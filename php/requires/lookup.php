@@ -23,6 +23,24 @@ function searchCustomerByCode($value, $db) {
     return $id;
 }
 
+function searchCustomerDetailByCode($value, $db) {
+    $id = null;
+
+    if(isset($value)){
+        if ($select_stmt = $db->prepare("SELECT * FROM Customer WHERE customer_code=? AND status='0'")) {
+            $select_stmt->bind_param('s', $value);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $id = $row;
+            }
+            $select_stmt->close();
+        }
+    }
+
+    return $id;
+}
+
 function searchSupplierByCode($value, $db) {
     $id = '';
 
@@ -33,6 +51,24 @@ function searchSupplierByCode($value, $db) {
             $result = $select_stmt->get_result();
             if ($row = $result->fetch_assoc()) {
                 $id = $row['name'];
+            }
+            $select_stmt->close();
+        }
+    }
+
+    return $id;
+}
+
+function searchSupplierDetailByCode($value, $db) {
+    $id = null;
+
+    if(isset($value)){
+        if ($select_stmt = $db->prepare("SELECT * FROM Supplier WHERE supplier_code=? AND status='0'")) {
+            $select_stmt->bind_param('s', $value);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $id = $row;
             }
             $select_stmt->close();
         }
@@ -264,6 +300,22 @@ function searchNamebyId($value, $db) {
         $result = $select_stmt->get_result();
         if ($row = $result->fetch_assoc()) {
             $id = $row['name'];
+        }
+        $select_stmt->close();
+    }
+
+    return $id;
+}
+
+function searchUserById($value, $db) {
+    $id = null;
+
+    if ($select_stmt = $db->prepare("SELECT * FROM Users WHERE id=?")) {
+        $select_stmt->bind_param('s', $value);
+        $select_stmt->execute();
+        $result = $select_stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            $id = $row;
         }
         $select_stmt->close();
     }

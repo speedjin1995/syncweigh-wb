@@ -186,6 +186,10 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="row mb-3">
                                                                     <div class="col-xxl-4 col-lg-4">
+                                                                        <label class="form-label">Voucher No</label>
+                                                                        <input type="text" class="form-control input-readonly" id="voucherNo" name="voucherNo" readonly>
+                                                                    </div>
+                                                                    <div class="col-xxl-4 col-lg-4">
                                                                         <label class="form-label">Voucher Date</label>
                                                                         <input type="text" class="form-control" id="voucherDate" name="voucherDate" required>
                                                                     </div>
@@ -193,12 +197,12 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                         <label class="form-label">Unit Price (RM)</label>
                                                                         <input type="number" class="form-control" id="unitPrice" name="unitPrice" step="0.01" required>
                                                                     </div>
+                                                                </div>
+                                                                <div class="row mb-3">
                                                                     <div class="col-xxl-4 col-lg-4">
                                                                         <label class="form-label">Tax (%)</label>
                                                                         <input type="number" class="form-control" id="tax" name="tax" step="0.01" min="0" max="100" value="0" required>
                                                                     </div>
-                                                                </div>
-                                                                <div class="row mb-3">
                                                                     <div class="col-xxl-4 col-lg-4">
                                                                         <label class="form-label">Total Nett Weight (MT)</label>
                                                                         <input type="number" class="form-control" id="totalNettWeight" name="totalNettWeight" readonly>
@@ -308,6 +312,37 @@ if(($row = $result->fetch_assoc()) !== null){
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
                                     </div><!-- /.modal -->
+                                    <div class="modal fade" id="printModal" tabindex="-1" role="dialog" aria-labelledby="printModalTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="printModalTitle">Select Slip to Print</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form id="printSlipForm">
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="printSlipType" class="form-label">Slip Type *</label>
+                                                            <select id="printSlipType" name="printSlipType" class="form-select" required>
+                                                                <option value="pv">Payment Voucher</option>
+                                                                <option value="ffbStatement">FFB Statement</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <input type="hidden" id="customerSupplierPrint" name="customerSupplierPrint">
+                                                        <input type="hidden" id="transactionDatePrint" name="transactionDatePrint">
+                                                        <input type="hidden" id="weighingTypePrint" name="weighingTypePrint">
+                                                        <input type="hidden" id="transactionStatusPrint" name="transactionStatusPrint">
+                                                    </div> 
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-success">Print</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div> <!-- end row-->
 
@@ -336,11 +371,13 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th>Transaction Date</th>
+                                                                    <th><?=$languageArray['transaction_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['voucher_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['weighing_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['transaction_status_code'][$language]?></th>
                                                                     <th><?=$languageArray['supplier_code'][$language]?></th>
                                                                     <th><?=$languageArray['invoice_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['outstanding_amount_code'][$language]?> (RM)</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -464,10 +501,12 @@ if(($row = $result->fetch_assoc()) !== null){
                     }
                 },
                 { data: 'transaction_date' },
+                { data: 'voucher_no' },
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
                 { data: 'invoice_no' },
+                { data: 'outstanding_amount' },
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -477,7 +516,7 @@ if(($row = $result->fetch_assoc()) !== null){
                             '</button>' +
                             '<ul class="dropdown-menu dropdown-menu-end">' +
                                 '<li>' +
-                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.transaction_date + '\')">' +
+                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.transaction_date + '\', \'' + row.transaction_status + '\', \'' + row.weight_type + '\')">' +
                                         '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
                                     '</a>' +
                                 '</li>' +
@@ -542,10 +581,12 @@ if(($row = $result->fetch_assoc()) !== null){
                         }
                     },
                     { data: 'transaction_date' },
+                    { data: 'voucher_no' },
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
                     { data: 'invoice_no' },
+                    { data: 'outstanding_amount' },
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {
@@ -555,7 +596,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                 '</button>' +
                                 '<ul class="dropdown-menu dropdown-menu-end">' +
                                     '<li>' +
-                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.transaction_date + '\')">' +
+                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print(\'' + row.customer + '\', \'' + row.transaction_date + '\', \'' + row.transaction_status + '\', \'' + row.weight_type + '\')">' +
                                             '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
                                         '</a>' +
                                     '</li>' +
@@ -574,37 +615,15 @@ if(($row = $result->fetch_assoc()) !== null){
 
         $.validator.setDefaults({
             submitHandler: function () {
-                if($('#exportPdfModal').hasClass('show')){   
-                    var fromDateI = $('#fromDateSearch').val();
-                    var toDateI = $('#toDateSearch').val();
-                    var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
-                    var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-                    var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-                    var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-                    var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-                    var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
-                    var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
-                    var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-                    var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
-                    var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+                if($('#printModal').hasClass('show')){
+                    var customerSupplierI = $('#printModal').find('#customerSupplierPrint').val();
+                    var transactionDateI = $('#printModal').find('#transactionDatePrint').val();
+                    var transactionStatusI = $('#printModal').find('#transactionStatusPrint').val();
+                    var weightTypeI = $('#printModal').find('#weighingTypePrint').val();
+                    var printSlipTypeI = $('#printModal').find('#printSlipType').val();
 
-                    $('#exportPdfForm').find('#fromDate').val(fromDateI);
-                    $('#exportPdfForm').find('#toDate').val(toDateI);
-                    $('#exportPdfForm').find('#transactionStatus').val(transactionStatusI);
-                    $('#exportPdfForm').find('#customer').val(customerNoI);
-                    $('#exportPdfForm').find('#supplier').val(supplierNoI);
-                    $('#exportPdfForm').find('#vehicle').val(vehicleNoI);
-                    $('#exportPdfForm').find('#customerType').val(customerTypeI);
-                    $('#exportPdfForm').find('#product').val(productI);
-                    $('#exportPdfForm').find('#rawMat').val(rawMatI);
-                    $('#exportPdfForm').find('#destination').val(destinationI);
-                    $('#exportPdfForm').find('#plant').val(plantI);
-                    $('#exportPdfForm').find('#status').val(statusI);
-                    $('#exportPdfForm').find('#file').val('weight');
-                    $('#exportPdfModal').modal('hide');
-
-                    $.post('php/exportPdf.php', $('#exportPdfForm').serialize(), function(response){
-                        var obj = JSON.parse(response);
+                    $.post('php/printPaymentVoucherSlip.php', {slipType: printSlipTypeI, customerSupplier: customerSupplierI, transactionDate: transactionDateI, transactionStatus: transactionStatusI, weightType: weightTypeI}, function(data){
+                        var obj = JSON.parse(data);
 
                         if(obj.status === 'success'){
                             var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
@@ -616,88 +635,10 @@ if(($row = $result->fetch_assoc()) !== null){
                             }, 500);
                         }
                         else if(obj.status === 'failed'){
-                            toastr["error"](obj.message, "Failed:");
+                            alert(obj.message);
                         }
                         else{
-                            toastr["error"]("Something wrong when activate", "Failed:");
-                        }
-                    }).fail(function(error){
-                        console.error("Error exporting PDF:", error);
-                        alert("An error occurred while generating the PDF.");
-                    });
-                }
-                else if($('#exportSoRepModal').hasClass('show')){   
-                    var group1 = $('#exportSoRepModal').find('#group1').val();
-                    var group2 = $('#exportSoRepModal').find('#group2').val();
-                    var group3 = $('#exportSoRepModal').find('#group3').val();
-                    var group4 = $('#exportSoRepModal').find('#group4').val();
-
-                    // Added checking to ensure previous group is selected
-                    if (group2 && !group1) {
-                        alert("Please select Group 1 before selecting Group 2.");
-                        return;
-                    }
-                    if (group3 && (!group1 || !group2)) {
-                        alert("Please select Group 1 and Group 2 before selecting Group 3.");
-                        return;
-                    }
-
-                    var fromDateI = $('#fromDateSearch').val();
-                    var toDateI = $('#toDateSearch').val();
-                    var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
-                    var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-                    var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-                    var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-                    var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-                    var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
-                    var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
-                    var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-                    var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
-                    var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-                    var batchDrumSearchI = $('#batchDrumSearch').val() ? $('#batchDrumSearch').val() : '';
-
-                    var selectedIds = []; // An array to store the selected 'id' values
-                    $("#weightTable tbody input[type='checkbox']").each(function () {
-                        if (this.checked) {
-                            selectedIds.push($(this).val());
-                        }
-                    });
-
-                    if (selectedIds.length > 0) {
-                        $('#exportSoRepForm').find('#id').val(selectedIds);
-                        $('#exportSoRepForm').find('#isMulti').val('Y');
-                    }else{
-                        $('#exportSoRepForm').find('#isMulti').val('N');
-                    }
-
-                    $('#exportSoRepForm').find('#fromDate').val(fromDateI);
-                    $('#exportSoRepForm').find('#toDate').val(toDateI);
-                    $('#exportSoRepForm').find('#status').val(transactionStatusI);
-                    $('#exportSoRepForm').find('#customer').val(customerNoI);
-                    $('#exportSoRepForm').find('#supplier').val(supplierNoI);
-                    $('#exportSoRepForm').find('#vehicle').val(vehicleNoI);
-                    $('#exportSoRepForm').find('#customerType').val(customerTypeI);
-                    $('#exportSoRepForm').find('#product').val(productI);
-                    $('#exportSoRepForm').find('#rawMat').val(rawMatI);
-                    $('#exportSoRepForm').find('#destination').val(destinationI);
-                    $('#exportSoRepForm').find('#plant').val(plantI);
-                    $('#exportSoRepForm').find('#batchDrum').val(batchDrumSearchI);
-                    // $('#exportSoRepForm').find('#type').val('Sales');
-                    $('#exportSoRepModal').modal('hide');
-
-                    $.post('php/exportSoPoReport.php', $('#exportSoRepForm').serialize(), function(response){
-                        var obj = JSON.parse(response);
-
-                        if(obj.status === 'success'){
-                            var previewWindow = window.open('', '_blank');
-                            previewWindow.document.write(obj.message);
-                            previewWindow.document.close();
-                        }
-                        else if(obj.status === 'failed'){
-                            toastr["error"](obj.message, "Failed:");
-                        }
-                        else{
-                            toastr["error"]("Something wrong when activate", "Failed:");
+                            alert("Something wrong when printing");
                         }
                     }).fail(function(error){
                         console.error("Error exporting PDF:", error);
@@ -903,7 +844,7 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#finalAmount').val(finalAmount.toFixed(2));
     }
 
-    function loadPricingModal(data) {console.log(data);
+    function loadPricingModal(data) {
         var tableBody = $('#paymentDetailsTable');
         tableBody.empty();
         
@@ -913,7 +854,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 '<td>' + weight.cust_supp_code + '</td>' +
                 '<td>' + weight.cust_supp_name + '</td>' +
                 '<td>' + weight.weight_type + '</td>' +
-                '<td>' + weight.invoice_no + '</td>' +
+                '<td>' + (weight.invoice_no ?? '') + '</td>' +
                 '<td>' + (parseFloat(weight.gross_weight1)/1000).toFixed(2) + '</td>' +
                 '<td>' + weight.gross_weight1_date + '</td>' +
                 '<td>' + (parseFloat(weight.tare_weight1)/1000).toFixed(2) + '</td>' +
@@ -930,6 +871,7 @@ if(($row = $result->fetch_assoc()) !== null){
         
         // Load existing payment data if available
         if (data.paymentVoucher && Object.keys(data.paymentVoucher).length > 0) {
+            $('#voucherNo').val(data.paymentVoucher.voucher_no);
             $('#voucherDate').val(formatDate2(new Date(data.paymentVoucher.voucher_date)));
             $('#unitPrice').val(data.paymentVoucher.unit_price);
             $('#tax').val(data.paymentVoucher.tax);
@@ -951,6 +893,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 $('#additionsTable').append(row);
             });
         } else {
+            $('#voucherNo').val('');
             $('#deductionsTable').empty();
             $('#additionsTable').empty();
             $('#unitPrice').val(0.00);
@@ -961,24 +904,24 @@ if(($row = $result->fetch_assoc()) !== null){
         $('#totalNettWeight').val((data.totalNettWeight).toFixed(2));
     }
 
-    function print(customerSupplier, transactionDate) {
-        $.post('php/printPaymentVoucherSlip.php', {customerSupplier: customerSupplier, transactionDate: transactionDate}, function(data){
-            var obj = JSON.parse(data);
+    function print(customerSupplier, transactionDate, transactionStatus, weightType) {
+        $('#printModal').find('#customerSupplierPrint').val(customerSupplier);
+        $('#printModal').find('#transactionDatePrint').val(transactionDate);
+        $('#printModal').find('#weighingTypePrint').val(weightType);
+        $('#printModal').find('#transactionStatusPrint').val(transactionStatus);
+        $('#printModal').modal('show');
 
-            if(obj.status === 'success'){
-                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                printWindow.document.write(obj.message);
-                printWindow.document.close();
-                setTimeout(function(){
-                    printWindow.print();
-                    printWindow.close();
-                }, 500);
-            }
-            else if(obj.status === 'failed'){
-                alert(obj.message);
-            }
-            else{
-                alert("Something wrong when printing");
+        $('#printSlipForm').validate({
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
             }
         });
     }

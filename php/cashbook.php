@@ -75,17 +75,30 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
     $deductionType = isset($_POST['deductionType']) ? $_POST['deductionType']: [];
     $deductionDesc = isset($_POST['deductionDesc']) ? $_POST['deductionDesc']: [];
     $deductionAmt = isset($_POST['deductionAmt']) ? $_POST['deductionAmt']: [];
+    $pvSelect = isset($_POST['pvSelect']) ? $_POST['pvSelect']: [];
 
     $deductionRecords = [];
+    $deductionFfbStorage = 0;
     if(isset($deductionNo) && $deductionNo != null && count($deductionNo) > 0){ 
         foreach ($deductionNo as $key => $value) {
             if (!empty($value) && isset($deductionType[$key]) && isset($deductionDesc[$key]) && isset($deductionAmt[$key])) {
-                $deductionRecords[] = [
+                if($deductionType[$key] == 'FFBSHORTAGE') {
+                    $deductionFfbStorage += floatval($deductionAmt[$key]);
+                }
+
+                $record = [
                     "no" => $value,
                     "type" => $deductionType[$key],
                     "desc" => $deductionDesc[$key],
                     "amount" => $deductionAmt[$key]
                 ];
+                
+                // Add pv_id if type is CREDITFFBPAY
+                if($deductionType[$key] == 'CREDITFFBPAY' && isset($pvSelect[$key]) && !empty($pvSelect[$key])) {
+                    $record['pv_id'] = $pvSelect[$key];
+                }
+                
+                $deductionRecords[] = $record;
             }
         }
     }
@@ -188,13 +201,17 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
             'accumFfbOut' => floatval($dailySales['totalSalesWeight'])
         ];
 
+        // Balance C/F = (FFB purchase cash weight[MT] + FFB purchase term weight[MT]) - FFB purchase rejected weight - FFB sales weight[MT] - FFB shortage weight[MT]
+        $balanceCf = (floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight'])) - floatval($dailyPurchase['totalRejectedWeight']) - floatval($dailySales['totalSalesWeight'] - $deductionFfbStorage);
+
         // Previous Day Values
         $prevValues = [
             'ffbBalance' => floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight']) - floatval($dailyPurchase['totalRejectedWeight']) - floatval($dailySales['totalSalesWeight']),
+            'balanceCf' => $balanceCf
         ];
     } else {
         // Get previous record
-        $sql = "SELECT accum_deduction, accum_addition, accum_purchase, accum_sales FROM Cash_Book WHERE DATE(date) < ? AND deleted = 0 ORDER BY date DESC LIMIT 1";
+        $sql = "SELECT accum_deduction, accum_addition, accum_purchase, accum_sales, prev_values FROM Cash_Book WHERE DATE(date) < ? AND deleted = 0 ORDER BY date DESC LIMIT 1";
         if ($select_stmt = $db->prepare($sql)) {
             $dateOnly = $dateObj->format('Y-m-d');
             $select_stmt->bind_param('s', $dateOnly);
@@ -205,6 +222,7 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                     $prevAddition = json_decode($row['accum_addition'], true) ?: [];
                     $prevPurchase = json_decode($row['accum_purchase'], true) ?: [];
                     $prevSales = json_decode($row['accum_sales'], true) ?: [];
+                    $prevWDValues = json_decode($row['prev_values'], true) ?: []; //$previous working day values
                     
                     // Build lookup arrays by type
                     $prevDeductionMap = [];
@@ -254,9 +272,13 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                         'accumFfbOut' => floatval($dailySales['totalSalesWeight']) + (isset($prevPurchase['accumFfbOut']) ? floatval($prevPurchase['accumFfbOut']) : 0)
                     ];
 
+                    // Balance C/F = Prev FFB Bal[MT] + (FFB purchase cash weight[MT] + FFB purchase term weight[MT]) - FFB purchase rejected weight - FFB sales weight[MT] - FFB shortage weight[MT]
+                    $balanceCf = (floatval($prevWDValues['balanceCf']) + floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight'])) - floatval($dailyPurchase['totalRejectedWeight']) - floatval($dailySales['totalSalesWeight'] - $deductionFfbStorage);
+
                     // Previous Day Values
                     $prevValues = [
                         'ffbBalance' => floatval($dailyPurchase['totalCashWeight']) + floatval($dailyPurchase['totalTermWeight']) - floatval($dailyPurchase['totalRejectedWeight']) - floatval($dailySales['totalSalesWeight']),
+                        'balanceCf' => $balanceCf
                     ];
 
                 } else {
@@ -269,6 +291,76 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
         }
     }
 
+    ######## Calculate Payment Voucher deduction amount for FFB payment ############
+    $creditFfbPay = 0;
+    $outstandingDetails = [];
+    $processedPVs = []; // Track which PVs we've already processed
+    $currentCashbookAmounts = []; // Track total amounts per PV for current cashbook
+    $currentCashbookDescs = []; // Track descriptions per PV for current cashbook
+    $currentCashbookDate = $date; // Track cashbook date
+    
+    // First, calculate total amount per PV for current cashbook
+    foreach($deductionRecords as $record) {
+        if($record['type'] == 'CREDITFFBPAY') {
+            $paymentVoucherId = isset($record['pv_id']) ? $record['pv_id'] : $record['desc'];
+            $creditFfbPay += floatval($record['amount']);
+            
+            if(!isset($currentCashbookAmounts[$paymentVoucherId])) {
+                $currentCashbookAmounts[$paymentVoucherId] = 0;
+            }
+            $currentCashbookAmounts[$paymentVoucherId] += floatval($record['amount']);
+            
+            // Store description
+            if(!isset($currentCashbookDescs[$paymentVoucherId])) {
+                $currentCashbookDescs[$paymentVoucherId] = isset($record['desc']) ? $record['desc'] : '';
+            }
+        }
+    }
+    
+    // Then, update outstanding details
+    foreach($currentCashbookAmounts as $paymentVoucherId => $totalAmount) {
+        if ($pv_stmt = $db->prepare("SELECT final_amount, outstanding_details FROM Payment_Voucher WHERE id=?")) {
+            $pv_stmt->bind_param('i', $paymentVoucherId);
+            if ($pv_stmt->execute()) {
+                $pv_result = $pv_stmt->get_result();
+                if ($pv_row = $pv_result->fetch_assoc()) {
+                    $pvOutstanding = [];
+                    if(!empty($pv_row['outstanding_details'])) {
+                        $pvOutstanding = json_decode($pv_row['outstanding_details'], true) ?: [];
+                    }
+                    
+                    // Find and replace matching cashbook_no or add new
+                    $found = false;
+                    foreach($pvOutstanding as $key => $item) {
+                        if($item['cashbook_no'] == $cashBookNo) {
+                            $pvOutstanding[$key]['amount'] = $totalAmount;
+                            $pvOutstanding[$key]['cashbook_date'] = $currentCashbookDate;
+                            $pvOutstanding[$key]['desc'] = isset($currentCashbookDescs[$paymentVoucherId]) ? $currentCashbookDescs[$paymentVoucherId] : '';
+                            $found = true;
+                            break;
+                        }
+                    }
+                    
+                    if(!$found) {
+                        $pvOutstanding[] = [
+                            'cashbook_no' => $cashBookNo,
+                            'cashbook_date' => $currentCashbookDate,
+                            'pv_id' => intval($paymentVoucherId),
+                            'desc' => isset($currentCashbookDescs[$paymentVoucherId]) ? $currentCashbookDescs[$paymentVoucherId] : '',
+                            'amount' => $totalAmount
+                        ];
+                    }
+                    
+                    $outstandingDetails[intval($paymentVoucherId)] = [
+                        'final_amount' => floatval($pv_row['final_amount']),
+                        'details' => $pvOutstanding
+                    ];
+                }
+            }
+            $pv_stmt->close();
+        }
+    } //echo json_encode($outstandingDetails);exit;
+
     if(!empty($cashbookId))
     {
         if ($update_stmt = $db->prepare("UPDATE Cash_Book SET cash_book_no=?, date=?, deduction_details=?, addition_details=?, total_deduction=?, total_addition=?, accum_deduction=?, accum_addition=?, accum_purchase=?, prev_values=?, created_by=?, modified_by=? WHERE id=?")) 
@@ -279,6 +371,7 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
             $accumAdditionJson = json_encode($accumAddition);
             $accumPurchaseJson = json_encode($accumPurchase);
             $prevValuesJson = json_encode($prevValues);
+            $outstandingJson = json_encode($outstandingDetails); 
             $update_stmt->bind_param('sssssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $accumPurchaseJson, $prevValuesJson, $username, $username, $cashbookId);
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
@@ -291,6 +384,31 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
             }
             else{
                 $update_stmt->close();
+
+                // Update payment voucher outstanding details
+                foreach($outstandingDetails as $pvId => $pvData) {
+                    $finalAmount = $pvData['final_amount'];
+                    $details = $pvData['details'];
+                    $outstandingAmount = $finalAmount;
+                    
+                    foreach($details as $item) {
+                        $outstandingAmount -= floatval($item['amount']);
+                    }
+
+                    if ($pv_update_stmt = $db->prepare("UPDATE Payment_Voucher SET outstanding_details=?, outstanding_amount=? WHERE id=?")) {
+                        $outstandingDetailsJson = json_encode($details);
+                        $pv_update_stmt->bind_param('sdi', $outstandingDetailsJson, $outstandingAmount, $pvId);
+                        if (! $pv_update_stmt->execute()) {
+                            echo json_encode(
+                                array(
+                                    "status"=> "failed", 
+                                    "message"=> "Failed to update payment voucher outstanding details for PV ID: " . $pvId
+                                )
+                            );
+                        }
+                        $pv_update_stmt->close();
+                    }
+                }
 
                 echo json_encode(
                     array(
@@ -310,6 +428,7 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
             $accumAdditionJson = json_encode($accumAddition);
             $accumPurchaseJson = json_encode($accumPurchase);
             $prevValuesJson = json_encode($prevValues);
+            $outstandingJson = json_encode($outstandingDetails);
             $insert_stmt->bind_param('ssssssssssss', $cashBookNo, $date, $deductionJson, $additionJson, $totalDeduction, $totalAddition, $accumDeductionJson, $accumAdditionJson, $accumPurchaseJson, $prevValuesJson, $username, $username);
 
             // Execute the prepared query.
@@ -340,6 +459,31 @@ if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST
                     }
                     else{
                         $update_stmt2->close();
+
+                        // Update payment voucher outstanding details
+                        foreach($outstandingDetails as $pvId => $pvData) {
+                            $finalAmount = $pvData['final_amount'];
+                            $details = $pvData['details'];
+                            $outstandingAmount = $finalAmount;
+                            
+                            foreach($details as $item) {
+                                $outstandingAmount -= floatval($item['amount']);
+                            }
+
+                            if ($pv_update_stmt = $db->prepare("UPDATE Payment_Voucher SET outstanding_details=?, outstanding_amount=? WHERE id=?")) {
+                                $outstandingDetailsJson = json_encode($details);
+                                $pv_update_stmt->bind_param('sdi', $outstandingDetailsJson, $outstandingAmount, $pvId);
+                                if (! $pv_update_stmt->execute()) {
+                                    echo json_encode(
+                                        array(
+                                            "status"=> "failed", 
+                                            "message"=> "Failed to update payment voucher outstanding details for PV ID: " . $pvId
+                                        )
+                                    );
+                                }
+                                $pv_update_stmt->close();
+                            }
+                        }
 
                         echo json_encode(
                             array(
