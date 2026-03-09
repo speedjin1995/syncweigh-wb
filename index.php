@@ -3830,31 +3830,23 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             var reading = parseWeight(data);
             var autoData = JSON.parse(autoDataJson);
 
-            if(dstatus === "Auto"){
+            // determine a message based on status/ranges, but only post when it changes
+            var msgToPost = null;
+            if (dstatus === "Auto" || dstatus === "Customer_Supplier") {
+                console.log("Auto Data:", autoData);
                 for (const item of autoData) {
                     if (reading >= item.rangeFrom && reading <= item.rangeTo) {
-                        console.log("Matched Range:", item);
-                        const msg = buildMessageAuto(item);
-                
-                        if (msg){
-                            postMessage(msg);
-                        } 
+                        msgToPost = buildMessageAuto(item);
+                        console.log("Matched Range:", item.rangeFrom, "-", item.rangeTo, "→ Message:", msgToPost);
                         break;
                     }
                 }
             }
-            else if(dstatus === "Customer_Supplier"){
-                for (const item of autoData) {
-                    if (reading >= item.rangeFrom && reading <= item.rangeTo) {
-                        console.log("Matched Range:", item);
-                        const msg = buildMessageAuto(item);
-                
-                        if (msg){
-                            postMessage(msg);
-                        } 
-                        break;
-                    }
-                }
+
+            if (msgToPost && msgToPost !== lastAutoMsg) {
+                console.log("Posting Auto Message:", msgToPost);
+                postMessage(msgToPost);
+                lastAutoMsg = msgToPost;
             }
 
             setConnectedUI(true);
@@ -4195,10 +4187,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
         $('#addWeight').on('click', function(){
             // Show Capture Buttons When Add New
             const msg = buildMessage('ESC');
-            autoDataJson = '[]';
                 
             if (msg){
-                //deductionValue = msg;
                 postMessage(msg);
             }
 
@@ -5599,8 +5589,33 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#totalPriceDisplay').hide();
                         }
 
-                        if(dstatus === "Customer_Supplier" && obj.message.deduction.status == "Auto" && autoSupplierJson.includes(supplierId)){
-                            autoDataJson = obj.message.deduction.auto_data;
+                        var customerList = [];
+                        if (typeof autoSupplierJson === 'string') {
+                            customerList = JSON.parse(autoSupplierJson);
+                        } else if (Array.isArray(autoSupplierJson)) {
+                            customerList = autoSupplierJson;
+                        } else if (typeof autoSupplierJson === 'object') {
+                            customerList = Object.keys(autoSupplierJson);
+                        }
+
+                        if(dstatus === "Customer_Supplier"){
+                            if(obj.message.deduction.status == "Auto" && customerList.includes(String(supplierId))){
+                                const msg = buildMessage('ESC');   
+                                console.log(obj.message.deduction.auto_data); 
+                                autoDataJson = obj.message.deduction.auto_data;
+
+                                if (msg){
+                                    postMessage(msg);
+                                }
+                            }
+                            else{
+                                const msg = buildMessage('ESC');
+                                autoDataJson = '[]';
+                                    
+                                if (msg){
+                                    postMessage(msg);
+                                }
+                            }
                         }
                     }
                     else if(obj.status === 'failed'){
@@ -5670,7 +5685,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         }
 
                         // Parse customer list and check if current customer is in it
-                        let customerList = [];
+                        var customerList = [];
                         if (typeof autoCustomerJson === 'string') {
                             customerList = JSON.parse(autoCustomerJson);
                         } else if (Array.isArray(autoCustomerJson)) {
@@ -5678,9 +5693,26 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         } else if (typeof autoCustomerJson === 'object') {
                             customerList = Object.keys(autoCustomerJson);
                         }
+                        console.log("Customer List:", customerList);
+                        console.log("Current Customer ID:", customerId);
 
-                        if(dstatus === "Customer_Supplier" && obj.message.deduction.status == "Auto" && customerList.includes(String(customerId))){
-                            autoDataJson = obj.message.deduction.auto_data;
+                        if(dstatus === "Customer_Supplier"){
+                            if(obj.message.deduction.status == "Auto" && customerList.includes(String(customerId))){
+                                const msg = buildMessage('ESC');
+                                autoDataJson = obj.message.deduction.auto_data;
+
+                                if (msg){
+                                    postMessage(msg);
+                                }
+                            }
+                            else{
+                                const msg = buildMessage('ESC');
+                                autoDataJson = '[]';
+                                    
+                                if (msg){
+                                    postMessage(msg);
+                                }
+                            }
                         }
                     }
                     else if(obj.status === 'failed'){
@@ -6725,6 +6757,41 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     $(element).removeClass('is-invalid');
                 }
             });
+        }
+    }
+
+    // Indicator Functions
+    function parseWeight(data){
+        var reading = "0";
+
+        if(ind == 'X2S' || ind == 'X722'){
+            var text = data.split(" ");
+            var val = text[text.length - 1].replace(/kg|KG|Kg/g,"");
+            reading = val.trim();
+            $('#indicatorWeight').html(val);
+        }
+        else if(ind == 'BX23' || ind == '205'){
+            var text = data.split(" ");
+            var newtext = text.slice(1, -1).join("");
+            reading = newtext.trim();
+            $('#indicatorWeight').html(newtext.trim());
+        }
+
+        return reading;
+    }
+
+    function setConnectedUI(state){
+        if(state){
+            $('#indicatorConnected').addClass('bg-primary');
+            $('#checkingConnection').removeClass('bg-danger');
+            $('#indicatorActive').removeClass('d-none').addClass('d-flex');
+            $('#indicatorInactive').addClass('d-none');
+        }else{
+            $('#indicatorWeight').html('0');
+            $('#indicatorConnected').removeClass('bg-primary');
+            $('#checkingConnection').addClass('bg-danger');
+            $('#indicatorInactive').removeClass('d-none').addClass('d-flex');
+            $('#indicatorActive').addClass('d-none');
         }
     }
 
