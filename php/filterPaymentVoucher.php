@@ -18,46 +18,46 @@ $searchQuery = "";
 if($_POST['fromDate'] != null && $_POST['fromDate'] != ''){
   $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['fromDate']);
   $fromDateTime = $dateTime->format('Y-m-d 00:00:00');
-  $searchQuery .= " and transaction_date >= '".$fromDateTime."'";
+  $searchQuery .= " and w.transaction_date >= '".$fromDateTime."'";
 }
 
 if($_POST['toDate'] != null && $_POST['toDate'] != ''){
   $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['toDate']);
   $toDateTime = $dateTime->format('Y-m-d 23:59:59');
-	$searchQuery .= " and transaction_date <= '".$toDateTime."'";
+	$searchQuery .= " and w.transaction_date <= '".$toDateTime."'";
 }
 
 if($_POST['weighingType'] != null && $_POST['weighingType'] != '' && $_POST['weighingType'] != '-'){
-	$searchQuery .= " and weight_type = '".$_POST['weighingType']."'";
+	$searchQuery .= " and w.weight_type = '".$_POST['weighingType']."'";
 }
 if($_POST['transactionStatus'] != null && $_POST['transactionStatus'] != '' && $_POST['transactionStatus'] != '-'){
-	$searchQuery .= " and transaction_status = '".$_POST['transactionStatus']."'";
+	$searchQuery .= " and w.transaction_status = '".$_POST['transactionStatus']."'";
 }
 
 if($_POST['customer'] != null && $_POST['customer'] != '' && $_POST['customer'] != '-'){
-	$searchQuery .= " and customer_code = '".$_POST['customer']."'";
+	$searchQuery .= " and w.customer_code = '".$_POST['customer']."'";
 }
 
 if($_POST['supplier'] != null && $_POST['supplier'] != '' && $_POST['supplier'] != '-'){
-	$searchQuery .= " and supplier_code = '".$_POST['supplier']."'";
+	$searchQuery .= " and w.supplier_code = '".$_POST['supplier']."'";
 }
 
 if($_POST['invoiceNo'] != null && $_POST['invoiceNo'] != '' && $_POST['invoiceNo'] != '-'){
-  $searchQuery .= " and invoice_no = '".mysqli_real_escape_string($db, $_POST['invoiceNo'])."'";
+  $searchQuery .= " and w.invoice_no = '".mysqli_real_escape_string($db, $_POST['invoiceNo'])."'";
 }
 
 if($searchValue != ''){
-  $searchQuery = " and (transaction_id like '%".$searchValue."%' or lorry_plate_no1 like '%".$searchValue."%')";
+  $searchQuery = " and (w.transaction_id like '%".$searchValue."%' or w.lorry_plate_no1 like '%".$searchValue."%')";
 }
 
-$allQuery = "select MAX(id) as id from Weight where is_complete = 'Y' AND  is_cancel <> 'Y' AND transaction_status = '".$_POST['transactionStatus']."' AND customer_code IS NOT NULL AND transaction_date IS NOT NULL group by DATE(transaction_date), customer_code";
+$allQuery = "select MAX(w.id) as id from Weight w where w.is_complete = 'Y' AND  w.is_cancel <> 'Y' AND w.transaction_status = '".$_POST['transactionStatus']."' AND w.customer_code IS NOT NULL AND w.transaction_date IS NOT NULL group by DATE(w.transaction_date), w.customer_code";
 if($_POST['transactionStatus'] == 'Purchase'){
 	$allQuery = "select MAX(w.id) as id from Weight w INNER JOIN Supplier s ON w.supplier_code = s.supplier_code where w.is_complete = 'Y' AND w.is_cancel <> 'Y' AND w.transaction_status = '".$_POST['transactionStatus']."' AND w.supplier_code IS NOT NULL AND w.transaction_date IS NOT NULL AND s.payment_term = 'Term' group by DATE(w.transaction_date), w.supplier_code";
 }
 $sel = mysqli_query($db, $allQuery); 
 $totalRecords = mysqli_num_rows($sel);
 ## Total number of record with filtering
-$filteredQuery = "select MAX(id) as id from Weight where is_complete = 'Y' AND is_cancel <> 'Y' AND customer_code IS NOT NULL AND transaction_date IS NOT NULL".$searchQuery." group by DATE(transaction_date), customer_code";
+$filteredQuery = "select MAX(w.id) as id from Weight w where w.is_complete = 'Y' AND w.is_cancel <> 'Y' AND w.customer_code IS NOT NULL AND w.transaction_date IS NOT NULL".$searchQuery." group by DATE(w.transaction_date), w.customer_code";
 if($_POST['transactionStatus'] == 'Purchase'){
 	$filteredQuery = "select MAX(w.id) as id from Weight w INNER JOIN Supplier s ON w.supplier_code = s.supplier_code where w.is_complete = 'Y' AND w.is_cancel <> 'Y' AND w.supplier_code IS NOT NULL AND w.transaction_date IS NOT NULL AND s.payment_term = 'Term'".$searchQuery." group by DATE(w.transaction_date), w.supplier_code";
 }
