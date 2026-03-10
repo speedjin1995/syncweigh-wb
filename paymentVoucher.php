@@ -371,7 +371,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th><?=$languageArray['transaction_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['voucher_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['voucher_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['weighing_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['transaction_status_code'][$language]?></th>

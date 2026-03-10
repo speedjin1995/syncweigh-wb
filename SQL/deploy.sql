@@ -2298,3 +2298,5 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_RAW_MAT` BEFORE UPDATE ON `Raw_Mat` FOR EACH 
 END
 $$
 DELIMITER ;
+
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'voucher_date_code', 'Voucher Date', '凭证日期', 'Tarikh Baucar', 'வவுச்சர் தேதி');
