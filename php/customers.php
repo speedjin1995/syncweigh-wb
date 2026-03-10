@@ -114,14 +114,31 @@ if (isset($_POST['customerCode'])) {
     } else {
         $paymentTerm = trim($_POST["paymentTerm"]);
     }
+
+    if (empty($_POST["paymentBy"])) {
+        $paymentBy = null;
+    } else {
+        $paymentBy = trim($_POST["paymentBy"]);
+    }
+
+    if (empty($_POST["harvestingPrice"])) {
+        $harvestingPrice = null;
+    } else {
+        $harvestingPrice = trim($_POST["harvestingPrice"]);
+    }
+
+    if (empty($_POST["transportPrice"])) {
+        $transportPrice = null;
+    } else {
+        $transportPrice = trim($_POST["transportPrice"]);
+    }
     
     if(! empty($customerId))
     {
-        // $sql = "UPDATE Customer SET company_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, created_by=?, modified_by=? WHERE customer_code=?";
         $action = "2";
-        if ($update_stmt = $db->prepare("UPDATE Customer SET customer_code=?, company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, mpob=?, mspo_no=?, payment_term=?, created_by=?, modified_by=? WHERE id=?")) 
+        if ($update_stmt = $db->prepare("UPDATE Customer SET customer_code=?, company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, mpob=?, mspo_no=?, payment_term=?, payment_by=?, harvesting_price=?, transport_price=?, created_by=?, modified_by=? WHERE id=?")) 
         {
-            $update_stmt->bind_param('ssssssssssssssssss', $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $mpob, $mspoNo, $paymentTerm, $username, $username, $customerId);
+            $update_stmt->bind_param('sssssssssssssssssssss', $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $mpob, $mspoNo, $paymentTerm, $paymentBy, $harvestingPrice, $transportPrice, $username, $username, $customerId);
 
             // Execute the prepared query.
             if (! $update_stmt->execute()) {
@@ -133,47 +150,23 @@ if (isset($_POST['customerCode'])) {
                 );
             }
             else{
-                // if ($insert_stmt = $db->prepare("INSERT INTO Customer_Log (customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                //     $insert_stmt->bind_param('sssssssssssssss', $customerId, $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $action, $username);
-        
-                //     // Execute the prepared query.
-                //     if (! $insert_stmt->execute()) {
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "failed", 
-                //         //         "message"=> $insert_stmt->error
-                //         //     )
-                //         // );
-                //     }
-                //     else{
-                //         $insert_stmt->close();
-                        
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "success", 
-                //         //         "message"=> "Added Successfully!!" 
-                //         //     )
-                //         // );
-                //     }
+                $update_stmt->close();
+                $db->close();
 
-                    $update_stmt->close();
-                    $db->close();
-
-                    echo json_encode(
-                        array(
-                            "status"=> "success", 
-                            "message"=> "Updated Successfully!!" 
-                        )
-                    );
-                // }
+                echo json_encode(
+                    array(
+                        "status"=> "success", 
+                        "message"=> "Updated Successfully!!" 
+                    )
+                );
             }
         }
     }
     else
     {
         $action = "1";
-        if ($insert_stmt = $db->prepare("INSERT INTO Customer (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            $insert_stmt->bind_param('sssssssssssssssss', $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $mpob, $mspoNo, $paymentTerm, $username, $username);
+        if ($insert_stmt = $db->prepare("INSERT INTO Customer (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, payment_by, harvesting_price, transport_price, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            $insert_stmt->bind_param('ssssssssssssssssssss', $customerCode, $companyRegNo, $newRegNo, $companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $mpob, $mspoNo, $paymentTerm, $paymentBy, $harvestingPrice, $transportPrice, $username, $username);
 
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {
@@ -191,33 +184,6 @@ if (isset($_POST['customerCode'])) {
                         "message"=> "Added Successfully!!" 
                     )
                 );
-
-                // $sel = mysqli_query($db,"select count(*) as allcount from Customer");
-                // $records = mysqli_fetch_assoc($sel);
-                // $totalRecords = $records['allcount'];
-
-                // if ($insert_log = $db->prepare("INSERT INTO Customer_Log (customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                //     $insert_log->bind_param('sssssssssssssss', $totalRecords, $customerCode, $companyRegNo, $newRegNo,$companyName, $addressLine1, $addressLine2, $addressLine3, $phoneNo, $faxNo, $contactName, $icNo, $tinNo, $action, $username);
-        
-                //     // Execute the prepared query.
-                //     if (! $insert_log->execute()) {
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "failed", 
-                //         //         "message"=> $insert_stmt->error
-                //         //     )
-                //         // );
-                //     }
-                //     else{
-                //         $insert_log->close();
-                //         // echo json_encode(
-                //         //     array(
-                //         //         "status"=> "success", 
-                //         //         "message"=> "Added Successfully!!" 
-                //         //     )
-                //         // );
-                //     }
-                // }
 
                 $insert_stmt->close();
                 $db->close();
