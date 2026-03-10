@@ -2227,3 +2227,74 @@ INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('tax', '[
 INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('ind_relief', 9000); -- Individual relief
 INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('non_res_epf', 30); -- Non-resident EPF contribution rate (30% of gross salary)
 INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('ind_epf_relief', 4000); -- EPF relief for individual (capped at RM4000 per year)
+
+-- 10/03/2026 --
+ALTER TABLE `Product` ADD `is_default` INT(1) NOT NULL DEFAULT '0' AFTER `low`;
+ALTER TABLE `Product_Log` ADD `is_default` INT(1) NOT NULL DEFAULT '0' AFTER `low`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_PRODUCT` AFTER INSERT ON `Product` FOR EACH ROW 
+INSERT INTO Product_Log (
+    product_id, product_code, name, price, description, variance, high, low, is_default, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.product_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.is_default, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PRODUCT` BEFORE UPDATE ON `Product` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Product_Log table
+    INSERT INTO Product_Log (
+    product_id, product_code, name, price, description, variance, high, low, is_default, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.product_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.is_default, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Raw_Mat` ADD `is_default` INT(1) NOT NULL DEFAULT '0' AFTER `low`;
+ALTER TABLE `Raw_Mat_Log` ADD `is_default` INT(1) NOT NULL DEFAULT '0' AFTER `low`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_RAW_MAT` AFTER INSERT ON `Raw_Mat` FOR EACH ROW 
+INSERT INTO Raw_Mat_Log (
+    raw_mat_id, raw_mat_code, name, price, description, variance, high, low, is_default, type, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.raw_mat_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.is_default, NEW.type, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_RAW_MAT` BEFORE UPDATE ON `Raw_Mat` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Raw_Mat_Log table
+    INSERT INTO Raw_Mat_Log (
+        raw_mat_id, raw_mat_code, name, price, description, variance, high, low, is_default, type, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.raw_mat_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.is_default, NEW.type, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
