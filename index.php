@@ -178,6 +178,25 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     
     $count++;
 }*/
+
+// Get default Product
+$stmt = $db->prepare("SELECT * from Product WHERE is_default = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+$productNameDefault = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $productNameDefault = $row['name'];
+}
+
+// Get default Raw Material
+$stmt = $db->prepare("SELECT * from Raw_Mat WHERE is_default = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+$rawMaterialNameDefault = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $rawMaterialNameDefault = $row['name'];
+}
+
 ?>
 
 <head>
@@ -2348,6 +2367,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     var rowCount = $("#productTable").find(".details").length;
     var customerOptions = $('#customerName option').clone();
     var supplierOptions = $('#supplierName option').clone();
+    var productNameDefault = '<?= $productNameDefault ?>';
+    var rawMaterialNameDefault = '<?= $rawMaterialNameDefault ?>';
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -4213,10 +4234,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#addModal').find('#supplierCode').val("");
             $('#addModal').find('#supplierName').val("-").trigger('change');
             $('#addModal').find('#productCode').val("");
-            $('#addModal').find('#productName').val("-").trigger('change');
+            $('#addModal').find('#productName').val(productNameDefault).trigger('change');
             $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true).trigger('change');
             $('#addModal').find('#rawMaterialCode').val("");
-            $('#addModal').find('#rawMaterialName').val("-").trigger('change');
+            $('#addModal').find('#rawMaterialName').val(rawMaterialNameDefault).trigger('change');
             $('#addModal').find('#siteCode').val("");
             $('#addModal').find('#siteName').val("").trigger('change');
             $('#addModal').find('#plantCode').val("");

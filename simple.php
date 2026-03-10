@@ -157,6 +157,25 @@ if ($rowd = $resultd->fetch_assoc()) {
     //$default_range_min = $rowd['default_range_min'] ?? 0;
     //$default_range_max = $rowd['default_range_max'] ?? 0  ;
 }
+
+// Get default Product
+$stmt = $db->prepare("SELECT * from Product WHERE is_default = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+$productNameDefault = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $productNameDefault = $row['name'];
+}
+
+// Get default Raw Material
+$stmt = $db->prepare("SELECT * from Raw_Mat WHERE is_default = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+$rawMaterialNameDefault = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $rawMaterialNameDefault = $row['name'];
+}
+
 ?>
 
 <head>
@@ -380,7 +399,8 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                             data-high="<?=$rowProduct['high'] ?>" 
                                                                             data-low="<?=$rowProduct['low'] ?>" 
                                                                             data-variance="<?=$rowProduct['variance'] ?>" 
-                                                                            data-description="<?=$rowProduct['description'] ?>">
+                                                                            data-description="<?=$rowProduct['description'] ?>"
+                                                                            <?php if($productNameDefault == $rowProduct['name']) echo 'selected'; ?>>
                                                                             <?=$rowProduct['product_code'] ?>
                                                                         </option>
                                                                     <?php } ?>
@@ -393,7 +413,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                 <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
                                                                     <option selected="-">-</option>
                                                                     <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                                                                        <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] ?></option>
+                                                                        <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>" <?php if($rawMaterialNameDefault == $rowRowMat['name']) echo 'selected'; ?>><?=$rowRowMat['raw_mat_code'] ?></option>
                                                                     <?php } ?>
                                                                 </select>           
                                                             </div>
@@ -1069,6 +1089,8 @@ if ($rowd = $resultd->fetch_assoc()) {
     var tareOutgoingDatePicker2; 
     var customerOptions = $('#customerName option').clone();
     var supplierOptions = $('#supplierName option').clone();
+    var productNameDefault = '<?= $productNameDefault ?>';
+    var rawMaterialNameDefault = '<?= $rawMaterialNameDefault ?>';
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -1998,10 +2020,10 @@ if ($rowd = $resultd->fetch_assoc()) {
             $('#supplierCode').val("");
             $('#supplierName').val("-").trigger('change');
             $('#productCode').val("");
-            $('#productName').val("-").trigger('change');
+            $('#productName').val(productNameDefault).trigger('change');
             $("input[name='exDel'][value='false']").prop("checked", true).trigger('change');
             $('#rawMaterialCode').val("");
-            $('#rawMaterialName').val("-").trigger('change');
+            $('#rawMaterialName').val(rawMaterialNameDefault).trigger('change');
             $('#siteCode').val("");
             $('#siteName').val("").trigger('change');
             $('#plantCode').val("");
