@@ -302,8 +302,8 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                 <label for="transactionStatus" class="col-sm-4 col-form-label">Trans Status</label>
                                                                 <div class="col-sm-8">
                                                                     <select id="transactionStatus" name="transactionStatus" class="form-select select2">
-                                                                        <option value="Sales" selected>Sales</option>
-                                                                        <option value="Purchase">Purchase</option>
+                                                                        <option value="Sales">Sales</option>
+                                                                        <option value="Purchase" selected>Purchase</option>
                                                                         <option value="Local">Public</option>
                                                                     </select>  
                                                                 </div>
@@ -340,7 +340,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                             </div-->
                                                         </div><br>
                                                         <div class="row">
-                                                            <div class="col-12" id="divCustomerName">
+                                                            <div class="col-12" id="divCustomerName" style="display:none;">
                                                                 <div class="row">
                                                                     <label for="customerName" class="col-sm-4 col-form-label">Customer Name</label>
                                                                     <div class="col-sm-8">
@@ -353,7 +353,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-12" id="divSupplierName" style="display:none;">
+                                                            <div class="col-12" id="divSupplierName">
                                                                 <div class="row">
                                                                     <label for="supplierName" class="col-sm-4 col-form-label">Supplier Name</label>
                                                                     <div class="col-sm-8">
@@ -367,7 +367,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                 </div>
                                                             </div>
                                                         </div><br>
-                                                        <div class="row" id="productNameDisplay">
+                                                        <div class="row" id="productNameDisplay" style="display:none;">
                                                             <label for="productName" class="col-sm-4 col-form-label">Product</label>
                                                             <div class="col-sm-8">
                                                                 <select class="form-select select2" id="productName" name="productName" required>
@@ -387,7 +387,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                 </select>                                                                                        
                                                             </div>
                                                         </div>
-                                                        <div class="row" id="rawMaterialDisplay" style="display:none;">
+                                                        <div class="row" id="rawMaterialDisplay">
                                                             <label for="rawMaterialName" class="col-sm-4 col-form-label">Raw Material</label>
                                                             <div class="col-sm-8">
                                                                 <select class="form-select select2" id="rawMaterialName" name="rawMaterialName" required>
@@ -452,7 +452,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                 </div>
                                                             </div>
                                                         </div><br>
-                                                        <div class="row">
+                                                        <div class="row" style="display:none;">
                                                             <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
                                                             <div class="col-sm-8">
                                                                 <select class="form-select js-choice select2" id="driverName" name="driverName">
@@ -463,7 +463,7 @@ if ($rowd = $resultd->fetch_assoc()) {
                                                                 </select>
                                                             </div>
                                                         </div><br>
-                                                        <div class="row">
+                                                        <div class="row" style="display:none;">
                                                             <label for="driverIc" class="col-sm-4 col-form-label">Driver IC</label>
                                                             <div class="col-sm-8">
                                                                 <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
