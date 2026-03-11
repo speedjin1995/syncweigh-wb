@@ -852,7 +852,7 @@ if(($row = $result->fetch_assoc()) !== null){
                 loadPricingModal(obj.message);
                 
                 // Populate Harvesting & Transport Price in the modal - only if they don't exist
-                if (obj.message.cust_supp_detail && obj.message.cust_supp_detail.harvesting_price) {
+                if (obj.message.cust_supp_detail && obj.message.cust_supp_detail.harvesting_price > 0) {
                     $('#pricingModal').find('#harvestingPrice').val(obj.message.cust_supp_detail.harvesting_price);
                     
                     var harvestingExists = false;
@@ -869,7 +869,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     }
                 }
                 
-                if (obj.message.cust_supp_detail && obj.message.cust_supp_detail.transport_price) {
+                if (obj.message.cust_supp_detail && obj.message.cust_supp_detail.transport_price > 0) {
                     $('#pricingModal').find('#transportPrice').val(obj.message.cust_supp_detail.transport_price);
                     
                     var transportExists = false;
