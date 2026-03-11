@@ -1081,12 +1081,28 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
-                                                                                                <div class="row">
+                                                                                                <div class="row mb-3">
                                                                                                     <div class="col-md-6">
                                                                                                         <label class="form-label">Tax</label>
                                                                                                         <div class="input-group">
                                                                                                             <input type="number" class="form-control" id="sstPrice" name="sstPrice" placeholder="0">
                                                                                                             <span class="input-group-text">%</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Harvesting Price</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control input-readonly" id="harvestingPrice" name="harvestingPrice" placeholder="0" readonly>
+                                                                                                            <span class="input-group-text">RM</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="row mb-3">
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Transport Price</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control input-readonly" id="transportPrice" name="transportPrice" placeholder="0" readonly>
+                                                                                                            <span class="input-group-text">RM</span>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="col-md-6">
@@ -2369,6 +2385,10 @@ if(($row = $result->fetch_assoc()) !== null){
     var supplierOptions = $('#supplierName option').clone();
     var productNameDefault = '<?= $productNameDefault ?>';
     var rawMaterialNameDefault = '<?= $rawMaterialNameDefault ?>';
+    var customerIsCash = false;
+    var supplierIsCash = false;
+    var harvestingPrice = 0;
+    var transportPrice = 0;
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -3263,7 +3283,6 @@ if(($row = $result->fetch_assoc()) !== null){
             });
 
         });*/
-
 
         $('#submitWeightPrint').on('click', function(){
             // Check weight
@@ -4292,6 +4311,8 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#addModal').find('#subTotalPrice').val("0.00");
             $('#addModal').find('#sstPrice').val("0.00");
             $('#addModal').find('#productPrice').val("0.00");
+            $('#addModal').find('#harvestingPrice').val("0.00");
+            $('#addModal').find('#trasnportPrice').val("0.00")
             $('#addModal').find('#totalPrice').val("0.00");
             $('#addModal').find('#finalWeight').val("");
             $('#addModal').find("input[name='loadDrum'][value='true']").prop("checked", true).trigger('change');
@@ -5327,8 +5348,12 @@ if(($row = $result->fetch_assoc()) !== null){
             var taxPercentage = $('#addModal').find('#sstPrice').val() ? parseFloat($('#addModal').find('#sstPrice').val()).toFixed(2) : 0.00;
             var weight = (parseFloat(nett1)/1000).toFixed(2);
             var subTotalPrice = price * weight;
-            var totalPrice = subTotalPrice * (1 + (taxPercentage/100));
+            var totalHarvestingPrice = weight * harvestingPrice;
+            var totalTransportPrice = weight * transportPrice; console.log(weight, harvestingPrice, transportPrice);
+            var totalPrice = (subTotalPrice * (1 + (taxPercentage/100))) + totalHarvestingPrice + totalTransportPrice;
             $('#subTotalPrice').val(subTotalPrice.toFixed(2));
+            $('#harvestingPrice').val(totalHarvestingPrice.toFixed(2));
+            $('#transportPrice').val(totalTransportPrice.toFixed(2));
             $('#totalPrice').val(totalPrice.toFixed(2));
         });
 
@@ -5595,6 +5620,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     if (obj.status == 'success'){
                         if(obj.message.payment_term == "Cash")
                         {
+                            supplierIsCash = true;
                             $('#priceCard').show();
                             $('#unitPriceDisplay').show();
                             $('#subTotalPriceDisplay').show();
@@ -5603,12 +5629,16 @@ if(($row = $result->fetch_assoc()) !== null){
                         }
                         else
                         {
+                            supplierIsCash = false;
                             $('#priceCard').hide();
                             $('#unitPriceDisplay').hide();
                             $('#subTotalPriceDisplay').hide();
                             $('#sstDisplay').hide();
                             $('#totalPriceDisplay').hide();
                         }
+
+                        harvestingPrice = obj.message.harvesting_price ? parseFloat(obj.message.harvesting_price) : 0;
+                        transportPrice = obj.message.transport_price ? parseFloat(obj.message.transport_price) : 0;
 
                         var customerList = [];
                         if (typeof autoSupplierJson === 'string') {
@@ -5690,6 +5720,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     if (obj.status == 'success'){
                         if(obj.message.payment_term == "Cash")
                         {
+                            customerIsCash = true;
                             $('#priceCard').show();
                             $('#unitPriceDisplay').show();
                             $('#subTotalPriceDisplay').show();
@@ -5698,6 +5729,7 @@ if(($row = $result->fetch_assoc()) !== null){
                         }
                         else
                         {
+                            customerIsCash = false;
                             $('#priceCard').hide();
                             $('#unitPriceDisplay').hide();
                             $('#subTotalPriceDisplay').hide();
@@ -5705,6 +5737,9 @@ if(($row = $result->fetch_assoc()) !== null){
                             $('#totalPriceDisplay').hide();
                         }
 
+                        harvestingPrice = obj.message.harvesting_price ? parseFloat(obj.message.harvesting_price) : 0;
+                        transportPrice = obj.message.transport_price ? parseFloat(obj.message.transport_price) : 0;
+                        
                         // Parse customer list and check if current customer is in it
                         var customerList = [];
                         if (typeof autoCustomerJson === 'string') {
@@ -6514,6 +6549,8 @@ if(($row = $result->fetch_assoc()) !== null){
                 $('#addModal').find('#unitPrice').val(obj.message.unit_price);
                 $('#addModal').find('#subTotalPrice').val(obj.message.sub_total);
                 $('#addModal').find('#sstPrice').val(obj.message.sst);
+                $('#addModal').find('#harvestingPrice').val(obj.message.harvesting_price);
+                $('#addModal').find('#transportPrice').val(obj.message.transport_price);
                 $('#addModal').find('#totalPrice').val(obj.message.total_price);
                 $('#addModal').find('#finalWeight').val(obj.message.final_weight);
 
