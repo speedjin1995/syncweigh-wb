@@ -471,7 +471,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div><br>
+                                                        </div>
                                                         <div class="row" style="display:none;">
                                                             <label for="driverName" class="col-sm-4 col-form-label">Driver Name</label>
                                                             <div class="col-sm-8">
@@ -482,14 +482,14 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     <?php } ?>
                                                                 </select>
                                                             </div>
-                                                        </div><br>
+                                                        </div>
                                                         <div class="row" style="display:none;">
                                                             <label for="driverIc" class="col-sm-4 col-form-label">Driver IC</label>
                                                             <div class="col-sm-8">
                                                                 <input type="text" class="form-control" id="driverIc" name="driverIc" placeholder="Driver IC">
                                                             </div>
-                                                        </div><br>
-                                                        <div id="priceCard" style="display:none;">
+                                                        </div>
+                                                        <!-- <div id="priceCard" style="display:none;">
                                                             <div class="card border">
                                                                 <div class="card-body">
                                                                     <h5 class="card-title mb-3"><i class="mdi mdi-receipt"></i> Pricing Details</h5>
@@ -527,7 +527,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> -->
                                                         <div class="col-12">
                                                             <div class="row">
                                                                 <label for="otherRemarks" class="col-4 col-form-label">Remarks</label>
@@ -572,6 +572,12 @@ if(($row = $result->fetch_assoc()) !== null){
                                         <input type="hidden" id="oGrossIncoming" name="oGrossIncoming">
                                         <input type="hidden" id="oTareOutgoing" name="oTareOutgoing">
                                         <input type="hidden" id="oNettWeight" name="oNettWeight">
+                                        <input type="hidden" id="unitPrice" name="unitPrice">
+                                        <input type="hidden" id="subTotalPrice" name="subTotalPrice">
+                                        <input type="hidden" id="sstPrice" name="sstPrice">
+                                        <input type="hidden" id="totalPrice" name="totalPrice">
+                                        <input type="hidden" id="harvestingPrice" name="harvestingPrice">
+                                        <input type="hidden" id="transportPrice" name="transportPrice">
 
                                         <div class="row col-12">
                                             <div class="hstack gap-2 justify-content-end">
@@ -744,6 +750,7 @@ if(($row = $result->fetch_assoc()) !== null){
 
                             <div class="row">
                                 <div class="col-xl-3 col-md-6">
+                                    <!-- Grading Modal -->
                                     <div class="modal fade" id="gradingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-scrollable custom-xxl">
                                             <div class="modal-content">
@@ -950,6 +957,84 @@ if(($row = $result->fetch_assoc()) !== null){
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
                                     </div><!-- /.modal -->
+
+                                    <!-- Pricing Modal -->
+                                    <div class="modal fade" id="pricingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle">Pricing Detail</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form role="form" id="pricingForm" class="needs-validation" novalidate autocomplete="off">
+                                                        <div class="row col-12 mb-3">
+                                                            <div class="col-xxl-12 col-lg-12">
+                                                                <div class="row mb-3">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Unit Price</label>
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control" id="unitPrice" name="unitPrice" placeholder="0">
+                                                                            <span class="input-group-text">RM</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Sub-Total Price</label>
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control input-readonly" id="subTotalPrice" name="subTotalPrice" placeholder="0" readonly>
+                                                                            <span class="input-group-text bg-light">RM</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Tax</label>
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control" id="sstPrice" name="sstPrice" placeholder="0">
+                                                                            <span class="input-group-text">%</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Harvesting Price</label>
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control input-readonly" id="harvestingPrice" name="harvestingPrice" placeholder="0" readonly>
+                                                                            <span class="input-group-text">RM</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Transport Price</label>
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control input-readonly" id="transportPrice" name="transportPrice" placeholder="0" readonly>
+                                                                            <span class="input-group-text">RM</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Total Price</label>
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control input-readonly" id="totalPrice" name="totalPrice" placeholder="0" readonly>
+                                                                            <span class="input-group-text bg-primary text-white">RM</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <input type="hidden" id="id" name="id">
+                                                        </div>
+                                                        
+                                                        <div class="col-xxl-12 col-lg-12">
+                                                            <div class="hstack gap-2 justify-content-end">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitPricing"><?=$languageArray['submit_code'][$language]?></button>
+                                                            </div>
+                                                        </div><!--end col-->                                                               
+                                                    </form>
+                                                </div>
+                                            </div><!-- /.modal-content -->
+                                        </div><!-- /.modal-dialog -->
+                                    </div><!-- /.modal -->
                                 </div>
                             </div> <!-- end row-->
                         </div> <!-- end .h-100-->
@@ -1091,6 +1176,10 @@ if(($row = $result->fetch_assoc()) !== null){
     var supplierOptions = $('#supplierName option').clone();
     var productNameDefault = '<?= $productNameDefault ?>';
     var rawMaterialNameDefault = '<?= $rawMaterialNameDefault ?>';
+    var customerIsCash = false;
+    var supplierIsCash = false;
+    var harvestingPrice = 0;
+    var transportPrice = 0;
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -1312,106 +1401,114 @@ if(($row = $result->fetch_assoc()) !== null){
                 return false;
             }
 
-            if(pass && $('#weightForm').valid()){
-                $('#spinnerLoading').show();
-                $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
-                    var obj = JSON.parse(data); 
-                    if(obj.status === 'success'){
-                        $('#spinnerLoading').hide();
-                        $('#addModal').modal('hide');
-
-                        // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
-                            $.post('php/getWeight.php', { userID: obj.id }, function (data) {
-                                var obj = JSON.parse(data);
-                                if (obj.status === 'success') {
-                                    $('#gradingModal').find('#id').val(obj.message.id);
-                                    $('#gradingModal').find('#submitPrint').val('N');
-                                    $('#gradingModal').find('#transactionId').val(obj.message.transaction_id);
-                                    $('#gradingModal').find('#vehicleNo').val(obj.message.lorry_plate_no1);
-                                    $('#gradingModal').find('#ticketDo').val(obj.message.delivery_no);
-                                    $('#gradingModal').find('#nettWeight').val(obj.message.nett_weight1 ? (parseFloat(obj.message.nett_weight1)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#reduceWeight').val(obj.message.reduce_weight ? (parseFloat(obj.message.reduce_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#finalWeight').val(obj.message.final_weight ? (parseFloat(obj.message.final_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#rejectWeight').val(obj.message.reject_weight ? (parseFloat(obj.message.reject_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
-
-                                    var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
-                                    $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
-                                    $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
-                                    $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
-                                    $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
-                                    $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
-                                    $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
-                                    $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
-                                    $('#gradingModal').find('#bunchSize8_9').val(gradingDetail.bunch_size_8_9 || '0.00');
-                                    $('#gradingModal').find('#bunchSize7_8').val(gradingDetail.bunch_size_7_8 || '0.00');
-                                    $('#gradingModal').find('#bunchSize6_7').val(gradingDetail.bunch_size_6_7 || '0.00');
-                                    $('#gradingModal').find('#bunchSize5_6').val(gradingDetail.bunch_size_5_6 || '0.00');
-                                    $('#gradingModal').find('#bunchSize5').val(gradingDetail.bunch_size_5 || '0.00');
-                                    $('#gradingModal').find('#totalPercent').val(gradingDetail.total_percent || '0.00');
-                                    $('#gradingModal').find('#unripe').val(gradingDetail.unripe || '0.00');
-                                    $('#gradingModal').find('#underripe').val(gradingDetail.underripe || '0.00');
-                                    $('#gradingModal').find('#emptyBunch').val(gradingDetail.empty_bunch || '0.00');
-                                    $('#gradingModal').find('#rottenBunch').val(gradingDetail.rotten_bunch || '0.00');
-                                    $('#gradingModal').find('#longStalks').val(gradingDetail.long_stalks || '0.00');
-                                    $('#gradingModal').find('#dirtyBunch').val(gradingDetail.dirty_bunch || '0.00');
-                                    $('#gradingModal').find('#duraBunch').val(gradingDetail.dura_bunch || '0.00');
-                                    $('#gradingModal').find('#oldBunch').val(gradingDetail.old_bunch || '0.00');
-                                    $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
-
-                                    if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        var mspoPerc = gradingDetail.mspo_perc || 100;
-                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
-                                    }else{
-                                        var mspoPerc = gradingDetail.mspo_perc || 0;
-                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
-                                    }
-
-                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
-                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
-                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
-                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
-
-                                    $('#gradingModal').modal('show');
-                                }
-                            });
-
-                            // <?php
-                            //     if(isset($_GET['weight'])){
-                            //         echo "window.location = 'simple.php';";
-                            //     }
-                            // ?>
-                            // table.ajax.reload();
-                            // window.location = 'simple.php';
-                            // $("#successBtn").attr('data-toast-text', obj.message);
-                            // $("#successBtn").click();
-                        }else{
-                            <?php
-                                if(isset($_GET['weight'])){
-                                    echo "window.location = 'simple.php';";
-                                }
-                            ?>
-                            table.ajax.reload();
-                            window.location = 'simple.php';
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-                        }
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        alert(obj.message);
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        alert(obj.message);
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
-                        $("#failBtn").click();
-                    }
-                });
+            if (($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local") && supplierIsCash && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
+                $('#pricingModal').modal('show');
+            }else if ($('#transactionStatus').val() == "Sales" && customerIsCash && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
+                $('#pricingModal').modal('show');
+            }else{
+                submitWeight(pass);
             }
+
+            // if(pass && $('#weightForm').valid()){
+            //     $('#spinnerLoading').show();
+            //     $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
+            //         var obj = JSON.parse(data); 
+            //         if(obj.status === 'success'){
+            //             $('#spinnerLoading').hide();
+            //             $('#addModal').modal('hide');
+
+            //             // If Transaction Status is Purchase, open grading modal
+            //             if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
+            //                 $.post('php/getWeight.php', { userID: obj.id }, function (data) {
+            //                     var obj = JSON.parse(data);
+            //                     if (obj.status === 'success') {
+            //                         $('#gradingModal').find('#id').val(obj.message.id);
+            //                         $('#gradingModal').find('#submitPrint').val('N');
+            //                         $('#gradingModal').find('#transactionId').val(obj.message.transaction_id);
+            //                         $('#gradingModal').find('#vehicleNo').val(obj.message.lorry_plate_no1);
+            //                         $('#gradingModal').find('#ticketDo').val(obj.message.delivery_no);
+            //                         $('#gradingModal').find('#nettWeight').val(obj.message.nett_weight1 ? (parseFloat(obj.message.nett_weight1)/1000).toFixed(2) : '0.00');
+            //                         $('#gradingModal').find('#reduceWeight').val(obj.message.reduce_weight ? (parseFloat(obj.message.reduce_weight)/1000).toFixed(2) : '0.00');
+            //                         $('#gradingModal').find('#finalWeight').val(obj.message.final_weight ? (parseFloat(obj.message.final_weight)/1000).toFixed(2) : '0.00');
+            //                         $('#gradingModal').find('#rejectWeight').val(obj.message.reject_weight ? (parseFloat(obj.message.reject_weight)/1000).toFixed(2) : '0.00');
+            //                         $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
+
+            //                         var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
+            //                         $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
+            //                         $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+            //                         $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
+            //                         $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+            //                         $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize8_9').val(gradingDetail.bunch_size_8_9 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize7_8').val(gradingDetail.bunch_size_7_8 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize6_7').val(gradingDetail.bunch_size_6_7 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize5_6').val(gradingDetail.bunch_size_5_6 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize5').val(gradingDetail.bunch_size_5 || '0.00');
+            //                         $('#gradingModal').find('#totalPercent').val(gradingDetail.total_percent || '0.00');
+            //                         $('#gradingModal').find('#unripe').val(gradingDetail.unripe || '0.00');
+            //                         $('#gradingModal').find('#underripe').val(gradingDetail.underripe || '0.00');
+            //                         $('#gradingModal').find('#emptyBunch').val(gradingDetail.empty_bunch || '0.00');
+            //                         $('#gradingModal').find('#rottenBunch').val(gradingDetail.rotten_bunch || '0.00');
+            //                         $('#gradingModal').find('#longStalks').val(gradingDetail.long_stalks || '0.00');
+            //                         $('#gradingModal').find('#dirtyBunch').val(gradingDetail.dirty_bunch || '0.00');
+            //                         $('#gradingModal').find('#duraBunch').val(gradingDetail.dura_bunch || '0.00');
+            //                         $('#gradingModal').find('#oldBunch').val(gradingDetail.old_bunch || '0.00');
+            //                         $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
+
+            //                         if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
+            //                             var mspoPerc = gradingDetail.mspo_perc || 100;
+            //                             var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
+            //                         }else{
+            //                             var mspoPerc = gradingDetail.mspo_perc || 0;
+            //                             var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
+            //                         }
+
+            //                         $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+            //                         // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+            //                         $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+            //                         // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
+            //                         $('#gradingModal').modal('show');
+            //                     }
+            //                 });
+
+            //                 // <?php
+            //                 //     if(isset($_GET['weight'])){
+            //                 //         echo "window.location = 'simple.php';";
+            //                 //     }
+            //                 // ?>
+            //                 // table.ajax.reload();
+            //                 // window.location = 'simple.php';
+            //                 // $("#successBtn").attr('data-toast-text', obj.message);
+            //                 // $("#successBtn").click();
+            //             }else{
+            //                 <?php
+            //                     if(isset($_GET['weight'])){
+            //                         echo "window.location = 'simple.php';";
+            //                     }
+            //                 ?>
+            //                 table.ajax.reload();
+            //                 window.location = 'simple.php';
+            //                 $("#successBtn").attr('data-toast-text', obj.message);
+            //                 $("#successBtn").click();
+            //             }
+            //         }
+            //         else if(obj.status === 'failed'){
+            //             $('#spinnerLoading').hide();
+            //             alert(obj.message);
+            //             $("#failBtn").attr('data-toast-text', obj.message );
+            //             $("#failBtn").click();
+            //         }
+            //         else{
+            //             $('#spinnerLoading').hide();
+            //             alert(obj.message);
+            //             $("#failBtn").attr('data-toast-text', 'Failed to save');
+            //             $("#failBtn").click();
+            //         }
+            //     });
+            // }
             /*else{
                 let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
                 if (userChoice) {
@@ -1711,6 +1808,11 @@ if(($row = $result->fetch_assoc()) !== null){
                     });
                 }
             }*/
+        });
+
+        $('#submitPricing').on('click', function(){
+            $('#pricingModal').modal('hide');
+            submitWeight(true);
         });
 
         $('#submitGrading').on('click', function(){
@@ -2042,7 +2144,7 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#destination').val("-").trigger('change');
             $('#replacementContainer').val('').trigger('keyup');
             $('#otherRemarks').val("");
-            $('#manualVehicle').prop('checked', true).trigger('change');
+            $('#manualVehicle').prop('checked', false).trigger('change');
             $('#manualVehicle2').prop('checked', false).trigger('change');
             $('#grossIncoming').val("");
             grossIncomingDatePicker.clear();
@@ -2071,11 +2173,6 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#productLow').val("");
             $('#productVariance').val("");
             $('#orderWeight').val("0");
-            $('#unitPrice').val("0.00");
-            $('#subTotalPrice').val("0.00");
-            $('#sstPrice').val("0.00");
-            $('#productPrice').val("0.00");
-            $('#totalPrice').val("0.00");
             $('#finalWeight').val("");
             $("input[name='loadDrum'][value='true']").prop("checked", true).trigger('change');
             $('#noOfDrum').val("");
@@ -2087,20 +2184,55 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#sealNo2').val("");
             $('#driverName').val("").trigger('change');
 
+            // Pricing
+            $('#unitPrice').val("0.00");
+            $('#subTotalPrice').val("0.00");
+            $('#sstPrice').val("0.00");
+            $('#productPrice').val("0.00");
+            $('#harvestingPrice').val("0.00");
+            $('#trasnportPrice').val("0.00");
+            $('#totalPrice').val("0.00");
+
+            $('#pricingModal').find('#unitPrice').val("0.00");
+            $('#pricingModal').find('#subTotalPrice').val("0.00");
+            $('#pricingModal').find('#sstPrice').val("0.00");
+            $('#pricingModal').find('#harvestingPrice').val("0.00");
+            $('#pricingModal').find('#trasnportPrice').val("0.00");
+            $('#pricingModal').find('#totalPrice').val("0.00");
+
             // Show select and hide input readonly
             $('#salesOrderEdit').val("").hide();
             $('#purchaseOrderEdit').val("").hide();
             $('#salesOrder').next('.select2-container').show();
 
             // Remove Validation Error Message
-            $('#addModal .is-invalid').removeClass('is-invalid');
+            $('.is-invalid').removeClass('is-invalid');
 
-            $('#addModal .select2[required]').each(function () {
+            $('.select2[required]').each(function () {
                 var select2Field = $(this);
                 var select2Container = select2Field.next('.select2-container');
                 
                 select2Container.find('.select2-selection').css('border', ''); // Remove red border
                 select2Container.next('.select2-error').remove(); // Remove error message
+            });
+
+            // Initialize all Select2 elements in the modal
+            $('#weightForm .select2').select2({
+                allowClear: true,
+                placeholder: "Please Select",
+                dropdownParent: $('#weightForm') // Ensures dropdown is not cut off
+            });
+
+            // Apply custom styling to Select2 elements in addModal
+            $('.select2-container .select2-selection--single').css({
+                'padding-top': '4px',
+                'padding-bottom': '4px',
+                'height': 'auto'
+            });
+
+            $('.select2-container .select2-selection__arrow').css({
+                'padding-top': '33px',
+                'height': 'auto'
             });
 
             $('#addModal').modal('show');
@@ -2989,21 +3121,34 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#oNettWeight').val($(this).val());
 
             // Calculate Pricing
-            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()) : 0;
+            var price = $('#pricingModal').find('#unitPrice').val() ? parseFloat($('#pricingModal').find('#unitPrice').val()) : 0;
             var weight = $(this).val() ? (parseFloat($(this).val())/1000).toFixed(2) : 0;
             var subtotalPrice = price * weight;
-            var taxPercentage = $('#sstPrice').val() ? parseFloat($('#sstPrice').val()) : 0;
-            var totalPrice = subtotalPrice * (1 + (taxPercentage/100));
+            var taxPercentage = $('#pricingModal').find('#sstPrice').val() ? parseFloat($('#pricingModal').find('#sstPrice').val()) : 0;
+            var totalHarvestingPrice = weight * harvestingPrice;
+            var totalTransportPrice = weight * transportPrice;
+            var totalPrice = (subtotalPrice * (1 + (taxPercentage/100))) + totalHarvestingPrice + totalTransportPrice;
 
+            // addModal Setting
             $('#subTotalPrice').val(subtotalPrice.toFixed(2));
+            $('#harvestingPrice').val(totalHarvestingPrice.toFixed(2))
+            $('#transportPrice').val(totalTransportPrice.toFixed(2));
             $('#totalPrice').val(totalPrice.toFixed(2));
+
+            // pricingModal Setting
+            $('#pricingModal').find('#subTotalPrice').val(subtotalPrice.toFixed(2));
+            $('#pricingModal').find('#harvestingPrice').val(totalHarvestingPrice.toFixed(2));
+            $('#pricingModal').find('#transportPrice').val(totalTransportPrice.toFixed(2));
+            $('#pricingModal').find('#totalPrice').val(totalPrice.toFixed(2));
         });
 
-        $('#unitPrice').on('keyup', function(){
+        $('#pricingModal').find('#unitPrice').on('keyup', function(){
+            $('#unitPrice').val($(this).val());
             $('#nettWeight').trigger('change');
         });
 
-        $('#sstPrice').on('keyup', function(){
+        $('#pricingModal').find('#sstPrice').on('keyup', function(){
+            $('#sstPrice').val($(this).val());
             $('#nettWeight').trigger('change');
         });
         
@@ -3284,16 +3429,21 @@ if(($row = $result->fetch_assoc()) !== null){
 
                 if (obj.status == 'success'){
                     if (obj.message.payment_term == 'Cash'){
-                        $('#priceCard').show();
+                        supplierIsCash = true;
+                        // $('#priceCard').show();
                         // $('#subTotalPriceDisplay').show();
                         // $('#sstDisplay').show();
                         // $('#totalPriceDisplay').show();
                     }else{
-                        $('#priceCard').hide();
+                        supplierIsCash = false;
+                        // $('#priceCard').hide();
                         // $('#subTotalPriceDisplay').hide();
                         // $('#sstDisplay').hide();
                         // $('#totalPriceDisplay').hide();
                     }
+
+                    harvestingPrice = obj.message.harvesting_price ? parseFloat(obj.message.harvesting_price) : 0;
+                    transportPrice = obj.message.transport_price ? parseFloat(obj.message.transport_price) : 0;
 
                     var customerList = [];
                     if (typeof autoSupplierJson === 'string') {
@@ -3368,16 +3518,21 @@ if(($row = $result->fetch_assoc()) !== null){
 
                 if (obj.status == 'success'){
                     if (obj.message.payment_term == 'Cash'){
-                        $('#priceCard').show();
+                        customerIsCash = true;
+                        // $('#priceCard').show();
                         // $('#subTotalPriceDisplay').show();
                         // $('#sstDisplay').show();
                         // $('#totalPriceDisplay').show();
                     }else{
-                        $('#priceCard').hide();
+                        customerIsCash = false;
+                        // $('#priceCard').hide();
                         // $('#subTotalPriceDisplay').hide();
                         // $('#sstDisplay').hide();
                         // $('#totalPriceDisplay').hide();
                     }
+
+                    harvestingPrice = obj.message.harvesting_price ? parseFloat(obj.message.harvesting_price) : 0;
+                    transportPrice = obj.message.transport_price ? parseFloat(obj.message.transport_price) : 0;
 
                     // Parse customer list and check if current customer is in it
                     var customerList = [];
@@ -3732,6 +3887,109 @@ if(($row = $result->fetch_assoc()) !== null){
         ?>
     });
 
+    function submitWeight(pass){
+        if(pass && $('#weightForm').valid()){
+            $('#spinnerLoading').show();
+            $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
+                var obj = JSON.parse(data); 
+                if(obj.status === 'success'){
+                    $('#spinnerLoading').hide();
+                    $('#addModal').modal('hide');
+
+                    // If Transaction Status is Purchase, open grading modal
+                    if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
+                        $.post('php/getWeight.php', { userID: obj.id }, function (data) {
+                            var obj = JSON.parse(data);
+                            if (obj.status === 'success') {
+                                $('#gradingModal').find('#id').val(obj.message.id);
+                                $('#gradingModal').find('#submitPrint').val('N');
+                                $('#gradingModal').find('#transactionId').val(obj.message.transaction_id);
+                                $('#gradingModal').find('#vehicleNo').val(obj.message.lorry_plate_no1);
+                                $('#gradingModal').find('#ticketDo').val(obj.message.delivery_no);
+                                $('#gradingModal').find('#nettWeight').val(obj.message.nett_weight1 ? (parseFloat(obj.message.nett_weight1)/1000).toFixed(2) : '0.00');
+                                $('#gradingModal').find('#reduceWeight').val(obj.message.reduce_weight ? (parseFloat(obj.message.reduce_weight)/1000).toFixed(2) : '0.00');
+                                $('#gradingModal').find('#finalWeight').val(obj.message.final_weight ? (parseFloat(obj.message.final_weight)/1000).toFixed(2) : '0.00');
+                                $('#gradingModal').find('#rejectWeight').val(obj.message.reject_weight ? (parseFloat(obj.message.reject_weight)/1000).toFixed(2) : '0.00');
+                                $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
+
+                                var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
+                                $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
+                                $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
+                                $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+                                $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
+                                $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
+                                $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
+                                $('#gradingModal').find('#bunchSize8_9').val(gradingDetail.bunch_size_8_9 || '0.00');
+                                $('#gradingModal').find('#bunchSize7_8').val(gradingDetail.bunch_size_7_8 || '0.00');
+                                $('#gradingModal').find('#bunchSize6_7').val(gradingDetail.bunch_size_6_7 || '0.00');
+                                $('#gradingModal').find('#bunchSize5_6').val(gradingDetail.bunch_size_5_6 || '0.00');
+                                $('#gradingModal').find('#bunchSize5').val(gradingDetail.bunch_size_5 || '0.00');
+                                $('#gradingModal').find('#totalPercent').val(gradingDetail.total_percent || '0.00');
+                                $('#gradingModal').find('#unripe').val(gradingDetail.unripe || '0.00');
+                                $('#gradingModal').find('#underripe').val(gradingDetail.underripe || '0.00');
+                                $('#gradingModal').find('#emptyBunch').val(gradingDetail.empty_bunch || '0.00');
+                                $('#gradingModal').find('#rottenBunch').val(gradingDetail.rotten_bunch || '0.00');
+                                $('#gradingModal').find('#longStalks').val(gradingDetail.long_stalks || '0.00');
+                                $('#gradingModal').find('#dirtyBunch').val(gradingDetail.dirty_bunch || '0.00');
+                                $('#gradingModal').find('#duraBunch').val(gradingDetail.dura_bunch || '0.00');
+                                $('#gradingModal').find('#oldBunch').val(gradingDetail.old_bunch || '0.00');
+                                $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
+
+                                if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
+                                    var mspoPerc = gradingDetail.mspo_perc || 100;
+                                    var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
+                                }else{
+                                    var mspoPerc = gradingDetail.mspo_perc || 0;
+                                    var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
+                                }
+
+                                $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
+                                $('#gradingModal').modal('show');
+                            }
+                        });
+
+                        // <?php
+                        //     if(isset($_GET['weight'])){
+                        //         echo "window.location = 'simple.php';";
+                        //     }
+                        // ?>
+                        // table.ajax.reload();
+                        // window.location = 'simple.php';
+                        // $("#successBtn").attr('data-toast-text', obj.message);
+                        // $("#successBtn").click();
+                    }else{
+                        <?php
+                            if(isset($_GET['weight'])){
+                                echo "window.location = 'simple.php';";
+                            }
+                        ?>
+                        table.ajax.reload();
+                        window.location = 'simple.php';
+                        $("#successBtn").attr('data-toast-text', obj.message);
+                        $("#successBtn").click();
+                    }
+                }
+                else if(obj.status === 'failed'){
+                    $('#spinnerLoading').hide();
+                    alert(obj.message);
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $('#spinnerLoading').hide();
+                    alert(obj.message);
+                    $("#failBtn").attr('data-toast-text', 'Failed to save');
+                    $("#failBtn").click();
+                }
+            });
+        }
+    }
+
     function handleWeightType(weightType){
         if (weightType == 'Container'){
             $('#manualVehicle').prop('checked', false).trigger('change');
@@ -4073,11 +4331,23 @@ if(($row = $result->fetch_assoc()) !== null){
                 $('#weighbridge').val(obj.message.weighbridge_id);
                 $('#indicatorId2').val(obj.message.indicator_id_2);
                 $('#productDescription').val(obj.message.product_description);
+                $('#finalWeight').val(obj.message.final_weight);
+
+                // Pricing Fields
                 $('#unitPrice').val(obj.message.unit_price);
                 $('#subTotalPrice').val(obj.message.sub_total);
                 $('#sstPrice').val(obj.message.sst);
+                $('#harvestingPrice').val(obj.message.harvesting_price);
+                $('#transportPrice').val(obj.message.transport_price);
                 $('#totalPrice').val(obj.message.total_price);
-                $('#finalWeight').val(obj.message.final_weight);
+
+                $('#pricingModal').find('#unitPrice').val(obj.message.unit_price);
+                $('#pricingModal').find('#subTotalPrice').val(obj.message.sub_total);
+                $('#pricingModal').find('#sstPrice').val(obj.message.sst);
+                $('#pricingModal').find('#harvestingPrice').val(obj.message.harvesting_price);
+                $('#pricingModal').find('#transportPrice').val(obj.message.transport_price);
+                $('#pricingModal').find('#totalPrice').val(obj.message.total_price);
+
 
                 if (obj.message.load_drum == 'LOAD'){
                     $("input[name='loadDrum'][value='true']").prop("checked", true).trigger('change');
@@ -4134,28 +4404,28 @@ if(($row = $result->fetch_assoc()) !== null){
                 }
 
                 // Initialize all Select2 elements in the modal
-                $('#addModal .select2').select2({
+                $('#weightForm .select2').select2({
                     allowClear: true,
                     placeholder: "Please Select",
-                    dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+                    dropdownParent: $('#weightForm') // Ensures dropdown is not cut off
                 });
 
                 // Apply custom styling to Select2 elements in addModal
-                $('#addModal .select2-container .select2-selection--single').css({
+                $('.select2-container .select2-selection--single').css({
                     'padding-top': '4px',
                     'padding-bottom': '4px',
                     'height': 'auto'
                 });
 
-                $('#addModal .select2-container .select2-selection__arrow').css({
+                $('.select2-container .select2-selection__arrow').css({
                     'padding-top': '33px',
                     'height': 'auto'
                 });
 
                 // Remove Validation Error Message
-                $('#addModal .is-invalid').removeClass('is-invalid');
+                $('.is-invalid').removeClass('is-invalid');
 
-                $('#addModal .select2[required]').each(function () {
+                $('.select2[required]').each(function () {
                     var select2Field = $(this);
                     var select2Container = select2Field.next('.select2-container');
                     

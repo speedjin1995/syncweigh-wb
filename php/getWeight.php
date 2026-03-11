@@ -440,6 +440,8 @@ if(isset($_POST['userID'])){
                             $message['unit_price'] = $row['unit_price'];
                             $message['sub_total'] = $row['sub_total'];
                             $message['sst'] = $row['sst'];
+                            $message['harvesting_price'] = $row['harvesting_price'];
+                            $message['transport_price'] = $row['transport_price'];
                             $message['total_price'] = $row['total_price'];
                             $message['final_weight'] = $row['final_weight'];
                             $message['load_drum'] = $row['load_drum'];
