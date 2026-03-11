@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "db_connect.php";
+require_once "requires/lookup.php";
 
 if(isset($_POST['transactionStatus']) && isset($_POST['weightType']) && isset($_POST['customerSupplier']) && isset($_POST['transactionDate'])){
     $transactionStatus = $_POST['transactionStatus'];
@@ -69,6 +70,7 @@ if(isset($_POST['transactionStatus']) && isset($_POST['weightType']) && isset($_
 
             $message['totalNettWeight'] = $totalNettWeight;
             $message['paymentVoucher'] = $paymentVoucherData;
+            $message['cust_supp_detail'] = ($transactionStatus == 'Sales' || $transactionStatus == 'Local') ? searchCustomerDetailByName($customerSupplier, $db) : searchSupplierDetailByName($customerSupplier, $db);
 
             echo json_encode(
                 array(
