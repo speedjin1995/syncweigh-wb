@@ -122,13 +122,13 @@ if (isset($_POST['supplierCode'])) {
     }
 
     if (empty($_POST["harvestingPrice"])) {
-        $harvestingPrice = null;
+        $harvestingPrice = 0;
     } else {
         $harvestingPrice = trim($_POST["harvestingPrice"]);
     }
 
     if (empty($_POST["transportPrice"])) {
-        $transportPrice = null;
+        $transportPrice = 0;
     } else {
         $transportPrice = trim($_POST["transportPrice"]);
     }
