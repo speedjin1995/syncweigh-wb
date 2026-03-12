@@ -2990,6 +2990,14 @@ if(($row = $result->fetch_assoc()) !== null){
 
             var isValid = true;
 
+            // Auto pull weight of indicator if not set
+            var indicatorWeight = parseFloat($('#indicatorWeight').text());
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                $('#grossIncoming').val(indicatorWeight).trigger('keyup');
+            }else if (!$('#tareOutgoing').val() || $('#tareOutgoing').val() == '0') {
+                $('#tareOutgoing').val(indicatorWeight).trigger('keyup');
+            }
+
             // Check if grossIncoming is empty
             if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
                 alert('Please capture Incoming weight before saving.');
@@ -3339,6 +3347,14 @@ if(($row = $result->fetch_assoc()) !== null){
             var isEmptyContainer = 'N';
             if ($('#weightType').val() == 'Empty Container'){
                 isEmptyContainer = 'Y';
+            }
+
+            // Auto pull weight of indicator if not set
+            var indicatorWeight = parseFloat($('#indicatorWeight').text());
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                $('#grossIncoming').val(indicatorWeight).trigger('keyup');
+            }else if (!$('#tareOutgoing').val() || $('#tareOutgoing').val() == '0') {
+                $('#tareOutgoing').val(indicatorWeight).trigger('keyup');
             }
 
             // Check if grossIncoming is empty
