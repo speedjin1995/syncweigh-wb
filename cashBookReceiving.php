@@ -148,7 +148,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                 </div>
 
                                                                 <div class="row mt-4">
-                                                                    <div class="col-xxl-12 col-lg-12">
+                                                                    <div class="col-xxl-6 col-lg-6" style="display:none">
                                                                         <h6 class="mb-2"><?=$languageArray['cash_book_code'][$language]?> (-)</h6>
                                                                         <table class="table table-bordered align-middle">
                                                                             <thead>
@@ -171,7 +171,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                             </tfoot>
                                                                         </table>
                                                                     </div>
-                                                                    <div class="col-xxl-6 col-lg-6" style="display:none">
+                                                                    <div class="col-xxl-12 col-lg-12">
                                                                         <h6 class="mb-2"><?=$languageArray['cash_book_code'][$language]?> (+)</h6>
                                                                         <table class="table table-bordered align-middle">
                                                                             <thead>
@@ -276,7 +276,8 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['date_code'][$language]?></th>
                                                                     <th><?=$languageArray['cash_book_no_code'][$language]?></th>
-                                                                    <th><?=$languageArray['total_deduction_code'][$language]?> (RM)</th>
+                                                                    <!-- <th><?=$languageArray['total_deduction_code'][$language]?> (RM)</th> -->
+                                                                    <th><?=$languageArray['total_addition_code'][$language]?> (RM)</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -477,8 +478,8 @@ if(($row = $result->fetch_assoc()) !== null){
                 },
                 { data: 'date' },
                 { data: 'cash_book_no' },
-                { data: 'total_deduction' },
-                // { data: 'total_addition' },
+                // { data: 'total_deduction' },
+                { data: 'total_addition' },
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -549,8 +550,8 @@ if(($row = $result->fetch_assoc()) !== null){
                     },
                     { data: 'date' },
                     { data: 'cash_book_no' },
-                    { data: 'total_deduction' },
-                    // { data: 'total_addition' },
+                    // { data: 'total_deduction' },
+                    { data: 'total_addition' },
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {

@@ -2473,3 +2473,5 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Co
 END
 $$
 DELIMITER ;
+
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_book_receiving_code', 'Cash Book Receiving', '现金簿收款', 'Penerimaan Buku Tunai', 'பணம் புத்தக பெறுதல்');
