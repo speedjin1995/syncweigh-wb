@@ -13,7 +13,7 @@ if(!isset($_SESSION['id'])){
 // Check if the user is already logged in, if yes then redirect him to index page
 $id = $_SESSION['id'];
 // Processing form data when form is submitted
-if (isset($_POST['date'], $_POST['cashBookNo'], $_POST['totalDeduction'], $_POST['totalAddition'])) {
+if (isset($_POST['date'], $_POST['cashBookNo'])) {
     
     if (empty($_POST["id"])) {
         $cashbookId = null;

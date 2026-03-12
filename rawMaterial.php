@@ -36,6 +36,19 @@
     
     <?php include 'layouts/head-css.php'; ?>
 
+    <style>
+        /* Star icon styling */
+        .star-default {
+            cursor: pointer;
+            font-size: 24px;
+            color: #ffc107;
+            margin-left: 8px;
+        }
+        .star-default:hover {
+            opacity: 0.7;
+        }
+    </style>
+
 </head>
 
 <?php include 'layouts/body.php'; ?>
@@ -415,7 +428,10 @@ $(function () {
                 className: 'select-checkbox',
                 orderable: false,
                 render: function (data, type, row) {
-                    return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
+                    var starIcon = row.is_default == '1' ? '★' : '☆';
+                    var starTitle = row.is_default == '1' ? 'Default Product' : 'Set as Default';
+                    return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>' +
+                           '<span class="star-default" onclick="toggleDefault('+data+')" title="'+starTitle+'">'+starIcon+'</span>';
                 }
             },
             { data: 'raw_mat_code' },
@@ -831,6 +847,31 @@ function reactivate(id) {
 
   $('#spinnerLoading').hide();
 }
+
+function toggleDefault(id) {
+    $('#spinnerLoading').show();
+    $.post('php/toggleDefault.php', {id: id, type: "RawMaterial"}, function(data){
+        var obj = JSON.parse(data);
+        
+        if(obj.status === 'success'){
+            table.ajax.reload(null, false);
+            $('#spinnerLoading').hide();
+            $("#successBtn").attr('data-toast-text', obj.message);
+            $("#successBtn").click();
+        }
+        else if(obj.status === 'failed'){
+            $('#spinnerLoading').hide();
+            $("#failBtn").attr('data-toast-text', obj.message);
+            $("#failBtn").click();
+        }
+        else{
+            $('#spinnerLoading').hide();
+            $("#failBtn").attr('data-toast-text', 'Failed to update default raw material');
+            $("#failBtn").click();
+        }
+    });
+}
+
 
 $('#productForm').validate({
     errorElement: 'span',

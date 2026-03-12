@@ -211,7 +211,7 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                 </div>
                                             </div>
                                             
-                                            <div class="col-12 mb-3 mt-4">
+                                            <!--div class="col-12 mb-3 mt-4">
                                                 <h5 class="text-primary">Payroll Settings</h5>
                                                 <hr>
                                             </div>
@@ -222,7 +222,7 @@ if ($role != 'SADMIN' && $role != 'AUTHORITY'){
                                                         <input type="number" step="0.01" class="form-control" id="employeeEpf" name="employeeEpf" placeholder="11" value="<?=$epf ?>" <?= $readonly ?>>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div-->
                                             <div class="mt-4" <?= $hidden ? 'style="display:none;"' : '' ?>>
                                                 <button class="btn btn-success w-100" type="submit">Update</button>
                                             </div>

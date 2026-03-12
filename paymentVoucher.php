@@ -298,6 +298,8 @@ if(($row = $result->fetch_assoc()) !== null){
 
                                                                 <input type="hidden" id="customerSupplier" name="customerSupplier">
                                                                 <input type="hidden" id="invoiceNo" name="invoiceNo">
+                                                                <input type="hidden" id="harvestingPrice" name="harvestingPrice">
+                                                                <input type="hidden" id="transportPrice" name="transportPrice">
                                                             </div>
                                                         </div>
                                                         
@@ -371,7 +373,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th><?=$languageArray['transaction_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['voucher_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['voucher_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['weighing_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['transaction_status_code'][$language]?></th>
@@ -719,6 +721,16 @@ if(($row = $result->fetch_assoc()) !== null){
             calculateTotals();
         });
 
+        $('#totalNettWeight').on('change', function() {
+            $('#deductionsTable tr').each(function() {
+                $(this).find('.deduction-amount').trigger('input');
+            });
+
+            $('#additionTable tr').each(function() {
+                $(this).find('.addition-amount').trigger('input');
+            });
+        });
+
         $('#pricingForm').on('submit', function(e) {
             e.preventDefault();
             $('#spinnerLoading').show();
@@ -750,11 +762,11 @@ if(($row = $result->fetch_assoc()) !== null){
             });
         });
 
-        $('#addDeductionRow').on('click', function() {
+        $('#addDeductionRow').on('click', function(event, desc = '', amount = 0) {
             var newRow = `<tr>
                 <td>${++deductionRowCount}</td>
-                <td><input type="text" class="form-control form-control-sm" name="deduction_desc[]"></td>
-                <td><input type="number" class="form-control form-control-sm deduction-amount" name="deduction_amount[]" step="0.01" value="0"></td>
+                <td><input type="text" class="form-control form-control-sm" name="deduction_desc[]" value="${desc}"></td>
+                <td><input type="number" class="form-control form-control-sm deduction-amount" name="deduction_amount[]" step="0.01" value="${amount}"></td>
                 <td><button type="button" class="btn btn-sm btn-danger removeDeductionRow"><i class="bx bx-trash"></i></button></td>
             </tr>`;
             $('#deductionsTable').append(newRow);
@@ -788,6 +800,28 @@ if(($row = $result->fetch_assoc()) !== null){
             calculateTotals();
         });
 
+        $(document).on('input', '.deduction-amount, .addition-amount', function() {
+            var $row = $(this).closest('tr');
+            var deductionDesc = $row.find('input[name="deduction_desc[]"]').val();
+            var harvestingPrice = parseFloat($('#harvestingPrice').val()) || 0;
+            var transportPrice = parseFloat($('#transportPrice').val()) || 0;
+            var totalNettWeight = parseFloat($('#totalNettWeight').val()) || 0;
+
+            if (deductionDesc && deductionDesc.toLowerCase() == 'harvesting') {
+                // Calculate harvesting if they exist
+                var totalHarvestingPrice = harvestingPrice * totalNettWeight;
+                $row.find('input[name="deduction_amount[]"]').val(totalHarvestingPrice.toFixed(2));
+            }
+
+            if (deductionDesc && deductionDesc.toLowerCase() == 'transport') {
+                // Calculate transport if they exist
+                var totalTransportPrice = transportPrice * totalNettWeight;
+                $row.find('input[name="deduction_amount[]"]').val(totalTransportPrice.toFixed(2));
+            }
+
+            calculateTotals();
+        });
+
         $(document).on('input', '.deduction-amount, .addition-amount', calculateTotals);
         
         $('#unitPrice, #tax').on('input', function() {
@@ -816,6 +850,42 @@ if(($row = $result->fetch_assoc()) !== null){
 
             if (obj.status == 'success'){
                 loadPricingModal(obj.message);
+                
+                // Populate Harvesting & Transport Price in the modal - only if they don't exist
+                if (obj.message.cust_supp_detail && obj.message.cust_supp_detail.harvesting_price > 0) {
+                    $('#pricingModal').find('#harvestingPrice').val(obj.message.cust_supp_detail.harvesting_price);
+                    
+                    var harvestingExists = false;
+                    $('#deductionsTable input[name="deduction_desc[]"]').each(function() {
+                        if ($(this).val().toLowerCase() == 'harvesting') {
+                            harvestingExists = true;
+                            return false;
+                        }
+                    });
+                    
+                    if (!harvestingExists) {
+                        $('#addDeductionRow').trigger('click', ['Harvesting', 0]);
+                        $('#totalNettWeight').trigger('change');
+                    }
+                }
+                
+                if (obj.message.cust_supp_detail && obj.message.cust_supp_detail.transport_price > 0) {
+                    $('#pricingModal').find('#transportPrice').val(obj.message.cust_supp_detail.transport_price);
+                    
+                    var transportExists = false;
+                    $('#deductionsTable input[name="deduction_desc[]"]').each(function() {
+                        if ($(this).val().toLowerCase() == 'transport') {
+                            transportExists = true;
+                            return false;
+                        }
+                    });
+                    
+                    if (!transportExists) {
+                        $('#addDeductionRow').trigger('click', ['Transport', 0]);
+                        $('#totalNettWeight').trigger('change');
+                    }
+                }
+
                 $('#pricingModal').modal('show');
             }
             else if(obj.status === 'failed'){
@@ -879,23 +949,23 @@ if(($row = $result->fetch_assoc()) !== null){
             
             // Load deductions
             $('#deductionsTable').empty();
+            deductionRowCount = 0;
             var deductions = JSON.parse(data.paymentVoucher.deduction_details);
             deductions.forEach(function(deduction, index) {
-                var row = '<tr><td>' + (index + 1) + '</td><td><input type="text" class="form-control form-control-sm" name="deduction_desc[]" value="' + deduction.deduction_desc + '"></td><td><input type="number" class="form-control form-control-sm deduction-amount" name="deduction_amount[]" step="0.01" value="' + deduction.deduction_amount + '"></td><td><button type="button" class="btn btn-sm btn-danger removeDeductionRow"><i class="bx bx-trash"></i></button></td></tr>';
+                var row = '<tr><td>' + (++deductionRowCount) + '</td><td><input type="text" class="form-control form-control-sm" name="deduction_desc[]" value="' + deduction.deduction_desc + '"></td><td><input type="number" class="form-control form-control-sm deduction-amount" name="deduction_amount[]" step="0.01" value="' + deduction.deduction_amount + '"></td><td><button type="button" class="btn btn-sm btn-danger removeDeductionRow"><i class="bx bx-trash"></i></button></td></tr>';
                 $('#deductionsTable').append(row);
             });
             
             // Load additions
             $('#additionsTable').empty();
+            additionRowCount = 0;
             var additions = JSON.parse(data.paymentVoucher.addition_details);
             additions.forEach(function(addition, index) {
-                var row = '<tr><td>' + (index + 1) + '</td><td><input type="text" class="form-control form-control-sm" name="addition_desc[]" value="' + addition.addition_desc + '"></td><td><input type="number" class="form-control form-control-sm addition-amount" name="addition_amount[]" step="0.01" value="' + addition.addition_amount + '"></td><td><button type="button" class="btn btn-sm btn-danger removeAdditionRow"><i class="bx bx-trash"></i></button></td></tr>';
+                var row = '<tr><td>' + (++additionRowCount) + '</td><td><input type="text" class="form-control form-control-sm" name="addition_desc[]" value="' + addition.addition_desc + '"></td><td><input type="number" class="form-control form-control-sm addition-amount" name="addition_amount[]" step="0.01" value="' + addition.addition_amount + '"></td><td><button type="button" class="btn btn-sm btn-danger removeAdditionRow"><i class="bx bx-trash"></i></button></td></tr>';
                 $('#additionsTable').append(row);
             });
         } else {
             $('#voucherNo').val('');
-            $('#deductionsTable').empty();
-            $('#additionsTable').empty();
             $('#unitPrice').val(0.00);
             $('#tax').val(0);
             $('#totalAmount').val(0.00);

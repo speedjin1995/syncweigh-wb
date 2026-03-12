@@ -178,6 +178,25 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     
     $count++;
 }*/
+
+// Get default Product
+$stmt = $db->prepare("SELECT * from Product WHERE is_default = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+$productNameDefault = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $productNameDefault = $row['name'];
+}
+
+// Get default Raw Material
+$stmt = $db->prepare("SELECT * from Raw_Mat WHERE is_default = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+$rawMaterialNameDefault = '';
+if(($row = $result->fetch_assoc()) !== null){
+    $rawMaterialNameDefault = $row['name'];
+}
+
 ?>
 
 <head>
@@ -1062,12 +1081,28 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
-                                                                                                <div class="row">
+                                                                                                <div class="row mb-3">
                                                                                                     <div class="col-md-6">
                                                                                                         <label class="form-label">Tax</label>
                                                                                                         <div class="input-group">
                                                                                                             <input type="number" class="form-control" id="sstPrice" name="sstPrice" placeholder="0">
                                                                                                             <span class="input-group-text">%</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Harvesting Price</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control input-readonly" id="harvestingPrice" name="harvestingPrice" placeholder="0" readonly>
+                                                                                                            <span class="input-group-text">RM</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="row mb-3">
+                                                                                                    <div class="col-md-6">
+                                                                                                        <label class="form-label">Transport Price</label>
+                                                                                                        <div class="input-group">
+                                                                                                            <input type="number" class="form-control input-readonly" id="transportPrice" name="transportPrice" placeholder="0" readonly>
+                                                                                                            <span class="input-group-text">RM</span>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="col-md-6">
@@ -1191,7 +1226,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="grossIncoming2" name="grossIncoming2" placeholder="0" readonly>
                                                                                             <div class="input-group-text">Kg</div>
-                                                                                            <button class="input-group-text btn btn-success fs-5" id="grossCapture2"><i class="mdi mdi-sync" type="button"></i></button>
+                                                                                            <button class="input-group-text btn btn-success fs-5" id="grossCapture2" type="button"><i class="mdi mdi-sync" ></i></button>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -2348,6 +2383,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
     var rowCount = $("#productTable").find(".details").length;
     var customerOptions = $('#customerName option').clone();
     var supplierOptions = $('#supplierName option').clone();
+    var productNameDefault = '<?= $productNameDefault ?>';
+    var rawMaterialNameDefault = '<?= $rawMaterialNameDefault ?>';
+    var customerIsCash = false;
+    var supplierIsCash = false;
+    var harvestingPrice = 0;
+    var transportPrice = 0;
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -3242,7 +3283,6 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             });
 
         });*/
-
 
         $('#submitWeightPrint').on('click', function(){
             // Check weight
@@ -4213,10 +4253,10 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#addModal').find('#supplierCode').val("");
             $('#addModal').find('#supplierName').val("-").trigger('change');
             $('#addModal').find('#productCode').val("");
-            $('#addModal').find('#productName').val("-").trigger('change');
+            $('#addModal').find('#productName').val(productNameDefault).trigger('change');
             $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true).trigger('change');
             $('#addModal').find('#rawMaterialCode').val("");
-            $('#addModal').find('#rawMaterialName').val("-").trigger('change');
+            $('#addModal').find('#rawMaterialName').val(rawMaterialNameDefault).trigger('change');
             $('#addModal').find('#siteCode').val("");
             $('#addModal').find('#siteName').val("").trigger('change');
             $('#addModal').find('#plantCode').val("");
@@ -4271,6 +4311,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#addModal').find('#subTotalPrice').val("0.00");
             $('#addModal').find('#sstPrice').val("0.00");
             $('#addModal').find('#productPrice').val("0.00");
+            $('#addModal').find('#harvestingPrice').val("0.00");
+            $('#addModal').find('#trasnportPrice').val("0.00")
             $('#addModal').find('#totalPrice').val("0.00");
             $('#addModal').find('#finalWeight').val("");
             $('#addModal').find("input[name='loadDrum'][value='true']").prop("checked", true).trigger('change');
@@ -5195,6 +5237,13 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             $('#oGrossIncoming').val(gross);
         });
 
+        // Prevent Enter key from triggering any button in weightForm
+        $('#weightForm').on('keydown', function(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
+            }
+        });
+
         $('#grossCapture').on('click', function(event){
             event.preventDefault();
             var text = $('#indicatorWeight').text();
@@ -5306,8 +5355,12 @@ while ($rowCam = $resultCam->fetch_assoc()) {
             var taxPercentage = $('#addModal').find('#sstPrice').val() ? parseFloat($('#addModal').find('#sstPrice').val()).toFixed(2) : 0.00;
             var weight = (parseFloat(nett1)/1000).toFixed(2);
             var subTotalPrice = price * weight;
-            var totalPrice = subTotalPrice * (1 + (taxPercentage/100));
+            var totalHarvestingPrice = weight * harvestingPrice;
+            var totalTransportPrice = weight * transportPrice; console.log(weight, harvestingPrice, transportPrice);
+            var totalPrice = (subTotalPrice * (1 + (taxPercentage/100))) + totalHarvestingPrice + totalTransportPrice;
             $('#subTotalPrice').val(subTotalPrice.toFixed(2));
+            $('#harvestingPrice').val(totalHarvestingPrice.toFixed(2));
+            $('#transportPrice').val(totalTransportPrice.toFixed(2));
             $('#totalPrice').val(totalPrice.toFixed(2));
         });
 
@@ -5574,6 +5627,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     if (obj.status == 'success'){
                         if(obj.message.payment_term == "Cash")
                         {
+                            supplierIsCash = true;
                             $('#priceCard').show();
                             $('#unitPriceDisplay').show();
                             $('#subTotalPriceDisplay').show();
@@ -5582,12 +5636,16 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         }
                         else
                         {
+                            supplierIsCash = false;
                             $('#priceCard').hide();
                             $('#unitPriceDisplay').hide();
                             $('#subTotalPriceDisplay').hide();
                             $('#sstDisplay').hide();
                             $('#totalPriceDisplay').hide();
                         }
+
+                        harvestingPrice = obj.message.harvesting_price ? parseFloat(obj.message.harvesting_price) : 0;
+                        transportPrice = obj.message.transport_price ? parseFloat(obj.message.transport_price) : 0;
 
                         var customerList = [];
                         if (typeof autoSupplierJson === 'string') {
@@ -5669,6 +5727,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                     if (obj.status == 'success'){
                         if(obj.message.payment_term == "Cash")
                         {
+                            customerIsCash = true;
                             $('#priceCard').show();
                             $('#unitPriceDisplay').show();
                             $('#subTotalPriceDisplay').show();
@@ -5677,6 +5736,7 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                         }
                         else
                         {
+                            customerIsCash = false;
                             $('#priceCard').hide();
                             $('#unitPriceDisplay').hide();
                             $('#subTotalPriceDisplay').hide();
@@ -5684,6 +5744,9 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                             $('#totalPriceDisplay').hide();
                         }
 
+                        harvestingPrice = obj.message.harvesting_price ? parseFloat(obj.message.harvesting_price) : 0;
+                        transportPrice = obj.message.transport_price ? parseFloat(obj.message.transport_price) : 0;
+                        
                         // Parse customer list and check if current customer is in it
                         var customerList = [];
                         if (typeof autoCustomerJson === 'string') {
@@ -6493,6 +6556,8 @@ while ($rowCam = $resultCam->fetch_assoc()) {
                 $('#addModal').find('#unitPrice').val(obj.message.unit_price);
                 $('#addModal').find('#subTotalPrice').val(obj.message.sub_total);
                 $('#addModal').find('#sstPrice').val(obj.message.sst);
+                $('#addModal').find('#harvestingPrice').val(obj.message.harvesting_price);
+                $('#addModal').find('#transportPrice').val(obj.message.transport_price);
                 $('#addModal').find('#totalPrice').val(obj.message.total_price);
                 $('#addModal').find('#finalWeight').val(obj.message.final_weight);
 

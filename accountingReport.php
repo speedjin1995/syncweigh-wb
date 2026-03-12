@@ -152,13 +152,13 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <div class="mb-3">
                                                             <label for="transactionStatusSearch" class="form-label">Transaction Status</label>
                                                             <select id="transactionStatusSearch" class="form-select">
-                                                                <option value="Sales" selected>Sales</option>
-                                                                <option value="Purchase">Purchase</option>
+                                                                <option value="Sales">Sales</option>
+                                                                <option value="Purchase" selected>Purchase</option>
                                                                 <option value="Local">Public</option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
-                                                    <div class="col-3" id="customerSearchDisplay">
+                                                    <div class="col-3" id="customerSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="customerNoSearch" class="form-label">Customer Name</label>
                                                             <select id="customerNoSearch" class="form-select" >
@@ -169,7 +169,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
-                                                    <div class="col-3" id="supplierSearchDisplay" style="display:none">
+                                                    <div class="col-3" id="supplierSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="supplierSearch" class="form-label">Supplier Name</label>
                                                             <select id="supplierSearch" class="form-select" >
@@ -208,7 +208,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             </select>
                                                         </div>
                                                     </div>--><!--end col-->
-                                                    <div class="col-3" id="productSearchDisplay">
+                                                    <div class="col-3" id="productSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="ForminputState" class="form-label">Product Code</label>
                                                             <select id="productSearch" class="form-select" >
@@ -219,7 +219,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
-                                                    <div class="col-3" id="rawMatSearchDisplay" style="display:none">
+                                                    <div class="col-3" id="rawMatSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="ForminputState" class="form-label">Raw Material Code</label>
                                                             <select id="rawMatSearch" class="form-select" >
