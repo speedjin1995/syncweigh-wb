@@ -2003,6 +2003,8 @@ if(($row = $result->fetch_assoc()) !== null){
                 
                 if (msg){
                     postMessage(msg);
+                    var gross = $('#grossIncoming').val();
+                    $('#oGrossIncoming').val(msg);
                 } 
             });
         }
@@ -3068,7 +3070,7 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#grossIncomingDate').trigger('change');
 
             // Temporary set oGrossIncoming
-            $('#oGrossIncoming').val(gross);
+            //$('#oGrossIncoming').val(gross);
         });
 
         $('#grossCapture').on('click', function(event){
@@ -4209,6 +4211,12 @@ if(($row = $result->fetch_assoc()) !== null){
                     $('#tareCapture').show();
                 }
 
+                const msg = buildMessage('ESC');
+
+                if (msg){
+                    postMessage(msg);
+                }
+
                 $('#id').val(obj.message.id);
                 $('#transactionId').val(obj.message.transaction_id);
                 $('#transactionStatus').val(obj.message.transaction_status).trigger('change');
@@ -4675,15 +4683,15 @@ if(($row = $result->fetch_assoc()) !== null){
             F1: { field: 'F1', sign: '-', suffix: '#' },
             F2: { field: 'F2', sign: '-', suffix: '#' },
             F3: { field: 'F3', sign: '-', suffix: '#' },
-            F4: { field: 'F4', sign: '+', suffix: '#' },
-            F5: { field: 'F5', sign: '+', suffix: '#' },
-            F6: { field: 'F6', sign: '+', suffix: '#' },
-            F7: { field: 'F7', sign: '-', suffix: '%' },
-            F8: { field: 'F8', sign: '-', suffix: '%' },
-            F9: { field: 'F9', sign: '-', suffix: '%' },
-            F10: { field: 'F10', sign: '+', suffix: '%' },
-            F11: { field: 'F11', sign: '+', suffix: '%' },
-            F12: { field: 'F12', sign: '+', suffix: '%' }
+            F4: { field: 'F4', sign: '-', suffix: '#' },
+            F5: { field: 'F5', sign: '-', suffix: '#' },
+            F6: { field: 'F6', sign: '-', suffix: '#' },
+            F7: { field: 'F7', sign: '-', suffix: '#' },
+            F8: { field: 'F8', sign: '-', suffix: '#' },
+            F9: { field: 'F9', sign: '-', suffix: '#' },
+            F10: { field: 'F10', sign: '-', suffix: '#' },
+            F11: { field: 'F11', sign: '-', suffix: '#' },
+            F12: { field: 'F12', sign: '-', suffix: '#' }
         };
 
         const cfg = mapping[action];

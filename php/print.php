@@ -866,7 +866,12 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                             }
                             
                             $message .= '
-                            <table style="width: 100%; position: fixed; bottom: 50; left: 0;">
+                            <div style="font-size: 15px; padding-top: 5px">
+                                I hereby confirm that the oil palm fresh fruits is not stolen fruits. If it is proved otherwise I shall bear the consequences and/or the liability.
+                                <br>
+                                Saya dengan ini mengesahkan bahawa biji-biji kelapa sawit segar tersebut bukan biki-biji kelapa sawit segar yang dicuri. Sekiranya terbukti sebaliknya, saya mesti menanggung segala-gala akibat dan/atau liabiliti.
+                            </div>
+                            <table style="width: 100%; position: fixed; bottom: 10; left: 0;">
                                 <tr>
                                     <td style="vertical-align: top; font-size: 14px; width: 25%; padding-left:10px;">
                                         <hr width="100%" style="margin-left: 0; text-align: left;">
