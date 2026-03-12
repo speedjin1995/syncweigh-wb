@@ -866,7 +866,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                             }
                             
                             $message .= '
-                            <div style="font-size: 15px; padding-top: 5px">
+                            <div style="font-size: 15px; padding-top: 5px; display:none">
                                 I hereby confirm that the oil palm fresh fruits is not stolen fruits. If it is proved otherwise I shall bear the consequences and/or the liability.
                                 <br>
                                 Saya dengan ini mengesahkan bahawa biji-biji kelapa sawit segar tersebut bukan biki-biji kelapa sawit segar yang dicuri. Sekiranya terbukti sebaliknya, saya mesti menanggung segala-gala akibat dan/atau liabiliti.
