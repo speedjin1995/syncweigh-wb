@@ -2003,6 +2003,8 @@ if(($row = $result->fetch_assoc()) !== null){
                 
                 if (msg){
                     postMessage(msg);
+                    var gross = $('#grossIncoming').val();
+                    $('#oGrossIncoming').val(msg);
                 } 
             });
         }
@@ -3068,7 +3070,7 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#grossIncomingDate').trigger('change');
 
             // Temporary set oGrossIncoming
-            $('#oGrossIncoming').val(gross);
+            //$('#oGrossIncoming').val(gross);
         });
 
         $('#grossCapture').on('click', function(event){
@@ -4207,6 +4209,12 @@ if(($row = $result->fetch_assoc()) !== null){
                     // Show Capture Button When Edit
                     $('#grossCapture').show();
                     $('#tareCapture').show();
+                }
+
+                const msg = buildMessage('ESC');
+
+                if (msg){
+                    postMessage(msg);
                 }
 
                 $('#id').val(obj.message.id);
