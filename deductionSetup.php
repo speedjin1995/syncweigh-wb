@@ -116,22 +116,22 @@ $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' AND status = '
                                                     <input type="number" class="form-control mb-2" name="F3" placeholder="F3" min="0" value="<?= htmlspecialchars($F3) ?>">
                                                 </div>
                                                 <div class="col-3">
-                                                    <label>F4 - F6 ( + ) kg</label>
+                                                    <label>F4 - F6 ( - ) kg</label>
                                                     <input type="number" class="form-control mb-2" name="F4" placeholder="F4" min="0" value="<?= htmlspecialchars($F4) ?>">
                                                     <input type="number" class="form-control mb-2" name="F5" placeholder="F5" min="0" value="<?= htmlspecialchars($F5) ?>">
                                                     <input type="number" class="form-control mb-2" name="F6" placeholder="F6" min="0" value="<?= htmlspecialchars($F6) ?>">
                                                 </div>
                                                 <div class="col-3">
-                                                    <label>F7 - F9 ( - ) %</label>
-                                                    <input type="number" class="form-control mb-2" name="F7" placeholder="F7" min="0" max="100" value="<?= htmlspecialchars($F7) ?>">
-                                                    <input type="number" class="form-control mb-2" name="F8" placeholder="F8" min="0" max="100" value="<?= htmlspecialchars($F8) ?>">
-                                                    <input type="number" class="form-control mb-2" name="F9" placeholder="F9" min="0" max="100" value="<?= htmlspecialchars($F9) ?>">
+                                                    <label>F7 - F9 ( - ) kg</label>
+                                                    <input type="number" class="form-control mb-2" name="F7" placeholder="F7" min="0" value="<?= htmlspecialchars($F7) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F8" placeholder="F8" min="0" value="<?= htmlspecialchars($F8) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F9" placeholder="F9" min="0" value="<?= htmlspecialchars($F9) ?>">
                                                 </div>
                                                 <div class="col-3">
-                                                    <label>F10 - F12 ( + ) %</label>
-                                                    <input type="number" class="form-control mb-2" name="F10" placeholder="F10" min="0" max="100" value="<?= htmlspecialchars($F10) ?>">
-                                                    <input type="number" class="form-control mb-2" name="F11" placeholder="F11" min="0" max="100" value="<?= htmlspecialchars($F11) ?>">
-                                                    <input type="number" class="form-control mb-2" name="F12" placeholder="F12" min="0" max="100" value="<?= htmlspecialchars($F12) ?>">
+                                                    <label>F10 - F12 ( - ) kg</label>
+                                                    <input type="number" class="form-control mb-2" name="F10" placeholder="F10" min="0" value="<?= htmlspecialchars($F10) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F11" placeholder="F11" min="0" value="<?= htmlspecialchars($F11) ?>">
+                                                    <input type="number" class="form-control mb-2" name="F12" placeholder="F12" min="0" value="<?= htmlspecialchars($F12) ?>">
                                                 </div>
                                             </div>
                                         </div>
