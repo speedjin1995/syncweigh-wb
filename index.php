@@ -1226,7 +1226,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                                         <div class="input-group">
                                                                                             <input type="number" class="form-control input-readonly" id="grossIncoming2" name="grossIncoming2" placeholder="0" readonly>
                                                                                             <div class="input-group-text">Kg</div>
-                                                                                            <button class="input-group-text btn btn-success fs-5" id="grossCapture2"><i class="mdi mdi-sync" type="button"></i></button>
+                                                                                            <button class="input-group-text btn btn-success fs-5" id="grossCapture2" type="button"><i class="mdi mdi-sync" ></i></button>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -5235,6 +5235,13 @@ if(($row = $result->fetch_assoc()) !== null){
 
             // Temporary set oGrossIncoming
             $('#oGrossIncoming').val(gross);
+        });
+
+        // Prevent Enter key from triggering any button in weightForm
+        $('#weightForm').on('keydown', function(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
+            }
         });
 
         $('#grossCapture').on('click', function(event){
