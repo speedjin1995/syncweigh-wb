@@ -254,10 +254,10 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                 <h5 class="card-title text-white mb-0"><?=$languageArray['cash_book_payment_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <button type="button" id="exportPdf" class="btn btn-info waves-effect waves-light">
+                                                                <!-- <button type="button" id="exportPdf" class="btn btn-info waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     Export Report
-                                                                </button>
+                                                                </button> -->
                                                                 <button type="button" id="addCashBook" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
@@ -488,21 +488,21 @@ if(($row = $result->fetch_assoc()) !== null){
                                 '<i class="ri-more-fill align-middle"></i>' +
                             '</button>' +
                             '<ul class="dropdown-menu dropdown-menu-end">' +
-                                '<li>' +
-                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
-                                        '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
-                                    '</a>' +
-                                '</li>' +
+                                // '<li>' +
+                                //     '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
+                                //         '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
+                                //     '</a>' +
+                                // '</li>' +
                                 '<li>' +
                                     '<a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')">' +
                                         '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
                                     '</a>' +
                                 '</li>' +
-                                '<li>' +
-                                    '<a class="dropdown-item remove-item-btn" id="delete'+data+'" onclick="deactivate('+data+')">' +
-                                        '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete' +
-                                    '</a>' +
-                                '</li>' +
+                                // '<li>' +
+                                //     '<a class="dropdown-item remove-item-btn" id="delete'+data+'" onclick="deactivate('+data+')">' +
+                                //         '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete' +
+                                //     '</a>' +
+                                // '</li>' +
                             '</ul>' +
                         '</div>';
                     }
@@ -560,21 +560,21 @@ if(($row = $result->fetch_assoc()) !== null){
                                     '<i class="ri-more-fill align-middle"></i>' +
                                 '</button>' +
                                 '<ul class="dropdown-menu dropdown-menu-end">' +
-                                    '<li>' +
-                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
-                                            '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
-                                        '</a>' +
-                                    '</li>' +
+                                    // '<li>' +
+                                    //     '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
+                                    //         '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
+                                    //     '</a>' +
+                                    // '</li>' +
                                     '<li>' +
                                         '<a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')">' +
                                             '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
                                         '</a>' +
                                     '</li>' +
-                                    '<li>' +
-                                        '<a class="dropdown-item remove-item-btn" id="delete'+data+'" onclick="deactivate('+data+')">' +
-                                            '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete' +
-                                        '</a>' +
-                                    '</li>' +
+                                    // '<li>' +
+                                    //     '<a class="dropdown-item remove-item-btn" id="delete'+data+'" onclick="deactivate('+data+')">' +
+                                    //         '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete' +
+                                    //     '</a>' +
+                                    // '</li>' +
                                 '</ul>' +
                             '</div>';
                         }

@@ -71,6 +71,9 @@
                                 <a href="cashBookReceiving.php" class="nav-link"><b><?=$languageArray['cash_book_receiving_code'][$language]?></b></a>
                             </li>
                             <li class="nav-item">
+                                <a href="cashBookSummary.php" class="nav-link"><b><?=$languageArray['cash_book_summary_code'][$language]?></b></a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="accountingReport.php" class="nav-link"><b><?=$languageArray['daily_cash_report_code'][$language]?></b></a>
                             </li>
                             <?php

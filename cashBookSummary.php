@@ -148,7 +148,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                 </div>
 
                                                                 <div class="row mt-4">
-                                                                    <div class="col-xxl-12 col-lg-12">
+                                                                    <div class="col-xxl-6 col-lg-6" style="display:none">
                                                                         <h6 class="mb-2"><?=$languageArray['cash_book_code'][$language]?> (-)</h6>
                                                                         <table class="table table-bordered align-middle">
                                                                             <thead>
@@ -171,7 +171,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                             </tfoot>
                                                                         </table>
                                                                     </div>
-                                                                    <div class="col-xxl-6 col-lg-6" style="display:none">
+                                                                    <div class="col-xxl-12 col-lg-12">
                                                                         <h6 class="mb-2"><?=$languageArray['cash_book_code'][$language]?> (+)</h6>
                                                                         <table class="table table-bordered align-middle">
                                                                             <thead>
@@ -254,14 +254,14 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                 <h5 class="card-title text-white mb-0"><?=$languageArray['cash_book_payment_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <!-- <button type="button" id="exportPdf" class="btn btn-info waves-effect waves-light">
+                                                                <button type="button" id="exportPdf" class="btn btn-info waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     Export Report
-                                                                </button> -->
-                                                                <button type="button" id="addCashBook" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                </button>
+                                                                <!-- <button type="button" id="addCashBook" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
-                                                                </button>
+                                                                </button> -->
                                                                 <!-- <button type="button" id="exportExcel" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_excel_code'][$language]?>
@@ -276,7 +276,8 @@ if(($row = $result->fetch_assoc()) !== null){
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['date_code'][$language]?></th>
                                                                     <th><?=$languageArray['cash_book_no_code'][$language]?></th>
-                                                                    <th><?=$languageArray['total_deduction_code'][$language]?> (RM)</th>
+                                                                    <!-- <th><?=$languageArray['total_deduction_code'][$language]?> (RM)</th> -->
+                                                                    <th><?=$languageArray['total_addition_code'][$language]?> (RM)</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -477,8 +478,8 @@ if(($row = $result->fetch_assoc()) !== null){
                 },
                 { data: 'date' },
                 { data: 'cash_book_no' },
-                { data: 'total_deduction' },
-                // { data: 'total_addition' },
+                // { data: 'total_deduction' },
+                { data: 'total_addition' },
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -487,21 +488,21 @@ if(($row = $result->fetch_assoc()) !== null){
                                 '<i class="ri-more-fill align-middle"></i>' +
                             '</button>' +
                             '<ul class="dropdown-menu dropdown-menu-end">' +
-                                // '<li>' +
-                                //     '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
-                                //         '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
-                                //     '</a>' +
-                                // '</li>' +
                                 '<li>' +
-                                    '<a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')">' +
-                                        '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
+                                    '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
+                                        '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
                                     '</a>' +
                                 '</li>' +
                                 // '<li>' +
-                                //     '<a class="dropdown-item remove-item-btn" id="delete'+data+'" onclick="deactivate('+data+')">' +
-                                //         '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete' +
+                                //     '<a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')">' +
+                                //         '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
                                 //     '</a>' +
                                 // '</li>' +
+                                '<li>' +
+                                    '<a class="dropdown-item remove-item-btn" id="delete'+data+'" onclick="deactivate('+data+')">' +
+                                        '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete' +
+                                    '</a>' +
+                                '</li>' +
                             '</ul>' +
                         '</div>';
                     }
@@ -549,8 +550,8 @@ if(($row = $result->fetch_assoc()) !== null){
                     },
                     { data: 'date' },
                     { data: 'cash_book_no' },
-                    { data: 'total_deduction' },
-                    // { data: 'total_addition' },
+                    // { data: 'total_deduction' },
+                    { data: 'total_addition' },
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {
@@ -559,21 +560,21 @@ if(($row = $result->fetch_assoc()) !== null){
                                     '<i class="ri-more-fill align-middle"></i>' +
                                 '</button>' +
                                 '<ul class="dropdown-menu dropdown-menu-end">' +
-                                    // '<li>' +
-                                    //     '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
-                                    //         '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
-                                    //     '</a>' +
-                                    // '</li>' +
                                     '<li>' +
-                                        '<a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')">' +
-                                            '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
+                                        '<a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')">' +
+                                            '<i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print' +
                                         '</a>' +
                                     '</li>' +
                                     // '<li>' +
-                                    //     '<a class="dropdown-item remove-item-btn" id="delete'+data+'" onclick="deactivate('+data+')">' +
-                                    //         '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete' +
+                                    //     '<a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')">' +
+                                    //         '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
                                     //     '</a>' +
                                     // '</li>' +
+                                    '<li>' +
+                                        '<a class="dropdown-item remove-item-btn" id="delete'+data+'" onclick="deactivate('+data+')">' +
+                                            '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete' +
+                                        '</a>' +
+                                    '</li>' +
                                 '</ul>' +
                             '</div>';
                         }
