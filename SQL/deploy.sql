@@ -2475,3 +2475,4 @@ $$
 DELIMITER ;
 
 INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_book_receiving_code', 'Cash Book Receiving', '现金簿收款', 'Penerimaan Buku Tunai', 'பணம் புத்தக பெறுதல்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_book_summary_code', 'Cash Book Summary', '现金簿摘要', 'Ringkasan Buku Tunai', 'பணம் புத்தக சுருக்கம்');
