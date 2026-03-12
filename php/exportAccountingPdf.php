@@ -339,12 +339,10 @@ if(isset($_POST["file"])){
                                         while ($row = $result->fetch_assoc()) {
                                             $grandTotalNet += (float)$row['nett_weight1'];
                                             $grandTotalAmount += (float)$row['total_price'];
-                                            // $grandTotalTransport += (float)$row['transport_charges'];
-                                            // $grandTotalHarvesting += (float)$row['harvesting_charges'];
-                                            
+                                            $grandTotalTransport += (float)$row['transport_price'];
+                                            $grandTotalHarvesting += (float)$row['harvesting_price'];
                                             $timeIn = date('d-m-Y H:i', strtotime($row['gross_weight1_date']));
                                             $timeOut = date('d-m-Y H:i', strtotime($row['tare_weight1_date']));
-                                            
                                             $customerName = $row['transaction_status'] == 'Sales' ? $row['customer_name'] : $row['supplier_name'];
 
                                             $message .= '<tr>
@@ -355,8 +353,8 @@ if(isset($_POST["file"])){
                                                 <td>' . $row['lorry_plate_no1'] . '</td>
                                                 <td>' . number_format($row['nett_weight1']/1000, 2) . '</td>
                                                 <td>' . number_format($row['unit_price'], 2) . '</td>
-                                                <td>0.00</td>
-                                                <td>0.00</td>
+                                                <td>' . number_format($row['transport_price'], 2) . '</td>
+                                                <td>' . number_format($row['harvesting_price'], 2) . '</td>
                                                 <td>' . number_format($row['total_price'], 2) . '</td>
                                             </tr>';
                                         }

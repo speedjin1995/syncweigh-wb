@@ -317,7 +317,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 <span class="sale-badge">'.$transacationStatus.'</span>    
                             </div>
 
-                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px">
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 12px">
                                 <tr>
                                     <td style="width: 120px">Name:</td>
                                     <td style="width: calc(60% - 120px)">'.$customer.'</td>
@@ -525,7 +525,12 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                         }
 
                         $message .= '
-                            <div style="margin-top: 100px; display: flex; justify-content: space-between">
+                            <div style="font-size: 14px; padding-top: 10px">
+                                I hereby confirm that the oil palm fresh fruits is not stolen fruits. If it is proved otherwise I shall bear the consequences and/or the liability.
+                                <br>
+                                Saya dengan ini mengesahkan bahawa biji-biji kelapa sawit segar tersebut bukan biki-biji kelapa sawit segar yang dicuri. Sekiranya terbukti sebaliknya, saya mesti menanggung segala-gala akibat dan/atau liabiliti.
+                            </div>
+                            <div style="margin-top: 50px; display: flex; justify-content: space-between">
                                 <div style="width: 48%">
                                     <span>Authorised Signature: _____________________</span>
                                 </div>
