@@ -188,7 +188,6 @@ $customer = $db->query("SELECT * FROM Customer WHERE status = '0' ORDER BY name 
                                                                         <select id="paymentBy" name="paymentBy" class="form-select select2">
                                                                             <option value="Cash"><?=$languageArray['cash_code'][$language]?></option>
                                                                             <option value="Cheque"><?=$languageArray['cheque_code'][$language]?></option>
-                                                                            <option value="Bank"><?=$languageArray['bank_code'][$language]?></option>
                                                                         </select>
                                                                     </div>
                                                                     <div class="col-md-6 mb-3">
