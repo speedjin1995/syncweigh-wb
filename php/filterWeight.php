@@ -51,7 +51,13 @@ if($_POST['invoice'] != null && $_POST['invoice'] != '' && $_POST['invoice'] != 
 }
 
 if($_POST['batch'] != null && $_POST['batch'] != '' && $_POST['batch'] != '-'){
-	$searchQuery .= " and is_complete = '".$_POST['batch']."' AND is_cancel = 'N'";
+  if ($_POST['batch'] == 'Pending') {
+    $searchQuery .= " and is_complete = 'N' AND is_cancel = 'N'";
+  } elseif ($_POST['batch'] == 'Complete') {
+    $searchQuery .= " and is_complete = 'Y' AND is_cancel = 'N'";
+  } elseif ($_POST['batch'] == 'Cancel') {
+    $searchQuery .= " and is_cancel = 'Y'";
+  }
 }
 
 if($_POST['product'] != null && $_POST['product'] != '' && $_POST['product'] != '-'){
