@@ -33,12 +33,12 @@ if (!empty($data)) {
                     $plantId = $insert_stmt->insert_id; // Get the inserted unit ID
                     $insert_stmt->close();
         
-                    $action = "1";
-                    if ($insert_log = $db->prepare("INSERT INTO Plant_Log (plant_id, plant_code, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('ssssssssss', $plantId, $PlantCode, $PlantName, $AddressLine1, $AddressLine2, $AddressLine3, $PhoneNo, $FaxNo, $action, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }            
+                    // $action = "1";
+                    // if ($insert_log = $db->prepare("INSERT INTO Plant_Log (plant_id, plant_code, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    //     $insert_log->bind_param('ssssssssss', $plantId, $PlantCode, $PlantName, $AddressLine1, $AddressLine2, $AddressLine3, $PhoneNo, $FaxNo, $action, $uid);
+                    //     $insert_log->execute();
+                    //     $insert_log->close();
+                    // }            
                 }
             }else{
                 $errMsg = "Plant: ". $PlantName ." already exist in master data.";

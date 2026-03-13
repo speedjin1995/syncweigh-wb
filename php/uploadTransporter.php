@@ -40,11 +40,11 @@ if (!empty($data)) {
                     $transporterId = $insert_stmt->insert_id;
                     $insert_stmt->close(); 
 
-                    if ($insert_log = $db->prepare("INSERT INTO Transporter_Log (transporter_id, transporter_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('sssssssssssssss', $transporterId, $TransporterCode, $CompanyRegNo, $NewRegNo, $CompanyName, $AddressLine1, $AddressLine2, $AddressLine3, $PhoneNo, $FaxNo, $ContactName, $ICNo, $TinNo, $actionId, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }    
+                    // if ($insert_log = $db->prepare("INSERT INTO Transporter_Log (transporter_id, transporter_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    //     $insert_log->bind_param('sssssssssssssss', $transporterId, $TransporterCode, $CompanyRegNo, $NewRegNo, $CompanyName, $AddressLine1, $AddressLine2, $AddressLine3, $PhoneNo, $FaxNo, $ContactName, $ICNo, $TinNo, $actionId, $uid);
+                    //     $insert_log->execute();
+                    //     $insert_log->close();
+                    // }    
                 }
             }else{
                 $errMsg = "Transporter: ". $CompanyName ." already exist in master data.";

@@ -30,11 +30,11 @@ if (!empty($data)) {
                     $transporterId = $insert_stmt->insert_id;
                     $insert_stmt->close(); 
 
-                    if ($insert_log = $db->prepare("INSERT INTO Driver_Log (driver_name, driver_id, driver_ic, action_id, action_by) VALUES (?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('sssssssssssssss', $DriverName, $driverId, $DriverIc, $actionId, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }    
+                    // if ($insert_log = $db->prepare("INSERT INTO Driver_Log (driver_name, driver_id, driver_ic, action_id, action_by) VALUES (?, ?, ?, ?, ?)")) {
+                    //     $insert_log->bind_param('sssssssssssssss', $DriverName, $driverId, $DriverIc, $actionId, $uid);
+                    //     $insert_log->execute();
+                    //     $insert_log->close();
+                    // }    
                 }
             }else{
                 $errMsg = "Driver: ". $DriverName ." already exist in master data.";

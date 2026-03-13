@@ -30,11 +30,11 @@ if (!empty($data)) {
                     $agentId = $insert_stmt->insert_id;
                     $insert_stmt->close(); 
 
-                    if ($insert_log = $db->prepare("INSERT INTO Agents_Log (agent_id, agent_code, name, description, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('ssssss', $agentId, $SRPCode, $SRPName, $Remark, $actionId, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }    
+                    // if ($insert_log = $db->prepare("INSERT INTO Agents_Log (agent_id, agent_code, name, description, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?)")) {
+                    //     $insert_log->bind_param('ssssss', $agentId, $SRPCode, $SRPName, $Remark, $actionId, $uid);
+                    //     $insert_log->execute();
+                    //     $insert_log->close();
+                    // }    
                 }
             }
         }

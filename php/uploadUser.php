@@ -35,12 +35,12 @@ if (!empty($data)) {
                     $userId = $insert_stmt->insert_id; // Get the inserted unit ID
                     $insert_stmt->close();
         
-                    $action = "1";
-                    if ($insert_log = $db->prepare("INSERT INTO Users_Log (user_id, employee_code, username, name, useremail, user_department, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('ssssssss', $userId, $EmployeeCode, $Username, $Name, $UserEmail, $Role, $action, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }            
+                    // $action = "1";
+                    // if ($insert_log = $db->prepare("INSERT INTO Users_Log (user_id, employee_code, username, name, useremail, user_department, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    //     $insert_log->bind_param('ssssssss', $userId, $EmployeeCode, $Username, $Name, $UserEmail, $Role, $action, $uid);
+                    //     $insert_log->execute();
+                    //     $insert_log->close();
+                    // }            
                 }
             }else{
                 $errMsg = "User: ".$EmployeeCode." already exist in master data.";
