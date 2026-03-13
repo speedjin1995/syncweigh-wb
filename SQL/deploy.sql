@@ -2227,3 +2227,255 @@ INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('tax', '[
 INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('ind_relief', 9000); -- Individual relief
 INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('non_res_epf', 30); -- Non-resident EPF contribution rate (30% of gross salary)
 INSERT INTO `miscellaneous` (`name`, `value`) VALUES ('ind_epf_relief', 4000); -- EPF relief for individual (capped at RM4000 per year)
+
+-- 10/03/2026 --
+ALTER TABLE `Product` ADD `is_default` INT(1) NOT NULL DEFAULT '0' AFTER `low`;
+ALTER TABLE `Product_Log` ADD `is_default` INT(1) NOT NULL DEFAULT '0' AFTER `low`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_PRODUCT` AFTER INSERT ON `Product` FOR EACH ROW 
+INSERT INTO Product_Log (
+    product_id, product_code, name, price, description, variance, high, low, is_default, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.product_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.is_default, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PRODUCT` BEFORE UPDATE ON `Product` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Product_Log table
+    INSERT INTO Product_Log (
+    product_id, product_code, name, price, description, variance, high, low, is_default, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.product_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.is_default, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Raw_Mat` ADD `is_default` INT(1) NOT NULL DEFAULT '0' AFTER `low`;
+ALTER TABLE `Raw_Mat_Log` ADD `is_default` INT(1) NOT NULL DEFAULT '0' AFTER `low`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_RAW_MAT` AFTER INSERT ON `Raw_Mat` FOR EACH ROW 
+INSERT INTO Raw_Mat_Log (
+    raw_mat_id, raw_mat_code, name, price, description, variance, high, low, is_default, type, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.raw_mat_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.is_default, NEW.type, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_RAW_MAT` BEFORE UPDATE ON `Raw_Mat` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Raw_Mat_Log table
+    INSERT INTO Raw_Mat_Log (
+        raw_mat_id, raw_mat_code, name, price, description, variance, high, low, is_default, type, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.raw_mat_code, NEW.name, NEW.price, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.is_default, NEW.type, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'voucher_date_code', 'Voucher Date', '凭证日期', 'Tarikh Baucar', 'வவுச்சர் தேதி');
+
+ALTER TABLE `Customer` ADD `payment_by` VARCHAR(50) NULL AFTER `payment_term`, ADD `harvesting_price` VARCHAR(100) NOT NULL DEFAULT '0' AFTER `payment_by`, ADD `transport_price` VARCHAR(100) NOT NULL DEFAULT '0' AFTER `harvesting_price`;
+ALTER TABLE `Customer_Log` ADD `payment_by` VARCHAR(50) NULL AFTER `payment_term`, ADD `harvesting_price` VARCHAR(100) NOT NULL DEFAULT '0' AFTER `payment_by`, ADD `transport_price` VARCHAR(100) NOT NULL DEFAULT '0' AFTER `harvesting_price`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_CUSTOMER` AFTER INSERT ON `Customer` FOR EACH ROW 
+INSERT INTO Customer_Log (
+    customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, payment_by, harvesting_price, transport_price, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.mspo_no, NEW.payment_term, NEW.payment_by, NEW.harvesting_price, NEW.transport_price, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_CUSTOMER` BEFORE UPDATE ON `Customer` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Customer_Log table
+    INSERT INTO Customer_Log (
+        customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, payment_by, harvesting_price, transport_price, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.mspo_no, NEW.payment_term, NEW.payment_by, NEW.harvesting_price, NEW.transport_price, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Supplier` ADD `payment_by` VARCHAR(50) NULL AFTER `payment_term`, ADD `harvesting_price` VARCHAR(100) NOT NULL DEFAULT '0' AFTER `payment_by`, ADD `transport_price` VARCHAR(100) NOT NULL DEFAULT '0' AFTER `harvesting_price`;
+ALTER TABLE `Supplier_Log` ADD `payment_by` VARCHAR(50) NULL AFTER `payment_term`, ADD `harvesting_price` VARCHAR(100) NOT NULL DEFAULT '0' AFTER `payment_by`, ADD `transport_price` VARCHAR(100) NOT NULL DEFAULT '0' AFTER `harvesting_price`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_SUPPLIER` AFTER INSERT ON `Supplier` FOR EACH ROW 
+INSERT INTO Supplier_Log (
+    supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, payment_by, harvesting_price, transport_price, customer_id, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.mspo_no, NEW.payment_term, NEW.payment_by, NEW.harvesting_price, NEW.transport_price, NEW.customer_id, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_SUPPLIER` BEFORE UPDATE ON `Supplier` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Supplier_Log table
+    INSERT INTO Supplier_Log (
+        supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, payment_by, harvesting_price, transport_price, customer_id, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.mpob, NEW.mspo_no, NEW.payment_term, NEW.payment_by, NEW.harvesting_price, NEW.transport_price, NEW.customer_id, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'payment_by_code', 'Payment By', '付款方式', 'Bayaran Oleh', 'பணம் செலுத்துபவர்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cheque_code', 'Cheque', '支票', 'Cek', 'செக்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'harvesting_price_code', 'Harvesting Price', '收割价格', 'Harga Penuaian', 'அறுவடை விலை');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'transport_price_code', 'Transport Price', '运输价格', 'Harga Pengangkutan', 'போக்குவரத்து விலை');
+
+ALTER TABLE `Weight` ADD `harvesting_price` VARCHAR(10) NULL AFTER `sst`, ADD `transport_price` VARCHAR(10) NULL AFTER `harvesting_price`;
+ALTER TABLE `Weight_Log` ADD `harvesting_price` VARCHAR(10) NULL AFTER `sst`, ADD `transport_price` VARCHAR(10) NULL AFTER `harvesting_price`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT` AFTER INSERT ON `Weight` FOR EACH ROW 
+INSERT INTO Weight_Log (
+    weight_id, transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, gross_weight_by1, gross_deduction1, tare_weight1, tare_weight1_date, tare_weight_by1, tare_deduction1, nett_weight1, nett_deduction1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, reject_weight, weight_different, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, grader_id, grade_detail, indicator_id_2, unit_price, sub_total, sst, harvesting_price, transport_price, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.gross_weight_by1, NEW.gross_deduction1, NEW.tare_weight1, NEW.tare_weight1_date, NEW.tare_weight_by1, NEW.tare_deduction1, NEW.nett_weight1, NEW.nett_deduction1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight, NEW.final_weight, NEW.reject_weight, NEW.weight_different, NEW.is_complete, NEW.is_cancel, NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.grader_id, NEW.grade_detail, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.harvesting_price, NEW.transport_price, NEW.total_price, NEW.load_drum, NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT` BEFORE UPDATE ON `Weight` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Weight_Log table
+    INSERT INTO Weight_Log (
+        weight_id, transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, gross_weight_by1, gross_deduction1, tare_weight1, tare_weight1_date, tare_weight_by1, tare_deduction1, nett_weight1, nett_deduction1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, reject_weight, weight_different, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, grader_id, grade_detail, indicator_id_2, unit_price, sub_total, sst, harvesting_price, transport_price, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, 
+        NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, 
+        NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, 
+        NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, 
+        NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, 
+        NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, 
+        NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, 
+        NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, 
+        NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.gross_weight_by1, NEW.gross_deduction1, NEW.tare_weight1, 
+        NEW.tare_weight1_date, NEW.tare_weight_by1, NEW.tare_deduction1, NEW.nett_weight1, NEW.nett_deduction1, NEW.lorry_no2_weight, NEW.empty_container2_weight, 
+        NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, 
+        NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight, 
+        NEW.final_weight, NEW.reject_weight, NEW.weight_different, NEW.is_complete, NEW.is_cancel, 
+        NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.grader_id, NEW.grade_detail,
+        NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.harvesting_price, NEW.transport_price, NEW.total_price, 
+        NEW.load_drum, NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Weight_Container` ADD `harvesting_price` VARCHAR(10) NULL AFTER `sst`, ADD `transport_price` VARCHAR(10) NULL AFTER `harvesting_price`;
+ALTER TABLE `Weight_Container_Log` ADD `harvesting_price` VARCHAR(10) NULL AFTER `sst`, ADD `transport_price` VARCHAR(10) NULL AFTER `harvesting_price`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT_CONTAINER` AFTER INSERT ON `Weight_Container` FOR EACH ROW INSERT INTO Weight_Container_Log (
+    weight_container_id, transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, gross_weight_by1, gross_deduction1, tare_weight1, tare_weight1_date, tare_weight_by1, tare_deduction1, nett_weight1, nett_deduction1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, reject_weight, weight_different, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, grader_id, grade_detail, indicator_id_2, unit_price, sub_total, sst, harvesting_price, transport_price, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.gross_weight_by1, NEW.gross_deduction1, NEW.tare_weight1, NEW.tare_weight1_date, NEW.tare_weight_by1, NEW.tare_deduction1, NEW.nett_weight1, NEW.nett_deduction1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight, NEW.final_weight, NEW.reject_weight, NEW.weight_different, NEW.is_complete, NEW.is_cancel, NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.grader_id, NEW.grade_detail, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.harvesting_price, NEW.transport_price, NEW.total_price, NEW.load_drum, NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Container` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Weight_Container_Log table
+    INSERT INTO Weight_Container_Log (
+        weight_id, transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, gross_weight_by1, gross_deduction1, tare_weight1, tare_weight1_date, tare_weight_by1, tare_deduction1, nett_weight1, nett_deduction1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, reject_weight, weight_different, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, grader_id, grade_detail, indicator_id_2, unit_price, sub_total, sst, harvesting_price, transport_price, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, 
+        NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, 
+        NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, 
+        NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, 
+        NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, 
+        NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, 
+        NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, 
+        NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, 
+        NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.gross_weight_by1, NEW.gross_deduction1, NEW.tare_weight1, 
+        NEW.tare_weight1_date, NEW.tare_weight_by1, NEW.tare_deduction1, NEW.nett_weight1, NEW.nett_deduction1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container,
+        NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, 
+        NEW.reduce_weight, NEW.final_weight, NEW.reject_weight, NEW.weight_different, NEW.is_complete, NEW.is_cancel, 
+        NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.grader_id, NEW.grade_detail,
+        NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.harvesting_price, NEW.transport_price, NEW.total_price, 
+        NEW.load_drum, NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_book_receiving_code', 'Cash Book Receiving', '现金簿收款', 'Penerimaan Buku Tunai', 'பணம் புத்தக பெறுதல்');
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'cash_book_summary_code', 'Cash Book Summary', '现金簿摘要', 'Ringkasan Buku Tunai', 'பணம் புத்தக சுருக்கம்');
+
+-- 13/03/2026 --
+INSERT INTO `message_resource` (`id`, `message_key_code`, `en`, `zh`, `my`, `ne`) VALUES (NULL, 'bank_code', 'Bank', '银行', 'Bank', 'வங்கி');

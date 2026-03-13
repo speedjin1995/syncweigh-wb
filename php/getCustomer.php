@@ -36,6 +36,9 @@ if(isset($_POST['userID'])){
                 $message['mpob'] = $row['mpob'];
                 $message['mspo_no'] = $row['mspo_no'];
                 $message['payment_term'] = $row['payment_term'];
+                $message['payment_by'] = $row['payment_by'];
+                $message['harvesting_price'] = $row['harvesting_price'];
+                $message['transport_price'] = $row['transport_price'];
 
                 // Get Deduction
                 if ($deduction_stmt = $db->prepare("SELECT * FROM Customer_Deduction WHERE customer_id=? AND status = 'auto'")) {

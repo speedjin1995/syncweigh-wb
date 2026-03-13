@@ -6,7 +6,8 @@ define('DB_USERNAME', 'root');
 define('DB_PASSWORD', '');
 define('DB_NAME', 'u740887005_'.$_SESSION["company"]);*/
 
-define('DB_SERVER', 'srv2050.hstgr.io');
+//define('DB_SERVER', 'srv2050.hstgr.io');
+define('DB_SERVER', 'localhost');
 define('DB_USERNAME', "u740887005_".$_SESSION['company']);
 define('DB_PASSWORD', '@Sync5500');
 define('DB_NAME', 'u740887005_'.$_SESSION["company"]);

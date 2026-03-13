@@ -26,6 +26,11 @@ if (!empty($data)) {
         $ICNo = !empty($rows['ICNo']) ? $rows['ICNo'] : '';
         $TinNo = !empty($rows['TinNo']) ? $rows['TinNo'] : '';
         $Mpob = !empty($rows['Mpob']) ? $rows['Mpob'] : '';
+        $MSPOCode = !empty($rows['MSPOCode']) ? $rows['MSPOCode'] : '';
+        $PaymentTerm = !empty($rows['PaymentTerm']) ? $rows['PaymentTerm'] : '';
+        $PaymentBy = !empty($rows['PaymentBy']) ? $rows['PaymentBy'] : '';
+        $HarvestingPrice = !empty($rows['HarvestingPrice']) ? $rows['HarvestingPrice'] : '';
+        $TransportPrice = !empty($rows['TransportPrice']) ? $rows['TransportPrice'] : '';
         $action = "1";
         
         # Customer Checking & Processing
@@ -35,17 +40,11 @@ if (!empty($data)) {
             $supplierRow = mysqli_fetch_assoc($supplierDetail);
             
             if(empty($supplierRow)){
-                if ($insert_stmt = $db->prepare("INSERT INTO Supplier (supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                    $insert_stmt->bind_param('ssssssssssssssss', $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Address4, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $Mpob, $uid, $uid);
+                if ($insert_stmt = $db->prepare("INSERT INTO Supplier (supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, mpob, mspo_no, payment_term, payment_by, harvesting_price, transport_price, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $insert_stmt->bind_param('sssssssssssssssssssss', $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Address4, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $Mpob, $MSPOCode, $PaymentTerm, $PaymentBy, $HarvestingPrice, $TransportPrice, $uid, $uid);
                     $insert_stmt->execute();
                     $invid = $insert_stmt->insert_id; // Get the inserted reseller ID
-                    $insert_stmt->close();
-
-                    // if ($insert_log = $db->prepare("INSERT INTO Supplier_Log (supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                    //     $insert_log->bind_param('ssssssssssssssss', $invid, $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Address4, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $action, $uid);
-                    //     $insert_log->execute();
-                    //     $insert_log->close();
-                    // }            
+                    $insert_stmt->close();  
                 }
             }else{
                 $errMsg = "Supplier: ". $Name ." already exist in master data.";

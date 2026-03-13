@@ -68,14 +68,20 @@
                                 <a href="cashBookPayment.php" class="nav-link"><b><?=$languageArray['cash_book_payment_code'][$language]?></b></a>
                             </li>
                             <li class="nav-item">
+                                <a href="cashBookReceiving.php" class="nav-link"><b><?=$languageArray['cash_book_receiving_code'][$language]?></b></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="cashBookSummary.php" class="nav-link"><b><?=$languageArray['cash_book_summary_code'][$language]?></b></a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="accountingReport.php" class="nav-link"><b><?=$languageArray['daily_cash_report_code'][$language]?></b></a>
                             </li>
                             <?php
                             if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
                                 echo '
-                                    <li class="nav-item">
+                                    <!--li class="nav-item">
                                         <a href="payslip.php" class="nav-link"><b>'.$languageArray['payslip_code'][$language].'</b></a>
-                                    </li>
+                                    </li-->
                                 ';
                             }
                             ?>
@@ -205,9 +211,9 @@
                                             <li class="nav-item">
                                                 <a href="portSetup.php" class="nav-link"><b>'.$languageArray['port_setup_code'][$language].'</b></a>
                                             </li>
-                                            <li class="nav-item">
+                                            <!--li class="nav-item">
                                                 <a href="payslipSetting.php" class="nav-link"><b>'.$languageArray['payslip_setting_code'][$language].'</b></a>
-                                            </li>
+                                            </li-->
                                         ';
 
                                         if ($_SESSION['includeDisplaySetup'] == 'Y'){
