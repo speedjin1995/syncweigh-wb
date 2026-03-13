@@ -1022,6 +1022,7 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             </div>
 
                                                             <input type="hidden" id="id" name="id">
+                                                            <input type="hidden" id="submitType" name="submitType">
                                                         </div>
                                                         
                                                         <div class="col-xxl-12 col-lg-12">
@@ -1395,6 +1396,14 @@ if(($row = $result->fetch_assoc()) !== null){
             pass = true;
             var isValid = true;
 
+            // Auto pull weight of indicator if not set
+            var indicatorWeight = parseFloat($('#indicatorWeight').text());
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                $('#grossIncoming').val(indicatorWeight).trigger('keyup');
+            }else if (!$('#tareOutgoing').val() || $('#tareOutgoing').val() == '0') {
+                $('#tareOutgoing').val(indicatorWeight).trigger('keyup');
+            }
+
             // Check if grossIncoming is empty
             if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
                 alert('Please capture Incoming weight before saving.');
@@ -1402,8 +1411,10 @@ if(($row = $result->fetch_assoc()) !== null){
             }
 
             if (($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local") && supplierIsCash && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
+                $('#pricingModal').find('#submitType').val('WithoutPrint');
                 $('#pricingModal').modal('show');
             }else if ($('#transactionStatus').val() == "Sales" && customerIsCash && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
+                $('#pricingModal').find('#submitType').val('WithoutPrint');
                 $('#pricingModal').modal('show');
             }else{
                 submitWeight(pass);
@@ -1620,142 +1631,160 @@ if(($row = $result->fetch_assoc()) !== null){
                 isEmptyContainer = 'Y';
             }
 
+            // Auto pull weight of indicator if not set
+            var indicatorWeight = parseFloat($('#indicatorWeight').text());
+            if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
+                $('#grossIncoming').val(indicatorWeight).trigger('keyup');
+            }else if (!$('#tareOutgoing').val() || $('#tareOutgoing').val() == '0') {
+                $('#tareOutgoing').val(indicatorWeight).trigger('keyup');
+            }
+
             // Check if grossIncoming is empty
             if (!$('#grossIncoming').val() || $('#grossIncoming').val() == '0') {
                 alert('Please capture Incoming weight before saving.');
                 return false;
             }
 
-            if(pass && $('#weightForm').valid()){
-                $('#spinnerLoading').show();
-                $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
-                    var obj = JSON.parse(data); 
-                    if(obj.status === 'success'){
-                        $('#spinnerLoading').hide();
-                        $('#addModal').modal('hide');
-
-                        // If Transaction Status is Purchase, open grading modal
-                        if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
-                            $.post('php/getWeight.php', { userID: obj.id }, function (data) {
-                                var obj = JSON.parse(data);
-                                if (obj.status === 'success') {
-                                    $('#gradingModal').find('#id').val(obj.message.id);
-                                    $('#gradingModal').find('#submitPrint').val('Y');
-                                    $('#gradingModal').find('#transactionStatus').val(transactionStatus);
-                                    $('#gradingModal').find('#isEmptyContainer').val(isEmptyContainer);
-                                    $('#gradingModal').find('#transactionId').val(obj.message.transaction_id);
-                                    $('#gradingModal').find('#vehicleNo').val(obj.message.lorry_plate_no1);
-                                    $('#gradingModal').find('#ticketDo').val(obj.message.delivery_no);
-                                    $('#gradingModal').find('#nettWeight').val(obj.message.nett_weight1 ? (parseFloat(obj.message.nett_weight1)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#reduceWeight').val(obj.message.reduce_weight ? (parseFloat(obj.message.reduce_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#finalWeight').val(obj.message.final_weight ? (parseFloat(obj.message.final_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#rejectWeight').val(obj.message.reject_weight ? (parseFloat(obj.message.reject_weight)/1000).toFixed(2) : '0.00');
-                                    $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
-
-                                    var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
-                                    $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
-                                    $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
-                                    $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
-                                    $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
-                                    $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
-                                    $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
-                                    $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
-                                    $('#gradingModal').find('#bunchSize8_9').val(gradingDetail.bunch_size_8_9 || '0.00');
-                                    $('#gradingModal').find('#bunchSize7_8').val(gradingDetail.bunch_size_7_8 || '0.00');
-                                    $('#gradingModal').find('#bunchSize6_7').val(gradingDetail.bunch_size_6_7 || '0.00');
-                                    $('#gradingModal').find('#bunchSize5_6').val(gradingDetail.bunch_size_5_6 || '0.00');
-                                    $('#gradingModal').find('#bunchSize5').val(gradingDetail.bunch_size_5 || '0.00');
-                                    $('#gradingModal').find('#totalPercent').val(gradingDetail.total_percent || '0.00');
-                                    $('#gradingModal').find('#unripe').val(gradingDetail.unripe || '0.00');
-                                    $('#gradingModal').find('#underripe').val(gradingDetail.underripe || '0.00');
-                                    $('#gradingModal').find('#emptyBunch').val(gradingDetail.empty_bunch || '0.00');
-                                    $('#gradingModal').find('#rottenBunch').val(gradingDetail.rotten_bunch || '0.00');
-                                    $('#gradingModal').find('#longStalks').val(gradingDetail.long_stalks || '0.00');
-                                    $('#gradingModal').find('#dirtyBunch').val(gradingDetail.dirty_bunch || '0.00');
-                                    $('#gradingModal').find('#duraBunch').val(gradingDetail.dura_bunch || '0.00');
-                                    $('#gradingModal').find('#oldBunch').val(gradingDetail.old_bunch || '0.00');
-                                    $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
-
-                                    if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
-                                        var mspoPerc = gradingDetail.mspo_perc || 100;
-                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
-                                    }else{
-                                        var mspoPerc = gradingDetail.mspo_perc || 0;
-                                        var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
-                                    }
-
-                                    $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
-                                    // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
-                                    $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
-                                    // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
-
-                                    $('#gradingModal').modal('show');
-                                }
-                            });
-                        }else{
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-
-                            var transactionStatus = $('#transactionStatus').val();
-                            print(obj.id, transactionStatus, isEmptyContainer);
-                        }
-
-                        // $.post('php/print2.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-                        //     var obj2 = JSON.parse(data);
-
-                        //     if(obj2.status === 'success'){
-                        //         var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        //         printWindow.document.write(obj2.message);
-                        //         printWindow.document.close();
-                        //         setTimeout(function(){
-                        //             printWindow.print();
-                        //             printWindow.close();
-                        //             table.ajax.reload();
-                        //             window.location = 'simple.php';
-                                    
-                        //             /*setTimeout(function () {
-                        //                 if (confirm("Do you need to reprint?")) {
-                        //                     $.post('php/print2.php', { userID: obj.id, file: 'weight' }, function (data) {
-                        //                         var obj = JSON.parse(data);
-                        //                         if (obj.status === 'success') {
-                        //                             var reprintWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        //                             reprintWindow.document.write(obj.message);
-                        //                             reprintWindow.document.close();
-                        //                             setTimeout(function () {
-                        //                                 reprintWindow.print();
-                        //                                 reprintWindow.close();
-                        //                             }, 500);
-                        //                         } 
-                        //                         else {
-                        //                             window.location = 'simple.php';
-                        //                         }
-                        //                     });
-                        //                 }
-                        //             }, 500);*/
-                        //         }, 500);
-                        //     }
-                        //     else if(obj.status === 'failed'){
-                        //         $("#failBtn").attr('data-toast-text', obj.message );
-                        //         $("#failBtn").click();
-                        //     }
-                        //     else{
-                        //         $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                        //         $("#failBtn").click();
-                        //     }
-                        // });
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
-                        $("#failBtn").click();
-                    }
-                });
+            if (($('#transactionStatus').val() == "Purchase" || $('#transactionStatus').val() == "Local") && supplierIsCash && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
+                $('#pricingModal').find('#submitType').val('WithPrint');    
+                $('#pricingModal').modal('show');
+            }else if ($('#transactionStatus').val() == "Sales" && customerIsCash && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
+                $('#pricingModal').find('#submitType').val('WithPrint');    
+                $('#pricingModal').modal('show');
+            }else{
+                submitWeightPrint(pass, isEmptyContainer);
             }
+
+            // if(pass && $('#weightForm').valid()){
+            //     $('#spinnerLoading').show();
+            //     $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
+            //         var obj = JSON.parse(data); 
+            //         if(obj.status === 'success'){
+            //             $('#spinnerLoading').hide();
+            //             $('#addModal').modal('hide');
+
+            //             // If Transaction Status is Purchase, open grading modal
+            //             if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
+            //                 $.post('php/getWeight.php', { userID: obj.id }, function (data) {
+            //                     var obj = JSON.parse(data);
+            //                     if (obj.status === 'success') {
+            //                         $('#gradingModal').find('#id').val(obj.message.id);
+            //                         $('#gradingModal').find('#submitPrint').val('Y');
+            //                         $('#gradingModal').find('#transactionStatus').val(transactionStatus);
+            //                         $('#gradingModal').find('#isEmptyContainer').val(isEmptyContainer);
+            //                         $('#gradingModal').find('#transactionId').val(obj.message.transaction_id);
+            //                         $('#gradingModal').find('#vehicleNo').val(obj.message.lorry_plate_no1);
+            //                         $('#gradingModal').find('#ticketDo').val(obj.message.delivery_no);
+            //                         $('#gradingModal').find('#nettWeight').val(obj.message.nett_weight1 ? (parseFloat(obj.message.nett_weight1)/1000).toFixed(2) : '0.00');
+            //                         $('#gradingModal').find('#reduceWeight').val(obj.message.reduce_weight ? (parseFloat(obj.message.reduce_weight)/1000).toFixed(2) : '0.00');
+            //                         $('#gradingModal').find('#finalWeight').val(obj.message.final_weight ? (parseFloat(obj.message.final_weight)/1000).toFixed(2) : '0.00');
+            //                         $('#gradingModal').find('#rejectWeight').val(obj.message.reject_weight ? (parseFloat(obj.message.reject_weight)/1000).toFixed(2) : '0.00');
+            //                         $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
+
+            //                         var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
+            //                         $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
+            //                         $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+            //                         $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
+            //                         $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+            //                         $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize8_9').val(gradingDetail.bunch_size_8_9 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize7_8').val(gradingDetail.bunch_size_7_8 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize6_7').val(gradingDetail.bunch_size_6_7 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize5_6').val(gradingDetail.bunch_size_5_6 || '0.00');
+            //                         $('#gradingModal').find('#bunchSize5').val(gradingDetail.bunch_size_5 || '0.00');
+            //                         $('#gradingModal').find('#totalPercent').val(gradingDetail.total_percent || '0.00');
+            //                         $('#gradingModal').find('#unripe').val(gradingDetail.unripe || '0.00');
+            //                         $('#gradingModal').find('#underripe').val(gradingDetail.underripe || '0.00');
+            //                         $('#gradingModal').find('#emptyBunch').val(gradingDetail.empty_bunch || '0.00');
+            //                         $('#gradingModal').find('#rottenBunch').val(gradingDetail.rotten_bunch || '0.00');
+            //                         $('#gradingModal').find('#longStalks').val(gradingDetail.long_stalks || '0.00');
+            //                         $('#gradingModal').find('#dirtyBunch').val(gradingDetail.dirty_bunch || '0.00');
+            //                         $('#gradingModal').find('#duraBunch').val(gradingDetail.dura_bunch || '0.00');
+            //                         $('#gradingModal').find('#oldBunch').val(gradingDetail.old_bunch || '0.00');
+            //                         $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
+
+            //                         if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
+            //                             var mspoPerc = gradingDetail.mspo_perc || 100;
+            //                             var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
+            //                         }else{
+            //                             var mspoPerc = gradingDetail.mspo_perc || 0;
+            //                             var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
+            //                         }
+
+            //                         $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+            //                         // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+            //                         $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+            //                         // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
+            //                         $('#gradingModal').modal('show');
+            //                     }
+            //                 });
+            //             }else{
+            //                 $("#successBtn").attr('data-toast-text', obj.message);
+            //                 $("#successBtn").click();
+
+            //                 var transactionStatus = $('#transactionStatus').val();
+            //                 print(obj.id, transactionStatus, isEmptyContainer);
+            //             }
+
+            //             // $.post('php/print2.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
+            //             //     var obj2 = JSON.parse(data);
+
+            //             //     if(obj2.status === 'success'){
+            //             //         var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+            //             //         printWindow.document.write(obj2.message);
+            //             //         printWindow.document.close();
+            //             //         setTimeout(function(){
+            //             //             printWindow.print();
+            //             //             printWindow.close();
+            //             //             table.ajax.reload();
+            //             //             window.location = 'simple.php';
+                                    
+            //             //             /*setTimeout(function () {
+            //             //                 if (confirm("Do you need to reprint?")) {
+            //             //                     $.post('php/print2.php', { userID: obj.id, file: 'weight' }, function (data) {
+            //             //                         var obj = JSON.parse(data);
+            //             //                         if (obj.status === 'success') {
+            //             //                             var reprintWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
+            //             //                             reprintWindow.document.write(obj.message);
+            //             //                             reprintWindow.document.close();
+            //             //                             setTimeout(function () {
+            //             //                                 reprintWindow.print();
+            //             //                                 reprintWindow.close();
+            //             //                             }, 500);
+            //             //                         } 
+            //             //                         else {
+            //             //                             window.location = 'simple.php';
+            //             //                         }
+            //             //                     });
+            //             //                 }
+            //             //             }, 500);*/
+            //             //         }, 500);
+            //             //     }
+            //             //     else if(obj.status === 'failed'){
+            //             //         $("#failBtn").attr('data-toast-text', obj.message );
+            //             //         $("#failBtn").click();
+            //             //     }
+            //             //     else{
+            //             //         $("#failBtn").attr('data-toast-text', "Something wrong when print");
+            //             //         $("#failBtn").click();
+            //             //     }
+            //             // });
+            //         }
+            //         else if(obj.status === 'failed'){
+            //             $('#spinnerLoading').hide();
+            //             $("#failBtn").attr('data-toast-text', obj.message );
+            //             $("#failBtn").click();
+            //         }
+            //         else{
+            //             $('#spinnerLoading').hide();
+            //             $("#failBtn").attr('data-toast-text', 'Failed to save');
+            //             $("#failBtn").click();
+            //         }
+            //     });
+            // }
             /*else{
                 let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
                 if (userChoice) {
@@ -1811,8 +1840,14 @@ if(($row = $result->fetch_assoc()) !== null){
         });
 
         $('#submitPricing').on('click', function(){
+            var submitType = $('#pricingModal').find('#submitType').val();
             $('#pricingModal').modal('hide');
-            submitWeight(true);
+
+            if (submitType == 'WithoutPrint'){
+                submitWeight(true);
+            }else if (submitType == 'WithPrint'){
+                submitWeightPrint(true);
+            }
         });
 
         $('#submitGrading').on('click', function(){
@@ -2003,6 +2038,8 @@ if(($row = $result->fetch_assoc()) !== null){
                 
                 if (msg){
                     postMessage(msg);
+                    var gross = $('#grossIncoming').val();
+                    $('#oGrossIncoming').val(msg);
                 } 
             });
         }
@@ -3068,7 +3105,7 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#grossIncomingDate').trigger('change');
 
             // Temporary set oGrossIncoming
-            $('#oGrossIncoming').val(gross);
+            //$('#oGrossIncoming').val(gross);
         });
 
         $('#grossCapture').on('click', function(event){
@@ -3990,6 +4027,95 @@ if(($row = $result->fetch_assoc()) !== null){
         }
     }
 
+    function submitWeightPrint(pass, isEmptyContainer){
+        if(pass && $('#weightForm').valid()){
+            $('#spinnerLoading').show();
+            $.post('php/weight2.php', $('#weightForm').serialize(), function(data){
+                var obj = JSON.parse(data); 
+                if(obj.status === 'success'){
+                    $('#spinnerLoading').hide();
+                    $('#addModal').modal('hide');
+
+                    // If Transaction Status is Purchase, open grading modal
+                    if (includeGrading == 'Y' && $('#transactionStatus').val() == "Purchase" && $('#grossIncoming').val() > 0 && $('#tareOutgoing').val() > 0){
+                        $.post('php/getWeight.php', { userID: obj.id }, function (data) {
+                            var obj = JSON.parse(data);
+                            if (obj.status === 'success') {
+                                $('#gradingModal').find('#id').val(obj.message.id);
+                                $('#gradingModal').find('#submitPrint').val('Y');
+                                $('#gradingModal').find('#transactionStatus').val(transactionStatus);
+                                $('#gradingModal').find('#isEmptyContainer').val(isEmptyContainer);
+                                $('#gradingModal').find('#transactionId').val(obj.message.transaction_id);
+                                $('#gradingModal').find('#vehicleNo').val(obj.message.lorry_plate_no1);
+                                $('#gradingModal').find('#ticketDo').val(obj.message.delivery_no);
+                                $('#gradingModal').find('#nettWeight').val(obj.message.nett_weight1 ? (parseFloat(obj.message.nett_weight1)/1000).toFixed(2) : '0.00');
+                                $('#gradingModal').find('#reduceWeight').val(obj.message.reduce_weight ? (parseFloat(obj.message.reduce_weight)/1000).toFixed(2) : '0.00');
+                                $('#gradingModal').find('#finalWeight').val(obj.message.final_weight ? (parseFloat(obj.message.final_weight)/1000).toFixed(2) : '0.00');
+                                $('#gradingModal').find('#rejectWeight').val(obj.message.reject_weight ? (parseFloat(obj.message.reject_weight)/1000).toFixed(2) : '0.00');
+                                $('#gradingModal').find('#grader').val(obj.message.grader_id).trigger('change');
+
+                                var gradingDetail = obj.message.grade_detail ? JSON.parse(obj.message.grade_detail) : {};
+                                $('#gradingModal').find('#mspoPerc').val(gradingDetail.mspo_perc || '0.00');
+                                $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                $('#gradingModal').find('#nonMspoPerc').val(gradingDetail.non_mspo_perc || '0.00');
+                                $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+                                $('#gradingModal').find('#bunchSize25').val(gradingDetail.bunch_size_25 || '0.00');
+                                $('#gradingModal').find('#bunchSize10').val(gradingDetail.bunch_size_10 || '0.00');
+                                $('#gradingModal').find('#bunchSize9_10').val(gradingDetail.bunch_size_9_10 || '0.00');
+                                $('#gradingModal').find('#bunchSize8_9').val(gradingDetail.bunch_size_8_9 || '0.00');
+                                $('#gradingModal').find('#bunchSize7_8').val(gradingDetail.bunch_size_7_8 || '0.00');
+                                $('#gradingModal').find('#bunchSize6_7').val(gradingDetail.bunch_size_6_7 || '0.00');
+                                $('#gradingModal').find('#bunchSize5_6').val(gradingDetail.bunch_size_5_6 || '0.00');
+                                $('#gradingModal').find('#bunchSize5').val(gradingDetail.bunch_size_5 || '0.00');
+                                $('#gradingModal').find('#totalPercent').val(gradingDetail.total_percent || '0.00');
+                                $('#gradingModal').find('#unripe').val(gradingDetail.unripe || '0.00');
+                                $('#gradingModal').find('#underripe').val(gradingDetail.underripe || '0.00');
+                                $('#gradingModal').find('#emptyBunch').val(gradingDetail.empty_bunch || '0.00');
+                                $('#gradingModal').find('#rottenBunch').val(gradingDetail.rotten_bunch || '0.00');
+                                $('#gradingModal').find('#longStalks').val(gradingDetail.long_stalks || '0.00');
+                                $('#gradingModal').find('#dirtyBunch').val(gradingDetail.dirty_bunch || '0.00');
+                                $('#gradingModal').find('#duraBunch').val(gradingDetail.dura_bunch || '0.00');
+                                $('#gradingModal').find('#oldBunch').val(gradingDetail.old_bunch || '0.00');
+                                $('#gradingModal').find('#totalQualityFactor').val(gradingDetail.total_quality_factor || '0.00');
+
+                                if (obj.message.supplier_detail && obj.message.supplier_detail.mspo_no) {
+                                    var mspoPerc = gradingDetail.mspo_perc || 100;
+                                    var nonMspoPerc = gradingDetail.non_mspo_perc || 0;
+                                }else{
+                                    var mspoPerc = gradingDetail.mspo_perc || 0;
+                                    var nonMspoPerc = gradingDetail.non_mspo_perc || 100;
+                                }
+
+                                $('#gradingModal').find('#mspoPerc').val(mspoPerc).trigger('keyup');
+                                // $('#gradingModal').find('#mspoWeight').val(gradingDetail.mspo_weight || '0.00');
+                                $('#gradingModal').find('#nonMspoPerc').val(nonMspoPerc).trigger('keyup');
+                                // $('#gradingModal').find('#nonMspoWeight').val(gradingDetail.non_mspo_weight || '0.00');
+
+                                $('#gradingModal').modal('show');
+                            }
+                        });
+                    }else{
+                        $("#successBtn").attr('data-toast-text', obj.message);
+                        $("#successBtn").click();
+
+                        var transactionStatus = $('#transactionStatus').val();
+                        print(obj.id, transactionStatus, isEmptyContainer);
+                    }
+                }
+                else if(obj.status === 'failed'){
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', 'Failed to save');
+                    $("#failBtn").click();
+                }
+            });
+        }
+    }
+
     function handleWeightType(weightType){
         if (weightType == 'Container'){
             $('#manualVehicle').prop('checked', false).trigger('change');
@@ -4207,6 +4333,12 @@ if(($row = $result->fetch_assoc()) !== null){
                     // Show Capture Button When Edit
                     $('#grossCapture').show();
                     $('#tareCapture').show();
+                }
+
+                const msg = buildMessage('ESC');
+
+                if (msg){
+                    postMessage(msg);
                 }
 
                 $('#id').val(obj.message.id);
@@ -4675,15 +4807,15 @@ if(($row = $result->fetch_assoc()) !== null){
             F1: { field: 'F1', sign: '-', suffix: '#' },
             F2: { field: 'F2', sign: '-', suffix: '#' },
             F3: { field: 'F3', sign: '-', suffix: '#' },
-            F4: { field: 'F4', sign: '+', suffix: '#' },
-            F5: { field: 'F5', sign: '+', suffix: '#' },
-            F6: { field: 'F6', sign: '+', suffix: '#' },
-            F7: { field: 'F7', sign: '-', suffix: '%' },
-            F8: { field: 'F8', sign: '-', suffix: '%' },
-            F9: { field: 'F9', sign: '-', suffix: '%' },
-            F10: { field: 'F10', sign: '+', suffix: '%' },
-            F11: { field: 'F11', sign: '+', suffix: '%' },
-            F12: { field: 'F12', sign: '+', suffix: '%' }
+            F4: { field: 'F4', sign: '-', suffix: '#' },
+            F5: { field: 'F5', sign: '-', suffix: '#' },
+            F6: { field: 'F6', sign: '-', suffix: '#' },
+            F7: { field: 'F7', sign: '-', suffix: '#' },
+            F8: { field: 'F8', sign: '-', suffix: '#' },
+            F9: { field: 'F9', sign: '-', suffix: '#' },
+            F10: { field: 'F10', sign: '-', suffix: '#' },
+            F11: { field: 'F11', sign: '-', suffix: '#' },
+            F12: { field: 'F12', sign: '-', suffix: '#' }
         };
 
         const cfg = mapping[action];
