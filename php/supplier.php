@@ -133,7 +133,7 @@ if (isset($_POST['supplierCode'])) {
         $transportPrice = trim($_POST["transportPrice"]);
     }
 
-    if (empty($_POST["customer"])) {
+    if (empty($_POST["customer"]) || $_POST["customer"] == "-") {
         $customer = null;
     } else {
         $customer = trim($_POST["customer"]);
