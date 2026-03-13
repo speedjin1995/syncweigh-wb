@@ -742,8 +742,16 @@ if(($row = $result->fetch_assoc()) !== null){
         $("#additionTable").on('click', 'button[id^="remove"]', function () {
             var $row = $(this).parents("tr");
             var rowId = $row.attr('id');
-            // If removing a CASHHQ row, also remove its linked CASHRAM row
-            $("#additionTable tr[data-linked-to='" + rowId + "']").remove();
+
+            if ($('#additionType' + $row.data('index')).val() == 'CASHHQ') {
+                $("#additionTable tr").each(function() {
+                    var rowType = $(this).find('select[name^="additionType"]').val();
+                    if (rowType == 'CASHRAM') {
+                        $(this).remove();
+                    }
+                });
+            }
+
             $row.remove();
 
             $("#additionTable tr").each(function (index) {
@@ -777,8 +785,15 @@ if(($row = $result->fetch_assoc()) !== null){
             var index = $(this).attr('id').replace('additionAmt', '');
             var $row = $(this).closest('tr');
             var rowId = $row.attr('id');
-            if ($('#additionType' + index).val() === 'CASHHQ') {
-                $("#additionTable tr[data-linked-to='" + rowId + "']").find('input[id^="additionAmt"]').val($(this).val());
+            var cashFromHqValue = $(this).val();
+
+            if ($('#additionType' + index).val() == 'CASHHQ') {
+                $("#additionTable tr").each(function() {
+                    var rowType = $(this).find('select[name^="additionType"]').val();
+                    if (rowType == 'CASHRAM') {
+                        $(this).find('input[id^="additionAmt"]').val(cashFromHqValue);
+                    }
+                });
             }
             calculateTotals();
         });
@@ -790,12 +805,14 @@ if(($row = $result->fetch_assoc()) !== null){
             // Remove any previously linked CASHRAM row for this row
             $("#additionTable tr[data-linked-to='" + rowId + "']").remove();
 
-            if ($select.val() === 'CASHHQ') {
+            if ($select.val() == 'CASHHQ') {
                 var $addContents = $("#additionDetail").clone();
                 $("#additionTable").append($addContents.html());
 
-                $("#additionTable").find('.details:last').attr("id", "detail" + additionRowCount).attr("data-index", additionRowCount).attr("data-linked-to", rowId);
+                $("#additionTable").find('.details:last').attr("id", "detail" + additionRowCount);
+                $("#additionTable").find('.details:last').attr("data-index", additionRowCount);
                 $("#additionTable").find('#remove:last').attr("id", "remove" + additionRowCount);
+                
                 $("#additionTable").find('#additionNo:last').attr('name', 'additionNo['+additionRowCount+']').attr("id", "additionNo" + additionRowCount).val(additionRowCount + 1);
                 $("#additionTable").find('#additionType:last').attr('name', 'additionType['+additionRowCount+']').attr("id", "additionType" + additionRowCount).val('CASHRAM');
                 $("#additionTable").find('#additionDesc:last').attr('name', 'additionDesc['+additionRowCount+']').attr("id", "additionDesc" + additionRowCount);

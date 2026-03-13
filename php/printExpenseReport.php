@@ -105,7 +105,7 @@ if(isset($_POST['userID'])) {
                     }
                 }
 
-                $totalDailyAdditions = $dailyCashFromHq + $dailyCash + $dailyCashRamp + $dailyCashFfb + $dailyDebitNote + $dailyCashIn;
+                $totalDailyAdditions = $dailyCash + $dailyCashRamp + $dailyCashFfb + $dailyDebitNote + $dailyCashIn;
                 ############################################
 
                 ######### Calculate Accum Additions #########
