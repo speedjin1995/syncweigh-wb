@@ -26,12 +26,12 @@ if (!empty($data)) {
                 $unitId = $insert_stmt->insert_id; // Get the inserted unit ID
                 $insert_stmt->close();
     
-                $action = "1";
-                if ($insert_log = $db->prepare("INSERT INTO Unit_Log (unit_id, unit, action_id, action_by) VALUES (?, ?, ?, ?)")) {
-                    $insert_log->bind_param('ssss', $unitId, $Unit, $action, $uid);
-                    $insert_log->execute();
-                    $insert_log->close();
-                }            
+                // $action = "1";
+                // if ($insert_log = $db->prepare("INSERT INTO Unit_Log (unit_id, unit, action_id, action_by) VALUES (?, ?, ?, ?)")) {
+                //     $insert_log->bind_param('ssss', $unitId, $Unit, $action, $uid);
+                //     $insert_log->execute();
+                //     $insert_log->close();
+                // }            
             }
         }
         

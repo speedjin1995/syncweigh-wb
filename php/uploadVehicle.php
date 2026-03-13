@@ -122,11 +122,11 @@ if (!empty($data)) {
                     $vehicleId = $insert_stmt->insert_id;
                     $insert_stmt->close(); 
 
-                    if ($insert_log = $db->prepare("INSERT INTO Vehicle_Log (vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, ex_del, customer_code, customer_name, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('ssssssssss', $vehicleId, $VehicleNo, $VehicleWeight, $CustomerCode, $CustomerName, $SupplierCode, $SupplierName, $actionId, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }  
+                    // if ($insert_log = $db->prepare("INSERT INTO Vehicle_Log (vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, ex_del, customer_code, customer_name, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    //     $insert_log->bind_param('ssssssssss', $vehicleId, $VehicleNo, $VehicleWeight, $CustomerCode, $CustomerName, $SupplierCode, $SupplierName, $actionId, $uid);
+                    //     $insert_log->execute();
+                    //     $insert_log->close();
+                    // }  
                 }
             }else{
                 $errMsg = "Vehicle: ".$VehicleNo." already exist in master data.";
