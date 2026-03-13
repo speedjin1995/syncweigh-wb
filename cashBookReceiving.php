@@ -980,12 +980,17 @@ if(($row = $result->fetch_assoc()) !== null){
         $('input[id^="deductionAmt"]').each(function() {
             var index = $(this).attr('id').replace('deductionAmt', '');
             var type = $('#deductionType' + index).val();
-            if (type !== 'FFBSHORTAGE') {
+            if (type != 'FFBSHORTAGE') {
                 totalDeductions += parseFloat($(this).val()) || 0;
             }
         });
         $('input[id^="additionAmt"]').each(function() { 
-            totalAdditions += parseFloat($(this).val()) || 0; 
+            var index = $(this).attr('id').replace('additionAmt', '');
+            var type = $('#additionType' + index).val();
+            debugger;
+            if (type != 'CASHHQ') {
+                totalAdditions += parseFloat($(this).val()) || 0; 
+            }
         });
         
         $('#totalDeduction').val(totalDeductions.toFixed(2));

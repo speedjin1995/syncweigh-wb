@@ -469,23 +469,24 @@ if(isset($_POST['userID'])){
                             }
             
                             $message['products'] = $products;
-    
-                            if ($update_stmt2 = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=?")) {
-                                $update_stmt2->bind_param('s', $row['lorry_plate_no1']);
-                                $update_stmt2->execute();
-                                $result2 = $update_stmt2->get_result();
+                            $message['vehicleNoTxt'] = $row['lorry_plate_no1']; // Debugging line
+
+                            // if ($update_stmt2 = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=?")) {
+                            //     $update_stmt2->bind_param('s', $row['lorry_plate_no1']);
+                            //     $update_stmt2->execute();
+                            //     $result2 = $update_stmt2->get_result();
                                 
-                                if ($row2 = $result2->fetch_assoc()) {
-                                    $message['vehicleNoTxt'] = null; // Replace "123" with the actual value if needed
-                                } 
-                                else {
-                                    $message['vehicleNoTxt'] = $row['lorry_plate_no1']; // Debugging line
-                                }
-                            } 
-                            else {
-                                // Log error if the statement couldn't be prepared
-                                $message['vehicleNoTxt'] = $db->error;
-                            }
+                            //     if ($row2 = $result2->fetch_assoc()) {
+                            //         $message['vehicleNoTxt'] = null; // Replace "123" with the actual value if needed
+                            //     } 
+                            //     else {
+                            //         $message['vehicleNoTxt'] = $row['lorry_plate_no1']; // Debugging line
+                            //     }
+                            // } 
+                            // else {
+                            //     // Log error if the statement couldn't be prepared
+                            //     $message['vehicleNoTxt'] = $db->error;
+                            // }
                         
                             // Check and retrieve vehicle details for lorry_plate_no2
                             if ($update_stmt3 = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=?")) {
