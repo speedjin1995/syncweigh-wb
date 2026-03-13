@@ -118,7 +118,6 @@
 
                         $.post('php/purgeData.php', $('#prePrintForm').serialize(), function(data){
                             var obj = JSON.parse(data);
-                            debugger;
 
                             if(obj.status === 'success'){
                                 window.location.reload();

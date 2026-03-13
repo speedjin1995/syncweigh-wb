@@ -987,7 +987,6 @@ if(($row = $result->fetch_assoc()) !== null){
         $('input[id^="additionAmt"]').each(function() { 
             var index = $(this).attr('id').replace('additionAmt', '');
             var type = $('#additionType' + index).val();
-            debugger;
             if (type != 'CASHHQ') {
                 totalAdditions += parseFloat($(this).val()) || 0; 
             }
