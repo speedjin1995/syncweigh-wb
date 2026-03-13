@@ -334,11 +334,11 @@ if(($row = $result->fetch_assoc()) !== null){
                                                             </label>
                                                             <div class="col-sm-8">
                                                                 <div class="input-group">
-                                                                    <div class="input-group-text">
-                                                                        <input class="form-check-input mt-0" id="manualVehicle" name="manualVehicle" type="checkbox" value="0" aria-label="Checkbox for following text input">
+                                                                    <div class="input-group-text" style="display:none;">
+                                                                        <input class="form-check-input mt-0" id="manualVehicle" name="manualVehicle" type="checkbox" value="0" aria-label="Checkbox for following text input" checked>
                                                                     </div>
-                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No" style="display:none" >
-                                                                    <div class="col-10 index-vehicle">
+                                                                    <input type="text" class="form-control" id="vehicleNoTxt" name="vehicleNoTxt" placeholder="Vehicle Plate No">
+                                                                    <div class="col-10 index-vehicle" style="display:none;">
                                                                         <select class="form-select select2" id="vehiclePlateNo1" name="vehiclePlateNo1" >
                                                                             <option selected="-">-</option>
                                                                             <?php while($row2=mysqli_fetch_assoc($vehicles)){ ?>
@@ -2181,7 +2181,7 @@ if(($row = $result->fetch_assoc()) !== null){
             $('#destination').val("-").trigger('change');
             $('#replacementContainer').val('').trigger('keyup');
             $('#otherRemarks').val("");
-            $('#manualVehicle').prop('checked', false).trigger('change');
+            $('#manualVehicle').prop('checked', true).trigger('change');
             $('#manualVehicle2').prop('checked', false).trigger('change');
             $('#grossIncoming').val("");
             grossIncomingDatePicker.clear();
