@@ -366,8 +366,9 @@ if(($row = $result->fetch_assoc()) !== null){
                                                         <div class="mb-3">
                                                             <label for="batchNoSearch" class="form-label">Status</label>
                                                             <select id="batchNoSearch" class="form-select select2">
-                                                                <option value="N" selected>Pending</option>
-                                                                <option value="Y">Complete</option>
+                                                                <option value="Pending" selected>Pending</option>
+                                                                <option value="Complete">Complete</option>
+                                                                <option value="Cancel">Cancel</option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->                                                
@@ -460,15 +461,15 @@ if(($row = $result->fetch_assoc()) !== null){
 
                                             <!-- Status breakdown -->
                                             <div class="mt-4">
-                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="N" data-transaction="Sales" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Pending" data-transaction="Sales" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
                                                     <span class="text-muted">Pending</span>
                                                     <span class="fw-semibold" id="salesPending">0</span>
                                                 </div>
-                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Y" data-transaction="Sales" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Complete" data-transaction="Sales" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
                                                     <span class="text-muted">Complete</span>
                                                     <span class="fw-semibold text-success" id="salesComplete">0</span>
                                                 </div>
-                                                <div class="d-flex justify-content-between status-item" data-status="C" data-transaction="Sales" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                <div class="d-flex justify-content-between status-item" data-status="Cancel" data-transaction="Sales" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
                                                     <span class="text-muted">Cancel</span>
                                                     <span class="fw-semibold text-danger" id="salesCancel">0</span>
                                                 </div>
@@ -494,15 +495,15 @@ if(($row = $result->fetch_assoc()) !== null){
 
                                             <!-- Status breakdown -->
                                             <div class="mt-4">
-                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="N" data-transaction="Purchase" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Pending" data-transaction="Purchase" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
                                                     <span class="text-muted">Pending</span>
                                                     <span class="fw-semibold" id="purchasePending">0</span>
                                                 </div>
-                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Y" data-transaction="Purchase" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Complete" data-transaction="Purchase" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
                                                     <span class="text-muted">Complete</span>
                                                     <span class="fw-semibold text-success" id="purchaseComplete">0</span>
                                                 </div>
-                                                <div class="d-flex justify-content-between status-item" data-status="C" data-transaction="Purchase" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                <div class="d-flex justify-content-between status-item" data-status="Cancel" data-transaction="Purchase" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
                                                     <span class="text-muted">Cancel</span>
                                                     <span class="fw-semibold text-danger" id="purchaseCancel">0</span>
                                                 </div>
@@ -528,15 +529,15 @@ if(($row = $result->fetch_assoc()) !== null){
 
                                             <!-- Status breakdown -->
                                             <div class="mt-4">
-                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="N" data-transaction="Local" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Pending" data-transaction="Local" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
                                                     <span class="text-muted">Pending</span>
                                                     <span class="fw-semibold" id="localPending">0</span>
                                                 </div>
-                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Y" data-transaction="Local" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                <div class="d-flex justify-content-between mb-2 status-item" data-status="Complete" data-transaction="Local" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
                                                     <span class="text-muted">Complete</span>
                                                     <span class="fw-semibold text-success" id="localComplete">0</span>
                                                 </div>
-                                                <div class="d-flex justify-content-between status-item" data-status="C" data-transaction="Local" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
+                                                <div class="d-flex justify-content-between status-item" data-status="Cancel" data-transaction="Local" style="cursor: pointer; padding: 4px; border-radius: 4px;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='transparent'">
                                                     <span class="text-muted">Cancel</span>
                                                     <span class="fw-semibold text-danger" id="localCancel">0</span>
                                                 </div>
