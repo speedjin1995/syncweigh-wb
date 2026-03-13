@@ -344,11 +344,11 @@ if(($row = $result->fetch_assoc()) !== null){
             </td>
             <td>
                 <select class="form-select" id="additionType" name="additionType" required>
+                    <option value="CASHIN">Cash In (RM)</option>
                     <option value="CASHHQ">Cash From HQ (RM)</option>
                     <option value="CASHRAM">Cash Received By Ramp (RM)</option>
                     <option value="CASHFFBCUST">Cash Received By FFB Customer (RM)</option>
                     <option value="DEBITNOTE">Debit Note (RM)</option>
-                    <option value="CASHIN">Cash In (RM)</option>
                 </select>
             </td>
             <td>
@@ -740,7 +740,11 @@ if(($row = $result->fetch_assoc()) !== null){
 
         // Remove addition row
         $("#additionTable").on('click', 'button[id^="remove"]', function () {
-            $(this).parents("tr").remove();
+            var $row = $(this).parents("tr");
+            var rowId = $row.attr('id');
+            // If removing a CASHHQ row, also remove its linked CASHRAM row
+            $("#additionTable tr[data-linked-to='" + rowId + "']").remove();
+            $row.remove();
 
             $("#additionTable tr").each(function (index) {
                 $(this).find('input[name^="additionNo"]').val(index + 1);
@@ -770,7 +774,36 @@ if(($row = $result->fetch_assoc()) !== null){
 
         // Trigger calculation on input change
         $(document).on('input', 'input[id^="deductionAmt"], input[id^="additionAmt"]', function() {
+            var index = $(this).attr('id').replace('additionAmt', '');
+            var $row = $(this).closest('tr');
+            var rowId = $row.attr('id');
+            if ($('#additionType' + index).val() === 'CASHHQ') {
+                $("#additionTable tr[data-linked-to='" + rowId + "']").find('input[id^="additionAmt"]').val($(this).val());
+            }
             calculateTotals();
+        });
+
+        // Auto-add CASHRAM row when CASHHQ is selected
+        $(document).on('change', 'select[id^="additionType"]', function() {
+            var $select = $(this);
+            var rowId = $select.closest('tr').attr('id');
+            // Remove any previously linked CASHRAM row for this row
+            $("#additionTable tr[data-linked-to='" + rowId + "']").remove();
+
+            if ($select.val() === 'CASHHQ') {
+                var $addContents = $("#additionDetail").clone();
+                $("#additionTable").append($addContents.html());
+
+                $("#additionTable").find('.details:last').attr("id", "detail" + additionRowCount).attr("data-index", additionRowCount).attr("data-linked-to", rowId);
+                $("#additionTable").find('#remove:last').attr("id", "remove" + additionRowCount);
+                $("#additionTable").find('#additionNo:last').attr('name', 'additionNo['+additionRowCount+']').attr("id", "additionNo" + additionRowCount).val(additionRowCount + 1);
+                $("#additionTable").find('#additionType:last').attr('name', 'additionType['+additionRowCount+']').attr("id", "additionType" + additionRowCount).val('CASHRAM');
+                $("#additionTable").find('#additionDesc:last').attr('name', 'additionDesc['+additionRowCount+']').attr("id", "additionDesc" + additionRowCount);
+                $("#additionTable").find('#additionAmt:last').attr('name', 'additionAmt['+additionRowCount+']').attr("id", "additionAmt" + additionRowCount);
+
+                additionRowCount++;
+                calculateTotals();
+            }
         });
 
         // Handle deductionType change for CREDITFFBPAY
@@ -980,12 +1013,16 @@ if(($row = $result->fetch_assoc()) !== null){
         $('input[id^="deductionAmt"]').each(function() {
             var index = $(this).attr('id').replace('deductionAmt', '');
             var type = $('#deductionType' + index).val();
-            if (type !== 'FFBSHORTAGE') {
+            if (type != 'FFBSHORTAGE') {
                 totalDeductions += parseFloat($(this).val()) || 0;
             }
         });
-        $('input[id^="additionAmt"]').each(function() { 
-            totalAdditions += parseFloat($(this).val()) || 0; 
+        $('input[id^="additionAmt"]').each(function() {
+            var index = $(this).attr('id').replace('additionAmt', '');
+            var type = $('#additionType' + index).val();
+            if (type != 'CASHHQ') {
+                totalAdditions += parseFloat($(this).val()) || 0;
+            }
         });
         
         $('#totalDeduction').val(totalDeductions.toFixed(2));
