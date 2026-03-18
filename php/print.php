@@ -249,8 +249,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                                 @media print {
                                     @page {
                                         size: A5 landscape;
-                                        margin-left: 0.5in;
-                                        margin-right: 0.5in;
+                                        margin-left: 0in;
+                                        margin-right: 0in;
                                         margin-top: 0.1in;
                                         margin-bottom: 0.1in;
                                         padding-left: 0.2in;
@@ -319,10 +319,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                                     <td style="vertical-align: top;">
                                         <p style="vertical-align: top; font-size: 16px;">
                                             <span style="font-size: 24px; font-weight: bold; margin-bottom: 5px; display: inline-block;">'. $languageArray[$transacationStatus][$language] . ' ' . $languageArray['slip_code'][$language].'</span><br>
-                                            <span style="display: inline-block; width: 100px;">'. $languageArray['ticket_no_code'][$language].'</span>: <b>'.$row['transaction_id'].'</b><br>
-                                            <span style="display: inline-block; width: 100px;">'. $languageArray['date_code'][$language].'</span>: '.$transactionDate.'<br>
-                                            <span style="display: inline-block; width: 100px;">'. $languageArray['do_no_code'][$language].'</span>: '.$row['delivery_no'].'<br>
-                                            <span style="display: inline-block; width: 100px;">'. $languageArray['po_no_code'][$language].'</span>: '.$row['purchase_order'].'<br>
+                                            <span style="display: inline-block; width: 70px;">'. $languageArray['ticket_no_code'][$language].'</span>: <b>'.$row['transaction_id'].'</b><br>
+                                            <span style="display: inline-block; width: 70px;">'. $languageArray['date_code'][$language].'</span>: '.$transactionDate.'<br>
+                                            <span style="display: inline-block; width: 70px;">'. $languageArray['do_no_code'][$language].'</span>: '.$row['delivery_no'].'<br>
+                                            <span style="display: inline-block; width: 70px;">'. $languageArray['po_no_code'][$language].'</span>: '.$row['purchase_order'].'<br>
                                         </p>
                                     </td>
                                 </tr>
