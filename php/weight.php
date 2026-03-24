@@ -11,6 +11,7 @@ if(!isset($_SESSION['id'])){
 $id = $_SESSION['id'];
 
 $today = date('ym');
+$todayYearOnly = date('y');
 
 // Processing form data when form is submitted
 if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightType'], $_POST['transactionDate'], $_POST['grossIncoming'], $_POST['grossIncomingDate']
@@ -87,9 +88,9 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
 					//$id = $row2['misc_id'];
 
                     if ($weightType == 'Container'){
-                        $transactionId .= 'C/'.$row2['prefix'] . '26';
+                        $transactionId .= 'C/'.$row2['prefix'] . '/' . $todayYearOnly;
                     }else{
-                        $transactionId .= $row2['prefix'] . '26';
+                        $transactionId .= $row2['prefix'] . $todayYearOnly;
                         $diffContainerTransId = $transactionId;
                     }
 				} 

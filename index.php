@@ -3996,7 +3996,7 @@ if(($row = $result->fetch_assoc()) !== null){
                     $('#reduceWeightInput').val(0);
                     return;
                 }
-                var reduce = (reduceWeightInput/100) * finalWeight;
+                var reduce = Math.round((reduceWeightInput / 100) * finalWeight);
                 $('#reduceWeight').val(reduce).trigger('change');
             }
         });
