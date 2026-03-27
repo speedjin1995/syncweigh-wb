@@ -59,7 +59,10 @@ if($_POST['invoice'] != null && $_POST['invoice'] != '' && $_POST['invoice'] != 
 	$searchQuery .= " and weight_type = '".$_POST['invoice']."'";
 }else{
   $allowedTypes = [];
-  if ($includeContainer == 'Y') $allowedTypes[] = "'Container'";
+  if ($includeContainer == 'Y') {
+    $allowedTypes[] = "'Container'";
+    $allowedTypes[] = "'Empty Container'";
+  }
   if ($includeDifferentBin == 'Y') $allowedTypes[] = "'Different Container'";
   $allowedTypes[] = "'Normal'";
   
