@@ -59,7 +59,10 @@ if($_POST['invoice'] != null && $_POST['invoice'] != '' && $_POST['invoice'] != 
 	$searchQuery .= " and weight_type = '".$_POST['invoice']."'";
 }else{
   $allowedTypes = [];
-  if ($includeContainer == 'Y') $allowedTypes[] = "'Container'";
+  if ($includeContainer == 'Y'){
+    $allowedTypes[] = "'Container'";
+    $allowedTypes[] = "'Empty Container'";
+  }
   if ($includeDifferentBin == 'Y') $allowedTypes[] = "'Different Container'";
   $allowedTypes[] = "'Normal'";
   
@@ -101,7 +104,6 @@ if($_POST['invDelPo'] != null && $_POST['invDelPo'] != '' && $_POST['invDelPo'] 
 if($searchValue != ''){
   $searchQuery = " and (transaction_id like '%".$searchValue."%' or lorry_plate_no1 like '%".$searchValue."%')";
 }
-
 
 if ($_POST['batch'] == 'N') { //if pending
   ## Total number of records without filtering
