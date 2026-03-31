@@ -335,7 +335,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'], $_POST['p
                                     <td style="vertical-align: top; ">
                                         <p style="margin-left: 50px; margin-top: 5px; font-size: 16px;">
                                             <span style="display: inline-block; width: 90px;">'. $languageArray['ticket_no_code'][$language].'</span>: '.$row['transaction_id'].'<br>
-                                            <span style="display: inline-block; width: 90px;">'.$languageArray['date_code'][$language].'</span>: '.$transactionDate.'<br>';
+                                            <span style="display: inline-block; width: 90px;">'.$languageArray['date_code'][$language].'</span>: '.$transactionDate.'<br>
+                                            <span style="display: inline-block; width: 90px;">'.$languageArray['weight_by_code'][$language].'</span>: '.($row['manual_weight'] == 'true' ? $languageArray['manual_code'][$language] : $languageArray['auto_code'][$language]).'<br>';
 
                                             if ($row['weight_type'] == 'Container' && $_POST['isEmptyContainer'] == 'N'){
                                                 $message .= '<span style="display: inline-block; width: 90px;">'.$languageArray['po_no_code'][$language].'</span>: '.$row['purchase_order'];
