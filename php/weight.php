@@ -88,9 +88,9 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
 					//$id = $row2['misc_id'];
 
                     if ($weightType == 'Container'){
-                        $transactionId .= 'C/'.$row2['prefix'] . '/' . $todayYearOnly;
+                        $transactionId .= 'C/'.$row2['prefix'] . '/' . $today;
                     }else{
-                        $transactionId .= $row2['prefix'] . $todayYearOnly;
+                        $transactionId .= $row2['prefix'] . $today;
                         $diffContainerTransId = $transactionId;
                     }
 				} 
@@ -124,7 +124,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
 							$charSize = strlen($row['curcount']);
 							$misValue = $row['curcount'];
 		
-							for($i=0; $i<(6-(int)$charSize); $i++){
+							for($i=0; $i<(4-(int)$charSize); $i++){
 								$transactionId.='0';  // S0000
 							}
 					

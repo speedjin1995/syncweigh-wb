@@ -1315,3 +1315,13 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Co
 END
 $$
 DELIMITER ;
+
+-- 31/03/2026 --
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`, `ja`) VALUES
+('weight_by_code', 'Weight By', '称重人', 'Ditimbang Oleh', 'எடை செய்தவர்', '計量者');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`, `ja`) VALUES
+('manual_code', 'Manual', '手动', 'Manual', 'கைமுறை', '手動');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`, `ja`) VALUES
+('auto_code', 'Auto', '自动	', 'Auto', 'தானியங்கி', '自動');
