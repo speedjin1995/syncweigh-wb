@@ -40,6 +40,10 @@
             padding-top: 33px !important;
             height: auto !important;
         }
+
+        #rawMaterialTable td {
+            vertical-align: middle;
+        }
     </style>
 
 </head>
@@ -408,7 +412,7 @@
             <td>
                 <input type="number" class="form-control" id="rawMatWeight" name="rawMatWeight" style="background-color:white;" value="0">
             </td>
-            <td class="d-flex" style="text-align:center">
+            <td style="text-align:center; vertical-align: middle;">
                 <button class="btn btn-success" id="remove" style="background-color: #f06548;">
                     <i class="fa fa-times"></i>
                 </button>
@@ -670,7 +674,7 @@ $(function () {
 
         $("#rawMaterialTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount);
         $("#rawMaterialTable").find('#productRawMatId:last').attr('name', 'productRawMatId['+rowCount+']').attr("id", "productRawMatId" + rowCount);
-        $("#rawMaterialTable").find('#rawMats:last').attr('name', 'rawMats['+rowCount+']').attr("id", "rawMats" + rowCount).select2({
+        $("#rawMaterialTable").find('#rawMats:last').attr('name', 'rawMats['+rowCount+']').attr("id", "rawMats" + rowCount).attr("required", true).select2({
             allowClear: true,
             placeholder: "Please Select",
             dropdownParent: $('#rawMaterialTable') // Prevents dropdown cutoff inside modals/tables
