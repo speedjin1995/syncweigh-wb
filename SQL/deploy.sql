@@ -904,3 +904,7 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Co
 END
 $$
 DELIMITER ;
+
+-- 20/05/2026 --
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('clear_all_code', 'Clear All', '清除全部', 'Kosongkan Semua', 'அனைத்தையும் அழி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('cancelled_code', 'Cancelled', '已取消', 'Dibatalkan', 'ரத்து செய்யப்பட்டது');
