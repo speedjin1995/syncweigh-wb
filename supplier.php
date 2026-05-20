@@ -154,25 +154,25 @@
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 1</label>
+                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label"><?=$languageArray['address_line_code'][$language]?> 1</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="<?=$languageArray['address_code'][$language]?> 1">
+                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="<?=$languageArray['address_line_code'][$language]?> 1">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 2</label>
+                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label"><?=$languageArray['address_line_code'][$language]?> 2</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="<?=$languageArray['address_code'][$language]?> 2">
+                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="<?=$languageArray['address_line_code'][$language]?> 2">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 3</label>
+                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label"><?=$languageArray['address_line_code'][$language]?> 3</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="<?=$languageArray['address_code'][$language]?> 3">
+                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="<?=$languageArray['address_line_code'][$language]?> 3">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -328,9 +328,9 @@
                                                                     <th><?=$languageArray['company_reg_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['new_reg_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['company_name_code'][$language]?></th>
-                                                                    <th><?=$languageArray['address_code'][$language]?>1</th>
-                                                                    <th><?=$languageArray['address_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['address_code'][$language]?>3</th>
+                                                                    <th><?=$languageArray['address_line_code'][$language]?> 1</th>
+                                                                    <th><?=$languageArray['address_line_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['address_line_code'][$language]?> 3</th>
                                                                     <th><?=$languageArray['phone_code'][$language]?></th>
                                                                     <th><?=$languageArray['fax_code'][$language]?></th>
                                                                     <th><?=$languageArray['pic_code'][$language]?></th>
