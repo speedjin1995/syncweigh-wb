@@ -1470,12 +1470,12 @@ else{
                                                                     <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
                                                                     <th><?=$languageArray['outgoing_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['nett_weight_code'][$language]?></th>
-                                                                    <th><?=$languageArray['vehicle_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['gross_incoming_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['incoming_date_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['tare_outgoing_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['outgoing_date_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['nett_weight_code'][$language]?>2</th>
+                                                                    <th><?=$languageArray['vehicle_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['gross_incoming_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['incoming_date_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['tare_outgoing_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['outgoing_date_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['nett_weight_code'][$language]?> 2</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
