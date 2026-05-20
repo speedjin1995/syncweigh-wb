@@ -33,7 +33,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
 <head>
 
-    <title>Users | Synctronix - Weighing System</title>
+    <title>Staff | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
