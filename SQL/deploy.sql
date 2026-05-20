@@ -921,4 +921,5 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALU
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('data_bits_code', 'Data Bits', '数据位', 'Bit Data', 'தரவு பிட்கள்');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('parity_code', 'Parity', '奇偶校验', 'Pariti', 'சமநிலை');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('stop_bits_code', 'Stop Bits', '停止位', 'Bit Henti', 'நிறுத்த பிட்கள்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('data_category_code', 'Data Category', '数据类别', 'Kategori Data', 'தரவு வகை');
 UPDATE `message_resource` SET `en`='ID No', `zh`='身份证号码', `my`='No. Kad Pengenalan', `ne`='அடையாள எண்' WHERE `message_key_code`='ic_code';
