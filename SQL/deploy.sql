@@ -904,3 +904,22 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Co
 END
 $$
 DELIMITER ;
+
+-- 20/05/2026 --
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('clear_all_code', 'Clear All', '清除全部', 'Kosongkan Semua', 'அனைத்தையும் அழி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('cancelled_code', 'Cancelled', '已取消', 'Dibatalkan', 'ரத்து செய்யப்பட்டது');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('address_line_code', 'Address Line', '地址行', 'Baris Alamat', 'முகவரி வரி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('company_reg_no_code', 'Company Reg No.', '公司注册号', 'No. Pendaftaran Syarikat', 'நிறுவன பதிவு எண்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('company_name_code', 'Company Name', '公司名称', 'Nama Syarikat', 'நிறுவன பெயர்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('company_address_code', 'Company Address', '公司地址', 'Alamat Syarikat', 'நிறுவன முகவரி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('company_phone_code', 'Company Phone', '公司电话', 'Telefon Syarikat', 'நிறுவன தொலைபேசி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('company_fax_code', 'Company Fax', '公司传真', 'Faks Syarikat', 'நிறுவன தொலைநகல்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('update_code', 'Update', '更新', 'Kemaskini', 'புதுப்பி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('indicator_code', 'Indicator', '指示器', 'Penunjuk', 'காட்டி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('serial_port_code', 'Serial Port', '串行端口', 'Port Bersiri', 'தொடர் துறை');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('baud_rate_code', 'Baud Rate', '波特率', 'Kadar Baud', 'பாட் வீதம்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('data_bits_code', 'Data Bits', '数据位', 'Bit Data', 'தரவு பிட்கள்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('parity_code', 'Parity', '奇偶校验', 'Pariti', 'சமநிலை');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('stop_bits_code', 'Stop Bits', '停止位', 'Bit Henti', 'நிறுத்த பிட்கள்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('data_category_code', 'Data Category', '数据类别', 'Kategori Data', 'தரவு வகை');
+UPDATE `message_resource` SET `en`='ID No', `zh`='身份证号码', `my`='No. Kad Pengenalan', `ne`='அடையாள எண்' WHERE `message_key_code`='ic_code';

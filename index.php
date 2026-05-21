@@ -307,6 +307,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
                                                         <div class="text-end">
+                                                            <button type="button" class="btn btn-danger" id="clearAllSearch"><i class="bx bx-x"></i> <?=$languageArray['clear_all_code'][$language]?></button>
                                                             <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> <?=$languageArray['search_code'][$language]?></button>
                                                         </div>
                                                     </div><!--end col-->
@@ -1469,12 +1470,12 @@ else{
                                                                     <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
                                                                     <th><?=$languageArray['outgoing_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['nett_weight_code'][$language]?></th>
-                                                                    <th><?=$languageArray['vehicle_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['gross_incoming_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['incoming_date_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['tare_outgoing_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['outgoing_date_code'][$language]?>2</th>
-                                                                    <th><?=$languageArray['nett_weight_code'][$language]?>2</th>
+                                                                    <th><?=$languageArray['vehicle_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['gross_incoming_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['incoming_date_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['tare_outgoing_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['outgoing_date_code'][$language]?> 2</th>
+                                                                    <th><?=$languageArray['nett_weight_code'][$language]?> 2</th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
@@ -1709,6 +1710,8 @@ else{
     var emptyContainerTable = null;
     let clickTimer = null;
 
+    var fromDateSearchPicker;
+    var toDateSearchPicker;
     var grossIncomingDatePicker;
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
@@ -1762,12 +1765,12 @@ else{
         });
 
         //Date picker
-        $('#fromDateSearch').flatpickr({
+        fromDateSearchPicker = $('#fromDateSearch').flatpickr({
             dateFormat: "d-m-Y",
             defaultDate: ''
         });
 
-        $('#toDateSearch').flatpickr({
+        toDateSearchPicker = $('#toDateSearch').flatpickr({
             dateFormat: "d-m-Y",
             defaultDate: ''
         });
@@ -1815,6 +1818,25 @@ else{
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
             allowInput: true,
+        });
+
+        // Clear All Filter Function
+        $('#clearAllSearch').on('click', function(){
+            fromDateSearchPicker.clear();
+            toDateSearchPicker.clear();
+            $('#statusSearch').val('-').trigger('change');
+            $('#customerNoSearch').val('-').trigger('change');
+            $('#supplierSearch').val('-').trigger('change');
+            $('#vehicleNo').val('');
+            $('#invoiceNoSearch').val('-').trigger('change');
+            $('#batchNoSearch').val('N').trigger('change');
+            $('#productSearch').val('-').trigger('change');
+            $('#rawMatSearch').val('-').trigger('change');
+            $('#plantSearch').val('-').trigger('change');
+            $('#transactionIdSearch').val('');
+            $('#containerNoSearch').val('');
+            $('#sealNoSearch').val('');
+            $('#invDelPoSearch').val('');
         });
 
         if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){

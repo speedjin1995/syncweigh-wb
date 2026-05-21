@@ -139,7 +139,7 @@ else{
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="transactionStatusSearch" class="form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
-                                                            <select id="transactionStatusSearch" class="form-select">
+                                                            <select id="transactionStatusSearch" class="form-select select2">
                                                                 <option selected>-</option>
                                                                 <option value="Sales" selected><?=$languageArray['dispatch_code'][$language]?></option>
                                                                 <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
@@ -151,7 +151,7 @@ else{
                                                     <div class="col-3" id="customerSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="customerNoSearch" class="form-label"><?=$languageArray['customer_name_code'][$language]?></label>
-                                                            <select id="customerNoSearch" class="form-select" >
+                                                            <select id="customerNoSearch" class="form-select select2">
                                                                 <option selected>-</option>
                                                                 <?php while($rowPF = mysqli_fetch_assoc($customer2)){ ?>
                                                                     <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['name'] ?></option>
@@ -162,7 +162,7 @@ else{
                                                     <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="supplierSearch" class="form-label"><?=$languageArray['supplier_name_code'][$language]?></label>
-                                                            <select id="supplierSearch" class="form-select" >
+                                                            <select id="supplierSearch" class="form-select select2">
                                                                 <option selected>-</option>
                                                                 <?php while($rowSF=mysqli_fetch_assoc($supplier2)){ ?>
                                                                     <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['name'] ?></option>
@@ -179,7 +179,7 @@ else{
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="invoiceNoSearch" class="form-label"><?=$languageArray['weighing_type_code'][$language]?></label>
-                                                            <select id="invoiceNoSearch" class="form-select"  >
+                                                            <select id="invoiceNoSearch" class="form-select select2">
                                                                 <option selected>-</option>
                                                                 <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
                                                                 <!-- <option value="Container">Primer Mover</option> -->
@@ -199,7 +199,7 @@ else{
                                                     <div class="col-3" id="productSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="ForminputState" class="form-label"><?=$languageArray['product_code_code'][$language]?></label>
-                                                            <select id="productSearch" class="form-select" >
+                                                            <select id="productSearch" class="form-select select2">
                                                                 <option selected>-</option>
                                                                 <?php while($rowProductF=mysqli_fetch_assoc($product2)){ ?>
                                                                     <option value="<?=$rowProductF['product_code'] ?>"><?=$rowProductF['product_code'] .' - '. $rowProductF['name'] ?></option>
@@ -210,7 +210,7 @@ else{
                                                     <div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="ForminputState" class="form-label"><?=$languageArray['raw_material_code_code'][$language]?></label>
-                                                            <select id="rawMatSearch" class="form-select" >
+                                                            <select id="rawMatSearch" class="form-select select2">
                                                                 <option selected>-</option>
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
                                                                     <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['name'] ?></option>
@@ -221,7 +221,7 @@ else{
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="destinationSearch" class="form-label"><?=$languageArray['destination_code'][$language]?></label>
-                                                            <select id="destinationSearch" class="form-select" >
+                                                            <select id="destinationSearch" class="form-select select2">
                                                                 <option selected>-</option>
                                                                 <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
                                                                     <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
@@ -232,7 +232,7 @@ else{
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="plantSearch" class="form-label"><?=$languageArray['plant_code'][$language]?></label>
-                                                            <select id="plantSearch" class="form-select">
+                                                            <select id="plantSearch" class="form-select select2">
                                                                 <option selected>-</option>
                                                                 <?php while($rowPlantF=mysqli_fetch_assoc($plant)){ ?>
                                                                     <option value="<?=$rowPlantF['plant_code'] ?>"><?=$rowPlantF['name'] ?></option>
@@ -243,7 +243,7 @@ else{
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="statusSearch" class="form-label"><?=$languageArray['status_code'][$language]?></label>
-                                                            <select id="statusSearch" class="form-select">
+                                                            <select id="statusSearch" class="form-select select2">
                                                                 <option value="Complete" selected><?=$languageArray['complete_code'][$language]?></option>
                                                                 <option value="Cancelled"><?=$languageArray['cancelled_code'][$language]?></option>
                                                             </select>
@@ -257,6 +257,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
                                                         <div class="text-end">
+                                                            <button type="button" class="btn btn-danger" id="clearAllSearch"><i class="bx bx-x"></i> <?=$languageArray['clear_all_code'][$language]?></button>
                                                             <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> <?=$languageArray['search_code'][$language]?></button>
                                                         </div>
                                                     </div><!--end col-->
@@ -539,6 +540,10 @@ else{
     <script src="assets/js/additional.js"></script>
 
     <script type="text/javascript">
+    
+    var fromDateSearchPicker;
+    var toDateSearchPicker;
+
     $(function () {
         const today = new Date();
         const tomorrow = new Date(today);
@@ -546,13 +551,31 @@ else{
         tomorrow.setDate(tomorrow.getDate() + 1);
         yesterday.setDate(yesterday.getDate() - 1);
 
+        // Initialize all Select2 elements in the search bar
+        $('#collapseSearch .select2').select2({
+            allowClear: true,
+            placeholder: "Please Select",
+        });
+
+        // Apply custom styling to Select2 elements in search bar
+        $('.select2-container .select2-selection--single').css({
+            'padding-top': '4px',
+            'padding-bottom': '4px',
+            'height': 'auto'
+        });
+
+        $('.select2-container .select2-selection__arrow').css({
+            'padding-top': '33px',
+            'height': 'auto'
+        });
+
         //Date picker
-        $('#fromDateSearch').flatpickr({
+        fromDateSearchPicker = $('#fromDateSearch').flatpickr({
             dateFormat: "d-m-Y",
             defaultDate: yesterday
         });
 
-        $('#toDateSearch').flatpickr({
+        toDateSearchPicker = $('#toDateSearch').flatpickr({
             dateFormat: "d-m-Y",
             defaultDate: today
         });
@@ -560,6 +583,23 @@ else{
         $('#transactionDate').flatpickr({
             dateFormat: "d-m-Y",
             defaultDate: today
+        });
+
+        // Clear All Filter Function
+        $('#clearAllSearch').on('click', function(){
+            fromDateSearchPicker.setDate(yesterday);
+            toDateSearchPicker.setDate(today);
+            $('#transactionStatusSearch').val('Sales').trigger('change');
+            $('#customerNoSearch').val('-').trigger('change');
+            $('#supplierSearch').val('-').trigger('change');
+            $('#vehicleNo').val('');
+            $('#invoiceNoSearch').val('-').trigger('change');
+            $('#productSearch').val('-').trigger('change');
+            $('#rawMatSearch').val('-').trigger('change');
+            $('#destinationSearch').val('-').trigger('change');
+            $('#plantSearch').val('-').trigger('change');
+            $('#statusSearch').val('Complete').trigger('change');
+            $('#invDelPoSearch').val('');
         });
 
         $('#selectAllCheckbox').on('change', function() {

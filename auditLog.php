@@ -2,7 +2,7 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
-    <title>Weighing | Synctronix - Weighing System</title>
+    <title>Audit Log | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -68,98 +68,98 @@
                                             <div class="row">
                                                 <div class="col-3">
                                                     <div class="mb-3">
-                                                        <label for="fromDateSearch" class="form-label">From Date</label>
+                                                        <label for="fromDateSearch" class="form-label"><?=$languageArray['from_date_code'][$language]?></label>
                                                         <input type="date" class="form-control flatpickrStart" data-provider="flatpickr" id="fromDateSearch">
                                                     </div>
                                                 </div>
                                                 <div class="col-3">
                                                     <div class="mb-3">
-                                                        <label for="toDateSearch" class="form-label">To Date</label>
+                                                        <label for="toDateSearch" class="form-label"><?=$languageArray['to_date_code'][$language]?></label>
                                                         <input type="date" class="form-control flatpickrEnd" data-provider="flatpickr" id="toDateSearch">
                                                     </div>
                                                 </div>
                                                 <div class="col-3">
                                                     <div class="mb-3">
-                                                        <label for="reportType" class="form-label">Status</label>
+                                                        <label for="reportType" class="form-label"><?=$languageArray['data_category_code'][$language]?></label>
                                                         <select id="reportType" name="reportType" class="form-select" data-choices data-choices-sorting="true" >
-                                                            <option value="Customer" selected>Customer</option>
-                                                            <option value="Destination">Destination</option>
-                                                            <option value="Product">Product</option>
-                                                            <option value="Raw Materials">Raw Material</option>
-                                                            <option value="Supplier">Supplier</option>
-                                                            <option value="Vehicle">Vehicle</option>
-                                                            <option value="Transporter">Transporter</option>
-                                                            <option value="User">User</option>
-                                                            <option value="Weight">Weighing</option>
-                                                            <option value="Agent">Sales Representative</option>
-                                                            <option value="Plant">Plant</option>
+                                                            <option value="Customer" selected><?=$languageArray['customer_code'][$language]?></option>
+                                                            <option value="Destination"><?=$languageArray['destination_code'][$language]?></option>
+                                                            <option value="Product"><?=$languageArray['product_code'][$language]?></option>
+                                                            <option value="Raw Materials"><?=$languageArray['raw_material_code'][$language]?></option>
+                                                            <option value="Supplier"><?=$languageArray['supplier_code'][$language]?></option>
+                                                            <option value="Vehicle"><?=$languageArray['vehicle_code'][$language]?></option>
+                                                            <option value="Transporter"><?=$languageArray['transporter_code'][$language]?></option>
+                                                            <option value="User"><?=$languageArray['staff_code'][$language]?></option>
+                                                            <option value="Weight"><?=$languageArray['weighing_code'][$language]?></option>
+                                                            <!-- <option value="Agent"><?=$languageArray['sales_representative_code'][$language]?></option> -->
+                                                            <option value="Plant"><?=$languageArray['plant_code'][$language]?></option>
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode customerInput">
                                                     <div class="mb-3">
-                                                        <label for="customerCode" class="form-label">Customer Code</label>
-                                                        <input type="text" class="form-control" placeholder="Customer Code" name="customerCode" id="customerCode">
+                                                        <label for="customerCode" class="form-label"><?=$languageArray['customer_code_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['customer_code_code'][$language]?>" name="customerCode" id="customerCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode destinationInput" style="display:none">
                                                     <div class="mb-3">
-                                                        <label for="destinationCode" class="form-label">Destination Code</label>
-                                                        <input type="text" class="form-control" placeholder="Destination Code" name="destinationCode" id="destinationCode">
+                                                        <label for="destinationCode" class="form-label"><?=$languageArray['destination_code_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['destination_code_code'][$language]?>" name="destinationCode" id="destinationCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode productInput" style="display:none">
                                                     <div class="mb-3">
-                                                        <label for="productCode" class="form-label">Product Code</label>
-                                                        <input type="text" class="form-control" placeholder="Product Code" name="productCode" id="productCode">
+                                                        <label for="productCode" class="form-label"><?=$languageArray['product_code_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['product_code_code'][$language]?>" name="productCode" id="productCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode rawMatInput" style="display:none">
                                                     <div class="mb-3">
-                                                        <label for="rawMatCode" class="form-label">Raw Material Code</label>
-                                                        <input type="text" class="form-control" placeholder="Raw Material Code" name="rawMatCode" id="rawMatCode">
+                                                        <label for="rawMatCode" class="form-label"><?=$languageArray['raw_material_code_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['raw_material_code_code'][$language]?>" name="rawMatCode" id="rawMatCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode supplierInput" style="display:none">
                                                     <div class="mb-3">
-                                                        <label for="supplierCode" class="form-label">Supplier Code</label>
-                                                        <input type="text" class="form-control" placeholder="Supplier Code" name="supplierCode" id="supplierCode">
+                                                        <label for="supplierCode" class="form-label"><?=$languageArray['supplier_code_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['supplier_code_code'][$language]?>" name="supplierCode" id="supplierCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode vehicleInput" style="display:none">
                                                     <div class="mb-3">
-                                                        <label for="vehicleNo" class="form-label">Vehicle No</label>
-                                                        <input type="text" class="form-control" placeholder="Vehicle No" name="vehicleNo" id="vehicleNo">
+                                                        <label for="vehicleNo" class="form-label"><?=$languageArray['vehicle_no_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['vehicle_no_code'][$language]?>" name="vehicleNo" id="vehicleNo">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode agentInput" style="display:none">
                                                     <div class="mb-3">
-                                                        <label for="agentCode" class="form-label">Sales Representative Code</label>
-                                                        <input type="text" class="form-control" placeholder="Sales Representative Code" name="agentCode" id="agentCode">
+                                                        <label for="agentCode" class="form-label"><?=$languageArray['sales_representative_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['sales_representative_code'][$language]?>" name="agentCode" id="agentCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode transporterInput" style="display:none">
                                                     <div class="mb-3">
-                                                        <label for="transporterCode" class="form-label">Transporter Code</label>
-                                                        <input type="text" class="form-control" placeholder="Transporter Code" name="transporterCode" id="transporterCode">
+                                                        <label for="transporterCode" class="form-label"><?=$languageArray['transporter_code_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['transporter_code_code'][$language]?>" name="transporterCode" id="transporterCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode unitInput" style="display:none">
                                                     <div class="mb-3">
                                                         <label for="unit" class="form-label">Unit</label>
-                                                        <input type="text" class="form-control" placeholder="Unit Code" name="unit" id="unit">
+                                                        <input type="text" class="form-control" placeholder="Unit" name="unit" id="unit">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode userInput" style="display:none">
                                                     <div class="mb-3">
-                                                        <label for="userCode" class="form-label">User Code</label>
-                                                        <input type="text" class="form-control" placeholder="User Code" name="userCode" id="userCode">
+                                                        <label for="userCode" class="form-label"><?=$languageArray['username_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['username_code'][$language]?>" name="userCode" id="userCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode plantInput" style="display:none">
                                                     <div class="mb-3">
-                                                        <label for="plantCode" class="form-label">Plant Code</label>
-                                                        <input type="text" class="form-control" placeholder="Plant Code" name="plantCode" id="plantCode">
+                                                        <label for="plantCode" class="form-label"><?=$languageArray['plant_code_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['plant_code_code'][$language]?>" name="plantCode" id="plantCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode siteInput" style="display:none">
@@ -170,8 +170,8 @@
                                                 </div>
                                                 <div class="col-3 inputCode weightInput" style="display:none">
                                                     <div class="mb-3">
-                                                        <label for="weight" class="form-label">Weighing Transaction ID</label>
-                                                        <input type="text" class="form-control" placeholder="Weighing Transaction ID" name="weight" id="weight">
+                                                        <label for="weight" class="form-label"><?=$languageArray['transaction_id_code'][$language]?></label>
+                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['transaction_id_code'][$language]?>" name="weight" id="weight">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode soInput" style="display:none">

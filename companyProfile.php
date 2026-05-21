@@ -79,15 +79,15 @@ if ($role != 'SADMIN'){
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="companyRegNo" class="col-sm-4 col-form-label">Company Reg No. *</label>
+                                                    <label for="companyRegNo" class="col-sm-4 col-form-label"><?=$languageArray['company_reg_no_code'][$language]?> *</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyRegNo" name="companyRegNo" placeholder="Company Reg No" value="<?=$usercompany_reg_no ?>" required <?= $readonly ?>>
+                                                        <input type="text" class="form-control input-readonly" id="companyRegNo" name="companyRegNo" placeholder="<?=$languageArray['search_code'][$language]?>Company Reg No" value="<?=$usercompany_reg_no ?>" required <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="companyName" class="col-sm-4 col-form-label">Company Name *</label>
+                                                    <label for="companyName" class="col-sm-4 col-form-label"><?=$languageArray['company_name_code'][$language]?>Company Name *</label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control input-readonly" id="companyName" name="companyName" placeholder="Company Name" value="<?=$username ?>" required <?= $readonly ?>>
                                                     </div>
@@ -95,46 +95,46 @@ if ($role != 'SADMIN'){
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="companyAddress" class="col-sm-4 col-form-label">Company Address 1 *</label>
+                                                    <label for="companyAddress" class="col-sm-4 col-form-label"><?=$languageArray['company_address_code'][$language]?> 1 *</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyAddress" name="companyAddress" placeholder="Company Address 1" value="<?=$useraddress_line_1 ?>" required <?= $readonly ?>>
+                                                        <input type="text" class="form-control input-readonly" id="companyAddress" name="companyAddress" placeholder="<?=$languageArray['company_address_code'][$language]?> 1" value="<?=$useraddress_line_1 ?>" required <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="companyAddress2" class="col-sm-4 col-form-label">Company Address 2</label>
+                                                    <label for="companyAddress2" class="col-sm-4 col-form-label"><?=$languageArray['company_address_code'][$language]?> 2</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyAddress2" name="companyAddress2" placeholder="Company Address 2" value="<?=$useraddress_line_2 ?>" <?= $readonly ?>>
+                                                        <input type="text" class="form-control input-readonly" id="companyAddress2" name="companyAddress2" placeholder="<?=$languageArray['company_address_code'][$language]?> 2" value="<?=$useraddress_line_2 ?>" <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="companyAddress3" class="col-sm-4 col-form-label">Company Address 3</label>
+                                                    <label for="companyAddress3" class="col-sm-4 col-form-label"><?=$languageArray['company_address_code'][$language]?> 3</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyAddress3" name="companyAddress3" placeholder="Company Address 3" value="<?=$useraddress_line_3 ?>" <?= $readonly ?>>
+                                                        <input type="text" class="form-control input-readonly" id="companyAddress3" name="companyAddress3" placeholder="<?=$languageArray['company_address_code'][$language]?> 3" value="<?=$useraddress_line_3 ?>" <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="companyPhone" class="col-sm-4 col-form-label">Company Phone</label>
+                                                    <label for="companyPhone" class="col-sm-4 col-form-label"><?=$languageArray['company_phone_code'][$language]?></label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyPhone" name="companyPhone" placeholder="Company Phone" value="<?=$userphone_no ?>" required <?= $readonly ?>>
+                                                        <input type="text" class="form-control input-readonly" id="companyPhone" name="companyPhone" placeholder="<?=$languageArray['company_phone_code'][$language]?>" value="<?=$userphone_no ?>" required <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="companyFax" class="col-sm-4 col-form-label">Fax No.</label>
+                                                    <label for="companyFax" class="col-sm-4 col-form-label"><?=$languageArray['company_fax_code'][$language]?></label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control input-readonly" id="companyFax" name="companyFax" placeholder="Company Fax" value="<?=$userfax_no ?>" <?= $readonly ?>>
+                                                        <input type="text" class="form-control input-readonly" id="companyFax" name="companyFax" placeholder="<?=$languageArray['company_fax_code'][$language]?>" value="<?=$userfax_no ?>" <?= $readonly ?>>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="mt-4" <?= $hidden ? 'style="display:none;"' : '' ?>>
-                                                <button class="btn btn-success w-100" type="submit">Update</button>
+                                                <button class="btn btn-success w-100" type="submit"><?=$languageArray['update_code'][$language]?></button>
                                             </div>
                                         </div>
                                     </form>

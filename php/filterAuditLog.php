@@ -94,7 +94,7 @@ if($_POST['selectedValue'] == "Unit")
 if($_POST['selectedValue'] == "User")
 {
     if($_POST['userCode'] != null && $_POST['userCode'] != ''){
-    $searchQuery .= " and user_code like '%".$_POST['userCode']."%'";
+    $searchQuery .= " and username like '%".$_POST['userCode']."%'";
     }
 }
 

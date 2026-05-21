@@ -33,7 +33,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
 <head>
 
-    <title>Users | Synctronix - Weighing System</title>
+    <title>Staff | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -631,7 +631,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 $('#addModal').find('#username').val(obj.message.username);
                 $('#addModal').find('#name').val(obj.message.name);
                 $('#addModal').find('#useremail').val(obj.message.useremail);
-                $('#addModal').find('#roles').val(obj.message.role_code);
+                $('#addModal').find('#roles').val(obj.message.role_code).trigger("change");
                 $("#addModal").find("#plantId").val(JSON.parse(obj.message.plant)).trigger("change");
 
                 // Remove Validation Error Message

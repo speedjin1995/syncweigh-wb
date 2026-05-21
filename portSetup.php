@@ -54,10 +54,10 @@ if($row = $result->fetch_assoc()){
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <form action="php/updatePort.php" method="post">
-                                        <div class="row">
+                                        <div class="row mb-3">
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <label>Indicator</label>
+                                                    <label><?=$languageArray['indicator_code'][$language]?></label>
                                                     <select class="form-control" style="width: 100%;" id="indicator" name="indicator" required>
                                                         <option value="BDI" <?=$indicator == 'BDI' ? 'selected="selected"' : '';?>>BDI2001B</option>
                                                         <option value="X2S" <?=$indicator == 'X2S' ? ' selected="selected"' : '';?>>SYNCTRONIX X2S</option>
@@ -69,13 +69,13 @@ if($row = $result->fetch_assoc()){
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <label>Serial Port</label>
+                                                    <label><?=$languageArray['serial_port_code'][$language]?></label>
                                                     <select class="form-control" style="width: 100%;" id="serialPort" name="serialPort" required></select>
                                                 </div>
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <label>Baud Rate</label>
+                                                    <label><?=$languageArray['baud_rate_code'][$language]?></label>
                                                     <select class="form-control" style="width: 100%;" id="serialPortBaudRate" name="serialPortBaudRate" required>
                                                         <option value="110" <?=$baudrate == '110' ? 'selected="selected"' : '';?>>110</option>
                                                         <option value="300" <?=$baudrate == '300' ? ' selected="selected"' : '';?>>300</option>
@@ -98,7 +98,7 @@ if($row = $result->fetch_assoc()){
                                         <div class="row">
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <label>Data Bits</label>
+                                                    <label><?=$languageArray['data_bits_code'][$language]?></label>
                                                     <select class="form-control" style="width: 100%;" id="serialPortDataBits" name="serialPortDataBits" required>
                                                         <option value="8" <?=$databits == '8' ? 'selected="selected"' : '';?>>8</option>
                                                         <option value="7" <?=$databits == '7' ? 'selected="selected"' : '';?>>7</option>
@@ -109,7 +109,7 @@ if($row = $result->fetch_assoc()){
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <label>Parity</label>
+                                                    <label><?=$languageArray['parity_code'][$language]?></label>
                                                     <select class="form-control" style="width: 100%;" id="serialPortParity" name="serialPortParity" required>
                                                         <option value="N" <?=$parity == 'N' ? 'selected="selected"' : '';?>>None</option>
                                                         <option value="O" <?=$parity == 'O' ? 'selected="selected"' : '';?>>Odd</option>
@@ -121,7 +121,7 @@ if($row = $result->fetch_assoc()){
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <label>Stop bits</label>
+                                                    <label><?=$languageArray['stop_bits_code'][$language]?></label>
                                                     <select class="form-control" style="width: 100%;" id="serialPortStopBits" name="serialPortStopBits" required>
                                                         <option value="1" <?=$stopbits == '1' ? 'selected="selected"' : '';?>>1</option>
                                                         <option value="1.5" <?=$stopbits == '1.5' ? 'selected="selected"' : '';?>>1.5</option>
@@ -132,7 +132,7 @@ if($row = $result->fetch_assoc()){
                                         </div>
                                         <div class="row">
                                             <div class="mt-4">
-                                                <button class="btn btn-success w-100" type="submit">Update</button>
+                                                <button class="btn btn-success w-100" type="submit"><?=$languageArray['update_code'][$language]?></button>
                                             </div>
                                         </div>
                                     </form>

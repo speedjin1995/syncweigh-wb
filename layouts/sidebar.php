@@ -37,7 +37,7 @@
                     <a href="dashboard.php" class="nav-link"><i class="mdi mdi-billboard"></i><?=$lang['t-billboard']?></a>
                 </li-->
                 <li class="nav-item">
-                    <a href="index.php" class="nav-link"><i class="mdi mdi-weight"></i><?=$languageArray['daily_weighing_code'][$language]?></a>
+                    <a href="index.php" class="nav-link"><i class="mdi mdi-weight"></i><span><?=$languageArray['daily_weighing_code'][$language]?></span></a>
                 </li>                
                 <!--li class="nav-item">
                     <a href="bitumen.php" class="nav-link"><i class="mdi mdi-domain"></i></i><?=$lang['t-bitumen']?></a>
