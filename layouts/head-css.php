@@ -13,6 +13,7 @@
 
 <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
 <link rel="stylesheet" href="plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+<link rel="stylesheet" href="plugins/toastr/toastr.min.css">
 
 <!--style>
     :is([data-layout=vertical],[data-layout=semibox])[data-sidebar=dark] .navbar-menu {
