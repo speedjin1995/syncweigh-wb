@@ -929,6 +929,7 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALU
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('please_fill_in_the_field_code', 'Please fill in the field.', '请填写此字段。', 'Sila isi medan ini.', 'இந்த புலத்தை நிரப்பவும்.');
 
 DROP TABLE IF EXISTS `Product_RawMat`;
+DROP TABLE IF EXISTS `Bitumen`;
 
 ALTER TABLE `Product` DROP `price`;
 ALTER TABLE `Product_Log` DROP `price`;
