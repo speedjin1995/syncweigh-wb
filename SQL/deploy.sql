@@ -965,3 +965,40 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_PRODUCT` BEFORE UPDATE ON `Product` FOR EACH 
 END
 $$
 DELIMITER ;
+
+ALTER TABLE `Raw_Mat` DROP `price`;
+ALTER TABLE `Raw_Mat` DROP `type`;
+ALTER TABLE `Raw_Mat_Log` DROP `price`;
+ALTER TABLE `Raw_Mat_Log` DROP `type`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_RAW_MAT` AFTER INSERT ON `Raw_Mat` FOR EACH ROW 
+INSERT INTO Raw_Mat_Log (
+    raw_mat_id, raw_mat_code, name, description, variance, high, low, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.raw_mat_code, NEW.name, NEW.description, NEW.variance, NEW.high, NEW.low, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_RAW_MAT` BEFORE UPDATE ON `Raw_Mat` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Raw_Mat_Log table
+    INSERT INTO Raw_Mat_Log (
+        raw_mat_id, raw_mat_code, name, description, variance, high, low, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.raw_mat_code, NEW.name, NEW.description, NEW.variance, NEW.high, NEW.low, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;

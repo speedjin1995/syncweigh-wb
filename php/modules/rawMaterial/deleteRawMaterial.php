@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db_connect.php';
+require_once '../../db_connect.php';
 
 $username = $_SESSION["username"];
 
@@ -26,17 +26,7 @@ if(isset($_POST['userID'])){
 			$stmt2->bind_param('s', $del);
 			
 			if($stmt2->execute()){
-				// foreach($_POST['userID'] as $id){
-				// 	if ($insert_stmt = $db->prepare("INSERT INTO Raw_Mat_Log (raw_mat_id, action_id, action_by) VALUES (?, ?, ?)")) {
-				// 		$insert_stmt->bind_param('sss', $id, $action, $username);
-				// 		// Execute the prepared query.
-				// 		$insert_stmt->execute();
-				// 		$insert_stmt->close();
-				// 	}
-				// }
-
 				$stmt2->close();
-				$db->close();
 				
 				echo json_encode(
 					array(
@@ -66,31 +56,14 @@ if(isset($_POST['userID'])){
 			$stmt2->bind_param('ss', $del , $id);
 			
 			if($stmt2->execute()){
-				// if ($insert_stmt = $db->prepare("INSERT INTO Raw_Mat_Log (raw_mat_id, action_id, action_by) VALUES (?, ?, ?)")) {
-				// 	$insert_stmt->bind_param('sss', $id, $action, $username);
-		
-				// 	// Execute the prepared query.
-				// 	if (! $insert_stmt->execute()) {
-				// 		echo json_encode(
-				// 			array(
-				// 				"status"=> "failed", 
-				// 				"message"=> $insert_stmt->error
-				// 			)
-				// 		);
-				// 	}
-				// 	else{
-				// 		$insert_stmt->close();
-						echo json_encode(
-							array(
-								"status"=> "success", 
-								"message"=> "Deleted"
-							)
-						);
-				// 	}
-				// }
+				echo json_encode(
+					array(
+						"status"=> "success", 
+						"message"=> "Deleted"
+					)
+				);
 
 				$stmt2->close();
-				$db->close();
 			} else{
 				echo json_encode(
 					array(
@@ -109,6 +82,8 @@ if(isset($_POST['userID'])){
 			);
 		}
 	}
+
+	$db->close();
 } 
 else{
     echo json_encode(
