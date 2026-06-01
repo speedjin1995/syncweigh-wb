@@ -635,7 +635,7 @@
 
         function deactivate(id){
             $('#spinnerLoading').show();
-            if (confirm('Are you sure you want to cancel this item?')) {
+            if (confirm('Are you sure you want to delete this product?')) {
                 $.post('php/modules/product/deleteProduct.php', {userID: id}, function(data){
                     var obj = JSON.parse(data);
                     
