@@ -84,39 +84,6 @@
                             </div>
                             <!--end row-->
 
-                            <!-- <div class="col-xxl-12 col-lg-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <form action="javascript:void(0);">
-                                            <div class="row">
-                                                <div class="col-3">
-                                                    <div class="mb-3">
-                                                        <label for="customerCode" class="form-label">Customer Code</label>
-                                                        <input type="text" class="form-control" placeholder="Customer Code" id="customerCode">
-                                                    </div>
-                                                </div>
-                                                <div class="col-3">
-
-                                                </div>
-                                                <div class="col-3">
-  
-                                                </div>
-                                                <div class="col-3">
-                                                    <div class="text-end mt-4">
-                                                        <button type="submit" class="btn btn-success">
-                                                            <i class="bx bx-search-alt"></i>
-                                                            <?=$languageArray['search_code'][$language]?></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>                                                                        
-                                    </div>
-                                </div>
-                            </div> -->
-                            
-                            <button type="button" hidden id="successBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-                            <button type="button" hidden id="failBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-
                             <div class="row">
                                 <div class="col-xl-3 col-md-6 add-new-weight">
 
@@ -160,17 +127,6 @@
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="productPrice" class="col-sm-4 col-form-label"><?=$languageArray['product_price_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="number" class="form-control" id="productPrice" name="productPrice" placeholder="Product Price">
-                                                                                        <!--div class="invalid-feedback">
-                                                                                            Please fill in the field.
-                                                                                        </div-->
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>                                                                           
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
                                                                                     <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['description_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="description" name="description" placeholder="Description">
@@ -191,53 +147,21 @@
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['high_code'][$language]?> (+)</label>
+                                                                                    <label for="high" class="col-sm-4 col-form-label"><?=$languageArray['high_code'][$language]?> (+)</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="high" name="high" placeholder="High" value="0">
+                                                                                        <input type="number" class="form-control" id="high" name="high" placeholder="High" value="0">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['low_code'][$language]?> (-)</label>
+                                                                                    <label for="low" class="col-sm-4 col-form-label"><?=$languageArray['low_code'][$language]?> (-)</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="low" name="low" placeholder="Low" value="0">
+                                                                                        <input type="number" class="form-control" id="low" name="low" placeholder="Low" value="0">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row col-12">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-header p-2">
-                                                                        <div class="d-flex justify-content-end">
-                                                                            <div class="flex-shrink-0">
-                                                                                <button type="button" class="btn btn-success add-material"><i class="ri-add-circle-line align-middle me-1"></i><?=$languageArray['add_raw_material_code'][$language]?></button>
-                                                                            </div> 
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <table class="table table-primary">
-                                                                                    <thead>
-                                                                                        <tr>
-                                                                                            <th width="10%">No</th>
-                                                                                            <th><?=$languageArray['raw_material_code'][$language]?></th>
-                                                                                            <th><?=$languageArray['weight_code'][$language]?> (KG)</th>
-                                                                                            <th><?=$languageArray['action_code'][$language]?></th>
-                                                                                        </tr>
-                                                                                    </thead>
-                                                                                    <tbody id="rawMaterialTable"></tbody>
-                                                                                </table>
-                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -281,7 +205,7 @@
                                         <div class="modal-dialog modal-xl" style="max-width: 50%;">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-gray-dark color-palette">
-                                                    <h4 class="modal-title">Error Log</h4>
+                                                    <h4 class="modal-title"><?=$languageArray['error_log_code'][$language]?></h4>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -338,7 +262,6 @@
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['product_code_code'][$language]?></th>
                                                                     <th><?=$languageArray['product_name_code'][$language]?></th>
-                                                                    <th><?=$languageArray['product_price_code'][$language]?></th>
                                                                     <th><?=$languageArray['description_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
@@ -367,9 +290,6 @@
     </div>
     <!-- END layout-wrapper -->
 
-
-
-
     <?php include 'layouts/customizer.php'; ?>
 
     <?php include 'layouts/vendor-scripts.php'; ?>
@@ -396,558 +316,440 @@
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
 
-    <script type="text/html" id="rawMaterialDetail">
-        <tr class="details">
-            <td>
-                <input type="text" class="form-control" id="no" name="no" readonly>
-                <input type="text" class="form-control" id="productRawMatId" name="productRawMatId" hidden>
-            </td>
-            <td>
-                <select class="form-control select2" style="width: 100%; background-color:white;" id="rawMats" name="rawMats">
-                    <?php while($rowRawMat=mysqli_fetch_assoc($rawMaterial)){ ?>
-                        <option value="<?=$rowRawMat['raw_mat_code'] ?>" data-name="<?=$rowRawMat['name'] ?>"><?=$rowRawMat['raw_mat_code'] . ' - ' . $rowRawMat['name']?></option>
-                    <?php } ?>
-                </select>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="rawMatWeight" name="rawMatWeight" style="background-color:white;" value="0">
-            </td>
-            <td style="text-align:center; vertical-align: middle;">
-                <button class="btn btn-success" id="remove" style="background-color: #f06548;">
-                    <i class="fa fa-times"></i>
-                </button>
-            </td>
-        </tr>
-    </script>
-
-
-<script type="text/javascript">
-
-var table;
-
-$(function () {
-    $('#selectAllCheckbox').on('change', function() {
-        var checkboxes = $('#productTable tbody input[type="checkbox"]');
-        checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
-    });
-
-    // Initialize all Select2 elements in the modal
-    $('#addModal .select2').select2({
-        allowClear: true,
-        placeholder: "Please Select",
-        dropdownParent: $('#addModal') // Ensures dropdown is not cut off
-    });
-
-    // Apply custom styling to Select2 elements in addModal
-    $('#addModal .select2-container .select2-selection--single').css({
-        'padding-top': '4px',
-        'padding-bottom': '4px',
-        'height': 'auto'
-    });
-
-    $('#addModal .select2-container .select2-selection__arrow').css({
-        'padding-top': '33px',
-        'height': 'auto'
-    });
-
-    var rowCount = $("#rawMaterialTable").find(".details").length;
-
-    table = $("#productTable").DataTable({
-        "responsive": true,
-        "autoWidth": false,
-        'processing': true,
-        'serverSide': true,
-        'serverMethod': 'post',
-        'ajax': {
-            'url':'php/loadProducts.php'
-        },
-        'columns': [
-            {
-                // Add a checkbox with a unique ID for each row
-                data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                className: 'select-checkbox',
-                orderable: false,
-                render: function (data, type, row) {
-                    return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                }
-            },
-            { data: 'product_code' },
-            { data: 'name' },
-            { data: 'price' },
-            { data: 'description' },
-            { 
-                data: 'id',
-                render: function ( data, type, row ) {
-                    if (row.status == '1'){
-                        return '<button title="Reactivate" type="button" id="reactivate'+data+'" onclick="reactivate('+data+')" class="btn btn-warning btn-sm">Reactivate</button>';
-                    }else{
-                        return 'Active';
-                    }
-                }
-            },
-            { 
-                data: 'id',
-                render: function ( data, type, row ) {
-                    // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
-                    return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                    '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
-                }
-            }
-        ]       
-    });
-    
-    // $.validator.setDefaults({
-    //     submitHandler: function() {
-    $('#submitProduct').on('click', function(){
-        // custom validation for select2
-        $('#addModal .select2[required]').each(function () {
-            var select2Field = $(this);
-            var select2Container = select2Field.next('.select2-container'); // Get Select2 UI
-            var errorMsg = "<span class='select2-error text-danger' style='font-size: 11.375px;'>Please fill in the field.</span>";
-
-            // Check if the value is empty
-            if (select2Field.val() === "" || select2Field.val() === null) {
-                select2Container.find('.select2-selection').css('border', '1px solid red'); // Add red border
-
-                // Add error message if not already present
-                if (select2Container.next('.select2-error').length === 0) {
-                    select2Container.after(errorMsg);
-                }
-
-                isValid = false;
-            } else {
-                select2Container.find('.select2-selection').css('border', ''); // Remove red border
-                select2Container.next('.select2-error').remove(); // Remove error message
-            }
-        });
-
-        if($('#productForm').valid()){
-            $('#spinnerLoading').show();
-            $.post('php/products.php', $('#productForm').serialize(), function(data){
-                var obj = JSON.parse(data); 
-                if(obj.status === 'success')
-                {
-                    table.ajax.reload();
-                    $('#spinnerLoading').hide();
-                    $('#addModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
-                }
-                else if(obj.status === 'failed')
-                {
-                    $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-                else
-                {
-
-                }
+    <script type="text/javascript">
+        var table;
+        $(function () {
+            $('#selectAllCheckbox').on('change', function() {
+                var checkboxes = $('#productTable tbody input[type="checkbox"]');
+                checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
             });
-        }
-        // }
-    });
 
-    $('#submitWeights').on('click', function(){
-        $('#spinnerLoading').show();
-        var formData = $('#uploadForm').serializeArray();
-        var data = [];
-        var rowIndex = -1;
-        formData.forEach(function(field) {
-        var match = field.name.match(/([a-zA-Z0-9]+)\[(\d+)\]/);
-        if (match) {
-            var fieldName = match[1];
-            var index = parseInt(match[2], 10);
-            if (index !== rowIndex) {
-            rowIndex = index;
-            data.push({});
-            }
-            data[index][fieldName] = field.value;
-        }
-        });
+            // Initialize all Select2 elements in the modal
+            $('#addModal .select2').select2({
+                allowClear: true,
+                placeholder: "Please Select",
+                dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+            });
 
-        // Send the JSON array to the server
-        $.ajax({
-            url: 'php/uploadProducts.php',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function(response) {
-                var obj = JSON.parse(response);
-                if (obj.status === 'success') {
-                    $('#spinnerLoading').hide();
-                    $('#uploadModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
-                    $('#productTable').DataTable().ajax.reload(null, false);
-                } 
-                else if (obj.status === 'failed') {
-                    $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                } 
-                else if (obj.status === 'error') {
-                    $('#spinnerLoading').hide();
-                    $('#uploadModal').modal('hide');
-                    // alert(obj.message);
-                    // $("#failBtn").attr('data-toast-text', obj.message );
-                    // $("#failBtn").click();
-                    $('#productTable').DataTable().ajax.reload(null, false);
-                    $('#errorModal').find('#errorList').empty();
-                    var errorMessage = obj.message;
-                    for (var i = 0; i < errorMessage.length; i++) {
-                        $('#errorModal').find('#errorList').append(`<li>${errorMessage[i]}</li>`);                            
+            // Apply custom styling to Select2 elements in addModal
+            $('#addModal .select2-container .select2-selection--single').css({
+                'padding-top': '4px',
+                'padding-bottom': '4px',
+                'height': 'auto'
+            });
+
+            $('#addModal .select2-container .select2-selection__arrow').css({
+                'padding-top': '33px',
+                'height': 'auto'
+            });
+
+            table = $("#productTable").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                'processing': true,
+                'serverSide': true,
+                'serverMethod': 'post',
+                'ajax': {
+                    'url':'php/modules/product/loadProducts.php'
+                },
+                'columns': [
+                    {
+                        // Add a checkbox with a unique ID for each row
+                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
+                        className: 'select-checkbox',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
+                        }
+                    },
+                    { data: 'product_code' },
+                    { data: 'name' },
+                    { data: 'description' },
+                    { 
+                        data: 'id',
+                        render: function ( data, type, row ) {
+                            if (row.status == '1'){
+                                return '<button title="Reactivate" type="button" id="reactivate'+data+'" onclick="reactivate('+data+')" class="btn btn-warning btn-sm">Reactivate</button>';
+                            }else{
+                                return 'Active';
+                            }
+                        }
+                    },
+                    { 
+                        data: 'id',
+                        render: function ( data, type, row ) {
+                            return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+                            '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
+                            '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
+                            '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
+                        }
                     }
-                    $('#errorModal').modal('show');
+                ]       
+            });
+            
+            // $.validator.setDefaults({
+            //     submitHandler: function() {
+            $('#submitProduct').on('click', function(){
+                // custom validation for select2
+                $('#addModal .select2[required]').each(function () {
+                    var select2Field = $(this);
+                    var select2Container = select2Field.next('.select2-container'); // Get Select2 UI
+                    var errorMsg = "<span class='select2-error text-danger' style='font-size: 11.375px;'>Please fill in the field.</span>";
+
+                    // Check if the value is empty
+                    if (select2Field.val() === "" || select2Field.val() === null) {
+                        select2Container.find('.select2-selection').css('border', '1px solid red'); // Add red border
+
+                        // Add error message if not already present
+                        if (select2Container.next('.select2-error').length === 0) {
+                            select2Container.after(errorMsg);
+                        }
+
+                        isValid = false;
+                    } else {
+                        select2Container.find('.select2-selection').css('border', ''); // Remove red border
+                        select2Container.next('.select2-error').remove(); // Remove error message
+                    }
+                });
+
+                if($('#productForm').valid()){
+                    $('#spinnerLoading').show();
+                    $.post('php/modules/product/products.php', $('#productForm').serialize(), function(data){
+                        var obj = JSON.parse(data); 
+                        if(obj.status === 'success')
+                        {
+                            table.ajax.reload();
+                            $('#spinnerLoading').hide();
+                            $('#addModal').modal('hide');
+                            toastr["success"](obj.message, "Success:");
+                        }
+                        else if(obj.status === 'failed')
+                        {
+                            $('#spinnerLoading').hide();
+                            toastr["error"](obj.message, "Failed:");
+                        }
+                        else
+                        {
+
+                        }
+                    });
+                }
+                // }
+            });
+
+            $('#submitWeights').on('click', function(){
+                $('#spinnerLoading').show();
+                var formData = $('#uploadForm').serializeArray();
+                var data = [];
+                var rowIndex = -1;
+                formData.forEach(function(field) {
+                var match = field.name.match(/([a-zA-Z0-9]+)\[(\d+)\]/);
+                if (match) {
+                    var fieldName = match[1];
+                    var index = parseInt(match[2], 10);
+                    if (index !== rowIndex) {
+                    rowIndex = index;
+                    data.push({});
+                    }
+                    data[index][fieldName] = field.value;
+                }
+                });
+
+                // Send the JSON array to the server
+                $.ajax({
+                    url: 'php/modules/product/uploadProducts.php',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function(response) {
+                        var obj = JSON.parse(response);
+                        if (obj.status === 'success') {
+                            $('#spinnerLoading').hide();
+                            $('#uploadModal').modal('hide');
+                            toastr["success"](obj.message, "Success:");
+                            $('#productTable').DataTable().ajax.reload(null, false);
+                        } 
+                        else if (obj.status === 'failed') {
+                            $('#spinnerLoading').hide();
+                            toastr["error"](obj.message, "Failed:");
+                        } 
+                        else if (obj.status === 'error') {
+                            $('#spinnerLoading').hide();
+                            $('#uploadModal').modal('hide');
+                            $('#productTable').DataTable().ajax.reload(null, false);
+                            $('#errorModal').find('#errorList').empty();
+                            var errorMessage = obj.message;
+                            for (var i = 0; i < errorMessage.length; i++) {
+                                $('#errorModal').find('#errorList').append(`<li>${errorMessage[i]}</li>`);                            
+                            }
+                            $('#errorModal').modal('show');
+                        } 
+                        else {
+                            $('#spinnerLoading').hide();
+                            toastr["error"]("Failed to save", "Failed:");
+                        }
+                    }
+                });
+            });
+
+            $('#addProduct').on('click', function(){
+                $('#addModal').find('#id').val("");
+                $('#addModal').find('#productCode').val("");
+                $('#addModal').find('#productName').val("");
+                $('#addModal').find('#description').val("");
+                $('#addModal').find('#varianceType').val("");
+                $('#addModal').find('#high').val("0");
+                $('#addModal').find('#low').val("0");
+
+                // Remove Validation Error Message
+                $('#addModal .is-invalid').removeClass('is-invalid');
+
+                $('#addModal .select2[required]').each(function () {
+                    var select2Field = $(this);
+                    var select2Container = select2Field.next('.select2-container');
+                    
+                    select2Container.find('.select2-selection').css('border', ''); // Remove red border
+                    select2Container.next('.select2-error').remove(); // Remove error message
+                });
+
+                $('#addModal').modal('show');
+                
+                $('#productForm').validate({
+                    errorElement: 'span',
+                    errorPlacement: function (error, element) {
+                        error.addClass('invalid-feedback');
+                        element.closest('.form-group').append(error);
+                    },
+                    highlight: function (element, errorClass, validClass) {
+                        $(element).addClass('is-invalid');
+                    },
+                    unhighlight: function (element, errorClass, validClass) {
+                        $(element).removeClass('is-invalid');
+                    }
+                });
+            });
+
+            $('#uploadExcel').on('click', function(){
+                $('#previewTable').html('');
+                $('#fileInput').val('');
+                $('#uploadModal').modal('show');
+
+                $('#uploadForm').validate({
+                    errorElement: 'span',
+                    errorPlacement: function (error, element) {
+                        error.addClass('invalid-feedback');
+                        element.closest('.form-group').append(error);
+                    },
+                    highlight: function (element, errorClass, validClass) {
+                        $(element).addClass('is-invalid');
+                    },
+                    unhighlight: function (element, errorClass, validClass) {
+                        $(element).removeClass('is-invalid');
+                    }
+                });
+            });
+
+            $('#uploadModal').find('#previewButton').on('click', function(){
+                var fileInput = document.getElementById('fileInput');
+                var file = fileInput.files[0];
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    // Process data and display preview
+                    displayPreview(data);
+                };
+
+                reader.readAsBinaryString(file);
+            });
+
+            $('#multiDeactivate').on('click', function () {
+                $('#spinnerLoading').show();
+                var selectedIds = []; // An array to store the selected 'id' values
+
+                $("#productTable tbody input[type='checkbox']").each(function () {
+                    if (this.checked) {
+                        selectedIds.push($(this).val());
+                    }
+                });
+
+                if (selectedIds.length > 0) {
+                    if (confirm('Are you sure you want to delete these products?')) {
+                        $.post('php/modules/product/deleteProduct.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                            var obj = JSON.parse(data);
+                            
+                            if(obj.status === 'success'){
+                                table.ajax.reload();
+                                toastr["success"](obj.message, "Success:");
+                                $('#spinnerLoading').hide();
+                            }
+                            else if(obj.status === 'failed'){
+                                toastr["error"](obj.message, "Failed:");
+                                $('#spinnerLoading').hide();
+                            }
+                            else{
+                                toastr["error"]("Something wrong when activate", "Failed:");
+                                $('#spinnerLoading').hide();
+                            }
+                        });
+                    }
+
+                    $('#spinnerLoading').hide();
                 } 
                 else {
+                    // Optionally, you can display a message or take another action if no IDs are selected
+                    alert("Please select at least one product to delete.");
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', 'Failed to save');
-                    $("#failBtn").click();
+                }     
+            });
+        });
+
+        function edit(id){
+            $('#spinnerLoading').show();
+            $.post('php/modules/product/getProduct.php', {userID: id}, function(data)
+            {
+                var obj = JSON.parse(data);
+                if(obj.status === 'success'){
+                    $('#addModal').find('#id').val(obj.message.id);
+                    $('#addModal').find('#productCode').val(obj.message.product_code);
+                    $('#addModal').find('#productName').val(obj.message.name);
+                    $('#addModal').find('#description').val(obj.message.description);
+                    $('#addModal').find('#varianceType').val(obj.message.variance).trigger('change');
+                    $('#addModal').find('#high').val(obj.message.high || 0);
+                    $('#addModal').find('#low').val(obj.message.low || 0);
+                    
+                    // Remove Validation Error Message
+                    $('#addModal .is-invalid').removeClass('is-invalid');
+
+                    $('#addModal .select2[required]').each(function () {
+                        var select2Field = $(this);
+                        var select2Container = select2Field.next('.select2-container');
+                        
+                        select2Container.find('.select2-selection').css('border', ''); // Remove red border
+                        select2Container.next('.select2-error').remove(); // Remove error message
+                    });
+                    
+                    $('#addModal').modal('show');
                 }
-            }
-        });
-    });
-
-    $('#addProduct').on('click', function(){
-        $('#addModal').find('#id').val("");
-        $('#addModal').find('#productCode').val("");
-        $('#addModal').find('#productName').val("");
-        $('#addModal').find('#productPrice').val("");
-        $('#addModal').find('#description').val("");
-        $('#addModal').find('#varianceType').val("");
-        $('#addModal').find('#high').val("0");
-        $('#addModal').find('#low').val("0");
-        $('#rawMaterialTable').html('');
-        rowCount = 1;
-
-        // Remove Validation Error Message
-        $('#addModal .is-invalid').removeClass('is-invalid');
-
-        $('#addModal .select2[required]').each(function () {
-            var select2Field = $(this);
-            var select2Container = select2Field.next('.select2-container');
-            
-            select2Container.find('.select2-selection').css('border', ''); // Remove red border
-            select2Container.next('.select2-error').remove(); // Remove error message
-        });
-
-        $('#addModal').modal('show');
-        
-        $('#productForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
-    });
-
-    // Find and remove selected table rows
-    $("#rawMaterialTable").on('click', 'button[id^="remove"]', function () {
-        $(this).parents("tr").remove();
-
-        $("#rawMaterialTable tr").each(function (index) {
-            $(this).find('input[name^="no"]').val(index + 1);
-        });
-    });
-
-    $(".add-material").click(function(){
-        if(rowCount == 0){
-            rowCount++;
+                else if(obj.status === 'failed'){
+                    $('#spinnerLoading').hide();
+                    toastr["error"](obj.message, "Failed:");
+                }
+                else{
+                    $('#spinnerLoading').hide();
+                    toastr["error"](obj.message, "Failed:");
+                }
+                $('#spinnerLoading').hide();
+            });
         }
 
-        var $addContents = $("#rawMaterialDetail").clone();
-        $("#rawMaterialTable").append($addContents.html());
-
-        $("#rawMaterialTable").find('.details:last').attr("id", "detail" + rowCount);
-        $("#rawMaterialTable").find('.details:last').attr("data-index", rowCount);
-        $("#rawMaterialTable").find('#remove:last').attr("id", "remove" + rowCount);
-
-        $("#rawMaterialTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount);
-        $("#rawMaterialTable").find('#productRawMatId:last').attr('name', 'productRawMatId['+rowCount+']').attr("id", "productRawMatId" + rowCount);
-        $("#rawMaterialTable").find('#rawMats:last').attr('name', 'rawMats['+rowCount+']').attr("id", "rawMats" + rowCount).attr("required", true).select2({
-            allowClear: true,
-            placeholder: "Please Select",
-            dropdownParent: $('#rawMaterialTable') // Prevents dropdown cutoff inside modals/tables
-        });
-        $("#rawMaterialTable").find('#rawMatWeight:last').attr('name', 'rawMatWeight['+rowCount+']').attr("id", "rawMatWeight" + rowCount);
-
-        rowCount++;
-    });
-
-    $('#uploadExcel').on('click', function(){
-        $('#uploadModal').modal('show');
-
-        $('#uploadForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
-    });
-
-    $('#uploadModal').find('#previewButton').on('click', function(){
-        var fileInput = document.getElementById('fileInput');
-        var file = fileInput.files[0];
-        var reader = new FileReader();
-        
-        reader.onload = function(e) {
-            var data = e.target.result;
-            // Process data and display preview
-            displayPreview(data);
-        };
-
-        reader.readAsBinaryString(file);
-    });
-
-    $('#multiDeactivate').on('click', function () {
-        $('#spinnerLoading').show();
-        var selectedIds = []; // An array to store the selected 'id' values
-
-        $("#productTable tbody input[type='checkbox']").each(function () {
-            if (this.checked) {
-                selectedIds.push($(this).val());
-            }
-        });
-
-        if (selectedIds.length > 0) {
-            if (confirm('Are you sure you want to cancel these items?')) {
-                $.post('php/deleteProduct.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+        function deactivate(id){
+            $('#spinnerLoading').show();
+            if (confirm('Are you sure you want to cancel this item?')) {
+                $.post('php/modules/product/deleteProduct.php', {userID: id}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
                         table.ajax.reload();
-                        toastr["success"](obj.message, "Success:");
                         $('#spinnerLoading').hide();
+                        toastr["success"](obj.message, "Success:");
                     }
                     else if(obj.status === 'failed'){
-                        toastr["error"](obj.message, "Failed:");
                         $('#spinnerLoading').hide();
+                        toastr["error"](obj.message, "Failed:");
                     }
                     else{
-                        toastr["error"]("Something wrong when activate", "Failed:");
                         $('#spinnerLoading').hide();
+                        toastr["error"](obj.message, "Failed:");
                     }
+                });
+            }
+            $('#spinnerLoading').hide();
+        }
+
+        function displayPreview(data) {
+            // Parse the Excel data
+            var workbook = XLSX.read(data, { type: 'binary' });
+
+            // Get the first sheet
+            var sheetName = workbook.SheetNames[0];
+            var sheet = workbook.Sheets[sheetName];
+
+            // Convert the sheet to an array of objects
+            var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+            // Get the headers
+            var headers = jsonData[0];
+
+            // Ensure we handle cases where there may be less than 3 columns
+            while (headers.length < 3) {
+                headers.push(''); // Adding empty headers to reach 3 columns
+            }
+
+            // Create HTML table headers
+            var htmlTable = '<table style="width:30%;"><thead><tr>';
+            headers.forEach(function(header) {
+                htmlTable += '<th>' + header + '</th>';
+            });
+            htmlTable += '</tr></thead><tbody>';
+
+            // Iterate over the data and create table rows
+            for (var i = 1; i < jsonData.length; i++) {
+                htmlTable += '<tr>';
+                var rowData = jsonData[i];
+
+                // Ensure we handle cases where there may be less than 3 cells in a row
+                while (rowData.length < 3) {
+                    rowData.push(''); // Adding empty cells to reach 3 columns
+                }
+
+                for (var j = 0; j < 3; j++) {
+                    var cellData = rowData[j];
+                    var formattedData = cellData;
+
+                    // Check if cellData is a valid Excel date serial number and format it to DD/MM/YYYY
+                    if (typeof cellData === 'number' && cellData > 0) {
+                        var excelDate = XLSX.SSF.parse_date_code(cellData);
+                    }
+
+                    htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (formattedData == null ? '' : formattedData) + '" /></td>';
+                }
+                htmlTable += '</tr>';
+            }
+
+            htmlTable += '</tbody></table>';
+
+            var previewTable = document.getElementById('previewTable');
+            previewTable.innerHTML = htmlTable;
+        }
+
+        function reactivate(id) {
+            if (confirm('Do you want to reactivate this item?')) {
+                $('#spinnerLoading').show();
+                $.post('php/reactivateMasterData.php', {userID: id, type: "Product"}, function(data){
+                    var obj = JSON.parse(data);
+
+                    if(obj.status === 'success'){
+                        table.ajax.reload();
+                        $('#spinnerLoading').hide();
+                        toastr["success"](obj.message, "Success:");
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        toastr["error"](obj.message, "Failed:");
+                    }
+                    else{
+                        $('#spinnerLoading').hide();
+                        toastr["error"](obj.message, "Failed:");
+                    }
+
+                    $('#spinnerLoading').hide();
                 });
             }
 
             $('#spinnerLoading').hide();
-        } 
-        else {
-            // Optionally, you can display a message or take another action if no IDs are selected
-            alert("Please select at least one product to delete.");
-            $('#spinnerLoading').hide();
-        }     
-    });
-});
-
-function edit(id){
-    $('#spinnerLoading').show();
-    $.post('php/getProduct.php', {userID: id}, function(data)
-    {
-        var obj = JSON.parse(data);
-        if(obj.status === 'success'){
-            $('#addModal').find('#id').val(obj.message.id);
-            $('#addModal').find('#productCode').val(obj.message.product_code);
-            $('#addModal').find('#productName').val(obj.message.name);
-            $('#addModal').find('#productPrice').val(obj.message.price);
-            $('#addModal').find('#description').val(obj.message.description);
-            $('#addModal').find('#varianceType').val(obj.message.variance);
-            $('#addModal').find('#high').val(obj.message.high);
-            $('#addModal').find('#low').val(obj.message.low);
-
-            $('#rawMaterialTable').html('');
-            rowCount = 1;
-
-            if (obj.message.rawMats.length > 0){
-                for(var i = 0; i < obj.message.rawMats.length; i++){
-                    var item = obj.message.rawMats[i];
-                    var $addContents = $("#rawMaterialDetail").clone();
-                    $("#rawMaterialTable").append($addContents.html());
-
-                    $("#rawMaterialTable").find('.details:last').attr("id", "detail" + rowCount);
-                    $("#rawMaterialTable").find('.details:last').attr("data-index", rowCount);
-                    $("#rawMaterialTable").find('#remove:last').attr("id", "remove" + rowCount);
-
-                    $("#rawMaterialTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(item.no);
-                    $("#rawMaterialTable").find('#productRawMatId:last').attr('name', 'productRawMatId['+rowCount+']').attr("id", "productRawMatId" + rowCount).val(item.id);
-                    $("#rawMaterialTable").find('#rawMats:last').attr('name', 'rawMats['+rowCount+']').attr("id", "rawMats" + rowCount).val(item.raw_mat_code);
-                    $("#rawMaterialTable").find('#rawMatWeight:last').attr('name', 'rawMatWeight['+rowCount+']').attr("id", "rawMatWeight" + rowCount).val(item.raw_mat_weight);
-
-                    rowCount++;
-                }
-            }
-
-            // Remove Validation Error Message
-            $('#addModal .is-invalid').removeClass('is-invalid');
-
-            $('#addModal .select2[required]').each(function () {
-                var select2Field = $(this);
-                var select2Container = select2Field.next('.select2-container');
-                
-                select2Container.find('.select2-selection').css('border', ''); // Remove red border
-                select2Container.next('.select2-error').remove(); // Remove error message
-            });
-            
-            $('#addModal').modal('show');
         }
-        else if(obj.status === 'failed'){
-            $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
-        }
-        else{
-            $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
-        }
-        $('#spinnerLoading').hide();
-    });
-}
-
-function deactivate(id){
-    $('#spinnerLoading').show();
-    if (confirm('Are you sure you want to cancel this item?')) {
-        $.post('php/deleteProduct.php', {userID: id}, function(data){
-            var obj = JSON.parse(data);
-            
-            if(obj.status === 'success'){
-                table.ajax.reload();
-                $('#spinnerLoading').hide();
-                $("#successBtn").attr('data-toast-text', obj.message);
-                $("#successBtn").click();
-            }
-            else if(obj.status === 'failed'){
-                $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-            else{
-                $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-        });
-    }
-    $('#spinnerLoading').hide();
-}
-
-function displayPreview(data) {
-    // Parse the Excel data
-    var workbook = XLSX.read(data, { type: 'binary' });
-
-    // Get the first sheet
-    var sheetName = workbook.SheetNames[0];
-    var sheet = workbook.Sheets[sheetName];
-
-    // Convert the sheet to an array of objects
-    var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    // Get the headers
-    var headers = jsonData[0];
-
-    // Ensure we handle cases where there may be less than 15 columns
-    while (headers.length < 2) {
-        headers.push(''); // Adding empty headers to reach 15 columns
-    }
-
-    // Create HTML table headers
-    var htmlTable = '<table style="width:30%;"><thead><tr>';
-    headers.forEach(function(header) {
-        htmlTable += '<th>' + header + '</th>';
-    });
-    htmlTable += '</tr></thead><tbody>';
-
-    // Iterate over the data and create table rows
-    for (var i = 1; i < jsonData.length; i++) {
-        htmlTable += '<tr>';
-        var rowData = jsonData[i];
-
-        // Ensure we handle cases where there may be less than 15 cells in a row
-        while (rowData.length < 2) {
-            rowData.push(''); // Adding empty cells to reach 15 columns
-        }
-
-        for (var j = 0; j < 2; j++) {
-            var cellData = rowData[j];
-            var formattedData = cellData;
-
-            // Check if cellData is a valid Excel date serial number and format it to DD/MM/YYYY
-            if (typeof cellData === 'number' && cellData > 0) {
-                var excelDate = XLSX.SSF.parse_date_code(cellData);
-            }
-
-            htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (formattedData == null ? '' : formattedData) + '" /></td>';
-        }
-        htmlTable += '</tr>';
-    }
-
-    htmlTable += '</tbody></table>';
-
-    var previewTable = document.getElementById('previewTable');
-    previewTable.innerHTML = htmlTable;
-}
-
-function reactivate(id) {
-  if (confirm('Do you want to reactivate this item?')) {
-    $('#spinnerLoading').show();
-    $.post('php/reactivateMasterData.php', {userID: id, type: "Product"}, function(data){
-        var obj = JSON.parse(data);
-
-        if(obj.status === 'success'){
-            table.ajax.reload();
-            $('#spinnerLoading').hide();
-            $("#successBtn").attr('data-toast-text', obj.message);
-            $("#successBtn").click();
-        }
-        else if(obj.status === 'failed'){
-            $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
-        }
-        else{
-            $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
-        }
-
-        $('#spinnerLoading').hide();
-    });
-  }
-
-  $('#spinnerLoading').hide();
-}
-
-$('#productForm').validate({
-    errorElement: 'span',
-    errorPlacement: function (error, element) {
-      error.addClass('invalid-feedback');
-      element.closest('.form-group').append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass('is-invalid');
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass('is-invalid');
-    }
-  });
-</script>
+    </script>
     </body>
 
     </html>

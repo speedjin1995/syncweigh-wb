@@ -1,7 +1,7 @@
 <?php
 session_start();
 ## Database configuration
-require_once 'db_connect.php';
+require_once '../../db_connect.php';
 
 ## Read value
 $draw = $_POST['draw'];
@@ -38,7 +38,6 @@ while($row = mysqli_fetch_assoc($empRecords)) {
       "id"=>$row['id'],
       "product_code"=>$row['product_code'],
       "name"=>$row['name'],
-      "price"=>$row['price'],
       "description"=>$row['description'],
       "status"=>$row['status']
     );
