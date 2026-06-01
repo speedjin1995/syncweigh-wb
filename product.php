@@ -1,12 +1,8 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 
-<?php
-    $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0'");
-?>
-
 <head>
-    <title>Product | Synctronix - Weighing System</title>
+    <title><?=$languageArray['product_code'][$language]?> | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -26,26 +22,6 @@
     <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
     
     <?php include 'layouts/head-css.php'; ?>
-    
-    <style>
-        /* Custom styling for Select2 elements inside #rawMaterialTable */
-        #rawMaterialTable .select2-container .select2-selection--single {
-            padding-top: 4px !important;
-            padding-bottom: 4px !important;
-            height: auto !important;
-        }
-
-        /* Custom styling for the dropdown arrow */
-        #rawMaterialTable .select2-container .select2-selection__arrow {
-            padding-top: 33px !important;
-            height: auto !important;
-        }
-
-        #rawMaterialTable td {
-            vertical-align: middle;
-        }
-    </style>
-
 </head>
 
 <?php include 'layouts/body.php'; ?>
@@ -109,7 +85,7 @@
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="productCode" name="productCode" placeholder="Product Code" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -120,7 +96,7 @@
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="productName" name="productName" placeholder="Product Name" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
