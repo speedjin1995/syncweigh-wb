@@ -931,6 +931,13 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALU
 
 DROP TABLE IF EXISTS `Product_RawMat`;
 DROP TABLE IF EXISTS `Bitumen`;
+DROP TABLE IF EXISTS `Agents`;
+DROP TABLE IF EXISTS `Agents_Log`;
+DROP TABLE IF EXISTS `Inventory`;
+DROP TABLE IF EXISTS `Site`;
+DROP TABLE IF EXISTS `Site_Log`;
+DROP TABLE IF EXISTS `Unit`;
+DROP TABLE IF EXISTS `Unit_Log`;
 
 ALTER TABLE `Product` DROP `price`;
 ALTER TABLE `Product_Log` DROP `price`;
