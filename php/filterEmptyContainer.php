@@ -101,8 +101,6 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     "customer_name"=>$row['customer_name'],
     "plant_code"=>$row['plant_code'],
     "plant_name"=>$row['plant_name'],
-    "agent_code"=>$row['agent_code'],
-    "agent_name"=>$row['agent_name'],
     "supplier_code"=>$row['supplier_code'],
     "supplier_name"=>$row['supplier_name'],
     "customer"=>($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local' ? $row['supplier_name'] : $row['customer_name']),

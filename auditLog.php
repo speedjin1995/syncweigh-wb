@@ -91,7 +91,6 @@
                                                             <option value="Transporter"><?=$languageArray['transporter_code'][$language]?></option>
                                                             <option value="User"><?=$languageArray['staff_code'][$language]?></option>
                                                             <option value="Weight"><?=$languageArray['weighing_code'][$language]?></option>
-                                                            <!-- <option value="Agent"><?=$languageArray['sales_representative_code'][$language]?></option> -->
                                                             <option value="Plant"><?=$languageArray['plant_code'][$language]?></option>
                                                         </select>
                                                     </div>
@@ -130,12 +129,6 @@
                                                     <div class="mb-3">
                                                         <label for="vehicleNo" class="form-label"><?=$languageArray['vehicle_no_code'][$language]?></label>
                                                         <input type="text" class="form-control" placeholder="<?=$languageArray['vehicle_no_code'][$language]?>" name="vehicleNo" id="vehicleNo">
-                                                    </div>
-                                                </div>
-                                                <div class="col-3 inputCode agentInput" style="display:none">
-                                                    <div class="mb-3">
-                                                        <label for="agentCode" class="form-label"><?=$languageArray['sales_representative_code'][$language]?></label>
-                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['sales_representative_code'][$language]?>" name="agentCode" id="agentCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode transporterInput" style="display:none">
@@ -439,11 +432,6 @@ $(function () {
             $('.inputCode').hide();
             $('.vehicleInput').show();
         }
-        else if($(this).val() == "Agent")
-        {
-            $('.inputCode').hide();
-            $('.agentInput').show();
-        }
         else if($(this).val() == "Transporter")
         {
             $('.inputCode').hide();
@@ -549,7 +537,6 @@ $(function () {
         //         rawMatCode: $('#rawMatCode').val(),
         //         supplierCode: $('#supplierCode').val(),
         //         vehicleNo: $('#vehicleNo').val(),
-        //         agentCode: $('#agentCode').val(),
         //         transporterCode: $('#transporterCode').val(),
         //         unit: $('#unit').val(),
         //         userCode: $('#userCode').val(),
@@ -610,7 +597,6 @@ $(function () {
                 rawMatCode: $('#rawMatCode').val(),
                 supplierCode: $('#supplierCode').val(),
                 vehicleNo: $('#vehicleNo').val(),
-                agentCode: $('#agentCode').val(),
                 transporterCode: $('#transporterCode').val(),
                 unit: $('#unit').val(),
                 userCode: $('#userCode').val(),
@@ -682,9 +668,7 @@ function format (row) {
             <p><strong>CUSTOMER/SUPPLIER:</strong> ${custSupplier}</p>
             <p><strong>PRODUCT/RAW MATERIAL:</strong> ${productRawMat}</p>
             <p><strong>TRANSPORTER:</strong> ${row.transporter_code} - ${row.transporter}</p>
-            <p><strong>SALES REPRESENTATIVE:</strong> ${row.agent_code} - ${row.agent_name}</p>
             <p><strong>DESTINATION:</strong> ${row.destination_code} - ${row.destination}</p>
-            <p><strong>SITE:</strong> ${row.site_code} - ${row.site_name}</p>
             <p><strong>PLANT:</strong> ${row.plant_code} - ${row.plant_name}</p>
         </div>
         <div class="col-3">
