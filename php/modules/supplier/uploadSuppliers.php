@@ -29,9 +29,12 @@ if (!empty($data)) {
         
         # Customer Checking & Processing
         if($Code != null && $Code != ''){
-            $supplierQuery = "SELECT * FROM Supplier WHERE supplier_code = '$Code' AND status = '0'";
-            $supplierDetail = mysqli_query($db, $supplierQuery);
-            $supplierRow = mysqli_fetch_assoc($supplierDetail);
+            $status = '0';
+            $check = $db->prepare("SELECT id FROM Supplier WHERE supplier_code = ? AND status = ?");
+            $check->bind_param('ss', $Code, $status);
+            $check->execute();
+            $supplierRow = $check->get_result()->fetch_assoc();
+            $check->close();
             
             if(empty($supplierRow)){
                 if ($insert_stmt = $db->prepare("INSERT INTO Supplier (supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {

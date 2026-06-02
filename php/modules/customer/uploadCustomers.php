@@ -27,9 +27,12 @@ if (!empty($data)) {
         $TinNo = !empty($rows['TinNo']) ? $rows['TinNo'] : '';
 
         if ($Code != null && $Code != '') {
-            $customerQuery = "SELECT * FROM Customer WHERE customer_code = '$Code' AND status = '0'";
-            $customerDetail = mysqli_query($db, $customerQuery);
-            $customerRow = mysqli_fetch_assoc($customerDetail);
+            $status = '0';
+            $check = $db->prepare("SELECT id FROM Customer WHERE customer_code = ? AND status = ?");
+            $check->bind_param('ss', $Code, $status);
+            $check->execute();
+            $customerRow = $check->get_result()->fetch_assoc();
+            $check->close();
 
             if (empty($customerRow)) {
                 if ($insert_stmt = $db->prepare("INSERT INTO Customer (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
