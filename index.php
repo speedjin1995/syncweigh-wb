@@ -1080,7 +1080,6 @@ else{
                                                             </div>
                                                         </div>
                                                         
-                                                        <input type="hidden" id="bypassReason" name="bypassReason">
                                                         <input type="hidden" id="finalWeight" name="finalWeight">
                                                         <input type="hidden" id="customerCode" name="customerCode">
                                                         <input type="hidden" id="destinationCode" name="destinationCode">
@@ -1106,84 +1105,6 @@ else{
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
                                     </div><!-- /.modal -->
-
-                                    <div class="modal fade" id="bypassModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
-                                            <div class="modal-content">
-                                                <form role="form" id="bypassForm" class="needs-validation" novalidate autocomplete="off">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalScrollableTitle">Key in reasons</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="row mb-12">
-                                                            <label for="nettWeight" class="col-sm-4 col-form-label">Password</label>
-                                                            <div class="col-sm-8">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control" id="passcode" name="passcode" placeholder="0" required>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row col-xxl-12 col-lg-12 mb-12">
-                                                            <div class="row">
-                                                                <label for="reason" class="col-sm-2 col-form-label">Reasons *</label>
-                                                                <div class="col-sm-10">
-                                                                    <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Reasons" required></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitBypass"><?=$languageArray['submit_code'][$language]?></button>
-                                                            </div>
-                                                        </div><!--end col-->   
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal fade" id="approvalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
-                                            <div class="modal-content">
-                                                <form role="form" id="approvalForm" class="needs-validation" novalidate autocomplete="off">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalScrollableTitle">Key in reasons</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <input type="hidden" id="id" name="id"/>
-                                                        <div class="row  col-xxl-12 col-lg-12 mb-1">
-                                                            <div class="row">
-                                                                <label for="statusA" class="col-sm-2 col-form-label">Approve?</label>
-                                                                <div class="col-sm-8">
-                                                                    <select class="form-select" id="statusA" name="statusA" required>
-                                                                        <option value="Y">Approve</option>
-                                                                        <option value="N">Reject</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row col-xxl-12 col-lg-12 mb-12">
-                                                            <div class="row">
-                                                                <label for="reasons" class="col-sm-2 col-form-label">Reasons *</label>
-                                                                <div class="col-sm-10">
-                                                                    <textarea class="form-control" id="reasons" name="reasons" rows="3" placeholder="Reasons" required></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitApproval"><?=$languageArray['submit_code'][$language]?></button>
-                                                            </div>
-                                                        </div><!--end col-->   
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div class="modal fade" id="prePrintModal">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
@@ -1790,22 +1711,11 @@ else{
                             }
                         }
 
-                        if (row.is_approved == 'Y') {
-                            if (row.weight_type != 'Primer Mover + Container'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                        <i class="fas fa-print"></i>
-                                    </button>
-                                </div>`;
-                            }
-                        }
-
-                        if (row.is_approved == 'N') {
+                        if (row.weight_type != 'Primer Mover + Container'){
                             buttons += `
                             <div class="col-auto">
-                                <button title="Approve" type="button" id="approve${data}" onclick="approve(${data})" class="btn btn-success btn-sm">
-                                    <i class="fa-solid fa-check"></i>
+                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                    <i class="fas fa-print"></i>
                                 </button>
                             </div>`;
                         }
@@ -1831,27 +1741,6 @@ else{
                         buttons += `</div>`;
 
                         return buttons;
-
-                        // let dropdownMenu = '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">';
-
-                        // if (row.is_complete != 'Y' || userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                        //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>'; 
-                        // }
-
-                        // if (row.is_approved == 'Y') {
-                        //     dropdownMenu += '<li><a class="dropdown-item print-item-btn" id="print' + data + '" onclick="print(' + data + ')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li>';
-                        // }
-
-                        // if (row.is_approved == 'N') {
-                        //     dropdownMenu += '<li><a class="dropdown-item approval-item-btn" id="approve' + data + '" onclick="approve(' + data + ')"><i class="ri-check-fill align-bottom me-2 text-muted"></i> Approval</a></li>';
-                        // }
-
-                        // if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                        //     dropdownMenu += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>';
-                        // }
-
-                        // dropdownMenu += '</ul></div>';
-                        // return dropdownMenu;
                     }
                 }
             ],
@@ -2108,58 +1997,6 @@ else{
                     }
                 });
             }
-            /*else{
-                let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
-                if (userChoice) {
-                    $('#addModal').find('#status').val("pending");
-                    $('#spinnerLoading').show();
-                    $.post('php/weight.php', $('#weightForm').serialize(), function(data){
-                        var obj = JSON.parse(data); 
-                        if(obj.status === 'success'){
-                            <?php
-                                if(isset($_GET['weight'])){
-                                    echo "window.location = 'index.php';";
-                                }
-                            ?>
-                            table.ajax.reload();
-                            window.location = 'index.php';
-                            $('#spinnerLoading').hide();
-                            $('#addModal').modal('hide');
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-                        }
-                        else if(obj.status === 'failed'){
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', obj.message );
-                            $("#failBtn").click();
-                        }
-                        else{
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', 'Failed to save');
-                            $("#failBtn").click();
-                        }
-                    });
-                } 
-                else {
-                    $('#bypassModal').find('#passcode').val("");
-                    $('#bypassModal').find('#reason').val("");
-                    $('#bypassModal').modal('show');
-            
-                    $('#bypassForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }*/
         });
 
         $('#submitWeightPrint').on('click', function(){
@@ -2246,167 +2083,6 @@ else{
                                 $(element).removeClass('is-invalid');
                             }
                         });
-
-                        /*$.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-                            var obj2 = JSON.parse(data);
-
-                            if(obj2.status === 'success'){
-                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                printWindow.document.write(obj2.message);
-                                printWindow.document.close();
-                                setTimeout(function(){
-                                    printWindow.print();
-                                    printWindow.close();
-                                    table.ajax.reload();
-                                    window.location = 'index.php';
-                                    
-                                    /*setTimeout(function () {
-                                        if (confirm("Do you need to reprint?")) {
-                                            $.post('php/print.php', { userID: obj.id, file: 'weight' }, function (data) {
-                                                var obj = JSON.parse(data);
-                                                if (obj.status === 'success') {
-                                                    var reprintWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                                    reprintWindow.document.write(obj.message);
-                                                    reprintWindow.document.close();
-                                                    setTimeout(function () {
-                                                        reprintWindow.print();
-                                                        reprintWindow.close();
-                                                    }, 500);
-                                                } 
-                                                else {
-                                                    window.location = 'index.php';
-                                                }
-                                            });
-                                        }
-                                    }, 500);
-                                }, 500);
-                            }
-                            else if(obj.status === 'failed'){
-                                $("#failBtn").attr('data-toast-text', obj.message );
-                                $("#failBtn").click();
-                            }
-                            else{
-                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                                $("#failBtn").click();
-                            }
-                        });*/
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
-                        $("#failBtn").click();
-                    }
-                });
-            }
-            /*else{
-                let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
-                if (userChoice) {
-                    $('#addModal').find('#status').val("pending");
-                    $('#spinnerLoading').show();
-                    $.post('php/weight.php', $('#weightForm').serialize(), function(data){
-                        var obj = JSON.parse(data); 
-                        if(obj.status === 'success'){
-                            <?php
-                                if(isset($_GET['weight'])){
-                                    echo "window.location = 'index.php';";
-                                }
-                            ?>
-                            table.ajax.reload();
-                            window.location = 'index.php';
-                            $('#spinnerLoading').hide();
-                            $('#addModal').modal('hide');
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-                        }
-                        else if(obj.status === 'failed'){
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', obj.message );
-                            $("#failBtn").click();
-                        }
-                        else{
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', 'Failed to save');
-                            $("#failBtn").click();
-                        }
-                    });
-                } 
-                else {
-                    $('#bypassModal').find('#passcode').val("");
-                    $('#bypassModal').find('#reason').val("");
-                    $('#bypassModal').modal('show');
-            
-                    $('#bypassForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }*/
-        });
-
-        $('#submitBypass').on('click', function(){
-            if($('#bypassForm').valid()){
-                $('#addModal').find('#bypassReason').val($('#bypassModal').find('#reason').val());
-                $('#spinnerLoading').show();
-                $.post('php/weight.php', $('#weightForm').serialize(), function(data){
-                    var obj = JSON.parse(data); 
-                    if(obj.status === 'success'){
-                        <?php
-                            if(isset($_GET['weight'])){
-                                echo "window.location = 'index.php';";
-                            }
-                        ?>
-                        table.ajax.reload();
-                        window.location = 'index.php';
-                        $('#spinnerLoading').hide();
-                        $('#addModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
-                        $("#failBtn").click();
-                    }
-                });
-            }
-        });
-
-        $('#submitApproval').on('click', function(){
-            if($('#approvalForm').valid()){
-                $('#spinnerLoading').show();
-                $.post('php/updateApproval.php', $('#approvalForm').serialize(), function(data){
-                    var obj = JSON.parse(data); 
-                    if(obj.status === 'success'){
-                        <?php
-                            if(isset($_GET['approve'])){
-                                echo "window.location = 'index.php';";
-                            }
-                        ?>
-                        table.ajax.reload();
-                        window.location = 'index.php';
-                        $('#spinnerLoading').hide();
-                        $('#approvalModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -2679,22 +2355,11 @@ else{
                                 }
                             }
 
-                            if (row.is_approved == 'Y') {
-                                if (row.weight_type != 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                            <i class="fas fa-print"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                            }
-
-                            if (row.is_approved == 'N') {
+                            if (row.weight_type != 'Primer Mover + Container'){
                                 buttons += `
                                 <div class="col-auto">
-                                    <button title="Approve" type="button" id="approve${data}" onclick="approve(${data})" class="btn btn-success btn-sm">
-                                        <i class="fa-solid fa-check"></i>
+                                    <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                        <i class="fas fa-print"></i>
                                     </button>
                                 </div>`;
                             }
@@ -2720,26 +2385,6 @@ else{
                             buttons += `</div>`;
 
                             return buttons;
-                            // let dropdownMenu = '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">';
-
-                            // if (row.is_complete != 'Y' || userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') {
-                            //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>'; 
-                            // }
-
-                            // if (row.is_approved == 'Y') {
-                            //     dropdownMenu += '<li><a class="dropdown-item print-item-btn" id="print' + data + '" onclick="print(' + data + ')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li>';
-                            // }
-
-                            // if (row.is_approved == 'N') {
-                            //     dropdownMenu += '<li><a class="dropdown-item approval-item-btn" id="approve' + data + '" onclick="approve(' + data + ')"><i class="ri-check-fill align-bottom me-2 text-muted"></i> Approval</a></li>';
-                            // }
-
-                            // if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                            //     dropdownMenu += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>';
-                            // }
-
-                            // dropdownMenu += '</ul></div>';
-                            // return dropdownMenu;
                         }
                     }
                 ],
@@ -2851,7 +2496,6 @@ else{
             $('#addModal').find('#vehiclePlateNo1').val("").trigger('change');
             $('#addModal').find('#vehiclePlateNo2').val("").trigger('change');
             $('#addModal').find('#supplierWeight').val("");
-            $('#addModal').find('#bypassReason').val("");
             $('#addModal').find('#customerCode').val("");
             $('#addModal').find('#customerName').val("-").trigger('change');
             $('#addModal').find('#supplierCode').val("");
@@ -3364,7 +3008,7 @@ else{
             var transactionStatus = $('#transactionStatus').val();
 
             if (x){
-                $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
+                $.post('php/modules/vehicle/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -3403,7 +3047,7 @@ else{
             var vehiclePlateNo1 = $(this).val();
             var transactionStatus = $('#transactionStatus').val();
             if (vehiclePlateNo1){
-                $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
+                $.post('php/modules/vehicle/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -3460,7 +3104,7 @@ else{
             var weightType = $('#weightType').val();
 
             if (weightType == 'Different Container' && x) {
-                $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
+                $.post('php/modules/vehicle/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -3489,7 +3133,7 @@ else{
             var vehiclePlateNo2 = $(this).val();
             var weightType = $('#weightType').val();
             if (weightType == 'Different Container' && vehiclePlateNo2){
-                $.post('php/getVehicle.php', {userID: vehiclePlateNo2, type: 'pullCustomer'}, function (data){
+                $.post('php/modules/vehicle/getVehicle.php', {userID: vehiclePlateNo2, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -4046,12 +3690,6 @@ else{
                 echo 'edit('.$_GET['weight'].');';
             }
         ?>
-
-        <?php
-            if(isset($_GET['approve'])){
-                echo 'approve('.$_GET['approve'].');';
-            }
-        ?>
     });
 
     function handleWeightType(weightType){
@@ -4570,44 +4208,6 @@ else{
         });
     }
 
-    function approve(id){
-        $('#spinnerLoading').show();
-        $.post('php/getWeight.php', {userID: id}, function(data){
-            var obj = JSON.parse(data);
-            if(obj.status === 'success'){
-                $('#approvalModal').find('#id').val(obj.message.id);
-                $('#approvalModal').find('#statusA').val('');
-                $('#approvalModal').find('#reasons').val('');
-                $('#approvalModal').modal('show');
-            
-                $('#approvalForm').validate({
-                    errorElement: 'span',
-                    errorPlacement: function (error, element) {
-                        error.addClass('invalid-feedback');
-                        element.closest('.form-group').append(error);
-                    },
-                    highlight: function (element, errorClass, validClass) {
-                        $(element).addClass('is-invalid');
-                    },
-                    unhighlight: function (element, errorClass, validClass) {
-                        $(element).removeClass('is-invalid');
-                    }
-                });
-            }
-            else if(obj.status === 'failed'){
-                $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-            else{
-                $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-            $('#spinnerLoading').hide();
-        });
-    }
-
     function deactivate(id, isEmptyContainer) {
         if (confirm('Are you sure you want to cancel this item?')) {
             $('#cancelModal').find('#id').val(id);
@@ -4629,31 +4229,6 @@ else{
             });
         }
     }
-
-    // function deactivate(id){
-        
-    //     $('#spinnerLoading').show();
-    //     $.post('php/deleteWeight.php', {userID: id}, function(data){
-    //         var obj = JSON.parse(data);
-            
-    //         if(obj.status === 'success'){
-    //             table.ajax.reload();
-    //             $('#spinnerLoading').hide();
-    //             $("#successBtn").attr('data-toast-text', obj.message);
-    //             $("#successBtn").click();
-    //         }
-    //         else if(obj.status === 'failed'){
-    //             $('#spinnerLoading').hide();
-    //             $("#failBtn").attr('data-toast-text', obj.message );
-    //             $("#failBtn").click();
-    //         }
-    //         else{
-    //             $('#spinnerLoading').hide();
-    //             $("#failBtn").attr('data-toast-text', obj.message );
-    //             $("#failBtn").click();
-    //         }
-    //     });
-    // }
 
     function print(id, transactionStatus, isEmptyContainer = 'N') {
         $('#prePrintModal').find('#id').val(id);
