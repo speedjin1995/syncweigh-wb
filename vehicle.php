@@ -8,7 +8,7 @@
 ?>
 
 <head>
-    <title>Vehicle | Synctronix - Weighing System</title>
+    <title><?=$languageArray['vehicle_code'][$language]?> | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -66,40 +66,7 @@
                                 <!--end col-->
                             </div>
                             <!--end row-->
-
-                            <!-- <div class="col-xxl-12 col-lg-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <form action="javascript:void(0);">
-                                            <div class="row">
-                                                <div class="col-3">
-                                                    <div class="mb-3">
-                                                        <label for="customerCode" class="form-label">Customer Code</label>
-                                                        <input type="text" class="form-control" placeholder="Customer Code" id="customerCode">
-                                                    </div>
-                                                </div>
-                                                <div class="col-3">
-
-                                                </div>
-                                                <div class="col-3">
-  
-                                                </div>
-                                                <div class="col-3">
-                                                    <div class="text-end mt-4">
-                                                        <button type="submit" class="btn btn-success">
-                                                            <i class="bx bx-search-alt"></i>
-                                                            <?=$languageArray['search_code'][$language]?></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>                                                                        
-                                    </div>
-                                </div>
-                            </div> -->
                             
-                            <button type="button" hidden id="successBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-                            <button type="button" hidden id="failBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-
                             <div class="row">
                                 <div class="col-xl-3 col-md-6 add-new-weight">
 
@@ -125,7 +92,7 @@
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="<?=$languageArray['vehicle_no_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -137,7 +104,7 @@
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="vehicleWeight" name="vehicleWeight" placeholder="<?=$languageArray['vehicle_weight_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -290,8 +257,6 @@
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['vehicle_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['vehicle_weight_code'][$language]?></th>
-                                                                    <!-- <th>EX-Quarry/Delivered</th>
-                                                                    <th>Transporter</th> -->
                                                                     <th><?=$languageArray['customer_code'][$language]?></th>
                                                                     <th><?=$languageArray['supplier_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
@@ -357,6 +322,11 @@
 var table;
 
 $(function () {
+    $('#selectAllCheckbox').on('change', function() {
+        var checkboxes = $('#vehicleTable tbody input[type="checkbox"]');
+        checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
+    });
+
     // Initialize all Select2 elements in the modal
     $('#addModal .select2').select2({
         allowClear: true,
@@ -383,7 +353,7 @@ $(function () {
         'serverSide': true,
         'serverMethod': 'post',
         'ajax': {
-            'url':'php/loadVehicle.php'
+            'url':'php/modules/vehicle/loadVehicle.php'
         },
         'columns': [
             {
@@ -397,18 +367,6 @@ $(function () {
             },
             { data: 'veh_number' },
             { data: 'vehicle_weight' },
-            //{ data: 'vehicle_weight' },
-            /*{ 
-                data: 'ex_del',
-                render: function ( data, type, row ) {
-                    if (data == 'EX'){
-                        return "EX-Quarry";
-                    }else{
-                        return "Delivered";
-                    }
-                }
-            },*/
-            // { data: 'transporter_name' },
             { data: 'customer_name' },
             { data: 'supplier_name' },
             { data: 'status' },
@@ -421,7 +379,6 @@ $(function () {
                         '<li><a class="dropdown-item remove-item-btn" id="reactivate'+data+'" onclick="reactivate('+data+')">Reactivate </a></li></ul></div>';
                     }
                     else{
-                        // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
                         return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                         '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
                         '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
@@ -431,37 +388,25 @@ $(function () {
             }
         ]       
     });
-
-    $('#selectAllCheckbox').on('change', function() {
-        var checkboxes = $('#vehicleTable tbody input[type="checkbox"]');
-        checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
-    });
     
     // $.validator.setDefaults({
     //     submitHandler: function() {
     $('#submitVehicle').on('click', function(){
         if($('#vehicleForm').valid()){
             $('#spinnerLoading').show();
-            $.post('php/vehicle.php', $('#vehicleForm').serialize(), function(data){
-                var obj = JSON.parse(data); 
-                if(obj.status === 'success')
-                {
+            $.post('php/modules/vehicle/vehicle.php', $('#vehicleForm').serialize(), function(data){
+                var obj = JSON.parse(data);
+                if(obj.status === 'success') {
                     table.ajax.reload();
                     $('#spinnerLoading').hide();
                     $('#addModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
+                    toastr["success"](obj.message, "Success:");
                 }
-                else if(obj.status === 'failed')
-                {
+                else if(obj.status === 'failed') {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
+                    toastr["error"](obj.message, "Failed:");
                 }
-                else
-                {
-
-                }
+                else {}
             });
         }
         // }
@@ -471,13 +416,10 @@ $(function () {
         $('#addModal').find('#id').val("");
         $('#addModal').find('#vehicleNo').val("");
         $('#addModal').find('#vehicleWeight').val("");
-        $('#addModal').find('#transporter').val("");
-        $('#addModal').find('#transporterCode').val("");
         $('#addModal').find('#customer').val("").trigger('change');
         $('#addModal').find('#customerCode').val("");
         $('#addModal').find('#supplier').val("").trigger('change');
         $('#addModal').find('#supplierCode').val("");
-        $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true).trigger('change');
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
 
@@ -502,11 +444,6 @@ $(function () {
         var x = $('#vehicleNo').val();
         x = x.toUpperCase();
         $('#addModal').find('#vehicleNo').val(x);
-    });
-
-    //transporter
-    $('#transporter').on('change', function(){
-        $('#transporterCode').val($('#transporter :selected').data('code'));
     });
 
     //customer
@@ -539,7 +476,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/uploadVehicle.php',
+            url: 'php/modules/vehicle/uploadVehicle.php',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -548,39 +485,35 @@ $(function () {
                 if (obj.status === 'success') {
                     $('#spinnerLoading').hide();
                     $('#uploadModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
+                    toastr["success"](obj.message, "Success:");
                     $('#vehicleTable').DataTable().ajax.reload(null, false);
-                } 
+                }
                 else if (obj.status === 'failed') {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                } 
+                    toastr["error"](obj.message, "Failed:");
+                }
                 else if (obj.status === 'error') {
                     $('#spinnerLoading').hide();
                     $('#uploadModal').modal('hide');
-                    // alert(obj.message);
-                    // $("#failBtn").attr('data-toast-text', obj.message );
-                    // $("#failBtn").click();
                     $('#vehicleTable').DataTable().ajax.reload(null, false);
                     $('#errorModal').find('#errorList').empty();
                     var errorMessage = obj.message;
                     for (var i = 0; i < errorMessage.length; i++) {
-                        $('#errorModal').find('#errorList').append(`<li>${errorMessage[i]}</li>`);                            
+                        $('#errorModal').find('#errorList').append(`<li>${errorMessage[i]}</li>`);
                     }
                     $('#errorModal').modal('show');
-                } 
+                }
                 else {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', 'Failed to save');
-                    $("#failBtn").click();
+                    toastr["error"]("Failed to save", "Failed:");
                 }
             }
         });
     });
 
     $('#uploadExcel').on('click', function(){
+        $('#previewTable').html('');
+        $('#fileInput').val('');
         $('#uploadModal').modal('show');
 
         $('#uploadForm').validate({
@@ -624,7 +557,7 @@ $(function () {
 
         if (selectedIds.length > 0) {
             if (confirm('Are you sure you want to cancel these items?')) {
-                $.post('php/deleteVehicle.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                $.post('php/modules/vehicle/deleteVehicle.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -655,20 +588,13 @@ $(function () {
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/getVehicle.php', {userID: id}, function(data)
+    $.post('php/modules/vehicle/getVehicle.php', {userID: id}, function(data)
     {
         var obj = JSON.parse(data);
         if(obj.status === 'success'){
             $('#addModal').find('#id').val(obj.message.id);
             $('#addModal').find('#vehicleNo').val(obj.message.veh_number);
             $('#addModal').find('#vehicleWeight').val(obj.message.vehicle_weight);
-            $('#addModal').find('#transporter').val(obj.message.transporter_name).trigger('change');
-            $('#addModal').find('#transporterCode').val(obj.message.transporter_code);
-            if (obj.message.ex_del == 'EX'){
-                $('#addModal').find("input[name='exDel'][value='true']").prop("checked", true);
-            }else{
-                $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true);
-            }
             $('#addModal').find('#customer').val(obj.message.customer_name).trigger('change');
             $('#addModal').find('#supplier').val(obj.message.supplier_name).trigger('change');
 
@@ -676,16 +602,28 @@ function edit(id){
             $('#addModal .is-invalid').removeClass('is-invalid');
 
             $('#addModal').modal('show');
+
+            $('#vehicleForm').validate({
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         else{
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         $('#spinnerLoading').hide();
     });
@@ -694,24 +632,21 @@ function edit(id){
 function deactivate(id){
     $('#spinnerLoading').show();
     if (confirm('Are you sure you want to cancel this item?')) {
-        $.post('php/deleteVehicle.php', {userID: id}, function(data){
+        $.post('php/modules/vehicle/deleteVehicle.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
-            
+
             if(obj.status === 'success'){
                 table.ajax.reload();
                 $('#spinnerLoading').hide();
-                $("#successBtn").attr('data-toast-text', obj.message);
-                $("#successBtn").click();
+                toastr["success"](obj.message, "Success:");
             }
             else if(obj.status === 'failed'){
                 $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
             else{
                 $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
         });
     }
@@ -783,18 +718,15 @@ function reactivate(id) {
         if(obj.status === 'success'){
             table.ajax.reload();
             $('#spinnerLoading').hide();
-            $("#successBtn").attr('data-toast-text', obj.message);
-            $("#successBtn").click();
+            toastr["success"](obj.message, "Success:");
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         else{
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
 
         $('#spinnerLoading').hide();
@@ -803,20 +735,6 @@ function reactivate(id) {
 
   $('#spinnerLoading').hide();
 }
-
-$('#vehicleForm').validate({
-    errorElement: 'span',
-    errorPlacement: function (error, element) {
-      error.addClass('invalid-feedback');
-      element.closest('.form-group').append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass('is-invalid');
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass('is-invalid');
-    }
-  });
 </script>
     </body>
 
