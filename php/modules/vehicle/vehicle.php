@@ -21,15 +21,9 @@ if (isset($_POST['vehicleNo'])) {
     $supplier        = empty($_POST["supplier"])        ? null  : trim($_POST["supplier"]);
     $supplierCode    = empty($_POST["supplierCode"])    ? null  : trim($_POST["supplierCode"]);
 
-    if (empty($_POST["exDel"])) {
-        $exDel = null;
-    } else {
-        $exDel = $_POST["exDel"] == 'true' ? 'EX' : 'DEL';
-    }
-
     if (!empty($vehicleId)) {
-        if ($stmt = $db->prepare("UPDATE Vehicle SET veh_number=?, vehicle_weight=?, transporter_code=?, transporter_name=?, ex_del=?, customer_code=?, customer_name=?, supplier_code=?, supplier_name=?, created_by=?, modified_by=? WHERE id=?")) {
-            $stmt->bind_param('ssssssssssss', $vehicleNo, $vehicleWeight, $transporterCode, $transporter, $exDel, $customerCode, $customer, $supplierCode, $supplier, $username, $username, $vehicleId);
+        if ($stmt = $db->prepare("UPDATE Vehicle SET veh_number=?, vehicle_weight=?, transporter_code=?, transporter_name=?, customer_code=?, customer_name=?, supplier_code=?, supplier_name=?, created_by=?, modified_by=? WHERE id=?")) {
+            $stmt->bind_param('sssssssssss', $vehicleNo, $vehicleWeight, $transporterCode, $transporter, $customerCode, $customer, $supplierCode, $supplier, $username, $username, $vehicleId);
 
             if (!$stmt->execute()) {
                 echo json_encode(array("status" => "failed", "message" => $stmt->error));
@@ -40,8 +34,8 @@ if (isset($_POST['vehicleNo'])) {
             }
         }
     } else {
-        if ($stmt = $db->prepare("INSERT INTO Vehicle (veh_number, vehicle_weight, transporter_code, transporter_name, ex_del, customer_code, customer_name, supplier_code, supplier_name, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            $stmt->bind_param('sssssssssss', $vehicleNo, $vehicleWeight, $transporterCode, $transporter, $exDel, $customerCode, $customer, $supplierCode, $supplier, $username, $username);
+        if ($stmt = $db->prepare("INSERT INTO Vehicle (veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            $stmt->bind_param('ssssssssss', $vehicleNo, $vehicleWeight, $transporterCode, $transporter, $customerCode, $customer, $supplierCode, $supplier, $username, $username);
 
             if (!$stmt->execute()) {
                 echo json_encode(array("status" => "failed", "message" => $stmt->error));
