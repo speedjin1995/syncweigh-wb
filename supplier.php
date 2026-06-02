@@ -2,7 +2,7 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
-    <title>Supplier | Synctronix - Weighing System</title>
+    <title><?=$languageArray['supplier_code'][$language]?> | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -60,36 +60,6 @@
                                 <!--end col-->
                             </div>
                             <!--end row-->
-
-                            <!-- <div class="col-xxl-12 col-lg-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <form action="javascript:void(0);">
-                                            <div class="row">
-                                                <div class="col-3">
-                                                    <div class="mb-3">
-                                                        <label for="customerCode" class="form-label">Customer Code</label>
-                                                        <input type="text" class="form-control" placeholder="Customer Code" id="customerCode">
-                                                    </div>
-                                                </div>
-                                                <div class="col-3">
-
-                                                </div>
-                                                <div class="col-3">
-  
-                                                </div>
-                                                <div class="col-3">
-                                                    <div class="text-end mt-4">
-                                                        <button type="submit" class="btn btn-success">
-                                                            <i class="bx bx-search-alt"></i>
-                                                            <?=$languageArray['search_code'][$language]?></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>                                                                        
-                                    </div>
-                                </div>
-                            </div> -->
                             
                             <div class="row">
                                 <div class="col-xl-3 col-md-6 add-new-weight">
@@ -116,7 +86,7 @@
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="supplierCode" name="supplierCode" placeholder="<?=$languageArray['supplier_code_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -134,6 +104,9 @@
                                                                                                     <label for="newRegNo" class="col-sm-4 col-form-label"><?=$languageArray['new_reg_no_code'][$language]?></label>
                                                                                                     <div class="col-sm-8">
                                                                                                         <input type="text" class="form-control" id="newRegNo" name="newRegNo" required>
+                                                                                                        <div class="invalid-feedback">
+                                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
+                                                                                                        </div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -266,7 +239,7 @@
                                         <div class="modal-dialog modal-xl" style="max-width: 50%;">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-gray-dark color-palette">
-                                                    <h4 class="modal-title">Error Log</h4>
+                                                    <h4 class="modal-title"><?=$languageArray['error_log_code'][$language]?></h4>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -360,9 +333,6 @@
     </div>
     <!-- END layout-wrapper -->
 
-
-
-
     <?php include 'layouts/customizer.php'; ?>
 
     <?php include 'layouts/vendor-scripts.php'; ?>
@@ -439,7 +409,6 @@ $(function () {
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
-                    // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
                     return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                     '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
                     '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +

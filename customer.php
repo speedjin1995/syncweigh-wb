@@ -104,6 +104,9 @@
                                                                                                     <label for="newRegNo" class="col-sm-4 col-form-label"><?=$languageArray['new_reg_no_code'][$language]?></label>
                                                                                                     <div class="col-sm-8">
                                                                                                         <input type="text" class="form-control" id="newRegNo" name="newRegNo" required>
+                                                                                                        <div class="invalid-feedback">
+                                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
+                                                                                                        </div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -329,9 +332,6 @@
     </div>
     <!-- END layout-wrapper -->
 
-
-
-
     <?php include 'layouts/customizer.php'; ?>
 
     <?php include 'layouts/vendor-scripts.php'; ?>
@@ -357,8 +357,6 @@
     <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
-
-
 
 <script type="text/javascript">
 
@@ -794,20 +792,6 @@ function reactivate(id) {
 
   $('#spinnerLoading').hide();
 }
-
-$('#customerForm').validate({
-    errorElement: 'span',
-    errorPlacement: function (error, element) {
-      error.addClass('invalid-feedback');
-      element.closest('.form-group').append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass('is-invalid');
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass('is-invalid');
-    }
-  });
 </script>
     </body>
 
