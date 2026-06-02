@@ -927,6 +927,7 @@ UPDATE `message_resource` SET `en`='ID No', `zh`='身份证号码', `my`='No. Ka
 -- 01/06/2026 --
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('error_log_code', 'Error Log', '错误日志', 'Log Ralat', 'பிழை பதிவு');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('please_fill_in_the_field_code', 'Please fill in the field.', '请填写此字段。', 'Sila isi medan ini.', 'இந்த புலத்தை நிரப்பவும்.');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('message_code_code', 'Message Code', '消息代码', 'Kod Mesej', 'செய்தி குறியீடு');
 
 DROP TABLE IF EXISTS `Product_RawMat`;
 DROP TABLE IF EXISTS `Bitumen`;
