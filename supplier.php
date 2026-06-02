@@ -91,9 +91,6 @@
                                 </div>
                             </div> -->
                             
-                            <button type="button" hidden id="successBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-                            <button type="button" hidden id="failBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-
                             <div class="row">
                                 <div class="col-xl-3 col-md-6 add-new-weight">
 
@@ -405,7 +402,7 @@ $(function () {
         'serverSide': true,
         'serverMethod': 'post',
         'ajax': {
-            'url':'php/loadSupplier.php'
+            'url':'php/modules/supplier/loadSupplier.php'
         },
         'columns': [
             {
@@ -456,29 +453,23 @@ $(function () {
     //     submitHandler: function () {
         $('#submitCustomer').on('click', function(){
             if($('#supplierForm').valid()){
-            $('#spinnerLoading').show();
-            $.post('php/supplier.php', $('#supplierForm').serialize(), function(data){
-                var obj = JSON.parse(data); 
-                if(obj.status === 'success'){
-                    table.ajax.reload();
-                    $('#spinnerLoading').hide();
-                    $('#addModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
-                }
-                else if(obj.status === 'failed')
-                {
-                    $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                }
-                else
-                {
-
-                }
-            });
-        }
-    });
+                $('#spinnerLoading').show();
+                $.post('php/modules/supplier/supplier.php', $('#supplierForm').serialize(), function(data){
+                    var obj = JSON.parse(data);
+                    if(obj.status === 'success'){
+                        table.ajax.reload();
+                        $('#spinnerLoading').hide();
+                        $('#addModal').modal('hide');
+                        toastr["success"](obj.message, "Success:");
+                    }
+                    else if(obj.status === 'failed'){
+                        $('#spinnerLoading').hide();
+                        toastr["error"](obj.message, "Failed:");
+                    }
+                    else{}
+                });
+            }
+        });
 
     $('#submitWeights').on('click', function(){
         $('#spinnerLoading').show();
@@ -500,7 +491,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/uploadSuppliers.php',
+            url: 'php/modules/supplier/uploadSuppliers.php',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -509,33 +500,27 @@ $(function () {
                 if (obj.status === 'success') {
                     $('#spinnerLoading').hide();
                     $('#uploadModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
+                    toastr["success"](obj.message, "Success:");
                     $('#supplierTable').DataTable().ajax.reload(null, false);
-                } 
+                }
                 else if (obj.status === 'failed') {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
-                } 
+                    toastr["error"](obj.message, "Failed:");
+                }
                 else if (obj.status === 'error') {
                     $('#spinnerLoading').hide();
                     $('#uploadModal').modal('hide');
-                    // alert(obj.message);
-                    // $("#failBtn").attr('data-toast-text', obj.message );
-                    // $("#failBtn").click();
                     $('#supplierTable').DataTable().ajax.reload(null, false);
                     $('#errorModal').find('#errorList').empty();
                     var errorMessage = obj.message;
                     for (var i = 0; i < errorMessage.length; i++) {
-                        $('#errorModal').find('#errorList').append(`<li>${errorMessage[i]}</li>`);                            
+                        $('#errorModal').find('#errorList').append(`<li>${errorMessage[i]}</li>`);
                     }
                     $('#errorModal').modal('show');
-                } 
+                }
                 else {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', 'Failed to save');
-                    $("#failBtn").click();
+                    toastr["error"]("Failed to save", "Failed:");
                 }
             }
         });
@@ -577,6 +562,8 @@ $(function () {
     });
 
     $('#uploadExcel').on('click', function(){
+        $('#previewTable').html('');
+        $('#fileInput').val('');
         $('#uploadModal').modal('show');
 
         $('#uploadForm').validate({
@@ -620,7 +607,7 @@ $(function () {
 
         if (selectedIds.length > 0) {
             if (confirm('Are you sure you want to cancel these items?')) {
-                $.post('php/deleteSupplier.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                $.post('php/modules/supplier/deleteSupplier.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -721,7 +708,7 @@ function displayPreview(data) {
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/getSupplier.php', {userID: id}, function(data){
+    $.post('php/modules/supplier/getSupplier.php', {userID: id}, function(data){
         var obj = JSON.parse(data);
         
         if(obj.status === 'success'){
@@ -743,30 +730,28 @@ function edit(id){
             $('#addModal .is-invalid').removeClass('is-invalid');
 
             $('#addModal').modal('show');
-            
-            // $('#customerForm').validate({
-            //     errorElement: 'span',
-            //     errorPlacement: function (error, element) {
-            //         error.addClass('invalid-feedback');
-            //         element.closest('.form-group').append(error);
-            //     },
-            //     highlight: function (element, errorClass, validClass) {
-            //         $(element).addClass('is-invalid');
-            //     },
-            //     unhighlight: function (element, errorClass, validClass) {
-            //         $(element).removeClass('is-invalid');
-            //     }
-            // });
+
+            $('#supplierForm').validate({
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         else{
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         $('#spinnerLoading').hide();
     });
@@ -775,24 +760,21 @@ function edit(id){
 function deactivate(id){
     $('#spinnerLoading').show();
     if (confirm('Are you sure you want to cancel this item?')) {
-        $.post('php/deleteSupplier.php', {userID: id}, function(data){
+        $.post('php/modules/supplier/deleteSupplier.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
-            
+
             if(obj.status === 'success'){
                 table.ajax.reload();
                 $('#spinnerLoading').hide();
-                $("#successBtn").attr('data-toast-text', obj.message);
-                $("#successBtn").click();
+                toastr["success"](obj.message, "Success:");
             }
             else if(obj.status === 'failed'){
                 $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
             else{
                 $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
         });
     }
@@ -808,18 +790,15 @@ function reactivate(id) {
         if(obj.status === 'success'){
             table.ajax.reload();
             $('#spinnerLoading').hide();
-            $("#successBtn").attr('data-toast-text', obj.message);
-            $("#successBtn").click();
+            toastr["success"](obj.message, "Success:");
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         else{
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
 
         $('#spinnerLoading').hide();
