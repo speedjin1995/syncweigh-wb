@@ -102,7 +102,7 @@
                                                                                 <div class="row">
                                                                                     <label for="vehicleWeight" class="col-sm-4 col-form-label"><?=$languageArray['vehicle_weight_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="vehicleWeight" name="vehicleWeight" placeholder="<?=$languageArray['vehicle_weight_code'][$language]?>" required>
+                                                                                        <input type="number" class="form-control" id="vehicleWeight" name="vehicleWeight" placeholder="<?=$languageArray['vehicle_weight_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
                                                                                             <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
