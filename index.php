@@ -791,7 +791,7 @@ else{
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="replacementContainerDisplay" style="display:none">
                                                                                 <div class="row">
-                                                                                    <label for="replacementContainer" class="col-sm-4 col-form-label"><?=$languageArray['new_empty_entrance_bin_code'][$language]?></label>
+                                                                                    <label for="replacementContainer" class="col-sm-4 col-form-label"><?=$languageArray['new_empty_bin_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
                                                                                     </div>
@@ -3279,7 +3279,7 @@ else{
                     }
                 });
                 handleWeightType(weightType);
-                $('#addModal').find('#containerNo1Label').text("Pending Dispatch Bin");
+                $('#addModal').find('#containerNo1Label').text("<?= $languageArray['pending_bin_code'][$language] ?>");
                 $('#addModal').find('#emptyContainerDisplay').show();
                 $('#addModal').find('#replacementContainerDisplay').show();
                 $('#addModal').find('#vehicleWeight2Display').show();
