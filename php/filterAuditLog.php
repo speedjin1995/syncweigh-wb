@@ -286,7 +286,6 @@ if($_POST['selectedValue'] == "Vehicle")
         "Vehicle Weight"=>$row['vehicle_weight'],
         "Transporter Code"=>$row['transporter_code'],
         "Transporter Name"=>$row['transporter_name'],
-        "EX-Quarry / Delivered"=>($row['ex_del'] == 'EX') ? "E" : "D",
         "Customer Code"=>$row['customer_code'],
         "Customer Name"=>$row['customer_name'],
         "Action"=>searchActionNameById($row['action_id'], $db),
@@ -295,7 +294,7 @@ if($_POST['selectedValue'] == "Vehicle")
         );
     }
 
-    $columnNames = ["Vehicle No", "Vehicle Weight", "Transporter Code", "Transporter Name", "EX-Quarry / Delivered", "Customer Code", "Customer Name", "Action", "Action By", "Event Date"];
+    $columnNames = ["Vehicle No", "Vehicle Weight", "Transporter Code", "Transporter Name", "Customer Code", "Customer Name", "Action", "Action By", "Event Date"];
 }
 
 if($_POST['selectedValue'] == "Agent")

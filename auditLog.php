@@ -649,12 +649,10 @@ $(function () {
     }
 });
 
-function format (row) { console.log(row);
+function format (row) {
     var custSupplier = '';
     var productRawMat = '';
     var orderSuppWeight = '';
-    var loadDrum = (row.load_drum == 'LOAD') ? "By-Load" : "By-Drum";
-    var exDel = (row.ex_del == 'EX') ? "EX-Quarry" : "Delivered";
 
     if (row.transaction_status == 'Sales'){
         custSupplier = row.customer_code + '-' + row.customer_name;
@@ -690,8 +688,6 @@ function format (row) { console.log(row);
             <p><strong>PLANT:</strong> ${row.plant_code} - ${row.plant_name}</p>
         </div>
         <div class="col-3">
-            <p><strong>EX-QUARRY/DELIVERED:</strong> ${exDel}</p>
-            <p><strong>BY-LOAD/BY-DRUM:</strong> ${loadDrum}</p>
             <p><strong>ORDER/SUPPLIER WEIGHT:</strong> ${orderSuppWeight}</p>
             <p><strong>WEIGHT DIFFERENCE:</strong> ${row.reduce_weight}</p>
             <p><strong>UNIT PRICE:</strong> ${row.unit_price}</p>
@@ -701,7 +697,6 @@ function format (row) { console.log(row);
         </div>
         <div class="col-3">
             <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
-            <p><strong>NO OF DRUM:</strong> ${row.no_of_drum}</p>
             <p><strong>IN WEIGHT:</strong> ${row.gross_weight1} KG</p>
             <p><strong>IN DATE/TIME:</strong> ${row.gross_weight1_date}</p>
             <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1} KG</p>
