@@ -1,25 +1,19 @@
 <?php
 session_start();
-require_once "db_connect.php";
+require_once '../../db_connect.php';
 
-if(isset($_POST['userID'])){
-	$id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
+if (isset($_POST['userID'])) {
+    $id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
 
-    if ($update_stmt = $db->prepare("SELECT * FROM Customer WHERE id=?")) {
-        $update_stmt->bind_param('s', $id);
-        
-        // Execute the prepared query.
-        if (! $update_stmt->execute()) {
-            echo json_encode(
-                array(
-                    "status" => "failed",
-                    "message" => "Something went wrong"
-                )); 
-        }
-        else{
-            $result = $update_stmt->get_result();
+    if ($stmt = $db->prepare("SELECT * FROM Customer WHERE id=?")) {
+        $stmt->bind_param('s', $id);
+
+        if (!$stmt->execute()) {
+            echo json_encode(array("status" => "failed", "message" => "Something went wrong"));
+        } else {
+            $result = $stmt->get_result();
             $message = array();
-            
+
             while ($row = $result->fetch_assoc()) {
                 $message['id'] = $row['id'];
                 $message['customer_code'] = $row['customer_code'];
@@ -35,20 +29,11 @@ if(isset($_POST['userID'])){
                 $message['ic_no'] = $row['ic_no'];
                 $message['tin_no'] = $row['tin_no'];
             }
-            
-            echo json_encode(
-                array(
-                    "status" => "success",
-                    "message" => $message
-                ));   
+
+            echo json_encode(array("status" => "success", "message" => $message));
         }
     }
-}
-else{
-    echo json_encode(
-        array(
-            "status" => "failed",
-            "message" => "Missing Attribute"
-            )); 
+} else {
+    echo json_encode(array("status" => "failed", "message" => "Missing Attribute"));
 }
 ?>

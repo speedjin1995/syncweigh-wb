@@ -1,12 +1,11 @@
 <?php
 session_start();
-require_once 'db_connect.php';
-require_once 'requires/lookup.php';
+require_once '../../db_connect.php';
+require_once '../../requires/lookup.php';
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $uid = $_SESSION['username'];
 
-// Read the JSON data from the request body
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (!empty($data)) {
@@ -26,30 +25,20 @@ if (!empty($data)) {
         $ContactName = !empty($rows['ContactName']) ? $rows['ContactName'] : '';
         $ICNo = !empty($rows['ICNo']) ? $rows['ICNo'] : '';
         $TinNo = !empty($rows['TinNo']) ? $rows['TinNo'] : '';
-        $action = "1";
 
-        # Customer Checking & Processing
-        if($Code != null && $Code != ''){
+        if ($Code != null && $Code != '') {
             $customerQuery = "SELECT * FROM Customer WHERE customer_code = '$Code' AND status = '0'";
             $customerDetail = mysqli_query($db, $customerQuery);
             $customerRow = mysqli_fetch_assoc($customerDetail);
-            
-            if(empty($customerRow)){
+
+            if (empty($customerRow)) {
                 if ($insert_stmt = $db->prepare("INSERT INTO Customer (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                     $insert_stmt->bind_param('ssssssssssssss', $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $uid, $uid);
                     $insert_stmt->execute();
-                    $invid = $insert_stmt->insert_id; // Get the inserted reseller ID
                     $insert_stmt->close();
-                
-                    if ($insert_log = $db->prepare("INSERT INTO Customer_Log (customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                        $insert_log->bind_param('sssssssssssssss', $invid, $Code, $RegNo, $NewRegNo, $Name, $Address1, $Address2, $Address3, $Phone, $Fax, $ContactName, $ICNo, $TinNo, $uid, $uid);
-                        $insert_log->execute();
-                        $insert_log->close();
-                    }            
                 }
-            }else{
-                $errMsg = "Customer: ". $Name ." already exist in master data.";
-                $errorSoProductArray[] = $errMsg;
+            } else {
+                $errorSoProductArray[] = "Customer: " . $Name . " already exist in master data.";
                 continue;
             }
         }
@@ -57,27 +46,12 @@ if (!empty($data)) {
 
     $db->close();
 
-    if (!empty($errorSoProductArray)){
-        echo json_encode(
-            array(
-                "status"=> "error", 
-                "message"=> $errorSoProductArray 
-            )
-        );
-    }else{
-        echo json_encode(
-            array(
-                "status"=> "success", 
-                "message"=> "Added Successfully!!" 
-            )
-        );
+    if (!empty($errorSoProductArray)) {
+        echo json_encode(array("status" => "error", "message" => $errorSoProductArray));
+    } else {
+        echo json_encode(array("status" => "success", "message" => "Added Successfully!!"));
     }
 } else {
-    echo json_encode(
-        array(
-            "status"=> "failed", 
-            "message"=> "Please fill in all the fields"
-        )
-    );     
+    echo json_encode(array("status" => "failed", "message" => "Please fill in all the fields"));
 }
 ?>
