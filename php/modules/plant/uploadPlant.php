@@ -13,13 +13,13 @@ if (!empty($data)) {
     $status = '0';
 
     foreach ($data as $rows) {
-        $PlantCode    = !empty($rows['PlantCode'])    ? trim($rows['PlantCode'])    : '';
-        $PlantName    = !empty($rows['PlantName'])    ? trim($rows['PlantName'])    : '';
+        $PlantCode = !empty($rows['PlantCode']) ? trim($rows['PlantCode']) : '';
+        $PlantName = !empty($rows['PlantName']) ? trim($rows['PlantName']) : '';
         $AddressLine1 = !empty($rows['AddressLine1']) ? trim($rows['AddressLine1']) : '';
         $AddressLine2 = !empty($rows['AddressLine2']) ? trim($rows['AddressLine2']) : '';
         $AddressLine3 = !empty($rows['AddressLine3']) ? trim($rows['AddressLine3']) : '';
-        $PhoneNo      = !empty($rows['PhoneNo'])      ? trim($rows['PhoneNo'])      : '';
-        $FaxNo        = !empty($rows['FaxNo'])        ? trim($rows['FaxNo'])        : '';
+        $PhoneNo = !empty($rows['PhoneNo']) ? trim($rows['PhoneNo']) : '';
+        $FaxNo = !empty($rows['FaxNo']) ? trim($rows['FaxNo']) : '';
 
         if ($PlantCode != null && $PlantCode != '') {
             $check = $db->prepare("SELECT id FROM Plant WHERE plant_code = ? AND status = ?");

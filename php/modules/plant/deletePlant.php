@@ -5,8 +5,8 @@ require_once '../../db_connect.php';
 $username = $_SESSION["username"];
 
 if (isset($_POST['userID'])) {
-    $id   = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
-    $del  = "1";
+    $id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
+    $del = "1";
     $type = isset($_POST['type']) && $_POST['type'] != '' ? $_POST['type'] : '';
 
     if ($type == 'MULTI') {

@@ -9,14 +9,14 @@ if (!isset($_SESSION['username'])) {
 if (isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POST['roles'])) {
     $name = $_SESSION["username"];
 
-    $param_code      = null;
-    $password        = "123456";
-    $param_name      = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+    $param_code = null;
+    $password = "123456";
+    $param_name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
     $param_useremail = filter_input(INPUT_POST, 'useremail', FILTER_SANITIZE_STRING);
-    $param_username  = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-    $param_password  = password_hash($password, PASSWORD_DEFAULT);
-    $param_token     = bin2hex(random_bytes(50));
-    $param_role      = filter_input(INPUT_POST, 'roles', FILTER_SANITIZE_STRING);
+    $param_username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+    $param_password = password_hash($password, PASSWORD_DEFAULT);
+    $param_token = bin2hex(random_bytes(50));
+    $param_role = filter_input(INPUT_POST, 'roles', FILTER_SANITIZE_STRING);
 
     if (isset($_POST['employeeCode']) && $_POST['employeeCode'] != null) {
         $param_code = filter_input(INPUT_POST, 'employeeCode', FILTER_SANITIZE_STRING);
@@ -27,9 +27,9 @@ if (isset($_POST['employeeCode'], $_POST['username'], $_POST['useremail'], $_POS
         $param_plant = $_POST['plantId'];
     }
 
-    $param_plant        = json_encode($param_plant);
-    $param_created_by   = $name;
-    $param_modified_by  = $name;
+    $param_plant = json_encode($param_plant);
+    $param_created_by = $name;
+    $param_modified_by = $name;
 
     if ($_POST['id'] != null && $_POST['id'] != '') {
         if ($stmt = $db->prepare("UPDATE Users SET username=?, name=?, useremail=?, role=?, modified_by=?, plant_id=?, employee_code=? WHERE id=?")) {

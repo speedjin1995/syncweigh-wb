@@ -11,20 +11,20 @@ $id = $_SESSION['id'];
 
 if (isset($_POST['supplierCode'])) {
 
-    $supplierId  = empty($_POST["id"])           ? null : trim($_POST["id"]);
+    $supplierId = empty($_POST["id"]) ? null : trim($_POST["id"]);
     $supplierCode = empty($_POST["supplierCode"]) ? null : trim($_POST["supplierCode"]);
     $companyRegNo = empty($_POST["companyRegNo"]) ? null : trim($_POST["companyRegNo"]);
-    $newRegNo     = empty($_POST["newRegNo"])     ? null : trim($_POST["newRegNo"]);
-    $companyName  = empty($_POST["companyName"])  ? null : trim($_POST["companyName"]);
+    $newRegNo = empty($_POST["newRegNo"]) ? null : trim($_POST["newRegNo"]);
+    $companyName = empty($_POST["companyName"]) ? null : trim($_POST["companyName"]);
     $addressLine1 = empty($_POST["addressLine1"]) ? null : trim($_POST["addressLine1"]);
     $addressLine2 = empty($_POST["addressLine2"]) ? null : trim($_POST["addressLine2"]);
     $addressLine3 = empty($_POST["addressLine3"]) ? null : trim($_POST["addressLine3"]);
     $addressLine4 = empty($_POST["addressLine4"]) ? null : trim($_POST["addressLine4"]);
-    $phoneNo      = empty($_POST["phoneNo"])      ? null : trim($_POST["phoneNo"]);
-    $faxNo        = empty($_POST["faxNo"])        ? null : trim($_POST["faxNo"]);
-    $contactName  = empty($_POST["contactName"])  ? null : trim($_POST["contactName"]);
-    $icNo         = empty($_POST["icNo"])         ? null : trim($_POST["icNo"]);
-    $tinNo        = empty($_POST["tinNo"])        ? null : trim($_POST["tinNo"]);
+    $phoneNo = empty($_POST["phoneNo"]) ? null : trim($_POST["phoneNo"]);
+    $faxNo = empty($_POST["faxNo"]) ? null : trim($_POST["faxNo"]);
+    $contactName = empty($_POST["contactName"]) ? null : trim($_POST["contactName"]);
+    $icNo = empty($_POST["icNo"]) ? null : trim($_POST["icNo"]);
+    $tinNo = empty($_POST["tinNo"]) ? null : trim($_POST["tinNo"]);
 
     if (!empty($supplierId)) {
         if ($stmt = $db->prepare("UPDATE Supplier SET supplier_code=?, company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, created_by=?, modified_by=? WHERE id=?")) {

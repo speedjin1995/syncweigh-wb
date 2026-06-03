@@ -14,12 +14,12 @@ if (!empty($data)) {
 
     foreach ($data as $rows) {
         $EmployeeCode = !empty($rows['EmployeeCode']) ? trim($rows['EmployeeCode']) : '';
-        $Username     = !empty($rows['Username'])     ? trim($rows['Username'])     : '';
-        $Name         = !empty($rows['UserName'])     ? trim($rows['UserName'])     : '';
-        $UserEmail    = !empty($rows['UserEmail'])    ? trim($rows['UserEmail'])    : '';
-        $Role         = !empty($rows['Role'])         ? trim($rows['Role'])         : '';
+        $Username = !empty($rows['Username']) ? trim($rows['Username']) : '';
+        $Name = !empty($rows['UserName']) ? trim($rows['UserName']) : '';
+        $UserEmail = !empty($rows['UserEmail']) ? trim($rows['UserEmail']) : '';
+        $Role = !empty($rows['Role']) ? trim($rows['Role']) : '';
         $param_password = password_hash("123456", PASSWORD_DEFAULT);
-        $param_token    = bin2hex(random_bytes(50));
+        $param_token = bin2hex(random_bytes(50));
 
         if ($EmployeeCode != null && $EmployeeCode != '') {
             $check = $db->prepare("SELECT id FROM Users WHERE employee_code = ? AND status = ?");

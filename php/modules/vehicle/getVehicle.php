@@ -3,7 +3,7 @@ session_start();
 require_once '../../db_connect.php';
 
 if (isset($_POST['userID'])) {
-    $id   = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
+    $id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
     $type = empty($_POST["type"]) ? null : trim($_POST["type"]);
 
     if (!empty($type) && $type == 'lookup') {
@@ -31,15 +31,16 @@ if (isset($_POST['userID'])) {
                             $result = $stmt->get_result();
                             $message = array();
                             while ($row = $result->fetch_assoc()) {
-                                $message['id']               = $row['id'];
-                                $message['veh_number']       = $row['veh_number'];
-                                $message['vehicle_weight']   = $row['vehicle_weight'];
+                                $message['id'] = $row['id'];
+                                $message['veh_number'] = $row['veh_number'];
+                                $message['vehicle_weight'] = $row['vehicle_weight'];
                                 $message['transporter_name'] = $row['transporter_name'];
                                 $message['transporter_code'] = $row['transporter_code'];
-                                $message['customer_code']    = $row['customer_code'];
-                                $message['customer_name']    = $row['customer_name'];
-                                $message['supplier_code']    = $row['supplier_code'];
-                                $message['supplier_name']    = $row['supplier_name'];
+                                $message['ex_del'] = $row['ex_del'];
+                                $message['customer_code'] = $row['customer_code'];
+                                $message['customer_name'] = $row['customer_name'];
+                                $message['supplier_code'] = $row['supplier_code'];
+                                $message['supplier_name'] = $row['supplier_name'];
                             }
                             echo json_encode(array("status" => "success", "message" => $message));
                         }
@@ -57,15 +58,16 @@ if (isset($_POST['userID'])) {
                 $result = $stmt->get_result();
                 $message = array();
                 while ($row = $result->fetch_assoc()) {
-                    $message['id']               = $row['id'];
-                    $message['veh_number']       = $row['veh_number'];
-                    $message['vehicle_weight']   = $row['vehicle_weight'];
+                    $message['id'] = $row['id'];
+                    $message['veh_number'] = $row['veh_number'];
+                    $message['vehicle_weight'] = $row['vehicle_weight'];
                     $message['transporter_name'] = $row['transporter_name'];
                     $message['transporter_code'] = $row['transporter_code'];
-                    $message['customer_code']    = $row['customer_code'];
-                    $message['customer_name']    = $row['customer_name'];
-                    $message['supplier_code']    = $row['supplier_code'];
-                    $message['supplier_name']    = $row['supplier_name'];
+                    $message['ex_del'] = $row['ex_del'];
+                    $message['customer_code'] = $row['customer_code'];
+                    $message['customer_name'] = $row['customer_name'];
+                    $message['supplier_code'] = $row['supplier_code'];
+                    $message['supplier_name'] = $row['supplier_name'];
                 }
                 echo json_encode(array("status" => "success", "message" => $message));
             }
@@ -80,15 +82,16 @@ if (isset($_POST['userID'])) {
                 $result = $stmt->get_result();
                 $message = array();
                 while ($row = $result->fetch_assoc()) {
-                    $message['id']               = $row['id'];
-                    $message['veh_number']       = $row['veh_number'];
-                    $message['vehicle_weight']   = $row['vehicle_weight'];
+                    $message['id'] = $row['id'];
+                    $message['veh_number'] = $row['veh_number'];
+                    $message['vehicle_weight'] = $row['vehicle_weight'];
                     $message['transporter_name'] = $row['transporter_name'];
                     $message['transporter_code'] = $row['transporter_code'];
-                    $message['customer_code']    = $row['customer_code'];
-                    $message['customer_name']    = $row['customer_name'];
-                    $message['supplier_code']    = $row['supplier_code'];
-                    $message['supplier_name']    = $row['supplier_name'];
+                    $message['ex_del'] = $row['ex_del'];
+                    $message['customer_code'] = $row['customer_code'];
+                    $message['customer_name'] = $row['customer_name'];
+                    $message['supplier_code'] = $row['supplier_code'];
+                    $message['supplier_name'] = $row['supplier_name'];
                 }
                 echo json_encode(array("status" => "success", "message" => $message));
             }

@@ -11,10 +11,10 @@ $id = $_SESSION['id'];
 
 if (isset($_POST['destinationCode'])) {
 
-    $destinationId   = empty($_POST["id"])              ? null : trim($_POST["id"]);
+    $destinationId = empty($_POST["id"]) ? null : trim($_POST["id"]);
     $destinationCode = empty($_POST["destinationCode"]) ? null : trim($_POST["destinationCode"]);
     $destinationName = empty($_POST["destinationName"]) ? null : trim($_POST["destinationName"]);
-    $description     = empty($_POST["description"])     ? null : trim($_POST["description"]);
+    $description = empty($_POST["description"]) ? null : trim($_POST["description"]);
 
     if (!empty($destinationId)) {
         if ($stmt = $db->prepare("UPDATE Destination SET destination_code=?, name=?, description=?, created_by=?, modified_by=? WHERE id=?")) {
