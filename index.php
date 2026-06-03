@@ -1195,10 +1195,12 @@ else{
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_excel_code'][$language]?>
                                                                 </button>
+                                                                <?php if ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER') { ?>
                                                                 <button type="button" id="multiDeleteLorry" class="btn btn-warning waves-effect waves-light" >
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
+                                                                <?php } ?>
                                                                 <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
@@ -1255,10 +1257,12 @@ else{
                                                                 <h5 class="card-title mb-0 text-white"><?=$languageArray['pending_empty_container_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <?php if ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER') { ?>
                                                                 <button type="button" id="multiDeleteContainer" class="btn btn-warning waves-effect waves-light" >
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
+                                                                <?php } ?>
                                                             </div> 
                                                         </div> 
                                                     </div>
