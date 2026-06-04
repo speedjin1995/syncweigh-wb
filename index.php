@@ -2544,18 +2544,10 @@ else{
             tareOutgoingDatePicker2.clear();
             $('#addModal').find('#nettWeight2').val("");
             $('#addModal').find('#reduceWeight').val("");
-            // $('#addModal').find('#vehicleNo').val(obj.message.final_weight);
             $('#addModal').find('#weightDifference').val("");
             $('#addModal').find('#weightDifferencePerc').val("");
-            // $('#addModal').find('#id').val(obj.message.is_complete);
-            // $('#addModal').find('#vehicleNo').val(obj.message.is_cancel);
-            // $('#addModal').find("#manualWeightNo").prop("checked", true);
-            // $('#addModal').find("#manualWeightYes").prop("checked", false);
             $('#addModal').find('#manualWeightNo').trigger('click');
-            //$('#addModal').find('input[name="manualWeight"]').val("false");
-            //$('#addModal').find('#indicatorId').val("");
             $('#addModal').find('#weighbridge').val("");
-            //$('#addModal').find('#indicatorId2').val("");
             $('#addModal').find('#productDescription').val("");
             $('#addModal').find('#productHigh').val("");
             $('#addModal').find('#productLow').val("");
@@ -3803,16 +3795,16 @@ else{
                 }
         
             returnString += `
+                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
                 <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
-                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
+                <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
             </div>
             <div class="col-6">
                 <p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
                 <p><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
                 <p><strong>WEIGHT TYPE:</strong> ${weightType}</p>
                 <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p>
-                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
-                <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
+                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
                 <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>
             </div>
         </div>
