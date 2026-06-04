@@ -2771,7 +2771,7 @@ else{
             });
 
             if (selectedLorryIds.length > 0 || selectedEmptyContainerIds.length > 0) {
-                if (confirm('Are you sure you want to cancel these items?')) {
+                if (confirm('Are you sure you want to cancel these weighing records?')) {
                     $('#cancelModal').find('#id').val(selectedLorryIds);
                     $('#cancelModal').find('#containerId').val(selectedEmptyContainerIds);
                     $('#cancelModal').find('#isEmptyContainer').val('N');
@@ -2807,7 +2807,7 @@ else{
             });
 
             if (selectedIds.length > 0) {
-                if (confirm('Are you sure you want to cancel these items?')) {
+                if (confirm('Are you sure you want to cancel these weighing records?')) {
                     $('#cancelModal').find('#id').val(selectedIds);
                     $('#cancelModal').find('#isEmptyContainer').val('Y');
                     $('#cancelModal').find('#isMulti').val('Y');
@@ -4219,7 +4219,7 @@ else{
     }
 
     function deactivate(id, isEmptyContainer) {
-        if (confirm('Are you sure you want to cancel this item?')) {
+        if (confirm('Are you sure you want to cancel this weighing record?')) {
             $('#cancelModal').find('#id').val(id);
             $('#cancelModal').find('#isEmptyContainer').val(isEmptyContainer);
             $('#cancelModal').modal('show');
