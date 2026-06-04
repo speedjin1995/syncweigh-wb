@@ -352,7 +352,7 @@ function edit(id){
 
 function deactivate(id){
     $('#spinnerLoading').show();
-    if (confirm('Are you sure you want to cancel this item?')) {
+    if (confirm('Are you sure you want to delete this message resource?')) {
         $.post('php/modules/message/deleteMessage.php', {messageId: id}, function(data){
             var obj = JSON.parse(data);
 
