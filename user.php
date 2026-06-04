@@ -564,7 +564,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             });
 
             if (selectedIds.length > 0) {
-                if (confirm('Are you sure you want to cancel these items?')) {
+                if (confirm('Are you sure you want to delete these users?')) {
                     $.post('php/modules/user/deleteUser.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                         var obj = JSON.parse(data);
                         
@@ -639,7 +639,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
     function deactivate(id){
         $('#spinnerLoading').show();
-        if (confirm('Are you sure you want to cancel this item?')) {
+        if (confirm('Are you sure you want to delete this user?')) {
         $.post('php/modules/user/deleteUser.php', {userID: id}, function(data){
                 var obj = JSON.parse(data);
 
@@ -719,7 +719,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
     }
 
     function reactivate(id) {
-        if (confirm('Do you want to reactivate this item?')) {
+        if (confirm('Do you want to reactivate this user?')) {
             $('#spinnerLoading').show();
             $.post('php/reactivateMasterData.php', {userID: id, type: "User"}, function(data){
                 var obj = JSON.parse(data);

@@ -514,7 +514,7 @@ $(function () {
         });
 
         if (selectedIds.length > 0) {
-            if (confirm('Are you sure you want to cancel these items?')) {
+            if (confirm('Are you sure you want to delete these plants?')) {
                 $.post('php/modules/plant/deletePlant.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
@@ -592,7 +592,7 @@ function edit(id){
 
 function deactivate(id){
     $('#spinnerLoading').show();
-    if (confirm('Are you sure you want to cancel this item?')) {
+    if (confirm('Are you sure you want to delete this plant?')) {
         $.post('php/modules/plant/deletePlant.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
 
@@ -671,7 +671,7 @@ function displayPreview(data) {
 }
 
 function reactivate(id) {
-  if (confirm('Do you want to reactivate this item?')) {
+  if (confirm('Do you want to reactivate this plant?')) {
     $('#spinnerLoading').show();
     $.post('php/reactivateMasterData.php', {userID: id, type: "Plant"}, function(data){
         var obj = JSON.parse(data);

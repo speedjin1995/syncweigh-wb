@@ -605,7 +605,7 @@ $(function () {
         });
 
         if (selectedIds.length > 0) {
-            if (confirm('Are you sure you want to cancel these items?')) {
+            if (confirm('Are you sure you want to delete these customers?')) {
                 $.post('php/modules/customer/deleteCustomer.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
@@ -688,7 +688,7 @@ function edit(id){
 
 function deactivate(id){
     $('#spinnerLoading').show();
-    if (confirm('Are you sure you want to cancel this item?')) {
+    if (confirm('Are you sure you want to delete this customer?')) {
         $.post('php/modules/customer/deleteCustomer.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
             

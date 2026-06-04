@@ -469,7 +469,7 @@ $(function () {
         });
 
         if (selectedIds.length > 0) {
-            if (confirm('Are you sure you want to cancel these items?')) {
+            if (confirm('Are you sure you want to delete these destinations?')) {
                 $.post('php/modules/destination/deleteDestination.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
@@ -543,7 +543,7 @@ function edit(id){
 
 function deactivate(id){
     $('#spinnerLoading').show();
-    if (confirm('Are you sure you want to cancel this item?')) {
+    if (confirm('Are you sure you want to delete this destination?')) {
         $.post('php/modules/destination/deleteDestination.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
 
@@ -624,7 +624,7 @@ function displayPreview(data) {
 }
 
 function reactivate(id) {
-  if (confirm('Do you want to reactivate this item?')) {
+  if (confirm('Do you want to reactivate this destination?')) {
     $('#spinnerLoading').show();
     $.post('php/reactivateMasterData.php', {userID: id, type: "Destination"}, function(data){
         var obj = JSON.parse(data);

@@ -571,7 +571,7 @@ $(function () {
         });
 
         if (selectedIds.length > 0) {
-            if (confirm('Are you sure you want to cancel these items?')) {
+            if (confirm('Are you sure you want to delete these transporters?')) {
                 $.post('php/modules/transporter/deleteTransporter.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
@@ -654,7 +654,7 @@ function edit(id){
 
 function deactivate(id){
     $('#spinnerLoading').show();
-    if (confirm('Are you sure you want to cancel this item?')) {
+    if (confirm('Are you sure you want to delete this transporter?')) {
         $.post('php/modules/transporter/deleteTransporter.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
 
@@ -677,7 +677,7 @@ function deactivate(id){
 }
 
 function reactivate(id) {
-  if (confirm('Do you want to reactivate this item?')) {
+  if (confirm('Do you want to reactivate this transporter?')) {
     $('#spinnerLoading').show();
     $.post('php/reactivateMasterData.php', {userID: id, type: "Transporter"}, function(data){
         var obj = JSON.parse(data);
