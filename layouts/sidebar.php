@@ -117,16 +117,7 @@
                                             </li>
                                             <li class="nav-item">
                                                 <a href="plant.php" class="nav-link">'.$languageArray['plant_code'][$language].'</a>
-                                            </li> 
-                                            <!--li class="nav-item">
-                                                <a href="unit.php" class="nav-link">'.$lang['t-unit'].'</a>
-                                            </li-->                           
-                                            <!--li class="nav-item">
-                                                <a href="agent.php" class="nav-link">'.$lang['t-agent'].'</a>
-                                            </li-->                           
-                                            <!--li class="nav-item">
-                                                <a href="site.php" class="nav-link">'.$lang['t-site'].'</a>
-                                            </li-->    
+                                            </li>
                                         ';
                                     }
                             echo '</ul>

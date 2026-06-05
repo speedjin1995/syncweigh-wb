@@ -2,7 +2,7 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
-    <title>Customer | Synctronix - Weighing System</title>
+    <title><?=$languageArray['customer_code'][$language]?> | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -61,39 +61,6 @@
                             </div>
                             <!--end row-->
 
-                            <!-- <div class="col-xxl-12 col-lg-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <form action="javascript:void(0);">
-                                            <div class="row">
-                                                <div class="col-3">
-                                                    <div class="mb-3">
-                                                        <label for="customerCode" class="form-label">Customer Code</label>
-                                                        <input type="text" class="form-control" placeholder="Customer Code" id="customerCode">
-                                                    </div>
-                                                </div>
-                                                <div class="col-3">
-
-                                                </div>
-                                                <div class="col-3">
-  
-                                                </div>
-                                                <div class="col-3">
-                                                    <div class="text-end mt-4">
-                                                        <button type="submit" class="btn btn-success">
-                                                            <i class="bx bx-search-alt"></i>
-                                                            <?=$languageArray['search_code'][$language]?></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>                                                                        
-                                    </div>
-                                </div>
-                            </div> -->
-                            
-                            <button type="button" hidden id="successBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-                            <button type="button" hidden id="failBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-
                             <div class="row">
                                 <div class="col-xl-3 col-md-6 add-new-weight">
 
@@ -119,7 +86,7 @@
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="customerCode" name="customerCode" placeholder="<?=$languageArray['customer_code_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -137,6 +104,9 @@
                                                                                                     <label for="newRegNo" class="col-sm-4 col-form-label"><?=$languageArray['new_reg_no_code'][$language]?></label>
                                                                                                     <div class="col-sm-8">
                                                                                                         <input type="text" class="form-control" id="newRegNo" name="newRegNo" required>
+                                                                                                        <div class="invalid-feedback">
+                                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
+                                                                                                        </div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -268,7 +238,7 @@
                                         <div class="modal-dialog modal-xl" style="max-width: 50%;">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-gray-dark color-palette">
-                                                    <h4 class="modal-title">Error Log</h4>
+                                                    <h4 class="modal-title"><?=$languageArray['error_log_code'][$language]?></h4>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -362,9 +332,6 @@
     </div>
     <!-- END layout-wrapper -->
 
-
-
-
     <?php include 'layouts/customizer.php'; ?>
 
     <?php include 'layouts/vendor-scripts.php'; ?>
@@ -391,13 +358,16 @@
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
 
-
-
 <script type="text/javascript">
 
 var table;
 
 $(function () {
+    $('#selectAllCheckbox').on('change', function() {
+        var checkboxes = $('#customerTable tbody input[type="checkbox"]');
+        checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
+    });
+    
     // Initialize all Select2 elements in the modal
     $('#addModal .select2').select2({
         allowClear: true,
@@ -424,7 +394,7 @@ $(function () {
         'serverSide': true,
         'serverMethod': 'post',
         'ajax': {
-            'url':'php/loadCustomers.php'
+            'url':'php/modules/customer/loadCustomers.php'
         },
         'columns': [
             {
@@ -470,32 +440,25 @@ $(function () {
             }
         ]       
     });
-
-    $('#selectAllCheckbox').on('change', function() {
-        var checkboxes = $('#customerTable tbody input[type="checkbox"]');
-        checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
-    });
     
     // $.validator.setDefaults({
     //     submitHandler: function() {
     $('#submitCustomer').on('click', function(){
         if($('#customerForm').valid()){
             $('#spinnerLoading').show();
-            $.post('php/customers.php', $('#customerForm').serialize(), function(data){
+            $.post('php/modules/customer/customers.php', $('#customerForm').serialize(), function(data){
                 var obj = JSON.parse(data); 
                 if(obj.status === 'success')
                 {
                     table.ajax.reload();
                     $('#spinnerLoading').hide();
                     $('#addModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
+                    toastr["success"](obj.message, "Success:");
                 }
                 else if(obj.status === 'failed')
                 {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
+                    toastr["error"](obj.message, "Failed:");
                 }
                 else
                 {
@@ -526,7 +489,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/uploadCustomers.php',
+            url: 'php/modules/customer/uploadCustomers.php',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -535,21 +498,16 @@ $(function () {
                 if (obj.status === 'success') {
                     $('#spinnerLoading').hide();
                     $('#uploadModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
+                    toastr["success"](obj.message, "Success:");
                     $('#customerTable').DataTable().ajax.reload(null, false);
                 } 
                 else if (obj.status === 'failed') {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
+                    toastr["error"](obj.message, "Failed:");
                 } 
                 else if (obj.status === 'error') {
                     $('#spinnerLoading').hide();
                     $('#uploadModal').modal('hide');
-                    // alert(obj.message);
-                    // $("#failBtn").attr('data-toast-text', obj.message );
-                    // $("#failBtn").click();
                     $('#customerTable').DataTable().ajax.reload(null, false);
                     $('#errorModal').find('#errorList').empty();
                     var errorMessage = obj.message;
@@ -560,8 +518,7 @@ $(function () {
                 } 
                 else {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', 'Failed to save');
-                    $("#failBtn").click();
+                    toastr["error"]("Failed to save", "Failed:");
                 }
             }
         });
@@ -604,6 +561,8 @@ $(function () {
     });
 
     $('#uploadExcel').on('click', function(){
+        $('#previewTable').html('');
+        $('#fileInput').val('');
         $('#uploadModal').modal('show');
 
         $('#uploadForm').validate({
@@ -646,8 +605,8 @@ $(function () {
         });
 
         if (selectedIds.length > 0) {
-            if (confirm('Are you sure you want to cancel these items?')) {
-                $.post('php/deleteCustomer.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+            if (confirm('Are you sure you want to delete these customers?')) {
+                $.post('php/modules/customer/deleteCustomer.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -678,7 +637,7 @@ $(function () {
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/getCustomer.php', {userID: id}, function(data)
+    $.post('php/modules/customer/getCustomer.php', {userID: id}, function(data)
     {
         var obj = JSON.parse(data);
         if(obj.status === 'success'){
@@ -700,16 +659,28 @@ function edit(id){
             $('#addModal .is-invalid').removeClass('is-invalid');
 
             $('#addModal').modal('show');
+
+            $('#customerForm').validate({
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         else{
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         $('#spinnerLoading').hide();
     });
@@ -717,25 +688,22 @@ function edit(id){
 
 function deactivate(id){
     $('#spinnerLoading').show();
-    if (confirm('Are you sure you want to cancel this item?')) {
-        $.post('php/deleteCustomer.php', {userID: id}, function(data){
+    if (confirm('Are you sure you want to delete this customer?')) {
+        $.post('php/modules/customer/deleteCustomer.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
             
             if(obj.status === 'success'){
                 table.ajax.reload();
                 $('#spinnerLoading').hide();
-                $("#successBtn").attr('data-toast-text', obj.message);
-                $("#successBtn").click();
+                toastr["success"](obj.message, "Success:");
             }
             else if(obj.status === 'failed'){
                 $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
             else{
                 $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
         });
     }
@@ -807,18 +775,15 @@ function reactivate(id) {
         if(obj.status === 'success'){
             table.ajax.reload();
             $('#spinnerLoading').hide();
-            $("#successBtn").attr('data-toast-text', obj.message);
-            $("#successBtn").click();
+            toastr["success"](obj.message, "Success:");
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         else{
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
 
         $('#spinnerLoading').hide();
@@ -827,20 +792,6 @@ function reactivate(id) {
 
   $('#spinnerLoading').hide();
 }
-
-$('#customerForm').validate({
-    errorElement: 'span',
-    errorPlacement: function (error, element) {
-      error.addClass('invalid-feedback');
-      element.closest('.form-group').append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass('is-invalid');
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass('is-invalid');
-    }
-  });
 </script>
     </body>
 

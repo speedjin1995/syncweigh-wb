@@ -64,13 +64,10 @@ $transporter = $db->query("SELECT * FROM Transporter WHERE status = '0' ORDER BY
 $destination = $db->query("SELECT * FROM Destination WHERE status = '0' ORDER BY name ASC");
 $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
-$unit = $db->query("SELECT * FROM Unit WHERE status = '0' ORDER BY unit ASC");
 $purchaseOrder = $db->query("SELECT * FROM Purchase_Order WHERE status = 'Open' AND deleted = '0' ORDER BY po_no ASC");
 $salesOrder = $db->query("SELECT * FROM Sales_Order WHERE status = 'Open' AND deleted = '0' ORDER BY order_no ASC");
-$agent = $db->query("SELECT * FROM Agents WHERE status = '0' ORDER BY name ASC");
 $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
-$site = $db->query("SELECT * FROM Site WHERE status = '0' ORDER BY name ASC");
 $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
@@ -233,9 +230,9 @@ else{
                                                             <select id="invoiceNoSearch" class="form-select select2"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
-                                                                <!-- <option value="Container">Primer Mover</option>
+                                                                <option value="Container">Primer Mover</option>
                                                                 <option value="Empty Container">Primer Mover + Container</option>
-                                                                <option value="Different Container">Primer Mover + Different Bins</option> -->
+                                                                <option value="Different Container">Primer Mover + Different Bins</option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -528,7 +525,7 @@ else{
                                                                                 <div class="row">
                                                                                     <label for="transactionDate" class="col-sm-4 col-form-label"><?=$languageArray['transaction_date_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="date" class="form-control" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
+                                                                                        <input type="date" class="form-control input-readonly" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
                                                                                         </div>    
@@ -555,9 +552,9 @@ else{
                                                                                     <div class="col-sm-8">
                                                                                         <select id="weightType" name="weightType" class="form-select select2">
                                                                                             <option value="Normal" selected><?=$languageArray['normal_weighing_code'][$language]?></option>
-                                                                                            <!-- <option value="Container">Primer Mover</option>
+                                                                                            <option value="Container">Primer Mover</option>
                                                                                             <option value="Empty Container">Primer Mover + Container</option>
-                                                                                            <option value="Different Container">Primer Mover + Different Bins</option> -->
+                                                                                            <option value="Different Container">Primer Mover + Different Bins</option>
                                                                                         </select>   
                                                                                     </div>
                                                                                 </div>
@@ -688,7 +685,6 @@ else{
                                                                                             <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
                                                                                                 <option 
                                                                                                     value="<?=$rowProduct['name'] ?>" 
-                                                                                                    data-price="<?=$rowProduct['price'] ?>" 
                                                                                                     data-code="<?=$rowProduct['product_code'] ?>" 
                                                                                                     data-high="<?=$rowProduct['high'] ?>" 
                                                                                                     data-low="<?=$rowProduct['low'] ?>" 
@@ -795,7 +791,7 @@ else{
                                                                             </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="replacementContainerDisplay" style="display:none">
                                                                                 <div class="row">
-                                                                                    <label for="replacementContainer" class="col-sm-4 col-form-label"><?=$languageArray['new_empty_entrance_bin_code'][$language]?>New Empty Entrance Bin</label>
+                                                                                    <label for="replacementContainer" class="col-sm-4 col-form-label"><?=$languageArray['new_empty_bin_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="replacementContainer" name="replacementContainer" placeholder="Replacement Container" required>
                                                                                     </div>
@@ -812,35 +808,6 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row col-12" style="display:none;" id="productCard">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
-                                                                                <button type="button" class="btn btn-success add-product" id="addProduct"><?=$languageArray['add_product_code'][$language]?></button>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <table class="table table-primary" style="text-align: center;">
-                                                                                <thead>
-                                                                                    <tr>
-                                                                                        <th width="5%"><?=$languageArray['number_code'][$language]?></th>
-                                                                                        <th><?=$languageArray['product_code'][$language]?></th>
-                                                                                        <th><?=$languageArray['packing_code'][$language]?></th>
-                                                                                        <th><?=$languageArray['gross_weight_code'][$language]?></th>
-                                                                                        <th><?=$languageArray['tare_weight_code'][$language]?></th>
-                                                                                        <th><?=$languageArray['nett_weight_code'][$language]?></th>
-                                                                                        <th><?=$languageArray['action_code'][$language]?></th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody id="productTable"></tbody>
-                                                                            </table>                                            
-                                                                        </div><!-- end row -->     
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -872,12 +839,6 @@ else{
                                                                                         Please fill in the field.
                                                                                     </div-->
                                                                                 </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3" id="noOfDrumDisplay" style="display:none;">
-                                                                            <label for="noOfDrum" class="col-sm-4 col-form-label"><?=$languageArray['no_of_drum_code'][$language]?></label>
-                                                                            <div class="col-sm-8">
-                                                                                <input type="number" class="form-control" id="noOfDrum" name="noOfDrum">
                                                                             </div>
                                                                         </div>
                                                                         <div class="row mb-3">
@@ -1051,12 +1012,6 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="row mb-3">
-                                                                            <label for="grossIncomingDate2" class="col-sm-4 col-form-label"><?=$languageArray['incoming_date_code'][$language]?></label>
-                                                                            <div class="col-sm-8">
-                                                                                <input type="text" class="form-control input-readonly" id="grossIncomingDate2" name="grossIncomingDate2">
-                                                                            </div>
-                                                                        </div>
                                                                         <div class="row mb-3" id="totalPriceDisplay">
                                                                             <label for="totalPrice" class="col-sm-4 col-form-label"><?=$languageArray['total_price_code'][$language]?></label>
                                                                             <div class="col-sm-8">
@@ -1082,19 +1037,6 @@ else{
                                                         <!-- All Hidden Fields -->
                                                         <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                             <div class="row">
-                                                                <label for="agent" class="col-sm-4 col-form-label"><?=$languageArray['sales_representative_code'][$language]?></label>
-                                                                <div class="col-sm-8">
-                                                                    <select class="form-select select2" id="agent" name="agent" >
-                                                                        <option selected="-">-</option>
-                                                                        <?php while($rowAgent=mysqli_fetch_assoc($agent)){ ?>
-                                                                            <option value="<?=$rowAgent['name'] ?>" data-code="<?=$rowAgent['agent_code'] ?>"><?=$rowAgent['name'] ?></option>
-                                                                        <?php } ?>
-                                                                    </select> 
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
-                                                            <div class="row">
                                                                 <label for="customerType" class="col-sm-4 col-form-label">Customer Type</label>
                                                                 <div class="col-sm-8">
                                                                     <select id="customerType" name="customerType" class="form-select select2">
@@ -1112,59 +1054,6 @@ else{
                                                                         <input type="number" class="form-control input-readonly" id="poSupplyWeight" name="poSupplyWeight" placeholder="P/O Supply Weight" readonly>
                                                                         <div class="input-group-text">Kg</div>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                        </div> 
-                                                        <div class="col-xxl-4 col-lg-4 mb-3"  style="display:none;">
-                                                            <div class="row">
-                                                                <label for="exDel" class="col-sm-4 col-form-label">Ex-Quarry/Delivered</label>
-                                                                <div class="col-sm-8">
-                                                                    <div class="form-check align-radio mr-2">
-                                                                        <input class="form-check-input radio-manual-weight" type="radio" name="exDel" id="manualEx" value="true">
-                                                                        <label class="form-check-label" for="manualEx">
-                                                                        Ex-Quarry
-                                                                        </label>
-                                                                    </div>
-
-                                                                    <div class="form-check align-radio">
-                                                                        <input class="form-check-input radio-manual-weight" type="radio" name="exDel" id="manualDel" value="false" checked>
-                                                                        <label class="form-check-label" for="manualDel">
-                                                                        Delivered
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
-                                                            <div class="row">
-                                                                <label for="loadDrum" class="col-sm-4 col-form-label">By-Load/By-Drum</label>
-                                                                <div class="col-sm-8">
-                                                                    <div class="form-check align-radio mr-2">
-                                                                        <input class="form-check-input radio-manual-weight" type="radio" name="loadDrum" id="manualLoad" value="true" checked>
-                                                                        <label class="form-check-label" for="manualLoad">
-                                                                        By-Load
-                                                                        </label>
-                                                                    </div>
-
-                                                                    <div class="form-check align-radio">
-                                                                        <input class="form-check-input radio-manual-weight" type="radio" name="loadDrum" id="manualDrum" value="false">
-                                                                        <label class="form-check-label" for="manualDrum">
-                                                                        By-Drum
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
-                                                            <div class="row">
-                                                                <label for="siteName" class="col-sm-4 col-form-label">Project</label>
-                                                                <div class="col-sm-8">
-                                                                    <select class="form-select select2" id="siteName" name="siteName">
-                                                                        <option selected="-">-</option>
-                                                                        <?php while($rowSite=mysqli_fetch_assoc($site)){ ?>
-                                                                            <option value="<?=$rowSite['name'] ?>" data-code="<?=$rowSite['site_code'] ?>"><?=$rowSite['name'] ?></option>
-                                                                        <?php } ?>
-                                                                    </select>        
                                                                 </div>
                                                             </div>
                                                         </div> 
@@ -1191,23 +1080,19 @@ else{
                                                             </div>
                                                         </div>
                                                         
-                                                        <input type="hidden" id="bypassReason" name="bypassReason">
                                                         <input type="hidden" id="finalWeight" name="finalWeight">
                                                         <input type="hidden" id="customerCode" name="customerCode">
                                                         <input type="hidden" id="destinationCode" name="destinationCode">
                                                         <input type="hidden" id="plantCode" name="plantCode">
-                                                        <input type="hidden" id="agentCode" name="agentCode">
                                                         <input type="hidden" id="status" name="status">
                                                         <input type="hidden" id="productCode" name="productCode">
                                                         <input type="hidden" id="productDescription" name="productDescription">
-                                                        <input type="hidden" id="productPrice" name="productPrice">
                                                         <input type="hidden" id="productHigh" name="productHigh">
                                                         <input type="hidden" id="productLow" name="productLow">
                                                         <input type="hidden" id="productVariance" name="productVariance">
                                                         <input type="hidden" id="transporterCode" name="transporterCode">
                                                         <input type="hidden" id="supplierCode" name="supplierCode">
                                                         <input type="hidden" id="rawMaterialCode" name="rawMaterialCode">
-                                                        <input type="hidden" id="siteCode" name="siteCode">
                                                         <input type="hidden" id="id" name="id">  
                                                         <input type="hidden" id="weighbridge" name="weighbridge" value="Weigh1">
                                                         <input type="hidden" id="previousRecordsTag" name="previousRecordsTag">
@@ -1220,106 +1105,6 @@ else{
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
                                     </div><!-- /.modal -->
-
-                                    <div class="modal fade" id="bypassModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
-                                            <div class="modal-content">
-                                                <form role="form" id="bypassForm" class="needs-validation" novalidate autocomplete="off">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalScrollableTitle">Key in reasons</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="row mb-12">
-                                                            <label for="nettWeight" class="col-sm-4 col-form-label">Password</label>
-                                                            <div class="col-sm-8">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control" id="passcode" name="passcode" placeholder="0" required>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row col-xxl-12 col-lg-12 mb-12">
-                                                            <div class="row">
-                                                                <label for="reason" class="col-sm-2 col-form-label">Reasons *</label>
-                                                                <div class="col-sm-10">
-                                                                    <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Reasons" required></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitBypass"><?=$languageArray['submit_code'][$language]?></button>
-                                                            </div>
-                                                        </div><!--end col-->   
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal fade" id="approvalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
-                                            <div class="modal-content">
-                                                <form role="form" id="approvalForm" class="needs-validation" novalidate autocomplete="off">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalScrollableTitle">Key in reasons</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <input type="hidden" id="id" name="id"/>
-                                                        <div class="row  col-xxl-12 col-lg-12 mb-1">
-                                                            <div class="row">
-                                                                <label for="statusA" class="col-sm-2 col-form-label">Approve?</label>
-                                                                <div class="col-sm-8">
-                                                                    <select class="form-select" id="statusA" name="statusA" required>
-                                                                        <option value="Y">Approve</option>
-                                                                        <option value="N">Reject</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row col-xxl-12 col-lg-12 mb-12">
-                                                            <div class="row">
-                                                                <label for="reasons" class="col-sm-2 col-form-label">Reasons *</label>
-                                                                <div class="col-sm-10">
-                                                                    <textarea class="form-control" id="reasons" name="reasons" rows="3" placeholder="Reasons" required></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitApproval"><?=$languageArray['submit_code'][$language]?></button>
-                                                            </div>
-                                                        </div><!--end col-->   
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal fade" id="uploadModal">
-                                        <div class="modal-dialog modal-xl" style="max-width: 90%;">
-                                            <div class="modal-content">
-                                                <form role="form" id="uploadForm">
-                                                    <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title"><?=$languageArray['upload_excel_code'][$language]?></h4>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <input type="file" id="fileInput">
-                                                        <button type="button" id="previewButton"><?=$languageArray['preview_data_code'][$language]?></button>
-                                                        <div id="previewTable" style="overflow: auto;"></div>
-                                                    </div>
-                                                    <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                        <button type="button" class="btn btn-success" id="submitWeights"><?=$languageArray['submit_code'][$language]?></button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div class="modal fade" id="prePrintModal">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
@@ -1386,28 +1171,6 @@ else{
                                             </div>
                                         </div>
                                     </div>
-                                    <!--div class="modal fade" id="uploadModal" role="dialog" aria-labelledby="importModalScrollableTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
-                                            <div class="modal-content">
-                                                <form role="form" id="uploadForm" class="needs-validation" novalidate autocomplete="off">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="importModalScrollableTitle"><?=$languageArray['upload_excel_code'][$language]?></h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <input type="file" id="fileInput">
-                                                        <button type="button" id="previewButton"><?=$languageArray['preview_data_code'][$language]?></button>
-                                                        <div id="previewTable" style="overflow: auto;"></div>
-                                                    </div> 
-
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                        <button type="button" class="btn btn-success" id="saveButton"><?=$languageArray['submit_code'][$language]?></button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div-->
                                 </div>
                             </div> <!-- end row-->
 
@@ -1432,20 +1195,12 @@ else{
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_excel_code'][$language]?>
                                                                 </button>
+                                                                <?php if ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER') { ?>
                                                                 <button type="button" id="multiDeleteLorry" class="btn btn-warning waves-effect waves-light" >
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
-                                                                <!--a href="/template/Weight_Template.xlsx" download>
-                                                                    <button type="button" class="btn btn-info waves-effect waves-light">
-                                                                        <i class="mdi mdi-file-import-outline align-middle me-1"></i>
-                                                                        <?=$languageArray['download_template_code'][$language]?>
-                                                                    </button>
-                                                                </a>
-                                                                <button type="button" id="uploadExccl" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal">
-                                                                    <i class="mdi mdi-file-excel align-middle me-1"></i>
-                                                                    Import Orders
-                                                                </button-->
+                                                                <?php } ?>
                                                                 <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
@@ -1502,24 +1257,12 @@ else{
                                                                 <h5 class="card-title mb-0 text-white"><?=$languageArray['pending_empty_container_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <!--a href="/template/Weight_Template.xlsx" download>
-                                                                    <button type="button" class="btn btn-info waves-effect waves-light">
-                                                                        <i class="mdi mdi-file-import-outline align-middle me-1"></i>
-                                                                        <?=$languageArray['download_template_code'][$language]?>
-                                                                    </button>
-                                                                </a>
-                                                                <button type="button" id="uploadExccl" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal">
-                                                                    <i class="mdi mdi-file-excel align-middle me-1"></i>
-                                                                    Import Orders
-                                                                </button-->
-                                                                <!-- <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
-                                                                    <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                    <?=$languageArray['add_new_code'][$language]?>
-                                                                </button> -->
+                                                                <?php if ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER') { ?>
                                                                 <button type="button" id="multiDeleteContainer" class="btn btn-warning waves-effect waves-light" >
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
+                                                                <?php } ?>
                                                             </div> 
                                                         </div> 
                                                     </div>
@@ -1648,34 +1391,6 @@ else{
 
     </div>
 
-    <script type="text/html" id="productDetail">
-        <tr class="details">
-            <td>
-                <input type="text" class="form-control" id="no" name="no" readonly>
-                <input type="text" class="form-control" id="weightProductId" name="weightProductId" hidden>
-            </td>
-            <td>
-                <input type="text" class="form-control" id="product" name="product" style="background-color:white;" required>
-            </td>
-            <td>
-                <input type="text" class="form-control" id="productPacking" name="productPacking" style="background-color:white;" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="productGross" name="productGross" style="background-color:white;" value="0" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="productTare" name="productTare" style="background-color:white;" value="0" required>
-            </td>
-            <td>
-                <input type="number" class="form-control" id="productNett" name="productNett" style="background-color:white;" value="0" readonly required>
-            </td>
-            <td class="d-flex" style="text-align:center">
-                <button class="btn btn-danger" id="remove" style="background-color: #f06548;">
-                    <i class="fa fa-times"></i>
-                </button>
-            </td>
-        </tr>
-    </script>
     <!-- END layout-wrapper -->
 
     <?php include 'layouts/customizer.php'; ?>
@@ -1716,7 +1431,6 @@ else{
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
-    var rowCount = $("#productTable").find(".details").length;
 
     $(function () {
         var userRole = '<?=$role ?>';
@@ -1777,7 +1491,9 @@ else{
 
         $('#transactionDate').flatpickr({
             dateFormat: "d-m-Y",
-            defaultDate: ''
+            defaultDate: '',
+            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
         });
 
         grossIncomingDatePicker = $('#grossIncomingDate').flatpickr({
@@ -1787,7 +1503,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
+            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
         });
 
         tareOutgoingDatePicker = $('#tareOutgoingDate').flatpickr({
@@ -1797,7 +1514,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
+            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
         });
 
         grossIncomingDatePicker2 = $('#grossIncomingDate2').flatpickr({
@@ -1807,7 +1525,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
+            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
         });
 
         tareOutgoingDatePicker2 = $('#tareOutgoingDate2').flatpickr({
@@ -1817,7 +1536,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: true,
+            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
         });
 
         // Clear All Filter Function
@@ -2001,22 +1721,11 @@ else{
                             }
                         }
 
-                        if (row.is_approved == 'Y') {
-                            if (row.weight_type != 'Primer Mover + Container'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                        <i class="fas fa-print"></i>
-                                    </button>
-                                </div>`;
-                            }
-                        }
-
-                        if (row.is_approved == 'N') {
+                        if (row.weight_type != 'Primer Mover + Container'){
                             buttons += `
                             <div class="col-auto">
-                                <button title="Approve" type="button" id="approve${data}" onclick="approve(${data})" class="btn btn-success btn-sm">
-                                    <i class="fa-solid fa-check"></i>
+                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                    <i class="fas fa-print"></i>
                                 </button>
                             </div>`;
                         }
@@ -2042,27 +1751,6 @@ else{
                         buttons += `</div>`;
 
                         return buttons;
-
-                        // let dropdownMenu = '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">';
-
-                        // if (row.is_complete != 'Y' || userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                        //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>'; 
-                        // }
-
-                        // if (row.is_approved == 'Y') {
-                        //     dropdownMenu += '<li><a class="dropdown-item print-item-btn" id="print' + data + '" onclick="print(' + data + ')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li>';
-                        // }
-
-                        // if (row.is_approved == 'N') {
-                        //     dropdownMenu += '<li><a class="dropdown-item approval-item-btn" id="approve' + data + '" onclick="approve(' + data + ')"><i class="ri-check-fill align-bottom me-2 text-muted"></i> Approval</a></li>';
-                        // }
-
-                        // if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                        //     dropdownMenu += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>';
-                        // }
-
-                        // dropdownMenu += '</ul></div>';
-                        // return dropdownMenu;
                     }
                 }
             ],
@@ -2319,58 +2007,6 @@ else{
                     }
                 });
             }
-            /*else{
-                let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
-                if (userChoice) {
-                    $('#addModal').find('#status').val("pending");
-                    $('#spinnerLoading').show();
-                    $.post('php/weight.php', $('#weightForm').serialize(), function(data){
-                        var obj = JSON.parse(data); 
-                        if(obj.status === 'success'){
-                            <?php
-                                if(isset($_GET['weight'])){
-                                    echo "window.location = 'index.php';";
-                                }
-                            ?>
-                            table.ajax.reload();
-                            window.location = 'index.php';
-                            $('#spinnerLoading').hide();
-                            $('#addModal').modal('hide');
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-                        }
-                        else if(obj.status === 'failed'){
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', obj.message );
-                            $("#failBtn").click();
-                        }
-                        else{
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', 'Failed to save');
-                            $("#failBtn").click();
-                        }
-                    });
-                } 
-                else {
-                    $('#bypassModal').find('#passcode').val("");
-                    $('#bypassModal').find('#reason').val("");
-                    $('#bypassModal').modal('show');
-            
-                    $('#bypassForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }*/
         });
 
         $('#submitWeightPrint').on('click', function(){
@@ -2457,50 +2093,6 @@ else{
                                 $(element).removeClass('is-invalid');
                             }
                         });
-
-                        /*$.post('php/print.php', {userID: obj.id, file: 'weight', isEmptyContainer: isEmptyContainer}, function(data){
-                            var obj2 = JSON.parse(data);
-
-                            if(obj2.status === 'success'){
-                                var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                printWindow.document.write(obj2.message);
-                                printWindow.document.close();
-                                setTimeout(function(){
-                                    printWindow.print();
-                                    printWindow.close();
-                                    table.ajax.reload();
-                                    window.location = 'index.php';
-                                    
-                                    /*setTimeout(function () {
-                                        if (confirm("Do you need to reprint?")) {
-                                            $.post('php/print.php', { userID: obj.id, file: 'weight' }, function (data) {
-                                                var obj = JSON.parse(data);
-                                                if (obj.status === 'success') {
-                                                    var reprintWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                                                    reprintWindow.document.write(obj.message);
-                                                    reprintWindow.document.close();
-                                                    setTimeout(function () {
-                                                        reprintWindow.print();
-                                                        reprintWindow.close();
-                                                    }, 500);
-                                                } 
-                                                else {
-                                                    window.location = 'index.php';
-                                                }
-                                            });
-                                        }
-                                    }, 500);
-                                }, 500);
-                            }
-                            else if(obj.status === 'failed'){
-                                $("#failBtn").attr('data-toast-text', obj.message );
-                                $("#failBtn").click();
-                            }
-                            else{
-                                $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                                $("#failBtn").click();
-                            }
-                        });*/
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -2514,170 +2106,6 @@ else{
                     }
                 });
             }
-            /*else{
-                let userChoice = confirm('The final value is out of the acceptable range. Do you want to send for approval (OK) or bypass (Cancel)?');
-                if (userChoice) {
-                    $('#addModal').find('#status').val("pending");
-                    $('#spinnerLoading').show();
-                    $.post('php/weight.php', $('#weightForm').serialize(), function(data){
-                        var obj = JSON.parse(data); 
-                        if(obj.status === 'success'){
-                            <?php
-                                if(isset($_GET['weight'])){
-                                    echo "window.location = 'index.php';";
-                                }
-                            ?>
-                            table.ajax.reload();
-                            window.location = 'index.php';
-                            $('#spinnerLoading').hide();
-                            $('#addModal').modal('hide');
-                            $("#successBtn").attr('data-toast-text', obj.message);
-                            $("#successBtn").click();
-                        }
-                        else if(obj.status === 'failed'){
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', obj.message );
-                            $("#failBtn").click();
-                        }
-                        else{
-                            $('#spinnerLoading').hide();
-                            $("#failBtn").attr('data-toast-text', 'Failed to save');
-                            $("#failBtn").click();
-                        }
-                    });
-                } 
-                else {
-                    $('#bypassModal').find('#passcode').val("");
-                    $('#bypassModal').find('#reason').val("");
-                    $('#bypassModal').modal('show');
-            
-                    $('#bypassForm').validate({
-                        errorElement: 'span',
-                        errorPlacement: function (error, element) {
-                            error.addClass('invalid-feedback');
-                            element.closest('.form-group').append(error);
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass('is-invalid');
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).removeClass('is-invalid');
-                        }
-                    });
-                }
-            }*/
-        });
-
-        $('#submitBypass').on('click', function(){
-            if($('#bypassForm').valid()){
-                $('#addModal').find('#bypassReason').val($('#bypassModal').find('#reason').val());
-                $('#spinnerLoading').show();
-                $.post('php/weight.php', $('#weightForm').serialize(), function(data){
-                    var obj = JSON.parse(data); 
-                    if(obj.status === 'success'){
-                        <?php
-                            if(isset($_GET['weight'])){
-                                echo "window.location = 'index.php';";
-                            }
-                        ?>
-                        table.ajax.reload();
-                        window.location = 'index.php';
-                        $('#spinnerLoading').hide();
-                        $('#addModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
-                        $("#failBtn").click();
-                    }
-                });
-            }
-        });
-
-        $('#submitApproval').on('click', function(){
-            if($('#approvalForm').valid()){
-                $('#spinnerLoading').show();
-                $.post('php/updateApproval.php', $('#approvalForm').serialize(), function(data){
-                    var obj = JSON.parse(data); 
-                    if(obj.status === 'success'){
-                        <?php
-                            if(isset($_GET['approve'])){
-                                echo "window.location = 'index.php';";
-                            }
-                        ?>
-                        table.ajax.reload();
-                        window.location = 'index.php';
-                        $('#spinnerLoading').hide();
-                        $('#approvalModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
-                        $("#failBtn").click();
-                    }
-                });
-            }
-        });
-
-        $('#submitWeights').on('click', function(){
-            $('#spinnerLoading').show();
-            var formData = $('#uploadForm').serializeArray();
-            var data = [];
-            var rowIndex = -1;
-            formData.forEach(function(field) {
-            var match = field.name.match(/([a-zA-Z0-9]+)\[(\d+)\]/);
-            if (match) {
-                var fieldName = match[1];
-                var index = parseInt(match[2], 10);
-                if (index !== rowIndex) {
-                rowIndex = index;
-                data.push({});
-                }
-                data[index][fieldName] = field.value;
-            }
-            });
-
-            // Send the JSON array to the server
-            $.ajax({
-                url: 'php/uploadWeights.php',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function(response) {
-                    var obj = JSON.parse(response);
-                    if (obj.status === 'success') {
-                        $('#spinnerLoading').hide();
-                        $('#uploadModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
-                        $('#customerTable').DataTable().ajax.reload(null, false);
-                    } 
-                    else if (obj.status === 'failed') {
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    } 
-                    else {
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
-                        $("#failBtn").click();
-                    }
-                }
-            });
         });
 
         $('#submitPrePrint').on('click', function(){
@@ -2937,22 +2365,11 @@ else{
                                 }
                             }
 
-                            if (row.is_approved == 'Y') {
-                                if (row.weight_type != 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                            <i class="fas fa-print"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                            }
-
-                            if (row.is_approved == 'N') {
+                            if (row.weight_type != 'Primer Mover + Container'){
                                 buttons += `
                                 <div class="col-auto">
-                                    <button title="Approve" type="button" id="approve${data}" onclick="approve(${data})" class="btn btn-success btn-sm">
-                                        <i class="fa-solid fa-check"></i>
+                                    <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                        <i class="fas fa-print"></i>
                                     </button>
                                 </div>`;
                             }
@@ -2978,26 +2395,6 @@ else{
                             buttons += `</div>`;
 
                             return buttons;
-                            // let dropdownMenu = '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">';
-
-                            // if (row.is_complete != 'Y' || userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') {
-                            //     dropdownMenu += '<li><a class="dropdown-item edit-item-btn" id="edit' + data + '" onclick="edit(' + data + ')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>'; 
-                            // }
-
-                            // if (row.is_approved == 'Y') {
-                            //     dropdownMenu += '<li><a class="dropdown-item print-item-btn" id="print' + data + '" onclick="print(' + data + ')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li>';
-                            // }
-
-                            // if (row.is_approved == 'N') {
-                            //     dropdownMenu += '<li><a class="dropdown-item approval-item-btn" id="approve' + data + '" onclick="approve(' + data + ')"><i class="ri-check-fill align-bottom me-2 text-muted"></i> Approval</a></li>';
-                            // }
-
-                            // if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                            //     dropdownMenu += '<li><a class="dropdown-item remove-item-btn" id="deactivate' + data + '" onclick="deactivate(' + data + ')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>';
-                            // }
-
-                            // dropdownMenu += '</ul></div>';
-                            // return dropdownMenu;
                         }
                     }
                 ],
@@ -3109,18 +2506,14 @@ else{
             $('#addModal').find('#vehiclePlateNo1').val("").trigger('change');
             $('#addModal').find('#vehiclePlateNo2').val("").trigger('change');
             $('#addModal').find('#supplierWeight').val("");
-            $('#addModal').find('#bypassReason').val("");
             $('#addModal').find('#customerCode').val("");
             $('#addModal').find('#customerName').val("-").trigger('change');
             $('#addModal').find('#supplierCode').val("");
             $('#addModal').find('#supplierName').val("-").trigger('change');
             $('#addModal').find('#productCode').val("");
             $('#addModal').find('#productName').val("-").trigger('change');
-            $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true).trigger('change');
             $('#addModal').find('#rawMaterialCode').val("");
             $('#addModal').find('#rawMaterialName').val("-").trigger('change');
-            $('#addModal').find('#siteCode').val("");
-            $('#addModal').find('#siteName').val("").trigger('change');
             $('#addModal').find('#plantCode').val("");
             $('#addModal').find('#sealNo').val("");
             $('#addModal').find('#invoiceNo').val("");
@@ -3130,8 +2523,6 @@ else{
             $('#addModal').find('#transporterCode').val("");
             $('#addModal').find('#transporter').val("-").trigger('change');
             $('#addModal').find('#destinationCode').val("");
-            $('#addModal').find('#agent').val("").trigger('change');
-            $('#addModal').find('#agentCode').val("");
             $('#addModal').find('#plantCode').val("");
             $('#addModal').find('#plant').val("<?=$plantName ?>").trigger('change');
             $('#addModal').find('#destination').val("-").trigger('change');
@@ -3153,18 +2544,10 @@ else{
             tareOutgoingDatePicker2.clear();
             $('#addModal').find('#nettWeight2').val("");
             $('#addModal').find('#reduceWeight').val("");
-            // $('#addModal').find('#vehicleNo').val(obj.message.final_weight);
             $('#addModal').find('#weightDifference').val("");
             $('#addModal').find('#weightDifferencePerc').val("");
-            // $('#addModal').find('#id').val(obj.message.is_complete);
-            // $('#addModal').find('#vehicleNo').val(obj.message.is_cancel);
-            // $('#addModal').find("#manualWeightNo").prop("checked", true);
-            // $('#addModal').find("#manualWeightYes").prop("checked", false);
             $('#addModal').find('#manualWeightNo').trigger('click');
-            //$('#addModal').find('input[name="manualWeight"]').val("false");
-            //$('#addModal').find('#indicatorId').val("");
             $('#addModal').find('#weighbridge').val("");
-            //$('#addModal').find('#indicatorId2').val("");
             $('#addModal').find('#productDescription').val("");
             $('#addModal').find('#productHigh').val("");
             $('#addModal').find('#productLow').val("");
@@ -3173,11 +2556,8 @@ else{
             $('#addModal').find('#unitPrice').val("0.00");
             $('#addModal').find('#subTotalPrice').val("0.00");
             $('#addModal').find('#sstPrice').val("0.00");
-            $('#addModal').find('#productPrice').val("0.00");
             $('#addModal').find('#totalPrice').val("0.00");
             $('#addModal').find('#finalWeight').val("");
-            $('#addModal').find("input[name='loadDrum'][value='true']").prop("checked", true).trigger('change');
-            $('#addModal').find('#noOfDrum').val("");
             $('#addModal').find('#balance').val("");
             $('#addModal').find('#insufficientBalDisplay').hide();
             $('#addModal').find('#containerNoInput').val("");
@@ -3189,9 +2569,6 @@ else{
             $('#addModal').find('#salesOrderEdit').val("").hide();
             $('#addModal').find('#purchaseOrderEdit').val("").hide();
             $('#addModal').find('#salesOrder').next('.select2-container').show();
-
-            $('#addModal').find('#productTable').html('');
-            rowCount = 0;
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -3219,38 +2596,6 @@ else{
                     $(element).removeClass('is-invalid');
                 }
             });
-        });
-
-        $('#uploadExccl').on('click', function(){
-            $('#uploadModal').modal('show');
-
-            $('#uploadForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
-        });
-
-        $('#uploadModal').find('#previewButton').on('click', function(){
-            var fileInput = document.getElementById('fileInput');
-            var file = fileInput.files[0];
-            var reader = new FileReader();
-            
-            reader.onload = function(e) {
-                var data = e.target.result;
-                // Process data and display preview
-                displayPreview(data);
-            };
-
-            reader.readAsBinaryString(file);
         });
 
         $('#exportPdf').on('click', function(){
@@ -3418,7 +2763,7 @@ else{
             });
 
             if (selectedLorryIds.length > 0 || selectedEmptyContainerIds.length > 0) {
-                if (confirm('Are you sure you want to cancel these items?')) {
+                if (confirm('Are you sure you want to cancel these weighing records?')) {
                     $('#cancelModal').find('#id').val(selectedLorryIds);
                     $('#cancelModal').find('#containerId').val(selectedEmptyContainerIds);
                     $('#cancelModal').find('#isEmptyContainer').val('N');
@@ -3454,7 +2799,7 @@ else{
             });
 
             if (selectedIds.length > 0) {
-                if (confirm('Are you sure you want to cancel these items?')) {
+                if (confirm('Are you sure you want to cancel these weighing records?')) {
                     $('#cancelModal').find('#id').val(selectedIds);
                     $('#cancelModal').find('#isEmptyContainer').val('Y');
                     $('#cancelModal').find('#isMulti').val('Y');
@@ -3580,7 +2925,7 @@ else{
                     }
                 });
                 handleWeightType(weightType);
-                $('#addModal').find('#containerNo1Label').text("Pending Dispatch Bin");
+                $('#addModal').find('#containerNo1Label').text("<?= $languageArray['pending_bin_code'][$language] ?>");
                 $('#addModal').find('#emptyContainerDisplay').show();
                 $('#addModal').find('#replacementContainerDisplay').show();
                 $('#addModal').find('#vehicleWeight2Display').show();
@@ -3665,7 +3010,7 @@ else{
             var transactionStatus = $('#transactionStatus').val();
 
             if (x){
-                $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
+                $.post('php/modules/vehicle/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -3704,7 +3049,7 @@ else{
             var vehiclePlateNo1 = $(this).val();
             var transactionStatus = $('#transactionStatus').val();
             if (vehiclePlateNo1){
-                $.post('php/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
+                $.post('php/modules/vehicle/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -3761,7 +3106,7 @@ else{
             var weightType = $('#weightType').val();
 
             if (weightType == 'Different Container' && x) {
-                $.post('php/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
+                $.post('php/modules/vehicle/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -3790,7 +3135,7 @@ else{
             var vehiclePlateNo2 = $(this).val();
             var weightType = $('#weightType').val();
             if (weightType == 'Different Container' && vehiclePlateNo2){
-                $.post('php/getVehicle.php', {userID: vehiclePlateNo2, type: 'pullCustomer'}, function (data){
+                $.post('php/modules/vehicle/getVehicle.php', {userID: vehiclePlateNo2, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -3882,17 +3227,6 @@ else{
                 var current = Math.abs(nett1 - nett2);
             }
 
-            // Enhancement to add additional product weight
-            // if ($('#productTable tr').length > 0){
-            //     let totalNett = 0;
-            //     $('#productTable tr').each(function () {
-            //         let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-            //         totalNett += nettVal;
-            //     });
-
-            //     current = current + totalNett;
-            // }
-
             $('#currentWeight').text(current.toFixed(0));
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
@@ -3909,17 +3243,6 @@ else{
                 var nett1 = $('#nettWeight').val() ? parseFloat($('#nettWeight').val()) : 0;
                 var current = Math.abs(nett1 - nett2);
             }
-
-            // Enhancement to add additional product weight
-            // if ($('#productTable tr').length > 0){
-            //     let totalNett = 0;
-            //     $('#productTable tr').each(function () {
-            //         let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-            //         totalNett += nettVal;
-            //     });
-
-            //     current = current + totalNett;
-            // }
 
             var reduce = $(this).val() ? parseFloat($(this).val()) : 0;
             //var nett1 = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
@@ -4077,17 +3400,6 @@ else{
                 var current = Math.abs(nett1 - nett2);
             }
 
-            // Enhancement to add additional product weight
-            // if ($('#productTable tr').length > 0){
-            //     let totalNett = 0;
-            //     $('#productTable tr').each(function () {
-            //         let nettVal = parseFloat($(this).find('input[id^="productNett"]').val()) || 0;
-            //         totalNett += nettVal;
-            //     });
-
-            //     current = current + totalNett;
-            // }
-
             $('#currentWeight').text(current.toFixed(0));
             $('#finalWeight').val(current.toFixed(0));
             $('#reduceWeight').trigger('change');
@@ -4095,7 +3407,7 @@ else{
         });
 
         $('#currentWeight').on('change', function(){
-            var price = $('#productPrice').val() ? parseFloat($('#productPrice').val()).toFixed(2) : 0.00;
+            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()).toFixed(2) : 0.00;
             var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;
             var subTotalPrice = price * weight;
             var sstPrice = subTotalPrice * 0.08;
@@ -4181,12 +3493,11 @@ else{
         $('#productName').on('change', function(){
             $('#productCode').val($('#productName :selected').data('code'));
             $('#productDescription').val($('#productName :selected').data('description'));
-            $('#productPrice').val($('#productName :selected').data('price'));
             $('#productHigh').val($('#productName :selected').data('high'));
             $('#productLow').val($('#productName :selected').data('low'));
             $('#productVariance').val($('#productName :selected').data('variance'));
 
-            var price = $('#productPrice').val() ? parseFloat($('#productPrice').val()).toFixed(2) : 0.00;
+            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()).toFixed(2) : 0.00;
             var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;
             var subTotalPrice = price * weight;
             var sstPrice = subTotalPrice * 0.08;
@@ -4218,83 +3529,14 @@ else{
             $('#plantCode').val($('#plant :selected').data('code'));
         });
 
-        // SRP
-        $('#agent').on('change', function(){
-            $('#agentCode').val($('#agent :selected').data('code'));
-        });
-
         //customerName
         $('#customerName').on('change', function(){
             $('#customerCode').val($('#customerName :selected').data('code'));
         });
 
-        $('input[name="exDel"]').change(function() {
-            var vehicleNo1 = $('#addModal').find('#vehiclePlateNo1').val();
-            var exDel = $('input[name="exDel"]:checked').val();
-            if (exDel == 'true'){
-                // $('#addModal').find('#transporter').val('Own Transportation').trigger('change');
-                // $('#addModal').find('#transporterCode').val('T01');
-                $.post('php/getVehicle.php', {userID: vehicleNo1, type: 'lookup'}, function(data){
-                    var obj = JSON.parse(data);
-                    if(obj.status === 'success'){
-                        // var customerName = obj.message.customer_name;
-                        // var customerCode = obj.message.customer_code;
-
-                        // $('#addModal').find('#customerName').val(customerName).trigger('change');
-                        // $('#addModal').find('#customerCode').val(customerCode);
-                    }   
-                    else if(obj.status === 'failed'){
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }else{
-                // $('#addModal').find('#customerName').val('').trigger('change');
-                // $('#addModal').find('#customerCode').val('');
-
-                $.post('php/getVehicle.php', {userID: vehicleNo1, type: 'lookup'}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        // var transporterName = obj.message.transporter_name;
-                        // var transporterCode = obj.message.transporter_code;
-
-                        // $('#addModal').find('#transporter').val(transporterName).trigger('change');
-                        // $('#addModal').find('#transporterCode').val(transporterCode);
-                    }
-                    else if(obj.status === 'failed'){
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }
-        });
-
         //rawMaterialName
         $('#rawMaterialName').on('change', function(){
             $('#rawMaterialCode').val($('#rawMaterialName :selected').data('code'));
-        });
-
-        //siteName
-        $('#siteName').on('change', function(){
-            $('#siteCode').val($('#siteName :selected').data('code'));
-        });
-
-        $('input[name="loadDrum"]').change(function() {
-            var selected = $(this).val();
-            if (selected == 'true'){
-                $("#noOfDrumDisplay").hide();
-            }else{
-                $("#noOfDrumDisplay").show();
-            }
         });
 
         //Empty Container No
@@ -4445,70 +3687,9 @@ else{
             $('#sealNoSearch').val(x);
         });
 
-        // Find and remove selected table rows
-        $("#productTable").on('click', 'button[id^="remove"]', function () {
-            $(this).parents("tr").remove();
-
-            $("#productTable tr").each(function (index) {
-                $(this).find('input[name^="no"]').val(index + 1);
-            });
-
-            rowCount--;
-        });
-
-        // Event delegation for gross weight to calculate nett weight
-        $("#productTable").on('change', 'input[id^="productGross"]', function(){
-            // Retrieve the input's attributes
-            var gross = parseFloat($(this).val());
-            var tare = parseFloat($(this).closest('.details').find('input[id^="productTare"]').val());
-            var nettWeight = Math.abs(gross - tare);
-
-            // Update the respective inputs for productNett
-            $(this).closest('.details').find('input[id^="productNett"]').val(nettWeight);
-            $('#nettWeight').trigger('change');
-        });
-
-        // Event delegation for tare weight to calculate nett weight
-        $("#productTable").on('change', 'input[id^="productTare"]', function(){
-            // Retrieve the input's attributes
-            var tare = $(this).val();
-            var gross = parseFloat($(this).closest('.details').find('input[id^="productGross"]').val());
-            var nettWeight = Math.abs(gross - tare);
-
-            // Update the respective inputs for productNett
-            $(this).closest('.details').find('input[id^="productNett"]').val(nettWeight);
-            $('#nettWeight').trigger('change');
-        });
-
-        // Add additional products
-        $(".add-product").click(function(){
-            var $addContents = $("#productDetail").clone();
-            $("#productTable").append($addContents.html());
-
-            $("#productTable").find('.details:last').attr("id", "detail" + rowCount);
-            $("#productTable").find('.details:last').attr("data-index", rowCount);
-            $("#productTable").find('#remove:last').attr("id", "remove" + rowCount);
-
-            $("#productTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount + 1);
-            $("#productTable").find('#weightProductId:last').attr('name', 'weightProductId['+rowCount+']').attr("id", "weightProductId" + rowCount);
-            $("#productTable").find('#product:last').attr('name', 'product['+rowCount+']').attr("id", "product" + rowCount);
-            $("#productTable").find('#productPacking:last').attr('name', 'productPacking['+rowCount+']').attr("id", "productPacking" + rowCount);
-            $("#productTable").find('#productGross:last').attr('name', 'productGross['+rowCount+']').attr("id", "productGross" + rowCount);
-            $("#productTable").find('#productTare:last').attr('name', 'productTare['+rowCount+']').attr("id", "productTare" + rowCount);
-            $("#productTable").find('#productNett:last').attr('name', 'productNett['+rowCount+']').attr("id", "productNett" + rowCount);
-
-            rowCount++;
-        });
-
         <?php
             if(isset($_GET['weight'])){
                 echo 'edit('.$_GET['weight'].');';
-            }
-        ?>
-
-        <?php
-            if(isset($_GET['approve'])){
-                echo 'approve('.$_GET['approve'].');';
             }
         ?>
     });
@@ -4606,7 +3787,6 @@ else{
             <div class="col-6">
                 <p><strong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
                 <p><strong>DESTINATION NAME:</strong> ${row.destination}</p>
-                <p><strong>SITE NAME:</strong> ${row.site_name}</p>
                 <p><strong>PLANT NAME:</strong> ${row.plant_name}</p>`;
                 if (row.transaction_status == 'Purchase' || row.transaction_status == 'Local'){
                     returnString += `<p><strong>PURCHASE PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
@@ -4615,16 +3795,16 @@ else{
                 }
         
             returnString += `
+                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
                 <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
-                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
+                <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
             </div>
             <div class="col-6">
                 <p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
                 <p><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
                 <p><strong>WEIGHT TYPE:</strong> ${weightType}</p>
                 <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p>
-                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
-                <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
+                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
                 <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>
             </div>
         </div>
@@ -4799,13 +3979,7 @@ else{
                     $('#vehicleNoTxt2').hide();
                 }
                 
-                $('#addModal').find('#productCode').val(obj.message.product_code);
-                if (obj.message.ex_del == 'EX'){
-                    $('#addModal').find("input[name='exDel'][value='true']").prop("checked", true);
-                }else{
-                    $('#addModal').find("input[name='exDel'][value='false']").prop("checked", true);
-                }
-                
+                $('#addModal').find('#productCode').val(obj.message.product_code);                
                 $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
                 $('#addModal').find('#invoiceNo').val(obj.message.invoice_no);
                 $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
@@ -4815,10 +3989,6 @@ else{
                 $('#addModal').find('#customerCode').val(obj.message.customer_code);
                 $('#addModal').find('#supplierName').val(obj.message.supplier_name).select2('destroy').select2();
                 $('#addModal').find('#supplierCode').val(obj.message.supplier_code);
-                $('#addModal').find('#siteCode').val(obj.message.site_code);
-                $('#addModal').find('#siteName').val(obj.message.site_name).trigger('change');
-                $('#addModal').find('#agent').val(obj.message.agent_name).trigger('change');
-                $('#addModal').find('#agentCode').val(obj.message.agent_code);
                 $('#addModal').find('#rawMaterialCode').val(obj.message.raw_mat_code);
                 $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
                 $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
@@ -4873,14 +4043,6 @@ else{
                 $('#addModal').find('#sstPrice').val(obj.message.sst);
                 $('#addModal').find('#totalPrice').val(obj.message.total_price);
                 $('#addModal').find('#finalWeight').val(obj.message.final_weight);
-
-                if (obj.message.load_drum == 'LOAD'){
-                    $('#addModal').find("input[name='loadDrum'][value='true']").prop("checked", true).trigger('change');
-                }else{
-                    $('#addModal').find("input[name='loadDrum'][value='false']").prop("checked", true).trigger('change');
-                }
-                
-                $('#addModal').find('#noOfDrum').val(obj.message.no_of_drum);
                 $('#addModal').find('#containerNoInput').val(obj.message.container_no);
                 $('#addModal').find('#containerNo').val(obj.message.container_no);
                 $('#addModal').find('#containerNo2').val(obj.message.container_no2);
@@ -4928,42 +4090,12 @@ else{
                     });
                 }
 
-                $('#productTable').html('');
-                rowCount = 0;
-
-                if (obj.message.products.length > 0){
-                    for(var i = 0; i < obj.message.products.length; i++){
-                        var item = obj.message.products[i];
-                        var $addContents = $("#productDetail").clone();
-                        $("#productTable").append($addContents.html());
-
-                        $("#productTable").find('.details:last').attr("id", "detail" + rowCount);
-                        $("#productTable").find('.details:last').attr("data-index", rowCount);
-                        $("#productTable").find('#remove:last').attr("id", "remove" + rowCount);
-
-                        $("#productTable").find('#no:last').attr('name', 'no['+rowCount+']').attr("id", "no" + rowCount).val(rowCount + 1);
-                        $("#productTable").find('#weightProductId:last').attr('name', 'weightProductId['+rowCount+']').attr("id", "weightProductId" + rowCount).val(item.id);
-                        $("#productTable").find('#product:last').attr('name', 'product['+rowCount+']').attr("id", "product" + rowCount).val(item.product);
-                        $("#productTable").find('#productPacking:last').attr('name', 'productPacking['+rowCount+']').attr("id", "productPacking" + rowCount).val(item.product_packing);
-                        $("#productTable").find('#productGross:last').attr('name', 'productGross['+rowCount+']').attr("id", "productGross" + rowCount).val(item.product_gross);
-                        $("#productTable").find('#productTare:last').attr('name', 'productTare['+rowCount+']').attr("id", "productTare" + rowCount).val(item.product_tare);
-                        $("#productTable").find('#productNett:last').attr('name', 'productNett['+rowCount+']').attr("id", "productNett" + rowCount).val(item.product_nett);
-
-                        rowCount++;
-                    }
-                }
-
-
                 // Load these field after PO/SO is loaded
                 /*$('#addModal').on('orderLoaded', function() {
                     $('#addModal').find('#customerCode').val(obj.message.customer_code);
                     $('#addModal').find('#customerName').val(obj.message.customer_name).trigger('change');
                     $('#addModal').find('#supplierCode').val(obj.message.supplier_code);
                     $('#addModal').find('#supplierName').val(obj.message.supplier_name).trigger('change')
-                    $('#addModal').find('#siteCode').val(obj.message.site_code);
-                    $('#addModal').find('#siteName').val(obj.message.site_name).trigger('change');
-                    $('#addModal').find('#agent').val(obj.message.agent_name).trigger('change');
-                    $('#addModal').find('#agentCode').val(obj.message.agent_code);
                     $('#addModal').find('#rawMaterialCode').val(obj.message.raw_mat_code);
                     $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
                     $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
@@ -5066,10 +4198,10 @@ else{
                     }
 
                     // Execute the callback to finalize the process
-                    if (callback) {
-                        callback();
-                    }
-                }
+                                    }
+
+                // Execute the callback to finalize the process
+                if (callback) { callback(); }
             } else {
                 $('#spinnerLoading').hide();
                 $("#failBtn").attr('data-toast-text', obj.message );
@@ -5078,46 +4210,8 @@ else{
         });
     }
 
-    function approve(id){
-        $('#spinnerLoading').show();
-        $.post('php/getWeight.php', {userID: id}, function(data){
-            var obj = JSON.parse(data);
-            if(obj.status === 'success'){
-                $('#approvalModal').find('#id').val(obj.message.id);
-                $('#approvalModal').find('#statusA').val('');
-                $('#approvalModal').find('#reasons').val('');
-                $('#approvalModal').modal('show');
-            
-                $('#approvalForm').validate({
-                    errorElement: 'span',
-                    errorPlacement: function (error, element) {
-                        error.addClass('invalid-feedback');
-                        element.closest('.form-group').append(error);
-                    },
-                    highlight: function (element, errorClass, validClass) {
-                        $(element).addClass('is-invalid');
-                    },
-                    unhighlight: function (element, errorClass, validClass) {
-                        $(element).removeClass('is-invalid');
-                    }
-                });
-            }
-            else if(obj.status === 'failed'){
-                $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-            else{
-                $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
-            }
-            $('#spinnerLoading').hide();
-        });
-    }
-
     function deactivate(id, isEmptyContainer) {
-        if (confirm('Are you sure you want to cancel this item?')) {
+        if (confirm('Are you sure you want to cancel this weighing record?')) {
             $('#cancelModal').find('#id').val(id);
             $('#cancelModal').find('#isEmptyContainer').val(isEmptyContainer);
             $('#cancelModal').modal('show');
@@ -5137,31 +4231,6 @@ else{
             });
         }
     }
-
-    // function deactivate(id){
-        
-    //     $('#spinnerLoading').show();
-    //     $.post('php/deleteWeight.php', {userID: id}, function(data){
-    //         var obj = JSON.parse(data);
-            
-    //         if(obj.status === 'success'){
-    //             table.ajax.reload();
-    //             $('#spinnerLoading').hide();
-    //             $("#successBtn").attr('data-toast-text', obj.message);
-    //             $("#successBtn").click();
-    //         }
-    //         else if(obj.status === 'failed'){
-    //             $('#spinnerLoading').hide();
-    //             $("#failBtn").attr('data-toast-text', obj.message );
-    //             $("#failBtn").click();
-    //         }
-    //         else{
-    //             $('#spinnerLoading').hide();
-    //             $("#failBtn").attr('data-toast-text', obj.message );
-    //             $("#failBtn").click();
-    //         }
-    //     });
-    // }
 
     function print(id, transactionStatus, isEmptyContainer = 'N') {
         $('#prePrintModal').find('#id').val(id);

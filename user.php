@@ -33,7 +33,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
 <head>
 
-    <title>Staff | Synctronix - Weighing System</title>
+    <title><?=$languageArray['staff_code'][$language]?> | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -101,19 +101,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                         <?=$languageArray['add_new_code'][$language]?>
                                                     </button>
                                                 </div> 
-                                            </div> 
-
-                                            <!-- <div class="row">
-                                                <div class="col-10">
-                                                    <h5 class="card-title mb-0">User Records</h5>
-                                                </div>
-                                                <div class="col-2 d-flex justify-content-end">
-                                                    <button type="button" id="addMembers" class="btn btn-md btn-soft-success" data-bs-toggle="modal" data-bs-target="#addModal">
-                                                        <i class="ri-add-circle-line align-middle me-1"></i>
-                                                        <?=$languageArray['add_new_code'][$language]?>
-                                                    </button>              
-                                                </div>
-                                            </div> -->
+                                            </div>
                                         </div>
                                         <div class="card-body">
                                             <table id="usersTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
@@ -126,7 +114,6 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                         <th><?=$languageArray['email_code'][$language]?></th>
                                                         <th><?=$languageArray['role_code'][$language]?></th>
                                                         <th><?=$languageArray['plant_name_code'][$language]?></th>
-                                                        <th><?=$languageArray['status_code'][$language]?></th>
                                                         <th><?=$languageArray['action_code'][$language]?></th>
                                                     </tr>
                                                 </thead>
@@ -143,9 +130,6 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             <?php include 'layouts/footer.php'; ?>
         </div><!-- end main content-->
     </div><!-- END layout-wrapper -->
-
-    <button type="button" hidden id="successBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-    <button type="button" hidden id="failBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable custom-xxl">
@@ -165,9 +149,12 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             <input type="hidden" class="form-control" id="id" name="id"> 
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                    <label for="employeeCode" class="col-sm-4 col-form-label"><?=$languageArray['employee_code_code'][$language]?></label>
+                                                    <label for="employeeCode" class="col-sm-4 col-form-label"><?=$languageArray['employee_code_code'][$language]?> *</label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control" id="employeeCode" name="employeeCode" placeholder="<?=$languageArray['employee_code_code'][$language]?>" required>
+                                                        <div class="invalid-feedback">
+                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -176,6 +163,9 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                 <label for="username" class="col-sm-4 col-form-label"><?=$languageArray['username_code'][$language]?> *</label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control" id="username" name="username" placeholder="<?=$languageArray['username_code'][$language]?>" required>
+                                                        <div class="invalid-feedback">
+                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -184,6 +174,9 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                                 <label for="name" class="col-sm-4 col-form-label"><?=$languageArray['name_code'][$language]?> *</label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control" id="name" name="name" placeholder="<?=$languageArray['name_code'][$language]?>" required>
+                                                        <div class="invalid-feedback">
+                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -262,7 +255,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
         <div class="modal-dialog modal-xl" style="max-width: 50%;">
             <div class="modal-content">
                 <div class="modal-header bg-gray-dark color-palette">
-                    <h4 class="modal-title">Error Log</h4>
+                    <h4 class="modal-title"><?=$languageArray['error_log_code'][$language]?></h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -359,7 +352,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             'serverSide': true,
             'serverMethod': 'post',
             'ajax': {
-                'url':'php/loadMembers.php'
+                'url':'php/modules/user/loadMembers.php'
             },
             'columns': [
                 {
@@ -377,16 +370,6 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 { data: 'useremail' },
                 { data: 'role' },
                 { data: 'plant' },
-                { 
-                    data: 'id',
-                    render: function ( data, type, row ) {
-                        if (row.status == '1'){
-                            return '<button title="Reactivate" type="button" id="reactivate'+data+'" onclick="reactivate('+data+')" class="btn btn-warning btn-sm">Reactivate</button>';
-                        }else{
-                            return '';
-                        }
-                    }
-                },
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
@@ -424,26 +407,21 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             });
             if($('#memberForm').valid()){
                 $('#spinnerLoading').show();
-                $.post('php/users.php', $('#memberForm').serialize(), function(data){
-                    var obj = JSON.parse(data); 
-
-                    if(obj.status === 'success'){
+                $.post('php/modules/user/users.php', $('#memberForm').serialize(), function(data){
+                    var obj = JSON.parse(data);
+                    if(obj.status === 'success') {
                         table.ajax.reload();
                         $('#spinnerLoading').hide();
                         $('#addModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
+                        toastr["success"](obj.message, "Success:");
                     }
-                    else if(obj.status === 'failed')
-                    {
+                    else if(obj.status === 'failed') {
                         $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
+                        toastr["error"](obj.message, "Failed:");
                     }
-                    else{
+                    else {
                         $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Something wrong when edit');
-                        $("#failBtn").click();
+                        toastr["error"]("Something went wrong", "Failed:");
                     }
                 });
             }
@@ -506,7 +484,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
             // Send the JSON array to the server
             $.ajax({
-                url: 'php/uploadUser.php',
+                url: 'php/modules/user/uploadUser.php',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
@@ -515,39 +493,35 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                     if (obj.status === 'success') {
                         $('#spinnerLoading').hide();
                         $('#uploadModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
+                        toastr["success"](obj.message, "Success:");
                         $('#usersTable').DataTable().ajax.reload(null, false);
-                    } 
+                    }
                     else if (obj.status === 'failed') {
                         $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    } 
+                        toastr["error"](obj.message, "Failed:");
+                    }
                     else if (obj.status === 'error') {
                         $('#spinnerLoading').hide();
                         $('#uploadModal').modal('hide');
-                        // alert(obj.message);
-                        // $("#failBtn").attr('data-toast-text', obj.message );
-                        // $("#failBtn").click();
                         $('#usersTable').DataTable().ajax.reload(null, false);
                         $('#errorModal').find('#errorList').empty();
                         var errorMessage = obj.message;
                         for (var i = 0; i < errorMessage.length; i++) {
-                            $('#errorModal').find('#errorList').append(`<li>${errorMessage[i]}</li>`);                            
+                            $('#errorModal').find('#errorList').append(`<li>${errorMessage[i]}</li>`);
                         }
                         $('#errorModal').modal('show');
-                    } 
+                    }
                     else {
                         $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
-                        $("#failBtn").click();
+                        toastr["error"]("Failed to save", "Failed:");
                     }
                 }
             });
         });
 
         $('#uploadExcel').on('click', function(){
+            $('#previewTable').html('');
+            $('#fileInput').val('');
             $('#uploadModal').modal('show');
 
             $('#uploadForm').validate({
@@ -590,8 +564,8 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             });
 
             if (selectedIds.length > 0) {
-                if (confirm('Are you sure you want to cancel these items?')) {
-                    $.post('php/deleteUser.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                if (confirm('Are you sure you want to delete these users?')) {
+                    $.post('php/modules/user/deleteUser.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                         var obj = JSON.parse(data);
                         
                         if(obj.status === 'success'){
@@ -622,7 +596,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
     function edit(id){
         $('#spinnerLoading').show();
-        $.post('php/getUser.php', {userID: id}, function(data){
+        $.post('php/modules/user/getUser.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
             
             if(obj.status === 'success'){
@@ -657,7 +631,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 toastr["error"](obj.message, "Failed:");
             }
             else{
-                toastr["error"]("Something wrong when activate", "Failed:");
+                toastr["error"]("Something went wrong", "Failed:");
             }
             $('#spinnerLoading').hide();
         });
@@ -665,25 +639,22 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
     function deactivate(id){
         $('#spinnerLoading').show();
-        if (confirm('Are you sure you want to cancel this item?')) {
-            $.post('php/deleteUser.php', {userID: id}, function(data){
+        if (confirm('Are you sure you want to delete this user?')) {
+        $.post('php/modules/user/deleteUser.php', {userID: id}, function(data){
                 var obj = JSON.parse(data);
-            
+
                 if(obj.status === 'success'){
                     table.ajax.reload();
                     $('#spinnerLoading').hide();
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
+                    toastr["success"](obj.message, "Success:");
                 }
                 else if(obj.status === 'failed'){
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
+                    toastr["error"](obj.message, "Failed:");
                 }
                 else{
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
+                    toastr["error"](obj.message, "Failed:");
                 }
             });
         }
@@ -748,7 +719,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
     }
 
     function reactivate(id) {
-        if (confirm('Do you want to reactivate this item?')) {
+        if (confirm('Do you want to reactivate this user?')) {
             $('#spinnerLoading').show();
             $.post('php/reactivateMasterData.php', {userID: id, type: "User"}, function(data){
                 var obj = JSON.parse(data);
@@ -756,18 +727,15 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 if(obj.status === 'success'){
                     table.ajax.reload();
                     $('#spinnerLoading').hide();
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
+                    toastr["success"](obj.message, "Success:");
                 }
                 else if(obj.status === 'failed'){
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
+                    toastr["error"](obj.message, "Failed:");
                 }
                 else{
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
+                    toastr["error"](obj.message, "Failed:");
                 }
             });
         }

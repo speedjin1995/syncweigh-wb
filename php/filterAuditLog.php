@@ -70,13 +70,6 @@ if($_POST['selectedValue'] == "Vehicle")
     }
 }
 
-if($_POST['selectedValue'] == "Agent")
-{
-    if($_POST['agentCode'] != null && $_POST['agentCode'] != '' && $_POST['agentCode'] != '-'){
-    $searchQuery .= " and agent_code = '".$_POST['agentCode']."'";
-    }
-}
-
 if($_POST['selectedValue'] == "Transporter")
 {
     if($_POST['transporterCode'] != null && $_POST['transporterCode'] != '' && $_POST['transporterCode'] != '-'){
@@ -102,13 +95,6 @@ if($_POST['selectedValue'] == "Plant")
 {
     if($_POST['plantCode'] != null && $_POST['plantCode'] != ''){
     $searchQuery .= " and plant_code like '%".$_POST['plantCode']."%'";
-    }
-}
-
-if($_POST['selectedValue'] == "Site")
-{
-    if($_POST['siteCode'] != null && $_POST['siteCode'] != ''){
-    $searchQuery .= " and site_code like '%".$_POST['siteCode']."%'";
     }
 }
 
@@ -286,7 +272,6 @@ if($_POST['selectedValue'] == "Vehicle")
         "Vehicle Weight"=>$row['vehicle_weight'],
         "Transporter Code"=>$row['transporter_code'],
         "Transporter Name"=>$row['transporter_name'],
-        "EX-Quarry / Delivered"=>($row['ex_del'] == 'EX') ? "E" : "D",
         "Customer Code"=>$row['customer_code'],
         "Customer Name"=>$row['customer_name'],
         "Action"=>searchActionNameById($row['action_id'], $db),
@@ -295,29 +280,7 @@ if($_POST['selectedValue'] == "Vehicle")
         );
     }
 
-    $columnNames = ["Vehicle No", "Vehicle Weight", "Transporter Code", "Transporter Name", "EX-Quarry / Delivered", "Customer Code", "Customer Name", "Action", "Action By", "Event Date"];
-}
-
-if($_POST['selectedValue'] == "Agent")
-{
-    ## Fetch records
-    $empQuery = "select * from Agents_Log".$searchQuery;
-    $empRecords = mysqli_query($db, $empQuery);
-    $data = array();
-
-    while($row = mysqli_fetch_assoc($empRecords)) {
-        $data[] = array( 
-        "id"=>$row['id'],
-        "Sales Representative Code"=>$row['agent_code'],
-        "Sales Representative Name"=>$row['name'],
-        "Description"=>$row['description'],
-        "Action"=>searchActionNameById($row['action_id'], $db),
-        "Action By"=>$row['action_by'],
-        "Event Date"=>$row['event_date'],
-        );
-    }
-
-    $columnNames = ["Sales Representative Code", "Sales Representative Name", "Description", "Action", "Action By", "Event Date"];
+    $columnNames = ["Vehicle No", "Vehicle Weight", "Transporter Code", "Transporter Name", "Customer Code", "Customer Name", "Action", "Action By", "Event Date"];
 }
 
 if($_POST['selectedValue'] == "Transporter")
@@ -416,32 +379,6 @@ if($_POST['selectedValue'] == "Plant")
     }
 
     $columnNames = ["Plant Code", "Plant Name", "Address line 1", "Address line 2", "Address line 3", "Phone No", "Fax No", "Action", "Action By", "Event Date"];
-}
-
-if($_POST['selectedValue'] == "Site")
-{
-    ## Fetch records
-    $empQuery = "select * from Site_Log".$searchQuery;
-    $empRecords = mysqli_query($db, $empQuery);
-    $data = array();
-
-    while($row = mysqli_fetch_assoc($empRecords)) {
-        $data[] = array( 
-        "id"=>$row['id'],
-        "Site Code"=>$row['site_code'],
-        "Site Name"=>$row['name'],
-        "Address line 1"=>$row['address_line_1'],
-        "Address line 2"=>$row['address_line_2'],
-        "Address line 3"=>$row['address_line_3'],
-        "Phone No"=>$row['phone_no'],
-        "Fax No"=>$row['fax_no'],
-        "Action"=>searchActionNameById($row['action_id'], $db),
-        "Action By"=>$row['action_by'],
-        "Event Date"=>$row['event_date'],
-        );
-    }
-
-    $columnNames = ["Site Code", "Site Name", "Address line 1", "Address line 2", "Address line 3", "Phone No", "Fax No", "Action", "Action By", "Event Date"];
 }
 
 if($_POST['selectedValue'] == "Weight")

@@ -91,7 +91,6 @@
                                                             <option value="Transporter"><?=$languageArray['transporter_code'][$language]?></option>
                                                             <option value="User"><?=$languageArray['staff_code'][$language]?></option>
                                                             <option value="Weight"><?=$languageArray['weighing_code'][$language]?></option>
-                                                            <!-- <option value="Agent"><?=$languageArray['sales_representative_code'][$language]?></option> -->
                                                             <option value="Plant"><?=$languageArray['plant_code'][$language]?></option>
                                                         </select>
                                                     </div>
@@ -130,12 +129,6 @@
                                                     <div class="mb-3">
                                                         <label for="vehicleNo" class="form-label"><?=$languageArray['vehicle_no_code'][$language]?></label>
                                                         <input type="text" class="form-control" placeholder="<?=$languageArray['vehicle_no_code'][$language]?>" name="vehicleNo" id="vehicleNo">
-                                                    </div>
-                                                </div>
-                                                <div class="col-3 inputCode agentInput" style="display:none">
-                                                    <div class="mb-3">
-                                                        <label for="agentCode" class="form-label"><?=$languageArray['sales_representative_code'][$language]?></label>
-                                                        <input type="text" class="form-control" placeholder="<?=$languageArray['sales_representative_code'][$language]?>" name="agentCode" id="agentCode">
                                                     </div>
                                                 </div>
                                                 <div class="col-3 inputCode transporterInput" style="display:none">
@@ -439,11 +432,6 @@ $(function () {
             $('.inputCode').hide();
             $('.vehicleInput').show();
         }
-        else if($(this).val() == "Agent")
-        {
-            $('.inputCode').hide();
-            $('.agentInput').show();
-        }
         else if($(this).val() == "Transporter")
         {
             $('.inputCode').hide();
@@ -549,7 +537,6 @@ $(function () {
         //         rawMatCode: $('#rawMatCode').val(),
         //         supplierCode: $('#supplierCode').val(),
         //         vehicleNo: $('#vehicleNo').val(),
-        //         agentCode: $('#agentCode').val(),
         //         transporterCode: $('#transporterCode').val(),
         //         unit: $('#unit').val(),
         //         userCode: $('#userCode').val(),
@@ -610,7 +597,6 @@ $(function () {
                 rawMatCode: $('#rawMatCode').val(),
                 supplierCode: $('#supplierCode').val(),
                 vehicleNo: $('#vehicleNo').val(),
-                agentCode: $('#agentCode').val(),
                 transporterCode: $('#transporterCode').val(),
                 unit: $('#unit').val(),
                 userCode: $('#userCode').val(),
@@ -649,12 +635,10 @@ $(function () {
     }
 });
 
-function format (row) { console.log(row);
+function format (row) {
     var custSupplier = '';
     var productRawMat = '';
     var orderSuppWeight = '';
-    var loadDrum = (row.load_drum == 'LOAD') ? "By-Load" : "By-Drum";
-    var exDel = (row.ex_del == 'EX') ? "EX-Quarry" : "Delivered";
 
     if (row.transaction_status == 'Sales'){
         custSupplier = row.customer_code + '-' + row.customer_name;
@@ -684,14 +668,10 @@ function format (row) { console.log(row);
             <p><strong>CUSTOMER/SUPPLIER:</strong> ${custSupplier}</p>
             <p><strong>PRODUCT/RAW MATERIAL:</strong> ${productRawMat}</p>
             <p><strong>TRANSPORTER:</strong> ${row.transporter_code} - ${row.transporter}</p>
-            <p><strong>SALES REPRESENTATIVE:</strong> ${row.agent_code} - ${row.agent_name}</p>
             <p><strong>DESTINATION:</strong> ${row.destination_code} - ${row.destination}</p>
-            <p><strong>SITE:</strong> ${row.site_code} - ${row.site_name}</p>
             <p><strong>PLANT:</strong> ${row.plant_code} - ${row.plant_name}</p>
         </div>
         <div class="col-3">
-            <p><strong>EX-QUARRY/DELIVERED:</strong> ${exDel}</p>
-            <p><strong>BY-LOAD/BY-DRUM:</strong> ${loadDrum}</p>
             <p><strong>ORDER/SUPPLIER WEIGHT:</strong> ${orderSuppWeight}</p>
             <p><strong>WEIGHT DIFFERENCE:</strong> ${row.reduce_weight}</p>
             <p><strong>UNIT PRICE:</strong> ${row.unit_price}</p>
@@ -701,7 +681,6 @@ function format (row) { console.log(row);
         </div>
         <div class="col-3">
             <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
-            <p><strong>NO OF DRUM:</strong> ${row.no_of_drum}</p>
             <p><strong>IN WEIGHT:</strong> ${row.gross_weight1} KG</p>
             <p><strong>IN DATE/TIME:</strong> ${row.gross_weight1_date}</p>
             <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1} KG</p>

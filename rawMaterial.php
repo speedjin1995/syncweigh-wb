@@ -2,7 +2,7 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
-    <title>Raw Material | Synctronix - Weighing System</title>
+    <title><?=$languageArray['raw_material_code'][$language]?> | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -61,39 +61,6 @@
                             </div>
                             <!--end row-->
 
-                            <!-- <div class="col-xxl-12 col-lg-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <form action="javascript:void(0);">
-                                            <div class="row">
-                                                <div class="col-3">
-                                                    <div class="mb-3">
-                                                        <label for="customerCode" class="form-label">Customer Code</label>
-                                                        <input type="text" class="form-control" placeholder="Customer Code" id="customerCode">
-                                                    </div>
-                                                </div>
-                                                <div class="col-3">
-
-                                                </div>
-                                                <div class="col-3">
-  
-                                                </div>
-                                                <div class="col-3">
-                                                    <div class="text-end mt-4">
-                                                        <button type="submit" class="btn btn-success">
-                                                            <i class="bx bx-search-alt"></i>
-                                                            <?=$languageArray['search_code'][$language]?></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>                                                                        
-                                    </div>
-                                </div>
-                            </div> -->
-                            
-                            <button type="button" hidden id="successBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-                            <button type="button" hidden id="failBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-
                             <div class="row">
                                 <div class="col-xl-3 col-md-6 add-new-weight">
 
@@ -107,7 +74,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form role="form" id="productForm" class="needs-validation" novalidate autocomplete="off">
+                                                    <form role="form" id="rawMatForm" class="needs-validation" novalidate autocomplete="off">
                                                         <div class=" row col-12">
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="card bg-light">
@@ -115,37 +82,26 @@
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="productCode" class="col-sm-4 col-form-label"><?=$languageArray['raw_material_code_code'][$language]?></label>
+                                                                                    <label for="rawMatCode" class="col-sm-4 col-form-label"><?=$languageArray['raw_material_code_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="productCode" name="productCode" placeholder="<?=$languageArray['raw_material_code_code'][$language]?>" required>
+                                                                                        <input type="text" class="form-control" id="rawMatCode" name="rawMatCode" placeholder="<?=$languageArray['raw_material_code_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="productName" class="col-sm-4 col-form-label"><?=$languageArray['raw_material_name_code'][$language]?></label>
+                                                                                    <label for="rawMatName" class="col-sm-4 col-form-label"><?=$languageArray['raw_material_name_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="productName" name="productName" placeholder="<?=$languageArray['raw_material_name_code'][$language]?>" required>
+                                                                                        <input type="text" class="form-control" id="rawMatName" name="rawMatName" placeholder="<?=$languageArray['raw_material_name_code'][$language]?>" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="productPrice" class="col-sm-4 col-form-label"><?=$languageArray['raw_material_price_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="number" class="form-control" id="productPrice" name="productPrice" placeholder="<?=$languageArray['raw_material_price_code'][$language]?>">
-                                                                                        <!--div class="invalid-feedback">
-                                                                                            Please fill in the field.
-                                                                                        </div-->
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>                                                                           
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['description_code'][$language]?></label>
@@ -168,44 +124,31 @@
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['high_code'][$language]?> (+)</label>
+                                                                                    <label for="high" class="col-sm-4 col-form-label"><?=$languageArray['high_code'][$language]?> (+)</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="high" name="high" placeholder="<?=$languageArray['high_code'][$language]?>" value="0">
+                                                                                        <input type="number" class="form-control" id="high" name="high" placeholder="<?=$languageArray['high_code'][$language]?>" value="0">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['low_code'][$language]?> (-)</label>
+                                                                                    <label for="low" class="col-sm-4 col-form-label"><?=$languageArray['low_code'][$language]?> (-)</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="low" name="low" placeholder="<?=$languageArray['low_code'][$language]?>" value="0">
+                                                                                        <input type="number" class="form-control" id="low" name="low" placeholder="<?=$languageArray['low_code'][$language]?>" value="0">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="type" class="col-sm-4 col-form-label"><?=$languageArray['type_code'][$language]?></label>
-                                                                                    <div class="col-sm-8"> 
-                                                                                        <select class="form-control select2" style="width: 100%;" id="type" name="type" required>
-                                                                                            <option value="" selected disabled hidden>Please Select</option>
-                                                                                            <option value="Bitumen">Bitumen</option>
-                                                                                            <option value="Raw Material">Raw Material</option>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
+                                                                            <input type="hidden" class="form-control" id="id" name="id">
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-
                                                         </div>
                                                         
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
                                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitProduct"><?=$languageArray['submit_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitRawMat"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
                                                         </div><!--end col-->                                                               
                                                     </form>
@@ -239,7 +182,7 @@
                                         <div class="modal-dialog modal-xl" style="max-width: 50%;">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-gray-dark color-palette">
-                                                    <h4 class="modal-title">Error Log</h4>
+                                                    <h4 class="modal-title"><?=$languageArray['error_log_code'][$language]?></h4>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -282,7 +225,7 @@
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
-                                                                <button type="button" id="addProduct" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                <button type="button" id="addRawMaterial" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
@@ -290,15 +233,13 @@
                                                         </div> 
                                                     </div>
                                                     <div class="card-body">
-                                                        <table id="productTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
+                                                        <table id="rawMatTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['raw_material_code_code'][$language]?></th>
                                                                     <th><?=$languageArray['raw_material_name_code'][$language]?></th>
-                                                                    <th><?=$languageArray['raw_material_price_code'][$language]?></th>
                                                                     <th><?=$languageArray['description_code'][$language]?></th>
-                                                                    <th><?=$languageArray['type_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -318,7 +259,6 @@
                 <!-- container-fluid -->
             </div>
             <!-- End Page-content -->
-
             <?php include 'layouts/footer.php'; ?>
         </div>
         <!-- end main content-->
@@ -326,11 +266,7 @@
     </div>
     <!-- END layout-wrapper -->
 
-
-
-
     <?php include 'layouts/customizer.php'; ?>
-
     <?php include 'layouts/vendor-scripts.php'; ?>
 
     <!--Swiper slider js-->
@@ -361,7 +297,7 @@ var table;
 
 $(function () {
     $('#selectAllCheckbox').on('change', function() {
-        var checkboxes = $('#productTable tbody input[type="checkbox"]');
+        var checkboxes = $('#rawMatTable tbody input[type="checkbox"]');
         checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
     });
 
@@ -384,14 +320,14 @@ $(function () {
         'height': 'auto'
     });
 
-    table = $("#productTable").DataTable({
+    table = $("#rawMatTable").DataTable({
         "responsive": true,
         "autoWidth": false,
         'processing': true,
         'serverSide': true,
         'serverMethod': 'post',
         'ajax': {
-            'url':'php/loadRawMaterials.php'
+            'url':'php/modules/rawMaterial/loadRawMaterials.php'
         },
         'columns': [
             {
@@ -405,9 +341,7 @@ $(function () {
             },
             { data: 'raw_mat_code' },
             { data: 'name' },
-            { data: 'price' },
             { data: 'description' },
-            { data: 'type' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
@@ -421,7 +355,6 @@ $(function () {
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
-                    // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></div>';
                     return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                     '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
                     '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
@@ -433,7 +366,7 @@ $(function () {
     
     // $.validator.setDefaults({
     //     submitHandler: function() {
-    $('#submitProduct').on('click', function(){
+    $('#submitRawMat').on('click', function(){
         var isValid = true;
 
         // custom validation for select2
@@ -458,23 +391,21 @@ $(function () {
             }
         });
 
-        if($('#productForm').valid()){
+        if($('#rawMatForm').valid()){
             $('#spinnerLoading').show();
-            $.post('php/rawMaterial.php', $('#productForm').serialize(), function(data){
+            $.post('php/modules/rawMaterial/rawMaterial.php', $('#rawMatForm').serialize(), function(data){
                 var obj = JSON.parse(data); 
                 if(obj.status === 'success')
                 {
                     table.ajax.reload();
                     $('#spinnerLoading').hide();
                     $('#addModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
+                    toastr["success"](obj.message, "Success:");
                 }
                 else if(obj.status === 'failed')
                 {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
+                    toastr["error"](obj.message, "Failed:");
                 }
                 else
                 {
@@ -505,7 +436,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/uploadRawMats.php',
+            url: 'php/modules/rawMaterial/uploadRawMats.php',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -514,22 +445,17 @@ $(function () {
                 if (obj.status === 'success') {
                     $('#spinnerLoading').hide();
                     $('#uploadModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
-                    $('#productTable').DataTable().ajax.reload(null, false);
+                    toastr["success"](obj.message, "Success:");
+                    $('#rawMatTable').DataTable().ajax.reload(null, false);
                 } 
                 else if (obj.status === 'failed') {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
+                    toastr["error"](obj.message, "Failed:");
                 } 
                 else if (obj.status === 'error') {
                     $('#spinnerLoading').hide();
                     $('#uploadModal').modal('hide');
-                    // alert(obj.message);
-                    // $("#failBtn").attr('data-toast-text', obj.message );
-                    // $("#failBtn").click();
-                    $('#productTable').DataTable().ajax.reload(null, false);
+                    $('#rawMatTable').DataTable().ajax.reload(null, false);
                     $('#errorModal').find('#errorList').empty();
                     var errorMessage = obj.message;
                     for (var i = 0; i < errorMessage.length; i++) {
@@ -539,23 +465,20 @@ $(function () {
                 } 
                 else {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', 'Failed to save');
-                    $("#failBtn").click();
+                    toastr["error"]("Failed to save", "Failed:");
                 }
             }
         });
     });
 
-    $('#addProduct').on('click', function(){
+    $('#addRawMaterial').on('click', function(){
         $('#addModal').find('#id').val("");
-        $('#addModal').find('#productCode').val("");
-        $('#addModal').find('#productName').val("");
-        $('#addModal').find('#productPrice').val("");
+        $('#addModal').find('#rawMatCode').val("");
+        $('#addModal').find('#rawMatName').val("");
         $('#addModal').find('#description').val("");
         $('#addModal').find('#varianceType').val("").trigger('change');
         $('#addModal').find('#high').val("0");
         $('#addModal').find('#low').val("0");
-        $('#addModal').find('#type').val("").trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -570,7 +493,7 @@ $(function () {
 
         $('#addModal').modal('show');
         
-        $('#productForm').validate({
+        $('#rawMatForm').validate({
             errorElement: 'span',
             errorPlacement: function (error, element) {
                 error.addClass('invalid-feedback');
@@ -586,6 +509,8 @@ $(function () {
     });
 
     $('#uploadExcel').on('click', function(){
+        $('#previewTable').html('');
+        $('#fileInput').val('');
         $('#uploadModal').modal('show');
 
         $('#uploadForm').validate({
@@ -621,15 +546,15 @@ $(function () {
         $('#spinnerLoading').show();
         var selectedIds = []; // An array to store the selected 'id' values
 
-        $("#productTable tbody input[type='checkbox']").each(function () {
+        $("#rawMatTable tbody input[type='checkbox']").each(function () {
             if (this.checked) {
                 selectedIds.push($(this).val());
             }
         });
 
         if (selectedIds.length > 0) {
-            if (confirm('Are you sure you want to cancel these items?')) {
-                $.post('php/deleteRawMaterial.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+            if (confirm('Are you sure you want to delete these raw materials?')) {
+                $.post('php/modules/rawMaterial/deleteRawMaterial.php', {userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -660,19 +585,17 @@ $(function () {
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/getRawMaterial.php', {userID: id}, function(data)
+    $.post('php/modules/rawMaterial/getRawMaterial.php', {userID: id}, function(data)
     {
         var obj = JSON.parse(data);
         if(obj.status === 'success'){
             $('#addModal').find('#id').val(obj.message.id);
-            $('#addModal').find('#productCode').val(obj.message.product_code);
-            $('#addModal').find('#productName').val(obj.message.name);
-            $('#addModal').find('#productPrice').val(obj.message.price);
+            $('#addModal').find('#rawMatCode').val(obj.message.product_code);
+            $('#addModal').find('#rawMatName').val(obj.message.name);
             $('#addModal').find('#description').val(obj.message.description);
             $('#addModal').find('#varianceType').val(obj.message.variance).trigger('change');
             $('#addModal').find('#high').val(obj.message.high);
             $('#addModal').find('#low').val(obj.message.low);
-            $('#addModal').find('#type').val(obj.message.type).trigger('change');
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -686,16 +609,28 @@ function edit(id){
             });
 
             $('#addModal').modal('show');
+
+            $('#rawMatForm').validate({
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         else{
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         $('#spinnerLoading').hide();
     });
@@ -703,30 +638,26 @@ function edit(id){
 
 function deactivate(id){
     $('#spinnerLoading').show();
-    if (confirm('Are you sure you want to cancel this item?')) {
-        $.post('php/deleteRawMaterial.php', {userID: id}, function(data){
+    if (confirm('Are you sure you want to delete this raw material?')) {
+        $.post('php/modules/rawMaterial/deleteRawMaterial.php', {userID: id}, function(data){
             var obj = JSON.parse(data);
             
             if(obj.status === 'success'){
                 table.ajax.reload();
                 $('#spinnerLoading').hide();
-                $("#successBtn").attr('data-toast-text', obj.message);
-                $("#successBtn").click();
+                toastr["success"](obj.message, "Success:");
             }
             else if(obj.status === 'failed'){
                 $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
             else{
                 $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
         });
     }
     $('#spinnerLoading').hide();
-
 }
 
 function displayPreview(data) {
@@ -743,9 +674,9 @@ function displayPreview(data) {
     // Get the headers
     var headers = jsonData[0];
 
-    // Ensure we handle cases where there may be less than 15 columns
-    while (headers.length < 2) {
-        headers.push(''); // Adding empty headers to reach 15 columns
+    // Ensure we handle cases where there may be less than 3 columns
+    while (headers.length < 3) {
+        headers.push(''); // Adding empty headers to reach 3 columns
     }
 
     // Create HTML table headers
@@ -760,12 +691,12 @@ function displayPreview(data) {
         htmlTable += '<tr>';
         var rowData = jsonData[i];
 
-        // Ensure we handle cases where there may be less than 15 cells in a row
-        while (rowData.length < 2) {
-            rowData.push(''); // Adding empty cells to reach 15 columns
+        // Ensure we handle cases where there may be less than 3 cells in a row
+        while (rowData.length < 3) {
+            rowData.push(''); // Adding empty cells to reach 3 columns
         }
 
-        for (var j = 0; j < 2; j++) {
+        for (var j = 0; j < 3; j++) {
             var cellData = rowData[j];
             var formattedData = cellData;
 
@@ -794,18 +725,15 @@ function reactivate(id) {
         if(obj.status === 'success'){
             table.ajax.reload();
             $('#spinnerLoading').hide();
-            $("#successBtn").attr('data-toast-text', obj.message);
-            $("#successBtn").click();
+            toastr["success"](obj.message, "Success:");
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
         else{
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](obj.message, "Failed:");
         }
 
         $('#spinnerLoading').hide();
@@ -814,20 +742,6 @@ function reactivate(id) {
 
   $('#spinnerLoading').hide();
 }
-
-$('#productForm').validate({
-    errorElement: 'span',
-    errorPlacement: function (error, element) {
-      error.addClass('invalid-feedback');
-      element.closest('.form-group').append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass('is-invalid');
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass('is-invalid');
-    }
-  });
 </script>
     </body>
 

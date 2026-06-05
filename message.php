@@ -2,7 +2,7 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
-    <title>Weighing | Synctronix - Weighing System</title>
+    <title><?=$languageArray['message_resource_code'][$language] ?> | Synctronix - Weighing System</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <!-- jsvectormap css -->
@@ -61,9 +61,6 @@
                             </div>
                             <!--end row-->
                             
-                            <button type="button" hidden id="successBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-                            <button type="button" hidden id="failBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
-
                             <div class="row">
                                 <div class="col-xl-3 col-md-6 add-new-weight">
 
@@ -77,7 +74,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form role="form" id="siteForm" class="needs-validation" novalidate autocomplete="off">
+                                                    <form role="form" id="messageForm" class="needs-validation" novalidate autocomplete="off">
                                                         <div class=" row col-12">
                                                             <div class="col-xxl-12 col-lg-12">
                                                                 <div class="card bg-light">
@@ -85,11 +82,11 @@
                                                                         <div class="row">
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
-                                                                                    <label for="keyCode" class="col-sm-4 col-form-label">Message Key Code *</label>
+                                                                                    <label for="keyCode" class="col-sm-4 col-form-label"><?=$languageArray['message_code_code'][$language] ?> *</label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="keyCode" name="keyCode" placeholder="Message Key code" required>
+                                                                                        <input type="text" class="form-control" id="keyCode" name="keyCode" placeholder="<?=$languageArray['message_code_code'][$language] ?>" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language] ?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -100,7 +97,7 @@
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="englishDecs" name="englishDecs" placeholder="English" required>
                                                                                         <div class="invalid-feedback">
-                                                                                            Please fill in the field.
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language] ?>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -140,7 +137,7 @@
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
                                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitSite"><?=$languageArray['submit_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitMessage"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
                                                         </div><!--end col-->                                                               
                                                     </form>
@@ -164,7 +161,7 @@
                                                                 <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <button type="button" id="addSite" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#messageModal">
+                                                                <button type="button" id="addMessage" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#messageModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language] ?>
                                                                 </button>
@@ -172,7 +169,7 @@
                                                         </div> 
                                                     </div>
                                                     <div class="card-body">
-                                                        <table id="siteTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
+                                                        <table id="messageTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                                                             <thead>
                                                                 <tr>
                                                                     <th>No.</th>
@@ -207,9 +204,6 @@
     </div>
     <!-- END layout-wrapper -->
 
-
-
-
     <?php include 'layouts/customizer.php'; ?>
 
     <?php include 'layouts/vendor-scripts.php'; ?>
@@ -236,8 +230,6 @@
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
 
-
-
 <script type="text/javascript">
 
 var table;
@@ -248,7 +240,7 @@ $(function () {
         checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
     });
 
-    table = $("#siteTable").DataTable({
+    table = $("#messageTable").DataTable({
         "responsive": true,
         "autoWidth": false,
         'processing': true,
@@ -257,7 +249,7 @@ $(function () {
         'order': [[ 1, 'asc' ]],
         'columnDefs': [ { orderable: false, targets: [0] }],
         'ajax': {
-            'url':'php/loadMessages.php'
+            'url':'php/modules/message/loadMessages.php'
         },
         'columns': [
             { data: 'counter' },
@@ -269,7 +261,6 @@ $(function () {
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
-                    // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
                     return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                     '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
                     '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
@@ -279,35 +270,28 @@ $(function () {
         ]       
     });
     
-    $('#submitSite').on('click', function(){
-        if($('#siteForm').valid()){
+    $('#submitMessage').on('click', function(){
+        if($('#messageForm').valid()){
             $('#spinnerLoading').show();
-            $.post('php/message.php', $('#siteForm').serialize(), function(data){
-                var obj = JSON.parse(data); 
-                if(obj.status === 'success')
-                {
+            $.post('php/modules/message/message.php', $('#messageForm').serialize(), function(data){
+                var obj = JSON.parse(data);
+                if(obj.status === 'success') {
                     table.ajax.reload();
                     $('#spinnerLoading').hide();
                     $('#messageModal').modal('hide');
-                    $("#successBtn").attr('data-toast-text', obj.message);
-                    $("#successBtn").click();
+                    toastr["success"](obj.message, "Success:");
                 }
-                else if(obj.status === 'failed')
-                {
+                else if(obj.status === 'failed') {
                     $('#spinnerLoading').hide();
-                    $("#failBtn").attr('data-toast-text', obj.message );
-                    $("#failBtn").click();
+                    toastr["error"](obj.message, "Failed:");
                 }
-                else
-                {
-
-                }
+                else {}
             });
         }
         // }
     });
 
-    $('#addSite').on('click', function(){
+    $('#addMessage').on('click', function(){
         $('#messageModal').find('#keyId').val('');
         $('#messageModal').find('#keyCode').val('');
         $('#messageModal').find('#englishDecs').val('');
@@ -320,7 +304,7 @@ $(function () {
         $('#messageModal .is-invalid').removeClass('is-invalid');
         $('#messageModal').modal('show');
         
-        $('#siteForm').validate({
+        $('#messageForm').validate({
             errorElement: 'span',
             errorPlacement: function (error, element) {
                 error.addClass('invalid-feedback');
@@ -338,7 +322,7 @@ $(function () {
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/getMessage.php', {messageId: id}, function(data) {
+    $.post('php/modules/message/getMessage.php', {messageId: id}, function(data) {
         var decode = JSON.parse(data);
 
         if(decode.status === 'success'){
@@ -354,15 +338,13 @@ function edit(id){
             $('#messageModal').modal('show');
             $('#spinnerLoading').hide();
         }
-        else if(obj.status === 'failed'){
+        else if(decode.status === 'failed'){
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](decode.message, "Failed:");
         }
         else{
             $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
+            toastr["error"](decode.message, "Failed:");
         }
         
     });
@@ -370,130 +352,28 @@ function edit(id){
 
 function deactivate(id){
     $('#spinnerLoading').show();
-    if (confirm('Are you sure you want to cancel this item?')) {
-        $.post('php/deleteMessage.php', {messageId: id}, function(data){
+    if (confirm('Are you sure you want to delete this message resource?')) {
+        $.post('php/modules/message/deleteMessage.php', {messageId: id}, function(data){
             var obj = JSON.parse(data);
-            
+
             if(obj.status === 'success'){
                 table.ajax.reload();
                 $('#spinnerLoading').hide();
-                $("#successBtn").attr('data-toast-text', obj.message);
-                $("#successBtn").click();
+                toastr["success"](obj.message, "Success:");
             }
             else if(obj.status === 'failed'){
                 $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
             else{
                 $('#spinnerLoading').hide();
-                $("#failBtn").attr('data-toast-text', obj.message );
-                $("#failBtn").click();
+                toastr["error"](obj.message, "Failed:");
             }
         });
     }
     $('#spinnerLoading').hide();
 }
 
-function reactivate(id) {
-  if (confirm('Do you want to reactivate this item?')) {
-    $('#spinnerLoading').show();
-    $.post('php/reactivateMasterData.php', {userID: id, type: "Site"}, function(data){
-        var obj = JSON.parse(data);
-
-        if(obj.status === 'success'){
-            table.ajax.reload();
-            $('#spinnerLoading').hide();
-            $("#successBtn").attr('data-toast-text', obj.message);
-            $("#successBtn").click();
-        }
-        else if(obj.status === 'failed'){
-            $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
-        }
-        else{
-            $('#spinnerLoading').hide();
-            $("#failBtn").attr('data-toast-text', obj.message );
-            $("#failBtn").click();
-        }
-
-        $('#spinnerLoading').hide();
-    });
-  }
-
-  $('#spinnerLoading').hide();
-}
-
-function displayPreview(data) {
-    // Parse the Excel data
-    var workbook = XLSX.read(data, { type: 'binary' });
-
-    // Get the first sheet
-    var sheetName = workbook.SheetNames[0];
-    var sheet = workbook.Sheets[sheetName];
-
-    // Convert the sheet to an array of objects
-    var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    // Get the headers
-    var headers = jsonData[0];
-
-    // Ensure we handle cases where there may be less than 8 columns
-    while (headers.length < 8) {
-        headers.push(''); // Adding empty headers to reach 8 columns
-    }
-
-    // Create HTML table headers
-    var htmlTable = '<table style="width:50%;"><thead><tr>';
-    headers.forEach(function(header) {
-        htmlTable += '<th>' + header + '</th>';
-    });
-    htmlTable += '</tr></thead><tbody>';
-
-    // Iterate over the data and create table rows
-    for (var i = 1; i < jsonData.length; i++) {
-        htmlTable += '<tr>';
-        var rowData = jsonData[i];
-
-        // Ensure we handle cases where there may be less than 7 cells in a row
-        while (rowData.length < 7) {
-            rowData.push(''); // Adding empty cells to reach 7 columns
-        }
-
-        for (var j = 0; j < 7; j++) {
-            var cellData = rowData[j];
-            var formattedData = cellData;
-
-            // Check if cellData is a valid Excel date serial number and format it to DD/MM/YYYY
-            if (typeof cellData === 'number' && cellData > 0) {
-                var excelDate = XLSX.SSF.parse_date_code(cellData);
-            }
-
-            htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (formattedData == null ? '' : formattedData) + '" /></td>';
-        }
-        htmlTable += '</tr>';
-    }
-
-    htmlTable += '</tbody></table>';
-
-    var previewTable = document.getElementById('previewTable');
-    previewTable.innerHTML = htmlTable;
-}
-
-$('#siteForm').validate({
-    errorElement: 'span',
-    errorPlacement: function (error, element) {
-      error.addClass('invalid-feedback');
-      element.closest('.form-group').append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass('is-invalid');
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass('is-invalid');
-    }
-  });
 </script>
     </body>
 

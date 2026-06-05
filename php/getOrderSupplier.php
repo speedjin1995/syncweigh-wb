@@ -69,7 +69,6 @@ if(isset($_POST['code'], $_POST['type'])){
                 $message['plant_name'] = $plantName;
                 $message['transporter_name'] = $transporterName;
                 $message['veh_number'] = $vehNo;
-                $message['ex_del'] = $exDel;
                 $message['order_supplier_weight'] = $order_supplier_weight;
                 $message['balance'] = $balance;
                 // $message['final_weight'] = $finalWeight;
@@ -134,7 +133,6 @@ if(isset($_POST['code'], $_POST['type'])){
                 $message['plant_name'] = $plantName;
                 $message['transporter_name'] = $transporterName;
                 $message['veh_number'] = $vehNo;
-                $message['ex_del'] = $exDel;
                 $message['order_supplier_weight'] = $order_supplier_weight;
                 $message['balance'] = $balance;
                 // $message['final_weight'] = $finalWeight;
