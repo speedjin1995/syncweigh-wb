@@ -237,6 +237,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                 @media print {
                                     @page {
                                         size: A5 landscape;
+                                        margin-left: 0in;
+                                        margin-right: 0.3in;
+                                        margin-top: 0.1in;
+                                        margin-bottom: 0.2in;
                                     }
                                 } 
                                       
@@ -852,7 +856,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                             }
                             
                             $message .= '
-                            <table style="width: 100%; position: fixed; bottom: 50; left: 0;">
+                            <table style="width: 100%; position: fixed; bottom: 90; left: 0;">
                                 <tr>
                                     <td style="vertical-align: top; font-size: 14px; width: 25%; padding-left:10px;">
                                         <hr width="100%" style="margin-left: 0; text-align: left;">
