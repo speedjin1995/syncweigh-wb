@@ -237,12 +237,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])) {
                                 @media print {
                                     @page {
                                         size: A5 landscape;
-                                        margin-left: 0.5in;
-                                        margin-right: 0.5in;
-                                        margin-top: 0.1in;
-                                        margin-bottom: 0.1in;
                                     }
-                                    
                                 } 
                                       
                                 table {
