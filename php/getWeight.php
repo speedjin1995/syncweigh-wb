@@ -180,6 +180,7 @@ if(isset($_POST['userID'])){
                             $message['reduce_weight'] = $row['reduce_weight'];
                             $message['final_weight'] = $row['final_weight'];
                             $message['weight_different'] = $row['weight_different'];
+                            $message['weight_different_perc'] = $row['weight_different_perc'];
                             $message['is_complete'] = $row['is_complete'];
                             $message['is_cancel'] = $row['is_cancel'];
                             $message['manual_weight'] = $row['manual_weight'];
@@ -420,6 +421,7 @@ if(isset($_POST['userID'])){
                             $message['reduce_weight'] = $row['reduce_weight'];
                             $message['final_weight'] = $row['final_weight'];
                             $message['weight_different'] = $row['weight_different'];
+                            $message['weight_different_perc'] = $row['weight_different_perc'];
                             $message['is_complete'] = $row['is_complete'];
                             $message['is_cancel'] = $row['is_cancel'];
                             $message['manual_weight'] = $row['manual_weight'];
