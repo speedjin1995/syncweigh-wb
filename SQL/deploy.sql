@@ -803,3 +803,515 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW B
 END
 $$
 DELIMITER ;
+
+-- 19/10/25--
+ALTER TABLE `Weight` ADD `weight_different_perc` VARCHAR(50) NULL AFTER `weight_different`;
+
+ALTER TABLE `Weight_Log` ADD `weight_different_perc` VARCHAR(50) NULL AFTER `weight_different`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT` AFTER INSERT ON `Weight` FOR EACH ROW 
+INSERT INTO Weight_Log (
+    transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight, NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT` BEFORE UPDATE ON `Weight` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Weight_Log table
+    INSERT INTO Weight_Log (
+        transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, 
+        NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, 
+        NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, 
+        NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, 
+        NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, 
+        NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, 
+        NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, 
+        NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, 
+        NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, 
+        NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, 
+        NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, 
+        NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight,
+        NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, 
+        NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, 
+        NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, 
+        NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Weight_Container` ADD `weight_different_perc` VARCHAR(50) NULL AFTER `reduce_weight`;
+
+ALTER TABLE `Weight_Container_Log` ADD `weight_different_perc` VARCHAR(50) NULL AFTER `reduce_weight`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT_CONTAINER` AFTER INSERT ON `Weight_Container` FOR EACH ROW INSERT INTO Weight_Container_Log (
+    transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight, NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Container` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Weight_Container_Log table
+    INSERT INTO Weight_Container_Log (
+        transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, 
+        NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, 
+        NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, 
+        NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, 
+        NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, 
+        NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, 
+        NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, 
+        NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, 
+        NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, 
+        NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container,
+        NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, 
+        NEW.reduce_weight, NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, 
+        NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, 
+        NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, 
+        NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+-- 11/01/2026 --
+ALTER TABLE `message_resource` ADD COLUMN `ja` text AFTER `ne`;
+
+UPDATE `message_resource` SET `ja`='新規追加' WHERE `id`=1;
+UPDATE `message_resource` SET `ja`='メッセージコード' WHERE `id`=3;
+UPDATE `message_resource` SET `ja`='編集' WHERE `id`=4;
+UPDATE `message_resource` SET `ja`='削除' WHERE `id`=5;
+UPDATE `message_resource` SET `ja`='配送' WHERE `id`=6;
+UPDATE `message_resource` SET `ja`='受領' WHERE `id`=7;
+UPDATE `message_resource` SET `ja`='内部振替' WHERE `id`=8;
+UPDATE `message_resource` SET `ja`='その他' WHERE `id`=9;
+UPDATE `message_resource` SET `ja`='コンテナ計量待ち' WHERE `id`=10;
+UPDATE `message_resource` SET `ja`='トラック計量待ち' WHERE `id`=11;
+UPDATE `message_resource` SET `ja`='顧客' WHERE `id`=12;
+UPDATE `message_resource` SET `ja`='サプライヤー' WHERE `id`=13;
+UPDATE `message_resource` SET `ja`='製品' WHERE `id`=14;
+UPDATE `message_resource` SET `ja`='計量レポート' WHERE `id`=15;
+UPDATE `message_resource` SET `ja`='スタッフ' WHERE `id`=16;
+UPDATE `message_resource` SET `ja`='マスターデータ' WHERE `id`=17;
+UPDATE `message_resource` SET `ja`='メッセージリソース' WHERE `id`=18;
+UPDATE `message_resource` SET `ja`='設定' WHERE `id`=19;
+UPDATE `message_resource` SET `ja`='会社概要' WHERE `id`=20;
+UPDATE `message_resource` SET `ja`='プロフィール' WHERE `id`=21;
+UPDATE `message_resource` SET `ja`='パスワード変更' WHERE `id`=22;
+UPDATE `message_resource` SET `ja`='ログアウト' WHERE `id`=23;
+UPDATE `message_resource` SET `ja`='車両' WHERE `id`=24;
+UPDATE `message_resource` SET `ja`='運送業者' WHERE `id`=25;
+UPDATE `message_resource` SET `ja`='工場' WHERE `id`=26;
+UPDATE `message_resource` SET `ja`='開始日' WHERE `id`=27;
+UPDATE `message_resource` SET `ja`='日次計量' WHERE `id`=28;
+UPDATE `message_resource` SET `ja`='計量' WHERE `id`=29;
+UPDATE `message_resource` SET `ja`='終了日' WHERE `id`=30;
+UPDATE `message_resource` SET `ja`='検索' WHERE `id`=31;
+UPDATE `message_resource` SET `ja`='目的地' WHERE `id`=32;
+UPDATE `message_resource` SET `ja`='原材料' WHERE `id`=33;
+UPDATE `message_resource` SET `ja`='レポート' WHERE `id`=34;
+UPDATE `message_resource` SET `ja`='監査ログ' WHERE `id`=35;
+UPDATE `message_resource` SET `ja`='ポート設定' WHERE `id`=36;
+UPDATE `message_resource` SET `ja`='テンプレートダウンロード' WHERE `id`=37;
+UPDATE `message_resource` SET `ja`='Excelアップロード' WHERE `id`=38;
+UPDATE `message_resource` SET `ja`='過去の記録' WHERE `id`=39;
+UPDATE `message_resource` SET `ja`='未読メッセージ' WHERE `id`=40;
+UPDATE `message_resource` SET `ja`='新規' WHERE `id`=41;
+UPDATE `message_resource` SET `ja`='名前' WHERE `id`=42;
+UPDATE `message_resource` SET `ja`='ユーザー名' WHERE `id`=43;
+UPDATE `message_resource` SET `ja`='パスワード' WHERE `id`=44;
+UPDATE `message_resource` SET `ja`='新しいパスワード' WHERE `id`=45;
+UPDATE `message_resource` SET `ja`='古いパスワード' WHERE `id`=46;
+UPDATE `message_resource` SET `ja`='パスワード確認' WHERE `id`=47;
+UPDATE `message_resource` SET `ja`='役割' WHERE `id`=48;
+UPDATE `message_resource` SET `ja`='送信' WHERE `id`=49;
+UPDATE `message_resource` SET `ja`='言語' WHERE `id`=50;
+UPDATE `message_resource` SET `ja`='メール' WHERE `id`=51;
+UPDATE `message_resource` SET `ja`='顧客コード' WHERE `id`=52;
+UPDATE `message_resource` SET `ja`='登録番号' WHERE `id`=53;
+UPDATE `message_resource` SET `ja`='新規登録番号' WHERE `id`=54;
+UPDATE `message_resource` SET `ja`='顧客名' WHERE `id`=55;
+UPDATE `message_resource` SET `ja`='住所' WHERE `id`=56;
+UPDATE `message_resource` SET `ja`='電話' WHERE `id`=57;
+UPDATE `message_resource` SET `ja`='FAX番号' WHERE `id`=58;
+UPDATE `message_resource` SET `ja`='担当者' WHERE `id`=59;
+UPDATE `message_resource` SET `ja`='IC' WHERE `id`=60;
+UPDATE `message_resource` SET `ja`='TIN番号' WHERE `id`=61;
+UPDATE `message_resource` SET `ja`='閉じる' WHERE `id`=62;
+UPDATE `message_resource` SET `ja`='データプレビュー' WHERE `id`=64;
+UPDATE `message_resource` SET `ja`='Excelエクスポート' WHERE `id`=65;
+UPDATE `message_resource` SET `ja`='PDFエクスポート' WHERE `id`=66;
+UPDATE `message_resource` SET `ja`='ステータス' WHERE `id`=67;
+UPDATE `message_resource` SET `ja`='アクション' WHERE `id`=68;
+UPDATE `message_resource` SET `ja`='伝票' WHERE `id`=70;
+UPDATE `message_resource` SET `ja`='チケット番号' WHERE `id`=72;
+UPDATE `message_resource` SET `ja`='日付' WHERE `id`=73;
+UPDATE `message_resource` SET `ja`='納品書番号' WHERE `id`=74;
+UPDATE `message_resource` SET `ja`='注文書番号' WHERE `id`=75;
+UPDATE `message_resource` SET `ja`='コンテナ番号1' WHERE `id`=76;
+UPDATE `message_resource` SET `ja`='コンテナ番号2' WHERE `id`=77;
+UPDATE `message_resource` SET `ja`='封印番号1' WHERE `id`=78;
+UPDATE `message_resource` SET `ja`='封印番号2' WHERE `id`=79;
+UPDATE `message_resource` SET `ja`='車両番号' WHERE `id`=80;
+UPDATE `message_resource` SET `ja`='製品説明' WHERE `id`=81;
+UPDATE `message_resource` SET `ja`='日時' WHERE `id`=82;
+UPDATE `message_resource` SET `ja`='重量' WHERE `id`=83;
+UPDATE `message_resource` SET `ja`='kg' WHERE `id`=84;
+UPDATE `message_resource` SET `ja`='入場' WHERE `id`=85;
+UPDATE `message_resource` SET `ja`='出場' WHERE `id`=86;
+UPDATE `message_resource` SET `ja`='減少' WHERE `id`=87;
+UPDATE `message_resource` SET `ja`='正味' WHERE `id`=88;
+UPDATE `message_resource` SET `ja`='備考' WHERE `id`=89;
+UPDATE `message_resource` SET `ja`='1回目計量者' WHERE `id`=90;
+UPDATE `message_resource` SET `ja`='2回目計量者' WHERE `id`=91;
+UPDATE `message_resource` SET `ja`='管理者承認' WHERE `id`=92;
+UPDATE `message_resource` SET `ja`='受領者' WHERE `id`=93;
+UPDATE `message_resource` SET `ja`='出場日時' WHERE `id`=94;
+UPDATE `message_resource` SET `ja`='入場日時' WHERE `id`=95;
+UPDATE `message_resource` SET `ja`='総重量' WHERE `id`=96;
+UPDATE `message_resource` SET `ja`='皮重量' WHERE `id`=97;
+UPDATE `message_resource` SET `ja`='正味重量' WHERE `id`=98;
+UPDATE `message_resource` SET `ja`='梱包' WHERE `id`=99;
+UPDATE `message_resource` SET `ja`='番号' WHERE `id`=100;
+UPDATE `message_resource` SET `ja`='取引状況' WHERE `id`=101;
+UPDATE `message_resource` SET `ja`='計量タイプ' WHERE `id`=102;
+UPDATE `message_resource` SET `ja`='取引ID' WHERE `id`=103;
+UPDATE `message_resource` SET `ja`='コンテナ番号' WHERE `id`=104;
+UPDATE `message_resource` SET `ja`='封印番号' WHERE `id`=105;
+UPDATE `message_resource` SET `ja`='請求書/納品書/注文書番号' WHERE `id`=106;
+UPDATE `message_resource` SET `ja`='保留中' WHERE `id`=107;
+UPDATE `message_resource` SET `ja`='完了' WHERE `id`=108;
+UPDATE `message_resource` SET `ja`='通常計量' WHERE `id`=109;
+UPDATE `message_resource` SET `ja`='重量状況' WHERE `id`=110;
+UPDATE `message_resource` SET `ja`='顧客/サプライヤー' WHERE `id`=111;
+UPDATE `message_resource` SET `ja`='総入荷重量' WHERE `id`=112;
+UPDATE `message_resource` SET `ja`='出荷皮重量' WHERE `id`=113;
+UPDATE `message_resource` SET `ja`='入荷日' WHERE `id`=114;
+UPDATE `message_resource` SET `ja`='出荷日' WHERE `id`=115;
+UPDATE `message_resource` SET `ja`='記録検索' WHERE `id`=116;
+UPDATE `message_resource` SET `ja`='空コンテナ保留記録' WHERE `id`=117;
+UPDATE `message_resource` SET `ja`='指示重量' WHERE `id`=118;
+UPDATE `message_resource` SET `ja`='最終重量' WHERE `id`=119;
+UPDATE `message_resource` SET `ja`='注文重量' WHERE `id`=120;
+UPDATE `message_resource` SET `ja`='サプライヤー重量' WHERE `id`=121;
+UPDATE `message_resource` SET `ja`='重量タイプ' WHERE `id`=122;
+UPDATE `message_resource` SET `ja`='重量差' WHERE `id`=123;
+UPDATE `message_resource` SET `ja`='減重量' WHERE `id`=124;
+UPDATE `message_resource` SET `ja`='取引日' WHERE `id`=125;
+UPDATE `message_resource` SET `ja`='単価' WHERE `id`=126;
+UPDATE `message_resource` SET `ja`='請求書番号' WHERE `id`=127;
+UPDATE `message_resource` SET `ja`='SST' WHERE `id`=128;
+UPDATE `message_resource` SET `ja`='配送番号' WHERE `id`=129;
+UPDATE `message_resource` SET `ja`='小計' WHERE `id`=130;
+UPDATE `message_resource` SET `ja`='手動重量' WHERE `id`=131;
+UPDATE `message_resource` SET `ja`='はい' WHERE `id`=132;
+UPDATE `message_resource` SET `ja`='いいえ' WHERE `id`=133;
+UPDATE `message_resource` SET `ja`='合計金額' WHERE `id`=134;
+UPDATE `message_resource` SET `ja`='製品コード' WHERE `id`=135;
+UPDATE `message_resource` SET `ja`='原材料コード' WHERE `id`=136;
+UPDATE `message_resource` SET `ja`='営業担当者' WHERE `id`=137;
+UPDATE `message_resource` SET `ja`='新規空入口ビン' WHERE `id`=138;
+UPDATE `message_resource` SET `ja`='サプライヤー名' WHERE `id`=139;
+UPDATE `message_resource` SET `ja`='交換用コンテナ' WHERE `id`=140;
+UPDATE `message_resource` SET `ja`='製品追加' WHERE `id`=141;
+UPDATE `message_resource` SET `ja`='車両ナンバープレート' WHERE `id`=142;
+UPDATE `message_resource` SET `ja`='ドラム数' WHERE `id`=143;
+UPDATE `message_resource` SET `ja`='入荷' WHERE `id`=144;
+UPDATE `message_resource` SET `ja`='出荷' WHERE `id`=145;
+UPDATE `message_resource` SET `ja`='車両重量' WHERE `id`=146;
+UPDATE `message_resource` SET `ja`='空コンテナ重量' WHERE `id`=147;
+UPDATE `message_resource` SET `ja`='その他備考' WHERE `id`=148;
+UPDATE `message_resource` SET `ja`='送信＆印刷' WHERE `id`=149;
+UPDATE `message_resource` SET `ja`='目的地コード' WHERE `id`=150;
+UPDATE `message_resource` SET `ja`='目的地名' WHERE `id`=151;
+UPDATE `message_resource` SET `ja`='説明' WHERE `id`=152;
+UPDATE `message_resource` SET `ja`='製品コード' WHERE `id`=153;
+UPDATE `message_resource` SET `ja`='製品名' WHERE `id`=154;
+UPDATE `message_resource` SET `ja`='製品価格' WHERE `id`=155;
+UPDATE `message_resource` SET `ja`='バリアンスタイプ' WHERE `id`=156;
+UPDATE `message_resource` SET `ja`='高' WHERE `id`=157;
+UPDATE `message_resource` SET `ja`='低' WHERE `id`=158;
+UPDATE `message_resource` SET `ja`='原材料追加' WHERE `id`=159;
+UPDATE `message_resource` SET `ja`='原材料名' WHERE `id`=160;
+UPDATE `message_resource` SET `ja`='原材料価格' WHERE `id`=161;
+UPDATE `message_resource` SET `ja`='タイプ' WHERE `id`=162;
+UPDATE `message_resource` SET `ja`='サプライヤーコード' WHERE `id`=163;
+UPDATE `message_resource` SET `ja`='会社登録番号' WHERE `id`=164;
+UPDATE `message_resource` SET `ja`='会社名' WHERE `id`=165;
+UPDATE `message_resource` SET `ja`='運送業者コード' WHERE `id`=166;
+UPDATE `message_resource` SET `ja`='工場名' WHERE `id`=167;
+UPDATE `message_resource` SET `ja`='従業員コード' WHERE `id`=168;
+UPDATE `message_resource` SET `ja`='ユーザー名' WHERE `id`=169;
+UPDATE `message_resource` SET `ja`='ユーザー記録' WHERE `id`=170;
+UPDATE `message_resource` SET `ja`='工場コード' WHERE `id`=171;
+UPDATE `message_resource` SET `ja`='計量記録' WHERE `id`=172;
+UPDATE `message_resource` SET `ja`='差異' WHERE `id`=173;
+
+-- 13/01/2026 --
+ALTER TABLE `Weight` ADD `reduce_weight_type` VARCHAR(10) NULL AFTER `nett_weight2`, ADD `reduce_weight_input` VARCHAR(100) NULL AFTER `reduce_weight_type`;
+
+ALTER TABLE `Weight_Log` ADD `reduce_weight_type` VARCHAR(10) NULL AFTER `nett_weight2`, ADD `reduce_weight_input` VARCHAR(100) NULL AFTER `reduce_weight_type`;
+
+ALTER TABLE `Weight_Container` ADD `reduce_weight_type` VARCHAR(10) NULL AFTER `nett_weight2`, ADD `reduce_weight_input` VARCHAR(100) NULL AFTER `reduce_weight_type`;
+
+ALTER TABLE `Weight_Container_Log` ADD `reduce_weight_type` VARCHAR(10) NULL AFTER `nett_weight2`, ADD `reduce_weight_input` VARCHAR(100) NULL AFTER `reduce_weight_type`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT` AFTER INSERT ON `Weight` FOR EACH ROW 
+INSERT INTO Weight_Log (
+    transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight_type, reduce_weight_input, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight_type, NEW.reduce_weight_input, NEW.reduce_weight, NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT` BEFORE UPDATE ON `Weight` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Weight_Log table
+    INSERT INTO Weight_Log (
+        transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight_type, reduce_weight_input, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, 
+        NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, 
+        NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, 
+        NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, 
+        NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, 
+        NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, 
+        NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, 
+        NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, 
+        NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, 
+        NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, 
+        NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, 
+        NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight_type, NEW.reduce_weight_input, NEW.reduce_weight,
+        NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, 
+        NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, 
+        NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, 
+        NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT_CONTAINER` AFTER INSERT ON `Weight_Container` FOR EACH ROW INSERT INTO Weight_Container_Log (
+    transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight_type, reduce_weight_input, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight_type, NEW.reduce_weight_input, NEW.reduce_weight, NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Container` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Weight_Container_Log table
+    INSERT INTO Weight_Container_Log (
+        transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight_type, reduce_weight_input, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, 
+        NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, 
+        NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, 
+        NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, 
+        NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, 
+        NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, 
+        NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, 
+        NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, 
+        NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, 
+        NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container,
+        NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, 
+        NEW.reduce_weight_type, NEW.reduce_weight_input, NEW.reduce_weight, NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, 
+        NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, 
+        NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, 
+        NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`, `ja`) VALUES
+('print_slip_code', 'Print Slip', '打印单据', 'Cetak Slip', 'ஸ்லிப் அச்சிடு', '伝票印刷');
+('print_with_letter_header_code', 'Print With Letter Header', '打印（含信头）', 'Cetak Dengan Kepala Surat', 'கடிதத் தலைப்புடன் அச்சிடு', 'レターヘッダー付き印刷'),
+('print_without_letter_header_code', 'Print Without Letter Header', '打印（不含信头）', 'Cetak Tanpa Kepala Surat', 'கடிதத் தலைப்பின்றி அச்சிடு', 'レターヘッダーなし印刷');
+
+-- 16/01/2026 --
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`, `ja`) VALUES
+('supply_weight_code', 'Supply Weight', '供应重量', 'Berat Bekalan', 'விநியோக எடை', '供給重量'),
+('primer_mover_code','Primer Mover','牵引车','Kenderaan Penarik','பிரைமர் மூவர்','トラクターヘッド'),
+('primer_mover_container_code','Primer Mover + Container','牵引车 + 集装箱','Kenderaan Penarik + Kontena','பிரைமர் மூவர் + கண்டெய்னர்','トラクターヘッド＋コンテナ'),
+('primer_mover_different_bin_code','Primer Mover + Different Bins','牵引车 + 不同料斗','Kenderaan Penarik + Tong Berbeza','பிரைமர் மூவர் + வேறு தொட்டிகள்','トラクターヘッド＋異なるビン'),
+('tare_code','Tare','皮重','Berat Tara','டேர் எடை','風袋重量');
+
+ALTER TABLE `Company` ADD `include_price` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `mobile_no`, ADD `include_container` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_price`, ADD `include_different_bin` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_container`;
+
+ALTER TABLE `Company_Log` ADD `include_price` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `mobile_no`, ADD `include_container` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_price`, ADD `include_different_bin` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `include_container`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_COMPANY` BEFORE UPDATE ON `Company` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Always set action_id = 2 for update
+    SET action_value = 2;
+
+    -- Insert into Company_Log table
+    INSERT INTO Company_Log (
+        company_id, company_code, company_reg_no, new_reg_no, `name`, address_line_1, address_line_2, address_line_3, phone_no, fax_no, tin_no, mobile_no, include_price, include_container, include_different_bin, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.company_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.tin_no, NEW.mobile_no, NEW.include_price, NEW.include_container, NEW.include_different_bin, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Weight` ADD `tare_weight_type` VARCHAR(10) NULL AFTER `reduce_weight`, ADD `tare_weight_input` VARCHAR(100) NULL AFTER `tare_weight_type`, ADD `tare_weight` VARCHAR(100) NULL AFTER `tare_weight_input`;
+
+ALTER TABLE `Weight_Log` ADD `tare_weight_type` VARCHAR(10) NULL AFTER `reduce_weight`, ADD `tare_weight_input` VARCHAR(100) NULL AFTER `tare_weight_type`, ADD `tare_weight` VARCHAR(100) NULL AFTER `tare_weight_input`;
+
+ALTER TABLE `Weight_Container` ADD `tare_weight_type` VARCHAR(10) NULL AFTER `reduce_weight`, ADD `tare_weight_input` VARCHAR(100) NULL AFTER `tare_weight_type`, ADD `tare_weight` VARCHAR(100) NULL AFTER `tare_weight_input`;
+
+ALTER TABLE `Weight_Container_Log` ADD `tare_weight_type` VARCHAR(10) NULL AFTER `reduce_weight`, ADD `tare_weight_input` VARCHAR(100) NULL AFTER `tare_weight_type`, ADD `tare_weight` VARCHAR(100) NULL AFTER `tare_weight_input`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT` AFTER INSERT ON `Weight` FOR EACH ROW 
+INSERT INTO Weight_Log (
+    transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight_type, reduce_weight_input, reduce_weight, tare_weight_type, tare_weight_input, tare_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight_type, NEW.reduce_weight_input, NEW.reduce_weight, NEW.tare_weight_type, NEW.tare_weight_input, NEW.tare_weight, NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT` BEFORE UPDATE ON `Weight` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Weight_Log table
+    INSERT INTO Weight_Log (
+        transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight_type, reduce_weight_input, reduce_weight, tare_weight_type, tare_weight_input, tare_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, 
+        NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, 
+        NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, 
+        NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, 
+        NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, 
+        NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, 
+        NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, 
+        NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, 
+        NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, 
+        NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, 
+        NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, 
+        NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight_type, NEW.reduce_weight_input, NEW.reduce_weight,
+        NEW.tare_weight_type, NEW.tare_weight_input, NEW.tare_weight,
+        NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, 
+        NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, 
+        NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, 
+        NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT_CONTAINER` AFTER INSERT ON `Weight_Container` FOR EACH ROW INSERT INTO Weight_Container_Log (
+    transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight_type, reduce_weight_input, reduce_weight, tare_weight_type, tare_weight_input, tare_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight_type, NEW.reduce_weight_input, NEW.reduce_weight, NEW.tare_weight_type, NEW.tare_weight_input, NEW.tare_weight, NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Container` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Weight_Container_Log table
+    INSERT INTO Weight_Container_Log (
+        transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, site_code, site_name, agent_code, agent_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, ex_del, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight_type, reduce_weight_input, reduce_weight, tare_weight_type, tare_weight_input, tare_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, manual_weight, indicator_id, weighbridge_id, indicator_id_2, unit_price, sub_total, sst, total_price, load_drum, no_of_drum, status, approved_by, approved_reason, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, 
+        NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, 
+        NEW.plant_code, NEW.plant_name, NEW.site_code, NEW.site_name, 
+        NEW.agent_code, NEW.agent_name, NEW.customer_code, NEW.customer_name, 
+        NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, 
+        NEW.product_description, NEW.ex_del, NEW.raw_mat_code, NEW.raw_mat_name, 
+        NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, 
+        NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, 
+        NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, 
+        NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container,
+        NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, 
+        NEW.reduce_weight_type, NEW.reduce_weight_input, NEW.reduce_weight, NEW.tare_weight_type, NEW.tare_weight_input, NEW.tare_weight,
+        NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, 
+        NEW.is_approved, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, 
+        NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.load_drum, 
+        NEW.no_of_drum, NEW.status, NEW.approved_by, NEW.approved_reason, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;

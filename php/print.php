@@ -34,6 +34,7 @@ function formatWeight($weight){
 }
 
 if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
+if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
     $stmt = $db->prepare("SELECT * FROM Company WHERE id=?");
     $stmt->bind_param('s', $compids);
     $stmt->execute();
@@ -291,8 +292,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                         </head>
                         <body>
                             <table style="width:100%;">
-                                <tr>
-                                    <td style="width: 60%;">
+                                <tr '.$hideHeaderStyle.'>
+                                    <td style="width: 70%;">
                                         <p style="font-size: 14px;">
                                             <span style="font-weight: bold;font-size: 16px; margin-bottom: 10px; display: inline-block;">'.$compname.'</span><br>
                                             <span> Reg No.: '.$compreg.'</span><br>
@@ -303,12 +304,12 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                         </p>
                                     </td>
                                     <td style="vertical-align: top;">
-                                        <p style="vertical-align: top; margin-left:30px; font-size: 14px;">
-                                            <span style="font-size: 24px; font-weight: bold; margin-bottom: 10px; display: inline-block;">'. $languageArray[$transacationStatus][$language] . '' . $languageArray['slip_code'][$language].'</span><br>
-                                            <span>'. $languageArray['ticket_no_code'][$language].' &nbsp;:&nbsp; <b>'.$row['transaction_id'].'</b></span><br>
-                                            <span>'. $languageArray['date_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 1.5px;">:&nbsp;&nbsp;'.$transactionDate.'</span><br>
-                                            <span>'. $languageArray['do_no_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;</span><span>:&nbsp;&nbsp;'.$row['delivery_no'].'</span><br>
-                                            <span>'. $languageArray['po_no_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left:2.5px">:&nbsp;&nbsp;'.$row['purchase_order'].'</span><br>
+                                        <p style="vertical-align: top; font-size: 16px;">
+                                            <span style="font-size: 24px; font-weight: bold; margin-bottom: 5px; display: inline-block;">'. $languageArray[$transacationStatus][$language] . ' ' . $languageArray['slip_code'][$language].'</span><br>
+                                            <span style="display: inline-block; width: 70px;">'. $languageArray['ticket_no_code'][$language].'</span>: <b>'.$row['transaction_id'].'</b><br>
+                                            <span style="display: inline-block; width: 70px;">'. $languageArray['date_code'][$language].'</span>: '.$transactionDate.'<br>
+                                            <span style="display: inline-block; width: 70px;">'. $languageArray['do_no_code'][$language].'</span>: '.$row['delivery_no'].'<br>
+                                            <span style="display: inline-block; width: 70px;">'. $languageArray['po_no_code'][$language].'</span>: '.$row['purchase_order'].'<br>
                                         </p>
                                     </td>
                                 </tr>
@@ -317,10 +318,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 </tr>
                                 <tr style="border-top: 1px solid black;">
                                     <td style="vertical-align: top;">
-                                        <p style="margin-top: 5px; font-size: 14px;">
-                                            <span">'.$languageArray['customer_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 12.5px">:&nbsp; <b>'.$customer.'</b></span><br>
-                                            <span">'.$languageArray['transporter_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 12.5px">:&nbsp; '.$row['transporter'].'</span><br>
-                                            <span">'.$languageArray['destination_code'][$language].' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="margin-left: 12.5px">:&nbsp; '.$row['destination'].'</span>
+                                        <p style="margin-top: 5px; font-size: 16px;">
+                                            <span style="display: inline-block; width: 100px;">'.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $languageArray['customer_code'][$language] : $languageArray['supplier_code'][$language]).'</span>: <b>'.$customer.'</b><br>
+                                            <span style="display: inline-block; width: 100px;">'.$languageArray['transporter_code'][$language].'</span>: '.$row['transporter'].'<br>
+                                            <span style="display: inline-block; width: 100px;">'.$languageArray['destination_code'][$language].'</span>: '.$row['destination'].'
                                         </p>';
 
                                         // $message .= '
@@ -333,7 +334,16 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                         //         $message .= '<span>Destination &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['destination_code']. ' - '.$row['destination'].'</span>';
                                         //     }
 
-                                        $message .= '</p>
+                                        // $message .= '</p>';
+
+                                        $message .= '
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <p style="margin-top: 5px; font-size: 16px;">
+                                            <span style="display: inline-block; width: 100px;">'.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $languageArray['order_weight_code'][$language] : $languageArray['supply_weight_code'][$language]).'</span>: <b>'.($row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc' ? $row['order_weight'] : $row['supplier_weight']).'</b><br>
+                                            <span style="display: inline-block; width: 100px;">'.$languageArray['variance_code'][$language].'</span>: '.$row['weight_different'].'<br>
+                                            <span style="display: inline-block; width: 100px;">% '.$languageArray['variance_code'][$language].'</span>: '.$row['weight_different_perc'].'
+                                        </p>
                                     </td>
                                 </tr>';
                             $message .= '
