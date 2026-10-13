@@ -9,10 +9,11 @@ class BaseService {
     protected $username;
 
     // Columns holding each master data record's code / name in Weight and Weight_Container.
-    // vehicle = Vehicle also stores it (customers / suppliers linked to a vehicle).
+    // vehicle = Vehicle also stores it; the value is its name column in Vehicle.
     private static $masterDataColumns = [
-        'Customer' => ['code' => 'customer_code', 'name' => 'customer_name', 'vehicle' => true],
-        'Supplier' => ['code' => 'supplier_code', 'name' => 'supplier_name', 'vehicle' => true],
+        'Customer' => ['code' => 'customer_code', 'name' => 'customer_name', 'vehicle' => 'customer_name'],
+        'Supplier' => ['code' => 'supplier_code', 'name' => 'supplier_name', 'vehicle' => 'supplier_name'],
+        'Transporter' => ['code' => 'transporter_code', 'name' => 'transporter', 'vehicle' => 'transporter_name'],
         'Destination' => ['code' => 'destination_code', 'name' => 'destination'],
         'Product' => ['code' => 'product_code', 'name' => 'product_name'],
         'Raw Material' => ['code' => 'raw_mat_code', 'name' => 'raw_mat_name'],
@@ -45,49 +46,36 @@ class BaseService {
 
     /**
      * When a master data code changes, update it in the records that reference it.
-     * $companyId limits the update to that company's records; null updates every company
-     * (for master data without a company, e.g. Plant).
      */
-    public function updateMasterDataCodeValue($oldValue, $newValue, $module, $companyId = null) {
-        $this->updateMasterDataReferences('code', $oldValue, $newValue, $module, $companyId);
+    public function updateMasterDataCodeValue($oldValue, $newValue, $module) {
+        $this->updateMasterDataReferences('code', $oldValue, $newValue, $module);
     }
 
     /**
      * When a master data name changes, update it in the records that reference it.
-     * $companyId works the same as in updateMasterDataCodeValue().
      */
-    public function updateMasterDataNameValue($oldValue, $newValue, $module, $companyId = null) {
-        $this->updateMasterDataReferences('name', $oldValue, $newValue, $module, $companyId);
+    public function updateMasterDataNameValue($oldValue, $newValue, $module) {
+        $this->updateMasterDataReferences('name', $oldValue, $newValue, $module);
     }
 
-    private function updateMasterDataReferences($field, $oldValue, $newValue, $module, $companyId) {
-        if (!isset(self::$masterDataColumns[$module])) {
+    private function updateMasterDataReferences($field, $oldValue, $newValue, $module) {
+        // A blank old value would match unrelated records
+        if (!isset(self::$masterDataColumns[$module]) || $this->isBlankValue($oldValue)) {
             return;
         }
 
         $config = self::$masterDataColumns[$module];
-        $column = $config[$field];
 
-        // Table => its company column
-        $tables = ['Weight' => 'company_id', 'Weight_Container' => 'company_id'];
+        // Table => column to update
+        $tables = ['Weight' => $config[$field], 'Weight_Container' => $config[$field]];
         if (!empty($config['vehicle'])) {
-            $tables['Vehicle'] = 'company';
+            $tables['Vehicle'] = $field === 'code' ? $config['code'] : $config['vehicle'];
         }
 
-        foreach ($tables as $table => $companyColumn) {
-            $sql = "UPDATE {$table} SET {$column} = ? WHERE {$column} = ?";
-            $types = 'ss';
-            $params = [$newValue, $oldValue];
-
-            if ($companyId !== null && $companyId !== '') {
-                $sql .= " AND {$companyColumn} = ?";
-                $types .= 'i';
-                $params[] = (int) $companyId;
-            }
-
-            $stmt = $this->db->prepare($sql);
+        foreach ($tables as $table => $column) {
+            $stmt = $this->db->prepare("UPDATE {$table} SET {$column} = ? WHERE {$column} = ?");
             if (!$stmt) throw new Exception($this->db->error);
-            $stmt->bind_param($types, ...$params);
+            $stmt->bind_param('ss', $newValue, $oldValue);
             if (!$stmt->execute()) throw new Exception($stmt->error);
             $stmt->close();
         }
