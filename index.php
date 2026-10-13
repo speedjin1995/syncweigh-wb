@@ -5,26 +5,35 @@
 $user = $_SESSION['id'];
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
-$stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
-$stmt->bind_param('s', $user);
+$locationId = $_SESSION['location_id'];
+$stmt = $db->prepare("SELECT * from Location WHERE id = ?");
+$stmt->bind_param('s', $locationId);
 $stmt->execute();
 $result = $stmt->get_result();
-//$role = 'NORMAL';
 $port = 'COM5';
 $baudrate = 9600;
 $databits = "8";
 $parity = "N";
 $stopbits = '1';
 $indicator = 'X722';
-    
+
 if(($row = $result->fetch_assoc()) !== null){
-    //$role = $row['role_code'];
-    $port = $row['com_port'];
-    $baudrate = $row['bits_per_second'];
-    $databits = $row['data_bits'];
-    $parity = $row['parity'];
-    $stopbits = $row['stop_bits'];
-    $indicator = $row['indicator'];
+    $portId = $row['port_id'];
+    $weighingCount = $row['weighing_count'];
+}
+
+$stmt2 = $db->prepare("SELECT * from Port WHERE id = ?");
+$stmt2->bind_param('s', $portId);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
+
+if(($row2 = $result2->fetch_assoc()) !== null){
+    $port = $row2['com_port'];
+    $baudrate = $row2['bits_per_second'];
+    $databits = $row2['data_bits'];
+    $parity = $row2['parity'];
+    $stopbits = $row2['stop_bits'];
+    $indicator = $row2['indicator'];
 }
 
 $plantName = '-';
@@ -40,18 +49,7 @@ if($plantId != null && count($plantId) > 0){
     }
 }
 
-$role = 'NORMAL';
-if ($user != null && $user != ''){
-    $stmt3 = $db->prepare("SELECT * from Users WHERE id = ?");
-    $stmt3->bind_param('s', $user);
-    $stmt3->execute();
-    $result3 = $stmt3->get_result();
-        
-    if(($row3 = $result3->fetch_assoc()) !== null){
-        $role = $row3['role'];
-    }
-}
-
+$role = $_SESSION["roles"];
 
 //$lots = $db->query("SELECT * FROM lots WHERE deleted = '0'");
 $vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC");
@@ -71,18 +69,13 @@ $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY na
 $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
 
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
-    $username = implode("', '", $_SESSION["plant"]);
-    $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and plant_code IN ('$username')");
+    // Only the plant picked on selectLocation.php
+    $selectedPlantId = intval($_SESSION['selected_plant_id'] ?? 0);
+    $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and id = $selectedPlantId");
+    $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0' and id = $selectedPlantId");
 }
 else{
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
-}
-
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
-    $username = implode("', '", $_SESSION["plant"]);
-    $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0' and plant_code IN ('$username')");
-}
-else{
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0'");
 }
 ?>

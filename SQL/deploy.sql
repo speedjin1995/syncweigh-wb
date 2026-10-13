@@ -1180,6 +1180,106 @@ $$
 DELIMITER ;
 
 -- 13/10/2026 --
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('locations_code', 'Locations', '位置', 'Lokasi', 'இடங்கள்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('location_code_code', 'Location Code', '位置代码', 'Kod Lokasi', 'இடத்தின் குறியீடு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('location_name_code', 'Location Name', '位置名称', 'Nama Lokasi', 'இடத்தின் பெயர்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('weighing_count_code', 'Weighing Count', '称重次数', 'Kiraan Timbang', 'கூட்டல் எண்ணிக்கை');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('add_new_location_code', 'Add New Location', '添加新位置', 'Tambah Lokasi Baru', 'புதிய இடத்தைச் சேர்');
+
+CREATE TABLE `Location` (
+  `id` int(11) NOT NULL,
+  `location_code` varchar(30) NOT NULL,
+  `location_name` varchar(100) NOT NULL,
+  `port_id` int(11) DEFAULT NULL,
+  `weighing_count` int(11) NOT NULL DEFAULT 2,
+  `plant_id` int(5) DEFAULT 1,
+  `status` int(3) DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `Location` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Location` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `Location_Log` (
+  `id` int(11) NOT NULL,
+  `location_id` int(11) NOT NULL,
+  `location_code` varchar(30) NOT NULL,
+  `location_name` varchar(100) NOT NULL,
+  `port_id` int(11) DEFAULT NULL,
+  `weighing_count` int(11) NOT NULL DEFAULT 2,
+  `plant_id` int(5) DEFAULT 1,
+  `action_id` int(11) DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `Location_Log` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Location_Log` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+DELIMITER $$
+CREATE TRIGGER `TRG_INS_LOCATION` AFTER INSERT ON `Location` FOR EACH ROW INSERT INTO Location_Log (
+    location_id, location_code, location_name, port_id, weighing_count, plant_id, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.location_code, NEW.location_name, NEW.port_id, NEW.weighing_count, NEW.plant_id, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `TRG_UPD_LOCATION` BEFORE UPDATE ON `Location` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Location_Log table
+    INSERT INTO Location_Log (
+        location_id, location_code, location_name, port_id, weighing_count, plant_id, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.location_code, NEW.location_name, NEW.port_id, NEW.weighing_count, NEW.plant_id, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Port_Log` MODIFY `id` int(11) NOT NULL;
+
+ALTER TABLE `Port_Log` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Port_Log` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_PORT` AFTER INSERT ON `Port` FOR EACH ROW INSERT INTO Port_Log (
+    port_id, com_port, bits_per_second, data_bits, parity, stop_bits, indicator_id, weighbridge_id, indicator, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.com_port, NEW.bits_per_second, NEW.data_bits, NEW.parity, NEW.stop_bits, NEW.indicator_id, NEW.weighbridge_id, NEW.indicator, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PORT` BEFORE UPDATE ON `Port` FOR EACH ROW BEGIN
+    -- Port has no status column, so every update is logged as action_id 2
+    INSERT INTO Port_Log (
+        port_id, com_port, bits_per_second, data_bits, parity, stop_bits, indicator_id, weighbridge_id, indicator, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.com_port, NEW.bits_per_second, NEW.data_bits, NEW.parity, NEW.stop_bits, NEW.indicator_id, NEW.weighbridge_id, NEW.indicator, 2, NEW.modified_by, NOW()
+    );
+END
+$$
+DELIMITER ;
+
 CREATE TABLE `Login_Log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
