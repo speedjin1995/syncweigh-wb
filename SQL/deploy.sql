@@ -1179,3 +1179,18 @@ END
 $$
 DELIMITER ;
 
+-- 13/10/2026 --
+CREATE TABLE `Login_Log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `username` varchar(100) NOT NULL,
+  `action` varchar(20) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `remark` varchar(255) DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` varchar(255) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_login_log_username` (`username`),
+  KEY `idx_login_log_event_date` (`event_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

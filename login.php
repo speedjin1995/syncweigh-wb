@@ -49,6 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Prepare a select statement
         $sql = "SELECT id, employee_code, username, password, role, plant_id, languages FROM Users WHERE username = ?";
         
+        // Login_Log values, filled in by the checks below
+        $logUserId = null;
+        $logStatus = "";
+        $logRemark = "";
+
         if ($stmt = mysqli_prepare($link, $sql)) {
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "s", $param_username);
@@ -66,7 +71,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Bind result variables
                     mysqli_stmt_bind_result($stmt, $id, $code, $username, $hashed_password, $roles, $plant, $language);
                     if (mysqli_stmt_fetch($stmt)) {
+                        $logUserId = $id;
+
                         if (password_verify($password, $hashed_password)) {
+                            $logStatus = "SUCCESS";
                             $plantlist = array();
 
                             // Store data in session variables
@@ -96,11 +104,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         } else {
                             // Display an error message if password is not valid
                             $password_err = "The password you entered was not valid.";
+                            $logStatus = "FAILED";
+                            $logRemark = "Invalid password";
                         }
                     }
                 } else {
                     // Display an error message if username doesn't exist
                     $username_err = "No account found with that username.";
+                    $logStatus = "FAILED";
+                    $logRemark = "No account found";
                 }
             } else {
                 echo "Oops! Something went wrong. Please try again later.";
@@ -108,6 +120,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Close statement
             mysqli_stmt_close($stmt);
+        }
+
+        // Record the login attempt
+        if ($logStatus != "") {
+            $logAction = "LOGIN";
+            $logIp = $_SERVER['REMOTE_ADDR'] ?? null;
+            $logUserAgent = isset($_SERVER['HTTP_USER_AGENT']) ? substr($_SERVER['HTTP_USER_AGENT'], 0, 255) : null;
+            $logRemark = $logRemark != "" ? $logRemark : null;
+
+            // A logging failure (e.g. Login_Log not deployed yet) must not block the login
+            try {
+                if ($logStmt = mysqli_prepare($link, "INSERT INTO Login_Log (user_id, username, action, status, remark, ip_address, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+                    mysqli_stmt_bind_param($logStmt, "issssss", $logUserId, $username, $logAction, $logStatus, $logRemark, $logIp, $logUserAgent);
+                    mysqli_stmt_execute($logStmt);
+                    mysqli_stmt_close($logStmt);
+                }
+            } catch (Exception $e) {
+                error_log("Login_Log insert failed: " . $e->getMessage());
+            }
         }
     }
 
