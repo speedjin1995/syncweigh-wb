@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'db_connect.php';
+require_once 'modules/vehicle/vehicleEntry.php';
 
 if(!isset($_SESSION['id'])){
 	echo '<script type="text/javascript">location.href = "../login.php";</script>'; 
@@ -555,6 +556,28 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $pStatus = "Complete";
     }*/
 
+    // Vehicle daily entry limit: new records only, checked before anything is saved
+    $vehicleEntryStatus = null;
+    $vehicleEntryOverride = false;
+
+    if (empty($weightId)) {
+        $vehicleEntryStatus = getVehicleEntryStatus($db, $vehiclePlateNo1, date('Y-m-d'));
+
+        if (!empty($vehicleEntryStatus) && $vehicleEntryStatus['exceeded']) {
+            $overridePassword = $_POST['overridePassword'] ?? '';
+
+            if (!verifyUserPassword($db, $_SESSION['id'], $overridePassword)) {
+                $entryMessage = 'Insufficient entry for '.$vehiclePlateNo1.' ('.$vehicleEntryStatus['count'].'/'.$vehicleEntryStatus['max'].' used today). ';
+                $entryMessage .= ($overridePassword === '') ? 'Password confirmation is required.' : 'Invalid password.';
+                echo json_encode(array("status"=> "failed", "message"=> $entryMessage));
+                $db->close();
+                exit;
+            }
+
+            $vehicleEntryOverride = true;
+        }
+    }
+
     if($weightType == 'Empty Container'){
         if((int)$grossIncoming < (int)$tareOutgoing){
             echo json_encode(array("status"=> "failed", "message"=> "Incoming Weight cannot greater than outgoing weight"));
@@ -642,6 +665,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                     else{
                         $misValue++;
                         $id = $insert_stmt->insert_id;
+                        logVehicleEntryIn($db, $vehicleEntryStatus, 'Weight_Container', $id, $transactionId, $vehicleEntryOverride, $username);
         
                         $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
         
@@ -979,6 +1003,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                 else{
                     $misValue++;
                     $id = $insert_stmt->insert_id;
+                    logVehicleEntryIn($db, $vehicleEntryStatus, 'Weight', $id, $transactionId, $vehicleEntryOverride, $username);
     
                     $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
     
@@ -1214,6 +1239,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                 else{
                     $misValue++;
                     $id = $insert_stmt->insert_id;
+                    logVehicleEntryIn($db, $vehicleEntryStatus, 'Weight', $id, $transactionId, $vehicleEntryOverride, $username);
     
                     $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
     

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'db_connect.php';
+require_once 'modules/vehicle/vehicleEntry.php';
 
 $username = $_SESSION["username"];
 
@@ -35,6 +36,7 @@ if(isset($_POST['cancelReason'], $_POST['isEmptyContainer'])){
 				$stmt2->bind_param('ss', $deleteStatus, $cancelReason);
 				
 				if($stmt2->execute()){
+					reverseVehicleEntry($db, 'Weight_Container', $ids, $username, $cancelReason);
 					$stmt2->close();
 					echo json_encode(
 						array(
@@ -71,6 +73,7 @@ if(isset($_POST['cancelReason'], $_POST['isEmptyContainer'])){
 					
 					if($stmt->execute()){
 						$stmt->close();
+						reverseVehicleEntry($db, 'Weight', $ids, $username, $cancelReason);
 						$statusArray[] = "success";
 						$message[] = "Deleted";
 					} else{
@@ -91,6 +94,7 @@ if(isset($_POST['cancelReason'], $_POST['isEmptyContainer'])){
 					
 					if($stmt2->execute()){
 						$stmt2->close();
+						reverseVehicleEntry($db, 'Weight_Container', $containerId, $username, $cancelReason);
 						$statusArray[] = "success";
 						$message[] = "Deleted";
 					} else{
@@ -127,6 +131,7 @@ if(isset($_POST['cancelReason'], $_POST['isEmptyContainer'])){
 				$stmt2->bind_param('sss', $deleteStatus, $cancelReason, $id);
 				
 				if($stmt2->execute()){
+					reverseVehicleEntry($db, 'Weight_Container', $id, $username, $cancelReason);
 					// if ($insert_stmt = $db->prepare("INSERT INTO Supplier_Log (supplier_id, action_id, action_by) VALUES (?, ?, ?)")) {
 					// 	$insert_stmt->bind_param('sss', $id, $action, $username);
 			
@@ -182,6 +187,7 @@ if(isset($_POST['cancelReason'], $_POST['isEmptyContainer'])){
 				$stmt2->bind_param('ssss', $cancel, $cancel, $cancelReason, $id);
 				
 				if($stmt2->execute()){
+					reverseVehicleEntry($db, 'Weight', $id, $username, $cancelReason);
 					$stmt2->close();
 					echo json_encode(
 						array(

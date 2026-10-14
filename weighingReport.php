@@ -243,7 +243,7 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
-                                                            <label for="locationSearch" class="form-label">Location</label>
+                                                            <label for="locationSearch" class="form-label"><?=$languageArray['location_code'][$language]?></label>
                                                             <select id="locationSearch" class="form-select select2">
                                                                 <option selected>-</option>
                                                                 <?php while($rowLocationF=mysqli_fetch_assoc($location)){ ?>

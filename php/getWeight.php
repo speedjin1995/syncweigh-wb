@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "db_connect.php";
+require_once "modules/vehicle/vehicleEntry.php";
 
 if(isset($_POST['userID'])){
 	$id = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
@@ -229,6 +230,10 @@ if(isset($_POST['userID'])){
                         }
                     }
                     
+                    if ($format == 'EXPANDABLE') {
+                        $message['vehicle_entry_logs'] = getVehicleEntryLogs($db, 'Weight_Container', $id);
+                    }
+
                     echo json_encode(
                         array(
                             "status" => "success",
@@ -440,6 +445,10 @@ if(isset($_POST['userID'])){
                         }
                     }
                     
+                    if ($format == 'EXPANDABLE') {
+                        $message['vehicle_entry_logs'] = getVehicleEntryLogs($db, 'Weight', $id);
+                    }
+
                     echo json_encode(
                         array(
                             "status" => "success",
