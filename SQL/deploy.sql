@@ -1560,3 +1560,4 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALU
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('override_code', 'Override', '超限放行', 'Kelulusan Lebihan', 'மேலெழுதல்');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('approved_by_code', 'Approved By', '批准者', 'Diluluskan Oleh', 'அங்கீகரித்தவர்');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('remarks_code', 'Remarks', '备注', 'Catatan', 'குறிப்புகள்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('invalid_password_code', 'Invalid password. Please try again.', '密码错误，请重试。', 'Kata laluan tidak sah. Sila cuba lagi.', 'தவறான கடவுச்சொல். மீண்டும் முயற்சிக்கவும்.');

@@ -1168,7 +1168,7 @@ else{
                                                             <div class="input-group has-validation">
                                                                 <span class="input-group-text"><i class="ri-lock-line"></i></span>
                                                                 <input type="password" class="form-control" id="entryOverridePassword" autocomplete="new-password">
-                                                                <div class="invalid-feedback"><?=$languageArray['please_enter_your_password_code'][$language]?></div>
+                                                                <div class="invalid-feedback" id="entryOverridePasswordError"><?=$languageArray['please_enter_your_password_code'][$language]?></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -2157,19 +2157,37 @@ else{
             var password = $('#entryOverridePassword').val();
 
             if (!password) {
-                $('#entryOverridePassword').addClass('is-invalid');
+                showEntryOverrideError(<?=json_encode($languageArray['please_enter_your_password_code'][$language])?>);
                 return;
             }
 
-            $('#entryOverridePassword').removeClass('is-invalid');
-            $('#weightForm').find('#overridePassword').val(password);
-            $('#entryOverrideModal').modal('hide');
+            // Check the password here so a wrong one keeps the modal open (weight.php checks it again on save)
+            var confirmBtn = $(this).prop('disabled', true);
+            $.post('php/checkVehicleEntry.php', {verifyPassword: password}, function(data){
+                var obj = JSON.parse(data);
+                confirmBtn.prop('disabled', false);
 
-            if (entryOverrideProceed) {
-                var proceed = entryOverrideProceed;
-                entryOverrideProceed = null;
-                proceed();
-            }
+                if (obj.status === 'success' && obj.valid) {
+                    $('#entryOverridePassword').removeClass('is-invalid');
+                    $('#weightForm').find('#overridePassword').val(password);
+                    $('#entryOverrideModal').modal('hide');
+
+                    if (entryOverrideProceed) {
+                        var proceed = entryOverrideProceed;
+                        entryOverrideProceed = null;
+                        proceed();
+                    }
+                }
+                else {
+                    showEntryOverrideError(<?=json_encode($languageArray['invalid_password_code'][$language])?>);
+                }
+            }).fail(function(){
+                confirmBtn.prop('disabled', false);
+            });
+        });
+
+        $('#entryOverridePassword').on('input', function(){
+            $(this).removeClass('is-invalid');
         });
 
         // Stack the password modal (and a darker backdrop) above the open Add New modal
@@ -3799,6 +3817,11 @@ else{
             }
         ?>
     });
+    
+    function showEntryOverrideError(message){
+        $('#entryOverridePassword').val('').addClass('is-invalid').trigger('focus');
+        $('#entryOverridePasswordError').text(message);
+    }
 
     function handleWeightType(weightType){
         if (weightType == 'Container'){

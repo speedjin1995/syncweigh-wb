@@ -8,6 +8,13 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
+// Password check for the insufficient entry modal on the weighing screen
+if (isset($_POST['verifyPassword'])) {
+    echo json_encode(array("status" => "success", "valid" => verifyUserPassword($db, $_SESSION['id'], $_POST['verifyPassword'])));
+    $db->close();
+    exit;
+}
+
 if (empty($_POST['vehicleNo'])) {
     echo json_encode(array("status" => "failed", "message" => "Please select a vehicle"));
     exit;
