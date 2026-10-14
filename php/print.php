@@ -288,8 +288,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     <td colspan="4">'.$row['destination'].'</td>
                                 </tr>
                                 <tr>
-                                    <td>Bin No.</td><td>: </td>
-                                    <td>Bin Type</td><td colspan="3">: </td>
+                                    <td>Bin No.</td><td>: '.$row['container_no2'].'</td>
+                                    <td>Bin Type</td><td colspan="3">: '.$row['seal_no2'].'</td>
                                 </tr>
                                 <tr>
                                     <td>Waste</td><td>: '.$pid.'</td>
