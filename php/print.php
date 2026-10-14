@@ -56,8 +56,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
         if ($_POST['isEmptyContainer'] == 'Y'){
             $sql = "SELECT * FROM Weight_Container WHERE id=?";
+            $printTable = 'Weight_Container';
         }else{
             $sql = "SELECT * FROM Weight WHERE id=?";
+            $printTable = 'Weight';
         }
 
         if ($select_stmt = $db->prepare($sql)) {
@@ -75,6 +77,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                 $result = $select_stmt->get_result();
                     
                 if ($row = $result->fetch_assoc()) {
+                    // Already printed before = this is a reprint, mark it as duplicate
+                    $isDuplicate = ($row['is_printed'] ?? 'N') == 'Y';
+                    $duplicateWatermark = $isDuplicate ? '<div class="watermark">DUPLICATE</div>' : '';
+
                     $customer = '';
                     $customerR = '';
                     $customerP = '';
@@ -250,9 +256,26 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     border-top: 1px dashed #000;
                                     padding-top: 4px;
                                 }
+
+                                .watermark {
+                                    position: fixed;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%) rotate(-30deg);
+                                    font-size: 110px;
+                                    font-weight: bold;
+                                    letter-spacing: 10px;
+                                    color: rgba(0, 0, 0, 0.12);
+                                    z-index: -1;
+                                    pointer-events: none;
+                                    white-space: nowrap;
+                                    -webkit-print-color-adjust: exact;
+                                    print-color-adjust: exact;
+                                }
                             </style>
                         </head>
                         <body>
+                            '.$duplicateWatermark.'
                             <div class="header">
                                 <span style="font-size: 18px; font-weight: bold;">'.$compname.'</span><br>
                                 <span>'.$compaddress.' '.$compaddress2.'</span><br>
@@ -315,6 +338,14 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                             </table>
                         </body>
                     </html>';
+
+                    if (!$isDuplicate) {
+                        if ($print_stmt = $db->prepare("UPDATE ".$printTable." SET is_printed = 'Y' WHERE id = ? AND is_printed = 'N'")) {
+                            $print_stmt->bind_param('s', $id);
+                            $print_stmt->execute();
+                            $print_stmt->close();
+                        }
+                    }
 
                     echo json_encode(
                         array(
