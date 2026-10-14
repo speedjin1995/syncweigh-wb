@@ -1294,3 +1294,303 @@ CREATE TABLE `Login_Log` (
   KEY `idx_login_log_username` (`username`),
   KEY `idx_login_log_event_date` (`event_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 14/10/2026 --
+ALTER TABLE `Weight` ADD `location_id` INT(11) NULL AFTER `weighbridge_id`;
+ALTER TABLE `Weight` ADD `is_printed` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `is_approved`;
+ALTER TABLE `Weight_Log` ADD `location_id` INT(11) NULL AFTER `weighbridge_id`;
+ALTER TABLE `Weight_Log` ADD `is_printed` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `is_approved`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT` AFTER INSERT ON `Weight` FOR EACH ROW 
+INSERT INTO Weight_Log (
+    transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, raw_mat_code, raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, is_printed, manual_weight, indicator_id, weighbridge_id, location_id, indicator_id_2, unit_price, sub_total, sst, total_price, status, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, NEW.plant_code, NEW.plant_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, NEW.product_description, NEW.raw_mat_code, NEW.raw_mat_name, NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight, NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, NEW.is_approved, NEW.is_printed, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.location_id, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT` BEFORE UPDATE ON `Weight` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Weight_Log table
+    INSERT INTO Weight_Log (
+        transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, is_printed, manual_weight, indicator_id, weighbridge_id, location_id, indicator_id_2, unit_price, sub_total, sst, total_price, status, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, 
+        NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, 
+        NEW.plant_code, NEW.plant_name,
+        NEW.customer_code, NEW.customer_name, 
+        NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, 
+        NEW.product_description, NEW.raw_mat_code, NEW.raw_mat_name, 
+        NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, 
+        NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, 
+        NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, 
+        NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, 
+        NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, 
+        NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight,
+        NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, 
+        NEW.is_approved, NEW.is_printed, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.location_id,
+        NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Weight_Container` ADD `location_id` INT(11) NULL AFTER `weighbridge_id`;
+ALTER TABLE `Weight_Container` ADD `is_printed` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `is_approved`;
+ALTER TABLE `Weight_Container_Log` ADD `location_id` INT(11) NULL AFTER `weighbridge_id`;
+ALTER TABLE `Weight_Container_Log` ADD `is_printed` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `is_approved`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT_CONTAINER` AFTER INSERT ON `Weight_Container` FOR EACH ROW 
+INSERT INTO Weight_Container_Log (
+    transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, raw_mat_code, raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, is_printed, manual_weight, indicator_id, weighbridge_id, location_id, indicator_id_2, unit_price, sub_total, sst, total_price, status, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, NEW.plant_code, NEW.plant_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, NEW.product_description, NEW.raw_mat_code, NEW.raw_mat_name, NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight, NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, NEW.is_approved, NEW.is_printed, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, NEW.location_id, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Container` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Weight_Container_Log table
+    INSERT INTO Weight_Container_Log (
+        transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, raw_mat_code,raw_mat_name, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, is_printed, manual_weight, indicator_id, weighbridge_id, location_id, indicator_id_2, unit_price, sub_total, sst, total_price, status, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.transaction_id, NEW.transaction_status, NEW.weight_type, NEW.transaction_date, 
+        NEW.lorry_plate_no1, NEW.lorry_plate_no2, NEW.supplier_weight, NEW.order_weight, 
+        NEW.plant_code, NEW.plant_name,
+        NEW.customer_code, NEW.customer_name, 
+        NEW.supplier_code, NEW.supplier_name, NEW.product_code, NEW.product_name, 
+        NEW.product_description, NEW.raw_mat_code, NEW.raw_mat_name, 
+        NEW.container_no, NEW.invoice_no, NEW.purchase_order, NEW.delivery_no, 
+        NEW.transporter_code, NEW.transporter, NEW.destination_code, NEW.destination, 
+        NEW.remarks, NEW.gross_weight1, NEW.gross_weight1_date, NEW.tare_weight1, 
+        NEW.tare_weight1_date, NEW.nett_weight1, NEW.lorry_no2_weight, NEW.empty_container2_weight, 
+        NEW.replacement_container, NEW.gross_weight2, NEW.gross_weight2_date, 
+        NEW.tare_weight2, NEW.tare_weight2_date, NEW.nett_weight2, NEW.reduce_weight,
+        NEW.final_weight, NEW.weight_different, NEW.weight_different_perc, NEW.is_complete, NEW.is_cancel, 
+        NEW.is_approved, NEW.is_printed, NEW.manual_weight, NEW.indicator_id, NEW.weighbridge_id, 
+        NEW.location_id, NEW.indicator_id_2, NEW.unit_price, NEW.sub_total, NEW.sst, NEW.total_price, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Vehicle` ADD `max_entry_per_day` INT(11) NOT NULL DEFAULT 0 AFTER `supplier_name`;
+ALTER TABLE `Vehicle_Log` ADD `max_entry_per_day` INT(11) NOT NULL DEFAULT 0 AFTER `supplier_name`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_VEH` AFTER INSERT ON `Vehicle` FOR EACH ROW 
+INSERT INTO Vehicle_Log (
+    vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, action_id, action_by, event_date
+) 
+VALUES (
+    NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_VEH` BEFORE UPDATE ON `Vehicle` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Vehicle_Log table
+    INSERT INTO Vehicle_Log (
+        vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, action_id, action_by, event_date
+    ) 
+    VALUES (
+        NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+CREATE TABLE `Vehicle_Entry_Limit` (
+  `id` int(11) NOT NULL,
+  `vehicle_id` int(11) NOT NULL,
+  `veh_number` varchar(50) NOT NULL,
+  `limit_date` date NOT NULL,
+  `max_entry` int(11) NOT NULL DEFAULT 0,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `Vehicle_Entry_Limit` ADD PRIMARY KEY (`id`), ADD KEY `idx_vehicle_limit_date` (`vehicle_id`, `limit_date`);
+
+ALTER TABLE `Vehicle_Entry_Limit` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `Vehicle_Entry_Limit_Log` (
+  `id` int(11) NOT NULL,
+  `limit_id` int(11) NOT NULL,
+  `vehicle_id` int(11) NOT NULL,
+  `veh_number` varchar(50) NOT NULL,
+  `limit_date` date NOT NULL,
+  `max_entry` int(11) NOT NULL DEFAULT 0,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `action_id` int(11) DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `Vehicle_Entry_Limit_Log` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Vehicle_Entry_Limit_Log` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_VEH_ENTRY_LIMIT` AFTER INSERT ON `Vehicle_Entry_Limit` FOR EACH ROW
+INSERT INTO Vehicle_Entry_Limit_Log (
+    limit_id, vehicle_id, veh_number, limit_date, max_entry, status, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.vehicle_id, NEW.veh_number, NEW.limit_date, NEW.max_entry, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_VEH_ENTRY_LIMIT` BEFORE UPDATE ON `Vehicle_Entry_Limit` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Vehicle_Entry_Limit_Log table
+    INSERT INTO Vehicle_Entry_Limit_Log (
+        limit_id, vehicle_id, veh_number, limit_date, max_entry, status, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.vehicle_id, NEW.veh_number, NEW.limit_date, NEW.max_entry, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+CREATE TABLE `Vehicle_Entry_Log` (
+  `id` int(11) NOT NULL,
+  `vehicle_id` int(11) NOT NULL,
+  `veh_number` varchar(50) NOT NULL,
+  `entry_date` date NOT NULL,
+  `action` varchar(20) NOT NULL COMMENT 'IN = new weighing, REVERSE = weighing cancelled',
+  `weight_id` int(11) DEFAULT NULL,
+  `weight_table` varchar(30) DEFAULT NULL COMMENT 'Weight / Weight_Container',
+  `transaction_id` varchar(50) DEFAULT NULL,
+  `max_entry` int(11) NOT NULL DEFAULT 0 COMMENT 'Limit in force at the time, 0 = unlimited',
+  `entry_count` int(11) NOT NULL DEFAULT 0 COMMENT 'Entries used for entry_date after this action',
+  `is_override` varchar(3) NOT NULL DEFAULT 'N',
+  `approved_by` varchar(50) DEFAULT NULL,
+  `approved_date` datetime DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `Vehicle_Entry_Log` ADD PRIMARY KEY (`id`), ADD KEY `idx_vehicle_entry_date` (`vehicle_id`, `entry_date`), ADD KEY `idx_weight` (`weight_table`, `weight_id`);
+
+ALTER TABLE `Vehicle_Entry_Log` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('location_code', 'Location', '位置', 'Lokasi', 'இடம்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('entry_limit_code', 'Entry Limit', '进场限制', 'Had Kemasukan', 'நுழைவு வரம்பு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('default_limit_code', 'Default Limit', '默认限制', 'Had Lalai', 'இயல்புநிலை வரம்பு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('date_limit_code', 'Date Limit', '日期限制', 'Had Tarikh', 'தேதி வரம்பு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('max_entry_per_day_code', 'Max Entry / Day', '每日最大进场次数', 'Kemasukan Maksimum / Hari', 'ஒரு நாளுக்கான அதிகபட்ச நுழைவு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('max_entry_per_day_hint_code', 'Default for every day. 0 = unlimited.', '每天的默认值。0 = 无限制。', 'Lalai untuk setiap hari. 0 = tanpa had.', 'ஒவ்வொரு நாளுக்குமான இயல்புநிலை. 0 = வரம்பற்றது.');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('zero_unlimited_code', '0 = Unlimited', '0 = 无限制', '0 = Tanpa Had', '0 = வரம்பற்றது');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('limit_date_code', 'Limit Date', '限制日期', 'Tarikh Had', 'வரம்பு தேதி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('max_entry_for_date_code', 'Max Entry for Date', '当日最大进场次数', 'Kemasukan Maksimum untuk Tarikh', 'தேதிக்கான அதிகபட்ச நுழைவு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('max_entry_for_date_hint_code', 'Overrides the default for this date only. Blank = no date limit.', '仅覆盖此日期的默认值。留空 = 无日期限制。', 'Menggantikan had lalai untuk tarikh ini sahaja. Kosong = tiada had tarikh.', 'இந்தத் தேதிக்கு மட்டும் இயல்புநிலையை மாற்றும். காலியாக = தேதி வரம்பு இல்லை.');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('blank_use_default_code', 'Blank = use default', '留空 = 使用默认值', 'Kosong = guna lalai', 'காலியாக = இயல்புநிலையைப் பயன்படுத்து');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('used_code', 'Used', '已使用', 'Digunakan', 'பயன்படுத்தப்பட்டது');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('unlimited_code', 'Unlimited', '无限制', 'Tanpa Had', 'வரம்பற்றது');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('date_limit_records_code', 'Date Limit Records', '日期限制记录', 'Rekod Had Tarikh', 'தேதி வரம்பு பதிவுகள்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('max_entry_code', 'Max Entry', '最大进场次数', 'Kemasukan Maksimum', 'அதிகபட்ச நுழைவு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('created_by_code', 'Created By', '创建者', 'Dicipta Oleh', 'உருவாக்கியவர்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('modified_by_code', 'Modified By', '修改者', 'Diubah Oleh', 'மாற்றியவர்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('modified_date_code', 'Modified Date', '修改日期', 'Tarikh Diubah', 'மாற்றிய தேதி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('view_log_code', 'View Log', '查看日志', 'Lihat Log', 'பதிவைக் காண்க');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('action_by_code', 'Action By', '操作者', 'Tindakan Oleh', 'செயல்படுத்தியவர்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('action_date_code', 'Action Date', '操作日期', 'Tarikh Tindakan', 'செயல் தேதி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('create_code', 'Create', '创建', 'Cipta', 'உருவாக்கு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('no_log_found_code', 'No log found.', '未找到日志。', 'Tiada log dijumpai.', 'பதிவு எதுவும் இல்லை.');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('insufficient_entry_title_code', 'Insufficient Entry - Confirm Password', '进场次数不足 - 确认密码', 'Kemasukan Tidak Mencukupi - Sahkan Kata Laluan', 'போதிய நுழைவு இல்லை - கடவுச்சொல்லை உறுதிப்படுத்தவும்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('insufficient_entry_code', 'Insufficient entry for {vehicle} ({count}/{max} used today).', '{vehicle} 进场次数不足（今日已使用 {count}/{max}）。', 'Kemasukan tidak mencukupi untuk {vehicle} ({count}/{max} digunakan hari ini).', '{vehicle} க்கு போதிய நுழைவு இல்லை (இன்று {count}/{max} பயன்படுத்தப்பட்டது).');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('proceed_code', 'Proceed?', '是否继续？', 'Teruskan?', 'தொடரவா?');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('password_code', 'Password', '密码', 'Kata Laluan', 'கடவுச்சொல்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('please_enter_your_password_code', 'Please enter your password.', '请输入您的密码。', 'Sila masukkan kata laluan anda.', 'உங்கள் கடவுச்சொல்லை உள்ளிடவும்.');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('confirm_code', 'Confirm', '确认', 'Sahkan', 'உறுதிப்படுத்து');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('vehicle_entry_log_code', 'Vehicle Entry Log', '车辆进场记录', 'Log Kemasukan Kenderaan', 'வாகன நுழைவு பதிவு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('entry_date_code', 'Entry Date', '进场日期', 'Tarikh Kemasukan', 'நுழைவு தேதி');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('entry_no_code', 'Entry No.', '进场次数', 'No. Kemasukan', 'நுழைவு எண்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('entry_in_code', 'Entry In', '进场', 'Masuk', 'நுழைவு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('entry_reversed_code', 'Reversed', '已撤销', 'Dibatalkan', 'திரும்பப் பெறப்பட்டது');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('override_code', 'Override', '超限放行', 'Kelulusan Lebihan', 'மேலெழுதல்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('approved_by_code', 'Approved By', '批准者', 'Diluluskan Oleh', 'அங்கீகரித்தவர்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('remarks_code', 'Remarks', '备注', 'Catatan', 'குறிப்புகள்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('invalid_password_code', 'Invalid password. Please try again.', '密码错误，请重试。', 'Kata laluan tidak sah. Sila cuba lagi.', 'தவறான கடவுச்சொல். மீண்டும் முயற்சிக்கவும்.');
+
+UPDATE `message_resource` SET `en`='Bin No.', `zh`='料仓编号', `my`='No. Tong', `ne`='தொட்டி எண்' WHERE `message_key_code`='container_no2_code';
+UPDATE `message_resource` SET `en`='Bin Type', `zh`='料仓类型', `my`='Jenis Tong', `ne`='தொட்டி வகை' WHERE `message_key_code`='seal_no2_code';
+
+CREATE TABLE `Features` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `feature_code` VARCHAR(50) NOT NULL,
+  `feature_name` VARCHAR(100) NOT NULL,
+  `description` VARCHAR(255) NULL,
+  `status` VARCHAR(3) NOT NULL DEFAULT '0',
+  `created_by` VARCHAR(50) NULL,
+  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Company_Features` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) NOT NULL,
+  `feature_code` VARCHAR(50) NOT NULL,
+  `enabled` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_by` VARCHAR(50) NULL,
+  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_by`) VALUES ('container_weighing', 'Container Weighing', 'Show Primer Mover / Primer Mover + Container weight types', 'SYSTEM');
+INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_by`) VALUES ('different_bin_weighing', 'Different Bin Weighing', 'Show Primer Mover + Different Bins / Primer Mover + Container weight types', 'SYSTEM');
+INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) VALUES (1, 'container_weighing', 0, 'SYSTEM');
+INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) VALUES (1, 'different_bin_weighing', 0, 'SYSTEM');

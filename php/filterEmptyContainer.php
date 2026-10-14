@@ -28,6 +28,10 @@ if($_POST['toDate'] != null && $_POST['toDate'] != ''){
 	$searchQuery .= " and transaction_date <= '".$toDateTime."'";
 }
 
+if(isset($_POST['location']) && $_POST['location'] != null && $_POST['location'] != '' && $_POST['location'] != '-'){
+	$searchQuery .= " and location_id = '".intval($_POST['location'])."'";
+}
+
 if($searchValue != ''){
   $searchQuery = " and (transaction_id like '%".$searchValue."%' or lorry_plate_no1 like '%".$searchValue."%' or container_no like '%".$searchValue."%')";
 }

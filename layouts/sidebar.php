@@ -79,7 +79,7 @@
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#sidebarMasterdata" data-bs-toggle="collapse" role="button"
                                 aria-expanded="false" aria-controls="sidebarMasterdata">
-                                <i class="ri-pages-line"></i> <span>'.$languageArray['master_data_code'][$language].'</span>
+                                <i class="ri-database-2-line"></i> <span>'.$languageArray['master_data_code'][$language].'</span>
                             </a>
                             <div class="collapse menu-dropdown" id="sidebarMasterdata">
                                 <ul class="nav nav-sm flex-column">';
@@ -132,7 +132,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarReport" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarReport">
-                        <i class="ri-account-circle-line"></i> <span><?=$languageArray['report_code'][$language]?></span>
+                        <i class="ri-file-chart-line"></i> <span><?=$languageArray['report_code'][$language]?></span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarReport">
                         <ul class="nav nav-sm flex-column">
@@ -161,7 +161,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarAuth">
-                        <i class="ri-account-circle-line"></i> <span><?=$languageArray['setting_code'][$language]?></span>
+                        <i class="ri-settings-3-line"></i> <span><?=$languageArray['setting_code'][$language]?></span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarAuth">
                         <ul class="nav nav-sm flex-column">
@@ -174,6 +174,9 @@
                                     }
                                 ?>
                                 
+                                <!-- <li class="nav-item">
+                                    <a href="portSetup.php" class="nav-link"><?=$languageArray['port_setup_code'][$language]?></a>
+                                </li>  -->
                                 <li class="nav-item">
                                     <a href="myProfile.php" class="nav-link"><?=$languageArray['profile_code'][$language]?></a>
                                 </li> 

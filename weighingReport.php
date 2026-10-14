@@ -32,9 +32,11 @@ if($plantId != null && count($plantId) > 0){
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $username = implode("', '", $_SESSION["plant"]);
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and plant_code IN ('$username')");
+    $location = $db->query("SELECT * FROM Location WHERE status = '0' and plant_id IN (SELECT id FROM Plant WHERE plant_code IN ('$username')) ORDER BY location_name ASC");
 }
 else{
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
+    $location = $db->query("SELECT * FROM Location WHERE status = '0' ORDER BY location_name ASC");
 }
 ?>
 
@@ -235,6 +237,17 @@ else{
                                                                 <option selected>-</option>
                                                                 <?php while($rowPlantF=mysqli_fetch_assoc($plant)){ ?>
                                                                     <option value="<?=$rowPlantF['plant_code'] ?>"><?=$rowPlantF['name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div><!--end col-->
+                                                    <div class="col-3">
+                                                        <div class="mb-3">
+                                                            <label for="locationSearch" class="form-label"><?=$languageArray['location_code'][$language]?></label>
+                                                            <select id="locationSearch" class="form-select select2">
+                                                                <option selected>-</option>
+                                                                <?php while($rowLocationF=mysqli_fetch_assoc($location)){ ?>
+                                                                    <option value="<?=$rowLocationF['id'] ?>"><?=$rowLocationF['location_name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -488,7 +501,8 @@ else{
                                             <input type="hidden" class="form-control" id="product" name="product">  
                                             <input type="hidden" class="form-control" id="rawMat" name="rawMat">   
                                             <input type="hidden" class="form-control" id="destination" name="destination">     
-                                            <input type="hidden" class="form-control" id="plant" name="plant">   
+                                            <input type="hidden" class="form-control" id="plant" name="plant">
+                                            <input type="hidden" class="form-control" id="location" name="location">   
                                             <input type="hidden" class="form-control" id="status" name="status">                                     
                                             <input type="hidden" class="form-control" id="file" name="file">     
                                             <input type="hidden" class="form-control" id="isMulti" name="isMulti">     
@@ -597,6 +611,7 @@ else{
             $('#rawMatSearch').val('-').trigger('change');
             $('#destinationSearch').val('-').trigger('change');
             $('#plantSearch').val('-').trigger('change');
+            $('#locationSearch').val('-').trigger('change');
             $('#statusSearch').val('Complete').trigger('change');
             $('#invDelPoSearch').val('');
         });
@@ -618,6 +633,7 @@ else{
         var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
         var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
         var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+        var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
         var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
         var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
 
@@ -643,6 +659,7 @@ else{
                     rawMaterial: rawMatI,
                     destination: destinationI,
                     plant: plantI,
+                    location: locationI,
                     status: statusI,
                     invDelPo: invDelPoI
                 } 
@@ -706,6 +723,7 @@ else{
             var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
             var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
             var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
             var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
 
@@ -735,6 +753,7 @@ else{
                         rawMaterial: rawMatI,
                         destination: destinationI,
                         plant: plantI,
+                        location: locationI,
                         status: statusI,
                         invDelPo: invDelPoI
                     } 
@@ -800,6 +819,7 @@ else{
                     var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
                     var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
                     var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+                    var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
 
                     $('#exportPdfForm').find('#fromDate').val(fromDateI);
                     $('#exportPdfForm').find('#toDate').val(toDateI);
@@ -812,6 +832,7 @@ else{
                     $('#exportPdfForm').find('#rawMat').val(rawMatI);
                     $('#exportPdfForm').find('#destination').val(destinationI);
                     $('#exportPdfForm').find('#plant').val(plantI);
+                    $('#exportPdfForm').find('#location').val(locationI);
                     $('#exportPdfForm').find('#file').val('weight');
                     $('#exportPdfModal').modal('hide');
 
@@ -854,6 +875,7 @@ else{
             var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
             var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
             var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
 
             $('#exportPdfForm').find('#fromDate').val(fromDateI);
@@ -869,6 +891,7 @@ else{
             $('#exportPdfForm').find('#rawMat').val(rawMatI);
             $('#exportPdfForm').find('#destination').val(destinationI);
             $('#exportPdfForm').find('#plant').val(plantI);
+            $('#exportPdfForm').find('#location').val(locationI);
             $('#exportPdfForm').find('#status').val(statusI);
             $('#exportPdfForm').find('#file').val('weight');
 
@@ -950,6 +973,7 @@ else{
             var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
             var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
             var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
             
             var selectedIds = []; // An array to store the selected 'id' values
@@ -964,12 +988,12 @@ else{
                 window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
                 "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
-                "&destination="+destinationI+"&plant="+plantI+"&status="+statusI+"&isMulti=Y&ids="+selectedIds);
+                "&destination="+destinationI+"&plant="+plantI+"&location="+locationI+"&status="+statusI+"&isMulti=Y&ids="+selectedIds);
             } else {
                 window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
                 "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
-                "&destination="+destinationI+"&plant="+plantI+"&status="+statusI+"&isMulti=N");
+                "&destination="+destinationI+"&plant="+plantI+"&location="+locationI+"&status="+statusI+"&isMulti=N");
             }
         });
 

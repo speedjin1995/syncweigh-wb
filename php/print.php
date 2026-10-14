@@ -56,8 +56,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
         if ($_POST['isEmptyContainer'] == 'Y'){
             $sql = "SELECT * FROM Weight_Container WHERE id=?";
+            $printTable = 'Weight_Container';
         }else{
             $sql = "SELECT * FROM Weight WHERE id=?";
+            $printTable = 'Weight';
         }
 
         if ($select_stmt = $db->prepare($sql)) {
@@ -75,6 +77,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                 $result = $select_stmt->get_result();
                     
                 if ($row = $result->fetch_assoc()) {
+                    // Already printed before = this is a reprint, mark it as duplicate
+                    $isDuplicate = ($row['is_printed'] ?? 'N') == 'Y';
+                    $duplicateLabel = $isDuplicate ? '<b>(DUPLICATE)</b>' : '';
+
                     $customer = '';
                     $customerR = '';
                     $customerP = '';
@@ -263,7 +269,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 <tr>
                                     <td width="14%">Ticket No.</td><td width="22%">: '.$row['transaction_id'].'</td>
                                     <td width="14%">Date</td><td width="18%">: '.$transactionDate.'</td>
-                                    <td width="20%"></td><td width="12%"></td>
+                                    <td width="20%" style="text-align: center;">'.$duplicateLabel.'</td><td width="12%"></td>
                                 </tr>
                                 <tr>
                                     <td>Vehicle No.</td><td>: '.$row['lorry_plate_no1'].'</td>
@@ -282,8 +288,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     <td colspan="4">'.$row['destination'].'</td>
                                 </tr>
                                 <tr>
-                                    <td>Bin No.</td><td>: </td>
-                                    <td>Bin Type</td><td colspan="3">: </td>
+                                    <td>Bin No.</td><td>: '.$row['container_no2'].'</td>
+                                    <td>Bin Type</td><td colspan="3">: '.$row['seal_no2'].'</td>
                                 </tr>
                                 <tr>
                                     <td>Waste</td><td>: '.$pid.'</td>
@@ -315,6 +321,14 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                             </table>
                         </body>
                     </html>';
+
+                    if (!$isDuplicate) {
+                        if ($print_stmt = $db->prepare("UPDATE ".$printTable." SET is_printed = 'Y' WHERE id = ? AND is_printed = 'N'")) {
+                            $print_stmt->bind_param('s', $id);
+                            $print_stmt->execute();
+                            $print_stmt->close();
+                        }
+                    }
 
                     echo json_encode(
                         array(

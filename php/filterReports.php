@@ -67,6 +67,10 @@ if($_POST['plant'] != null && $_POST['plant'] != '' && $_POST['plant'] != '-'){
 	$searchQuery .= " and plant_code = '".$_POST['plant']."'";
 }
 
+if(isset($_POST['location']) && $_POST['location'] != null && $_POST['location'] != '' && $_POST['location'] != '-'){
+	$searchQuery .= " and location_id = '".intval($_POST['location'])."'";
+}
+
 if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
   if ($_POST['status'] == 'Complete'){
     $searchQuery .= " and is_complete = 'Y'";

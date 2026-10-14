@@ -2,6 +2,10 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <?php
+require_once 'php/classes/BaseController.php';
+$baseController = new BaseController($db);
+$containerWeighingEnabled = $baseController->isFeatureEnabled('container_weighing');
+$differentBinWeighingEnabled = $baseController->isFeatureEnabled('different_bin_weighing');
 $user = $_SESSION['id'];
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
@@ -73,10 +77,12 @@ if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $selectedPlantId = intval($_SESSION['selected_plant_id'] ?? 0);
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and id = $selectedPlantId");
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0' and id = $selectedPlantId");
+    $location = $db->query("SELECT * FROM Location WHERE status = '0' and plant_id = $selectedPlantId ORDER BY location_name ASC");
 }
 else{
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0'");
+    $location = $db->query("SELECT * FROM Location WHERE status = '0' ORDER BY location_name ASC");
 }
 ?>
 
@@ -223,9 +229,15 @@ else{
                                                             <select id="invoiceNoSearch" class="form-select select2"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
+                                                                <?php if($containerWeighingEnabled){ ?>
                                                                 <option value="Container">Primer Mover</option>
+                                                                <?php } ?>
+                                                                <?php if($containerWeighingEnabled || $differentBinWeighingEnabled){ ?>
                                                                 <option value="Empty Container">Primer Mover + Container</option>
+                                                                <?php } ?>
+                                                                <?php if($differentBinWeighingEnabled){ ?>
                                                                 <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                <?php } ?>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -267,6 +279,17 @@ else{
                                                                 <option selected>-</option>
                                                                 <?php while($rowPlantF=mysqli_fetch_assoc($plant2)){ ?>
                                                                     <option value="<?=$rowPlantF['plant_code'] ?>"><?=$rowPlantF['name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div><!--end col-->
+                                                    <div class="col-3">
+                                                        <div class="mb-3">
+                                                            <label for="locationSearch" class="form-label"><?=$languageArray['location_code'][$language]?></label>
+                                                            <select id="locationSearch" class="form-select select2" >
+                                                                <option selected>-</option>
+                                                                <?php while($rowLocationF=mysqli_fetch_assoc($location)){ ?>
+                                                                    <option value="<?=$rowLocationF['id'] ?>"><?=$rowLocationF['location_name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -545,10 +568,16 @@ else{
                                                                                     <div class="col-sm-8">
                                                                                         <select id="weightType" name="weightType" class="form-select select2">
                                                                                             <option value="Normal" selected><?=$languageArray['normal_weighing_code'][$language]?></option>
+                                                                                            <?php if($containerWeighingEnabled){ ?>
                                                                                             <option value="Container">Primer Mover</option>
+                                                                                            <?php } ?>
+                                                                                            <?php if($containerWeighingEnabled || $differentBinWeighingEnabled){ ?>
                                                                                             <option value="Empty Container">Primer Mover + Container</option>
+                                                                                            <?php } ?>
+                                                                                            <?php if($differentBinWeighingEnabled){ ?>
                                                                                             <option value="Different Container">Primer Mover + Different Bins</option>
-                                                                                        </select>   
+                                                                                            <?php } ?>
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -1086,7 +1115,8 @@ else{
                                                         <input type="hidden" id="transporterCode" name="transporterCode">
                                                         <input type="hidden" id="supplierCode" name="supplierCode">
                                                         <input type="hidden" id="rawMaterialCode" name="rawMaterialCode">
-                                                        <input type="hidden" id="id" name="id">  
+                                                        <input type="hidden" id="id" name="id">
+                                                        <input type="hidden" id="overridePassword" name="overridePassword">
                                                         <input type="hidden" id="weighbridge" name="weighbridge" value="Weigh1">
                                                         <input type="hidden" id="previousRecordsTag" name="previousRecordsTag">
                                                         <input type="hidden" id="grossWeightBy1" name="grossWeightBy1">
@@ -1136,6 +1166,36 @@ else{
                                         </div>
                                     </div>
                                     
+                                    <div class="modal fade" id="entryOverrideModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content border border-2 border-danger shadow-lg">
+                                                <form role="form" id="entryOverrideForm" autocomplete="off" onsubmit="return false;">
+                                                    <div class="modal-header bg-danger p-3">
+                                                        <h5 class="modal-title text-white"><i class="ri-lock-password-line align-middle me-2"></i><?=$languageArray['insufficient_entry_title_code'][$language]?></h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body pt-4">
+                                                        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                                                            <i class="ri-error-warning-line fs-20 me-2"></i>
+                                                            <div id="entryOverrideMessage" class="fw-semibold"></div>
+                                                        </div>
+                                                        <div class="mb-2">
+                                                            <label for="entryOverridePassword" class="form-label"><?=$languageArray['password_code'][$language]?> *</label>
+                                                            <div class="input-group has-validation">
+                                                                <span class="input-group-text"><i class="ri-lock-line"></i></span>
+                                                                <input type="password" class="form-control" id="entryOverridePassword" autocomplete="new-password">
+                                                                <div class="invalid-feedback" id="entryOverridePasswordError"><?=$languageArray['please_enter_your_password_code'][$language]?></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                        <button type="button" class="btn btn-danger" id="submitEntryOverride"><?=$languageArray['confirm_code'][$language]?></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="modal fade" id="cancelModal">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
                                             <div class="modal-content">
@@ -1237,7 +1297,7 @@ else{
                             </div><!-- container-fluid -->
 
                             <!-- Second Card for Empty Container -->
-                            <div class="row">
+                            <div class="row" <?= ($containerWeighingEnabled || $differentBinWeighingEnabled) ? '' : 'style="display:none;"' ?>>
                                 <div class="col">
                                     <div class="h-100">
                                         <!--datatable--> 
@@ -1546,6 +1606,7 @@ else{
             $('#productSearch').val('-').trigger('change');
             $('#rawMatSearch').val('-').trigger('change');
             $('#plantSearch').val('-').trigger('change');
+            $('#locationSearch').val('-').trigger('change');
             $('#transactionIdSearch').val('');
             $('#containerNoSearch').val('');
             $('#sealNoSearch').val('');
@@ -1605,6 +1666,7 @@ else{
         var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
         var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
         var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
         var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
         var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
         var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
@@ -1631,6 +1693,7 @@ else{
                     product: productSearchI,
                     rawMaterial: rawMaterialI,
                     plant: plantNoI,
+                    location: locationI,
                     transactionId: transactionIdI,
                     containerNo: containerNoI,
                     sealNo: sealNoI,
@@ -1699,14 +1762,14 @@ else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
+                                            <i class="fas fa-weight-hanging"></i>
                                         </button>
                                     </div>`;    
                                 }else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
+                                            <i class="fas fa-weight-hanging"></i>
                                         </button>
                                     </div>`;  
                                 }
@@ -1766,7 +1829,8 @@ else{
                 'url':'php/filterEmptyContainer.php',
                 'data': {
                     fromDate: fromDateI,
-                    toDate: toDateI
+                    toDate: toDateI,
+                    location: locationI
                 } 
             },
             'columns': [
@@ -1808,7 +1872,7 @@ else{
                                 buttons += `
                                 <div class="col-auto">
                                     <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fa-solid fa-weight-hanging"></i>
+                                        <i class="fas fa-weight-hanging"></i>
                                     </button>
                                 </div>`;
                             }
@@ -1970,6 +2034,7 @@ else{
             });
 
             if(pass && $('#weightForm').valid()){
+                checkVehicleEntry(function(){
                 $('#spinnerLoading').show();
                 $.post('php/weight.php', $('#weightForm').serialize(), function(data){
                     var obj = JSON.parse(data); 
@@ -1998,6 +2063,7 @@ else{
                         $("#failBtn").attr('data-toast-text', 'Failed to save');
                         $("#failBtn").click();
                     }
+                });
                 });
             }
         });
@@ -2060,6 +2126,7 @@ else{
             }
 
             if(pass && $('#weightForm').valid()){
+                checkVehicleEntry(function(){
                 $('#spinnerLoading').show();
                 $.post('php/weight.php', $('#weightForm').serialize(), function(data){
                     var obj = JSON.parse(data); 
@@ -2098,6 +2165,71 @@ else{
                         $("#failBtn").click();
                     }
                 });
+                });
+            }
+        });
+
+        $('#submitEntryOverride').on('click', function(){
+            var password = $('#entryOverridePassword').val();
+
+            if (!password) {
+                showEntryOverrideError(<?=json_encode($languageArray['please_enter_your_password_code'][$language])?>);
+                return;
+            }
+
+            // Check the password here so a wrong one keeps the modal open (weight.php checks it again on save)
+            var confirmBtn = $(this).prop('disabled', true);
+            $.post('php/checkVehicleEntry.php', {verifyPassword: password}, function(data){
+                var obj = JSON.parse(data);
+                confirmBtn.prop('disabled', false);
+
+                if (obj.status === 'success' && obj.valid) {
+                    $('#entryOverridePassword').removeClass('is-invalid');
+                    $('#weightForm').find('#overridePassword').val(password);
+                    $('#entryOverrideModal').modal('hide');
+
+                    if (entryOverrideProceed) {
+                        var proceed = entryOverrideProceed;
+                        entryOverrideProceed = null;
+                        proceed();
+                    }
+                }
+                else {
+                    showEntryOverrideError(<?=json_encode($languageArray['invalid_password_code'][$language])?>);
+                }
+            }).fail(function(){
+                confirmBtn.prop('disabled', false);
+            });
+        });
+
+        $('#entryOverridePassword').on('input', function(){
+            $(this).removeClass('is-invalid');
+        });
+
+        // Stack the password modal (and a darker backdrop) above the open Add New modal
+        $('#entryOverrideModal').on('show.bs.modal', function(){
+            $(this).css('z-index', 1065);
+
+            // The backdrop is added right after this event
+            setTimeout(function(){
+                $('.modal-backdrop').last().css({'z-index': 1060, 'opacity': 0.7});
+            }, 0);
+        });
+
+        $('#entryOverrideModal').on('shown.bs.modal', function(){
+            $('#entryOverridePassword').trigger('focus');
+        });
+
+        $('#entryOverrideModal').on('hidden.bs.modal', function(){
+            // Bootstrap removes the stacked backdrop; keep scrolling locked for the Add New modal still open
+            if ($('#addModal').hasClass('show')) {
+                $('body').addClass('modal-open');
+            }
+        });
+
+        $('#entryOverridePassword').on('keypress', function(e){
+            if (e.which == 13) {
+                $('#submitEntryOverride').click();
             }
         });
 
@@ -2305,6 +2437,7 @@ else{
             var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
             var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
             var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
             var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
@@ -2336,6 +2469,7 @@ else{
                         product: productSearchI,
                         rawMaterial: rawMaterialI,
                         plant: plantNoI,
+                    location: locationI,
                         transactionId: transactionIdI,
                         containerNo: containerNoI,
                         sealNo: sealNoI,
@@ -2404,14 +2538,14 @@ else{
                                         buttons += `
                                         <div class="col-auto">
                                             <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
+                                                <i class="fas fa-weight-hanging"></i>
                                             </button>
                                         </div>`;    
                                     }else{
                                         buttons += `
                                         <div class="col-auto">
                                             <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
+                                                <i class="fas fa-weight-hanging"></i>
                                             </button>
                                         </div>`;  
                                     }
@@ -2472,7 +2606,8 @@ else{
                     'url':'php/filterEmptyContainer.php',
                     'data': {
                         fromDate: fromDateI,
-                        toDate: toDateI
+                        toDate: toDateI,
+                        location: locationI
                     } 
                 },
                 'columns': [
@@ -2514,7 +2649,7 @@ else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
+                                            <i class="fas fa-weight-hanging"></i>
                                         </button>
                                     </div>`;
                                 }
@@ -2554,6 +2689,7 @@ else{
             $('#addModal').find('#transactionId').val("");
             $('#addModal').find('#transactionStatus').val("Sales").trigger('change');
             $('#addModal').find('#emptyContainerNo').val("").trigger('change');
+            $('#addModal').find('#weightType option.feature-hidden').remove();
             $('#addModal').find('#weightType').val("Normal").trigger('change');
             $('#addModal').find('#customerType').val("Normal").trigger('change');
             $('#addModal').find('#transactionDate').val(formatDate2(today));
@@ -2664,6 +2800,7 @@ else{
             var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
 
             if (batchNoI == 'N'){
                 batchNoI = 'Pending';
@@ -2695,6 +2832,7 @@ else{
                     product : productSearchI,
                     rawMat : rawMaterialI,
                     plant : plantNoI,
+                    location : locationI,
                     isMulti : 'Y',
                     ids : selectedIds,
                     file : 'weight'
@@ -2733,6 +2871,7 @@ else{
                     product : productSearchI,
                     rawMat : rawMaterialI,
                     plant : plantNoI,
+                    location : locationI,
                     isMulti : 'N',
                     file : 'weight'
                 }, function(response){
@@ -2772,6 +2911,11 @@ else{
             var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
+            var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
+            var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
+            var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
+            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
             
             if (batchNoI == 'N'){
                 batchNoI = 'Pending';
@@ -2793,11 +2937,15 @@ else{
             if (selectedIds.length > 0) {
                 window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI+"&isMulti=Y&ids="+selectedIds);
+                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&location="+locationI+"&status="+batchNoI+
+                "&transactionId="+encodeURIComponent(transactionIdI)+"&containerNo="+encodeURIComponent(containerNoI)+
+                "&sealNo="+encodeURIComponent(sealNoI)+"&invDelPo="+encodeURIComponent(invDelPoI)+"&isMulti=Y&ids="+selectedIds);
             }else{
                 window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI+"&isMulti=N");
+                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&location="+locationI+"&status="+batchNoI+
+                "&transactionId="+encodeURIComponent(transactionIdI)+"&containerNo="+encodeURIComponent(containerNoI)+
+                "&sealNo="+encodeURIComponent(sealNoI)+"&invDelPo="+encodeURIComponent(invDelPoI)+"&isMulti=N");
             }
         });
 
@@ -3747,6 +3895,11 @@ else{
             }
         ?>
     });
+    
+    function showEntryOverrideError(message){
+        $('#entryOverridePassword').val('').addClass('is-invalid').trigger('focus');
+        $('#entryOverridePasswordError').text(message);
+    }
 
     function handleWeightType(weightType){
         if (weightType == 'Container'){
@@ -3893,7 +4046,53 @@ else{
         </div>
         `;
         
+        returnString += formatVehicleEntryLog(row.vehicle_entry_logs || []);
+
         return returnString;
+    }
+
+    // Vehicle Entry Log section: IN (counted towards the daily limit) and REVERSE (record cancelled)
+    function formatVehicleEntryLog(logs){
+        var html = '<hr><div class="row"><p><span><strong style="font-size:120%; text-decoration: underline;">' + <?=json_encode($languageArray['vehicle_entry_log_code'][$language])?> + '</strong></span></p>';
+
+        if (logs.length == 0) {
+            return html + '<p class="text-muted">' + <?=json_encode($languageArray['no_log_found_code'][$language])?> + '</p></div>';
+        }
+
+        var rows = '';
+
+        for (var i = 0; i < logs.length; i++) {
+            var log = logs[i];
+            var action = log.action == 'REVERSE'
+                ? '<span class="badge bg-danger">' + <?=json_encode($languageArray['entry_reversed_code'][$language])?> + '</span>'
+                : '<span class="badge bg-success">' + <?=json_encode($languageArray['entry_in_code'][$language])?> + '</span>';
+            var override = log.is_override == 'Y'
+                ? '<span class="badge bg-warning">' + <?=json_encode($languageArray['yes_code'][$language])?> + '</span>'
+                : <?=json_encode($languageArray['no_code'][$language])?>;
+
+            rows += '<tr>' +
+                '<td>' + action + '</td>' +
+                '<td>' + log.entry_date + '</td>' +
+                '<td>' + log.entry_count + ' / ' + (log.max_entry > 0 ? log.max_entry : <?=json_encode($languageArray['unlimited_code'][$language])?>) + '</td>' +
+                '<td>' + override + '</td>' +
+                '<td>' + log.approved_by + (log.approved_date ? '<br><small class="text-muted">' + log.approved_date + '</small>' : '') + '</td>' +
+                '<td>' + $('<div>').text(log.remarks).html() + '</td>' +
+                '<td>' + log.action_by + '</td>' +
+                '<td>' + log.event_date + '</td>' +
+            '</tr>';
+        }
+
+        return html + '<div class="table-responsive"><table class="table table-sm table-bordered mb-0">' +
+            '<thead><tr>' +
+                '<th>' + <?=json_encode($languageArray['action_code'][$language])?> + '</th>' +
+                '<th>' + <?=json_encode($languageArray['entry_date_code'][$language])?> + '</th>' +
+                '<th>' + <?=json_encode($languageArray['entry_no_code'][$language])?> + '</th>' +
+                '<th>' + <?=json_encode($languageArray['override_code'][$language])?> + '</th>' +
+                '<th>' + <?=json_encode($languageArray['approved_by_code'][$language])?> + '</th>' +
+                '<th>' + <?=json_encode($languageArray['remarks_code'][$language])?> + '</th>' +
+                '<th>' + <?=json_encode($languageArray['action_by_code'][$language])?> + '</th>' +
+                '<th>' + <?=json_encode($languageArray['action_date_code'][$language])?> + '</th>' +
+            '</tr></thead><tbody>' + rows + '</tbody></table></div></div>';
     }
 
     function displayPreview(data) {
@@ -3955,6 +4154,42 @@ else{
         previewTable.innerHTML = htmlTable;
     }
 
+    var entryOverrideProceed = null;
+
+    // Vehicle daily entry limit: only for new weighing. Over the limit, the logged-in user re-enters their password.
+    function checkVehicleEntry(proceed){
+        $('#weightForm').find('#overridePassword').val('');
+
+        var vehicleNo = $('#manualVehicle').is(':checked') ? $('#vehicleNoTxt').val() : $('#vehiclePlateNo1').val();
+
+        if ($('#weightForm').find('#id').val() || !vehicleNo) {
+            proceed();
+            return;
+        }
+
+        $('#spinnerLoading').show();
+        $.post('php/checkVehicleEntry.php', {vehicleNo: vehicleNo}, function(data){
+            var obj = JSON.parse(data);
+            $('#spinnerLoading').hide();
+
+            if (obj.status === 'success' && obj.exceeded) {
+                var message = <?=json_encode($languageArray['insufficient_entry_code'][$language])?>
+                    .replace('{vehicle}', vehicleNo).replace('{count}', obj.count).replace('{max}', obj.max);
+
+                if (confirm(message + ' ' + <?=json_encode($languageArray['proceed_code'][$language])?>)) {
+                    entryOverrideProceed = proceed;
+                    $('#entryOverrideMessage').text(message);
+                    $('#entryOverridePassword').val('').removeClass('is-invalid');
+                    $('#entryOverrideModal').modal('show');
+                }
+            }
+            else {
+                // weight.php checks the limit again before saving
+                proceed();
+            }
+        });
+    }
+
     function edit(id, isContainer){
         $('#spinnerLoading').show();
 
@@ -3983,6 +4218,11 @@ else{
                 $('#addModal').find('#id').val(obj.message.id);
                 $('#addModal').find('#transactionId').val(obj.message.transaction_id);
                 $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
+                // Feature-flagged weight types may be hidden; keep old records showing their saved type
+                if (obj.message.weight_type && $('#addModal').find('#weightType option[value="' + obj.message.weight_type + '"]').length == 0) {
+                    var hiddenWeightTypes = {'Container': 'Primer Mover', 'Empty Container': 'Primer Mover + Container', 'Different Container': 'Primer Mover + Different Bins'};
+                    $('#addModal').find('#weightType').append($('<option class="feature-hidden">').val(obj.message.weight_type).text(hiddenWeightTypes[obj.message.weight_type] || obj.message.weight_type));
+                }
                 $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
                 $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
