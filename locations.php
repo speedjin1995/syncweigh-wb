@@ -214,6 +214,7 @@
                                                                                     <option value="EX2001">SYNCTRONIX EX2001</option>
                                                                                     <option value="205">CARDINAL STORM 205</option>
                                                                                     <option value="D2008">SYNCTRONIX D2008</option>
+                                                                                    <option value="IND246">METTLER TOLEDO IND246</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
