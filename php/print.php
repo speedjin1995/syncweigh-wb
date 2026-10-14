@@ -79,7 +79,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                 if ($row = $result->fetch_assoc()) {
                     // Already printed before = this is a reprint, mark it as duplicate
                     $isDuplicate = ($row['is_printed'] ?? 'N') == 'Y';
-                    $duplicateWatermark = $isDuplicate ? '<div class="watermark">DUPLICATE</div>' : '';
+                    $duplicateLabel = $isDuplicate ? '<b>(DUPLICATE)</b>' : '';
 
                     $customer = '';
                     $customerR = '';
@@ -256,26 +256,9 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     border-top: 1px dashed #000;
                                     padding-top: 4px;
                                 }
-
-                                .watermark {
-                                    position: fixed;
-                                    top: 50%;
-                                    left: 50%;
-                                    transform: translate(-50%, -50%) rotate(-30deg);
-                                    font-size: 110px;
-                                    font-weight: bold;
-                                    letter-spacing: 10px;
-                                    color: rgba(0, 0, 0, 0.12);
-                                    z-index: -1;
-                                    pointer-events: none;
-                                    white-space: nowrap;
-                                    -webkit-print-color-adjust: exact;
-                                    print-color-adjust: exact;
-                                }
                             </style>
                         </head>
                         <body>
-                            '.$duplicateWatermark.'
                             <div class="header">
                                 <span style="font-size: 18px; font-weight: bold;">'.$compname.'</span><br>
                                 <span>'.$compaddress.' '.$compaddress2.'</span><br>
@@ -286,7 +269,7 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 <tr>
                                     <td width="14%">Ticket No.</td><td width="22%">: '.$row['transaction_id'].'</td>
                                     <td width="14%">Date</td><td width="18%">: '.$transactionDate.'</td>
-                                    <td width="20%"></td><td width="12%"></td>
+                                    <td width="20%" style="text-align: center;">'.$duplicateLabel.'</td><td width="12%"></td>
                                 </tr>
                                 <tr>
                                     <td>Vehicle No.</td><td>: '.$row['lorry_plate_no1'].'</td>
