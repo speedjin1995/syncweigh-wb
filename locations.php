@@ -207,10 +207,13 @@
                                                                             <label for="indicator" class="col-sm-4 col-form-label"><?=$languageArray['indicator_code'][$language]?></label>
                                                                             <div class="col-sm-8">
                                                                                 <select class="form-control" style="width: 100%;" id="indicator" name="indicator">
+                                                                                    <option value="BDI">BDI2001B</option>
                                                                                     <option value="BX23">BAYKON BX23</option>
                                                                                     <option value="X2S">SYNCTRONIX X2S</option>
                                                                                     <option value="X722">SYNCTRONIX X722</option>
+                                                                                    <option value="EX2001">SYNCTRONIX EX2001</option>
                                                                                     <option value="205">CARDINAL STORM 205</option>
+                                                                                    <option value="D2008">SYNCTRONIX D2008</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
