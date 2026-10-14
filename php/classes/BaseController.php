@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../services/BaseService.php';
+
 /**
  * Base Controller Class
  * All module controllers should extend this class
@@ -57,6 +59,42 @@ class BaseController {
         return $isDuplicate;
     }
     
+    /**
+     * True when the feature is enabled for the company
+     */
+    public function isFeatureEnabled($featureCode, $companyId = '1') {
+        $service = new BaseService($this->db, $this->username);
+        return $service->isFeatureEnabled($featureCode, $companyId);
+    }
+
+    /**
+     * Active features with their on/off state for the company
+     */
+    public function getCompanyFeatures($companyId = '1') {
+        $service = new BaseService($this->db, $this->username);
+        return $service->getCompanyFeatures($companyId);
+    }
+
+    /**
+     * Turn a feature on or off (SADMIN only)
+     */
+    public function saveCompanyFeature() {
+        if (($_SESSION['roles'] ?? '') != 'SADMIN') {
+            $this->failed('You do not have permission to change features');
+        }
+
+        $featureCode = $this->getRequiredPost('featureCode');
+        $enabled = $this->getPost('enabled') == '1';
+
+        try {
+            $service = new BaseService($this->db, $this->username);
+            $service->saveCompanyFeature($featureCode, $enabled);
+            $this->success('Updated Successfully!!');
+        } catch (Exception $e) {
+            $this->failed($e->getMessage());
+        }
+    }
+
     /**
      * Get optional POST value (handles arrays)
      */

@@ -1564,3 +1564,33 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALU
 
 UPDATE `message_resource` SET `en`='Bin No.', `zh`='料仓编号', `my`='No. Tong', `ne`='தொட்டி எண்' WHERE `message_key_code`='container_no2_code';
 UPDATE `message_resource` SET `en`='Bin Type', `zh`='料仓类型', `my`='Jenis Tong', `ne`='தொட்டி வகை' WHERE `message_key_code`='seal_no2_code';
+
+CREATE TABLE `Features` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `feature_code` VARCHAR(50) NOT NULL,
+  `feature_name` VARCHAR(100) NOT NULL,
+  `description` VARCHAR(255) NULL,
+  `status` VARCHAR(3) NOT NULL DEFAULT '0',
+  `created_by` VARCHAR(50) NULL,
+  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Company_Features` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) NOT NULL,
+  `feature_code` VARCHAR(50) NOT NULL,
+  `enabled` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_by` VARCHAR(50) NULL,
+  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_by`) VALUES ('container_weighing', 'Container Weighing', 'Show Primer Mover / Primer Mover + Container weight types', 'SYSTEM');
+INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_by`) VALUES ('different_bin_weighing', 'Different Bin Weighing', 'Show Primer Mover + Different Bins / Primer Mover + Container weight types', 'SYSTEM');
+INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) VALUES (1, 'container_weighing', 0, 'SYSTEM');
+INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) VALUES (1, 'different_bin_weighing', 0, 'SYSTEM');

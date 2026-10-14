@@ -2,6 +2,10 @@
 <?php include 'layouts/head-main.php'; ?>
 
 <?php
+require_once 'php/classes/BaseController.php';
+$baseController = new BaseController($db);
+$containerWeighingEnabled = $baseController->isFeatureEnabled('container_weighing');
+$differentBinWeighingEnabled = $baseController->isFeatureEnabled('different_bin_weighing');
 $user = $_SESSION['id'];
 $username = $_SESSION["username"];
 $plantId = $_SESSION['plant'];
@@ -225,9 +229,15 @@ else{
                                                             <select id="invoiceNoSearch" class="form-select select2"  >
                                                                 <option selected>-</option>
                                                                 <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
+                                                                <?php if($containerWeighingEnabled){ ?>
                                                                 <option value="Container">Primer Mover</option>
+                                                                <?php } ?>
+                                                                <?php if($containerWeighingEnabled || $differentBinWeighingEnabled){ ?>
                                                                 <option value="Empty Container">Primer Mover + Container</option>
+                                                                <?php } ?>
+                                                                <?php if($differentBinWeighingEnabled){ ?>
                                                                 <option value="Different Container">Primer Mover + Different Bins</option>
+                                                                <?php } ?>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -558,10 +568,16 @@ else{
                                                                                     <div class="col-sm-8">
                                                                                         <select id="weightType" name="weightType" class="form-select select2">
                                                                                             <option value="Normal" selected><?=$languageArray['normal_weighing_code'][$language]?></option>
+                                                                                            <?php if($containerWeighingEnabled){ ?>
                                                                                             <option value="Container">Primer Mover</option>
+                                                                                            <?php } ?>
+                                                                                            <?php if($containerWeighingEnabled || $differentBinWeighingEnabled){ ?>
                                                                                             <option value="Empty Container">Primer Mover + Container</option>
+                                                                                            <?php } ?>
+                                                                                            <?php if($differentBinWeighingEnabled){ ?>
                                                                                             <option value="Different Container">Primer Mover + Different Bins</option>
-                                                                                        </select>   
+                                                                                            <?php } ?>
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -1281,7 +1297,7 @@ else{
                             </div><!-- container-fluid -->
 
                             <!-- Second Card for Empty Container -->
-                            <div class="row">
+                            <div class="row" <?= ($containerWeighingEnabled || $differentBinWeighingEnabled) ? '' : 'style="display:none;"' ?>>
                                 <div class="col">
                                     <div class="h-100">
                                         <!--datatable--> 
@@ -2612,6 +2628,7 @@ else{
             $('#addModal').find('#transactionId').val("");
             $('#addModal').find('#transactionStatus').val("Sales").trigger('change');
             $('#addModal').find('#emptyContainerNo').val("").trigger('change');
+            $('#addModal').find('#weightType option.feature-hidden').remove();
             $('#addModal').find('#weightType').val("Normal").trigger('change');
             $('#addModal').find('#customerType').val("Normal").trigger('change');
             $('#addModal').find('#transactionDate').val(formatDate2(today));
@@ -4140,6 +4157,11 @@ else{
                 $('#addModal').find('#id').val(obj.message.id);
                 $('#addModal').find('#transactionId').val(obj.message.transaction_id);
                 $('#addModal').find('#transactionStatus').val(obj.message.transaction_status).trigger('change');
+                // Feature-flagged weight types may be hidden; keep old records showing their saved type
+                if (obj.message.weight_type && $('#addModal').find('#weightType option[value="' + obj.message.weight_type + '"]').length == 0) {
+                    var hiddenWeightTypes = {'Container': 'Primer Mover', 'Empty Container': 'Primer Mover + Container', 'Different Container': 'Primer Mover + Different Bins'};
+                    $('#addModal').find('#weightType').append($('<option class="feature-hidden">').val(obj.message.weight_type).text(hiddenWeightTypes[obj.message.weight_type] || obj.message.weight_type));
+                }
                 $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
                 $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));

@@ -45,6 +45,88 @@ class BaseService {
     }
 
     /**
+     * True when the feature is active and enabled for the company.
+     */
+    public function isFeatureEnabled($featureCode, $companyId = '1') {
+        $enabled = false;
+
+        $stmt = $this->db->prepare("SELECT cf.enabled FROM Company_Features cf JOIN Features f ON f.feature_code = cf.feature_code AND f.status = '0' WHERE cf.company_id = ? AND cf.feature_code = ?");
+        if ($stmt) {
+            $stmt->bind_param('ss', $companyId, $featureCode);
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                if ($row = $result->fetch_assoc()) {
+                    $enabled = $row['enabled'] == '1';
+                }
+            }
+            $stmt->close();
+        }
+
+        return $enabled;
+    }
+
+    /**
+     * Active features with their on/off state for the company.
+     */
+    public function getCompanyFeatures($companyId = '1') {
+        $features = [];
+
+        $stmt = $this->db->prepare("SELECT f.feature_code, f.feature_name, f.description, (SELECT cf.enabled FROM Company_Features cf WHERE cf.company_id = ? AND cf.feature_code = f.feature_code ORDER BY cf.id LIMIT 1) AS enabled FROM Features f WHERE f.status = '0' ORDER BY f.id");
+        if ($stmt) {
+            $stmt->bind_param('s', $companyId);
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                while ($row = $result->fetch_assoc()) {
+                    $row['enabled'] = $row['enabled'] == '1';
+                    $features[] = $row;
+                }
+            }
+            $stmt->close();
+        }
+
+        return $features;
+    }
+
+    /**
+     * Turn a feature on or off for the company. Creates the company row if it does not exist yet.
+     */
+    public function saveCompanyFeature($featureCode, $enabled, $companyId = '1') {
+        $stmt = $this->db->prepare("SELECT id FROM Features WHERE feature_code = ? AND status = '0'");
+        if (!$stmt) throw new Exception('Something went wrong!');
+        $stmt->bind_param('s', $featureCode);
+        if (!$stmt->execute()) throw new Exception('Something went wrong!');
+        $stmt->store_result();
+        $exists = $stmt->num_rows > 0;
+        $stmt->close();
+        if (!$exists) throw new Exception('Feature not found');
+
+        $enabled = $enabled ? 1 : 0;
+        $today = date("Y-m-d H:i:s");
+
+        $stmt = $this->db->prepare("UPDATE Company_Features SET enabled = ?, modified_by = ?, modified_date = ? WHERE company_id = ? AND feature_code = ?");
+        if (!$stmt) throw new Exception('Something went wrong!');
+        $stmt->bind_param('issss', $enabled, $this->username, $today, $companyId, $featureCode);
+        if (!$stmt->execute()) throw new Exception('Something went wrong!');
+        $stmt->close();
+
+        $stmt = $this->db->prepare("SELECT id FROM Company_Features WHERE company_id = ? AND feature_code = ?");
+        if (!$stmt) throw new Exception('Something went wrong!');
+        $stmt->bind_param('ss', $companyId, $featureCode);
+        if (!$stmt->execute()) throw new Exception('Something went wrong!');
+        $stmt->store_result();
+        $hasRow = $stmt->num_rows > 0;
+        $stmt->close();
+
+        if (!$hasRow) {
+            $stmt = $this->db->prepare("INSERT INTO Company_Features (company_id, feature_code, enabled, created_by, created_date) VALUES (?, ?, ?, ?, ?)");
+            if (!$stmt) throw new Exception('Something went wrong!');
+            $stmt->bind_param('ssiss', $companyId, $featureCode, $enabled, $this->username, $today);
+            if (!$stmt->execute()) throw new Exception('Something went wrong!');
+            $stmt->close();
+        }
+    }
+
+    /**
      * When a master data code changes, update it in the records that reference it.
      */
     public function updateMasterDataCodeValue($oldValue, $newValue, $module) {

@@ -44,6 +44,13 @@ if ($role != 'SADMIN'){
     $hidden = true;
 }
 
+$features = [];
+if ($role == 'SADMIN'){
+    require_once "php/classes/BaseController.php";
+    $baseController = new BaseController($db);
+    $features = $baseController->getCompanyFeatures();
+}
+
 ?>
 
     <head>
@@ -53,6 +60,9 @@ if ($role != 'SADMIN'){
 
         <!-- swiper css -->
         <link rel="stylesheet" href="assets/libs/swiper/swiper-bundle.min.css">
+
+        <!-- Include jQuery library -->
+        <script src="plugins/jquery/jquery.min.js"></script>
 
         <?php include 'layouts/head-css.php'; ?>
 
@@ -72,7 +82,8 @@ if ($role != 'SADMIN'){
 
                 <div class="page-content">
                     <div class="container-fluid">
-                        <div class="row col-12">
+                        <div class="row col-12 px-4">
+                            <h5 class="mb-3 mt-2 px-0 text-decoration-underline">Company Information</h5>
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <form action="php/updateCompany.php" method="post">
@@ -87,7 +98,7 @@ if ($role != 'SADMIN'){
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <label for="companyName" class="col-sm-4 col-form-label"><?=$languageArray['company_name_code'][$language]?>Company Name *</label>
+                                                    <label for="companyName" class="col-sm-4 col-form-label"><?=$languageArray['company_name_code'][$language]?> *</label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control input-readonly" id="companyName" name="companyName" placeholder="Company Name" value="<?=$username ?>" required <?= $readonly ?>>
                                                     </div>
@@ -141,6 +152,37 @@ if ($role != 'SADMIN'){
                                 </div>
                             </div>
                         </div>
+                        <?php if ($role == 'SADMIN'){ ?>
+                        <div class="row col-12 px-4">
+                            <h5 class="mb-3 mt-2 px-0 text-decoration-underline">Features</h5>
+                            <div class="card bg-white">
+                                <div class="card-body">
+                                    <?php if (empty($features)){ ?>
+                                        <p class="text-muted mb-0">No features found.</p>
+                                    <?php } ?>
+                                    <div class="row">
+                                    <?php foreach ($features as $feature){ ?>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="row">
+                                            <label for="feature_<?=htmlspecialchars($feature['feature_code']) ?>" class="col-sm-8 col-form-label">
+                                                <?=htmlspecialchars($feature['feature_name']) ?>
+                                                <small class="d-block text-muted"><?=htmlspecialchars($feature['description'] ?? '') ?></small>
+                                            </label>
+                                            <div class="col-sm-4 d-flex align-items-center">
+                                                <div class="form-check form-switch form-switch-lg">
+                                                    <input class="form-check-input feature-toggle" type="checkbox" role="switch" id="feature_<?=htmlspecialchars($feature['feature_code']) ?>" data-code="<?=htmlspecialchars($feature['feature_code']) ?>" <?= $feature['enabled'] ? 'checked' : '' ?>>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" hidden id="successBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
+                        <button type="button" hidden id="failBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
+                        <?php } ?>
                     </div><!-- container-fluid -->
                 </div><!-- End Page-content -->
 
@@ -164,5 +206,35 @@ if ($role != 'SADMIN'){
         
         <!-- App js -->
         <script src="assets/js/app.js"></script>
+
+        <script>
+        $(function () {
+            $('.feature-toggle').on('change', function () {
+                var toggle = $(this);
+                var enabled = toggle.is(':checked');
+
+                $('#spinnerLoading').show();
+                $.post('php/modules/features/index.php', {action: 'save', featureCode: toggle.data('code'), enabled: enabled ? '1' : '0'}, function (data) {
+                    var obj = JSON.parse(data);
+
+                    if (obj.status === 'success') {
+                        $("#successBtn").attr('data-toast-text', obj.message);
+                        $("#successBtn").click();
+                    }
+                    else {
+                        toggle.prop('checked', !enabled);
+                        $("#failBtn").attr('data-toast-text', obj.message);
+                        $("#failBtn").click();
+                    }
+                }).fail(function () {
+                    toggle.prop('checked', !enabled);
+                    $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
+                    $("#failBtn").click();
+                }).always(function () {
+                    $('#spinnerLoading').hide();
+                });
+            });
+        });
+        </script>
     </body>
 </html>
