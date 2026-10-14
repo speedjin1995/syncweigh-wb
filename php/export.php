@@ -32,7 +32,7 @@ if($_GET['fromDate'] != null && $_GET['fromDate'] != ''){
 
     if($_GET["file"] == 'weight'){
         $searchQuery .= " and Weight.transaction_date >= '".$formatted_date."'";
-        $searchContainerQuery = " and Weight_Container.transaction_date >= '".$formatted_date."'";
+        $searchContainerQuery .= " and Weight_Container.transaction_date >= '".$formatted_date."'";
     }
     else{
         $searchQuery .= " and count.transaction_date >= '".$formatted_date."'";
@@ -84,8 +84,8 @@ if(isset($_GET['supplier']) && $_GET['supplier'] != null && $_GET['supplier'] !=
 
 if($_GET['vehicle'] != null && $_GET['vehicle'] != '' && $_GET['vehicle'] != '-'){
     if($_GET["file"] == 'weight'){
-        $searchQuery .= " and Weight.lorry_plate_no1 = '".$_GET['vehicle']."'";
-        $searchContainerQuery .= " and Weight_Container.lorry_plate_no1 = '".$_GET['vehicle']."'";
+        $searchQuery .= " and Weight.lorry_plate_no1 like '%".$_GET['vehicle']."%'";
+        $searchContainerQuery .= " and Weight_Container.lorry_plate_no1 like '%".$_GET['vehicle']."%'";
     }
     else{
         $searchQuery .= " and count.lorry_plate_no1 = '".$_GET['vehicle']."'";
@@ -132,18 +132,50 @@ if(isset($_GET['plant']) && $_GET['plant'] != null && $_GET['plant'] != '' && $_
     }
 }
 
+if(isset($_GET['location']) && $_GET['location'] != null && $_GET['location'] != '' && $_GET['location'] != '-' && $_GET["file"] == 'weight'){
+    $searchQuery .= " and Weight.location_id = '".intval($_GET['location'])."'";
+    $searchContainerQuery .= " and Weight_Container.location_id = '".intval($_GET['location'])."'";
+}
+
+// Same text filters as the weighing screen table (php/filterWeight.php)
+if(isset($_GET['transactionId']) && $_GET['transactionId'] != '' && $_GET['transactionId'] != '-' && $_GET["file"] == 'weight'){
+    $transactionId = $db->real_escape_string(trim($_GET['transactionId']));
+    $searchQuery .= " and Weight.transaction_id like '%".$transactionId."%'";
+    $searchContainerQuery .= " and Weight_Container.transaction_id like '%".$transactionId."%'";
+}
+
+if(isset($_GET['containerNo']) && $_GET['containerNo'] != '' && $_GET['containerNo'] != '-' && $_GET["file"] == 'weight'){
+    $containerNo = $db->real_escape_string(trim($_GET['containerNo']));
+    $searchQuery .= " and (Weight.container_no like '%".$containerNo."%' OR Weight.container_no2 like '%".$containerNo."%')";
+    $searchContainerQuery .= " and (Weight_Container.container_no like '%".$containerNo."%' OR Weight_Container.container_no2 like '%".$containerNo."%')";
+}
+
+if(isset($_GET['sealNo']) && $_GET['sealNo'] != '' && $_GET['sealNo'] != '-' && $_GET["file"] == 'weight'){
+    $sealNo = $db->real_escape_string(trim($_GET['sealNo']));
+    $searchQuery .= " and (Weight.seal_no like '%".$sealNo."%' OR Weight.seal_no2 like '%".$sealNo."%')";
+    $searchContainerQuery .= " and (Weight_Container.seal_no like '%".$sealNo."%' OR Weight_Container.seal_no2 like '%".$sealNo."%')";
+}
+
+if(isset($_GET['invDelPo']) && $_GET['invDelPo'] != '' && $_GET['invDelPo'] != '-' && $_GET["file"] == 'weight'){
+    $invDelPo = $db->real_escape_string(trim($_GET['invDelPo']));
+    $searchQuery .= " and (Weight.purchase_order like '%".$invDelPo."%' OR Weight.invoice_no like '%".$invDelPo."%' OR Weight.delivery_no like '%".$invDelPo."%')";
+    $searchContainerQuery .= " and (Weight_Container.purchase_order like '%".$invDelPo."%' OR Weight_Container.invoice_no like '%".$invDelPo."%' OR Weight_Container.delivery_no like '%".$invDelPo."%')";
+}
+
 if(isset($_GET['status']) && $_GET['status'] != null && $_GET['status'] != '' && $_GET['status'] != '-'){
     if($_GET["file"] == 'weight'){
         if ($_GET['status'] == 'Complete'){
             $searchQuery .= " and Weight.is_complete = 'Y'";
-            // $searchContainerQuery .= " and is_complete='Y' and is_cancel='Y'";
+            $searchContainerQuery .= " and Weight_Container.is_complete = 'Y'";
         }elseif ($_GET['status'] == 'Cancelled'){
             $searchQuery .= " and Weight.is_cancel = 'Y'";
+            $searchContainerQuery .= " and Weight_Container.is_cancel = 'Y'";
         }elseif ($_GET['status'] == 'Pending'){
             $searchQuery .= " and is_complete='N' AND is_cancel='N'";
-            // $searchContainerQuery .= " and is_complete='Y'";
+            $searchContainerQuery .= " and Weight_Container.is_complete='N' AND Weight_Container.is_cancel='N'";
         }else{
             $searchQuery .= " and Weight.is_complete = 'Y'";
+            $searchContainerQuery .= " and Weight_Container.is_complete = 'Y'";
         }
     }
 }
@@ -168,13 +200,20 @@ $fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACT
     'SUPPLIER CODE', 'SUPPLIER NAME', 'PRODUCT CODE', 'PRODUCT NAME', 'PRODUCT DESCRIPTION', 'DESTINATION CODE', 'TO DESTINATION', 'TRANSPORTER CODE', 
     'DELIVERED BY', 'PO NO.', 'DO NO.', 'CONTAINER NO', 'SEAL NO', 'CONTAINER NO 2', 'SEAL NO 2', 'ORDER WEIGHT', 'SUPPLIER WEIGHT', 'GROSS WEIGHT', 'TARE WEIGHT', 'NET WEIGHT', 'IN TIME', 'OUT TIME',
     'GROSS WEIGHT 2', 'TARE WEIGHT 2', 'NET WEIGHT 2', 'IN TIME2', 'OUT TIME2', 'REDUCE WEIGHT', 'VARIANCE', 'SUB TOTAL WEIGHT',  'MANUAL', 'CANCELLED', 'PLANT CODE', 
-    'PLANT NAME', 'WEIGHTED BY', 'REMARK'); 
+    'PLANT NAME', 'LOCATION', 'WEIGHTED BY', 'REMARK'); 
 
 // Display column names as first row 
 $excelData = implode("\t", array_values($fields)) . "\n";
 
 // Fetch records from database
 if($_GET["file"] == 'weight'){
+    // Location id => name lookup, keeps the Weight / Weight_Container UNION untouched
+    $locationNames = array();
+    $locationQuery = $db->query("SELECT id, location_name FROM Location");
+    while($locationRow = $locationQuery->fetch_assoc()){
+        $locationNames[$locationRow['id']] = $locationRow['location_name'];
+    }
+
     // $query = $db->query("select * from Weight WHERE status='0'".$searchQuery);
     $query = $db->query("
         SELECT * FROM Weight WHERE Weight.status = '0'".$searchQuery."
@@ -234,7 +273,7 @@ if($query->num_rows > 0){
             $row['container_no2'], $row['seal_no2'], $row['order_weight'], $row['supplier_weight'], $row['gross_weight1'], $row['tare_weight1'], $row['nett_weight1'], $row['gross_weight1_date'], 
             $row['tare_weight1_date'], $row['gross_weight2'], $row['tare_weight2'], $row['nett_weight2'], $row['gross_weight2_date'], $row['tare_weight2_date'],
             $row['reduce_weight'], $row['weight_different'], $row['final_weight'], $row['manual_weight'], $row['is_cancel'], $row['plant_code'], $row['plant_name'], 
-            $row['created_by'], $row['remarks']);
+            $locationNames[$row['location_id']] ?? '', $row['created_by'], $row['remarks']);
         }
         else{
             $lineData = array($row['serialNo'], $row['product_name'], $row['units'], $row['unitWeight'], $row['tare'], $row['currentWeight'], $row['actualWeight'],

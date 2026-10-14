@@ -131,6 +131,10 @@ if(isset($_POST['plant']) && $_POST['plant'] != null && $_POST['plant'] != '' &&
     }
 }
 
+if(isset($_POST['location']) && $_POST['location'] != null && $_POST['location'] != '' && $_POST['location'] != '-' && $_POST["file"] == 'weight'){
+    $searchQuery .= " and Weight.location_id = '".intval($_POST['location'])."'";
+}
+
 if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
     if ($_POST['status'] == 'Complete'){
         $searchQuery .= " and is_complete = 'Y'";
@@ -160,6 +164,13 @@ if($_POST['isMulti'] != null && $_POST['isMulti'] != '' && $_POST['isMulti'] != 
 
 if(isset($_POST["file"])){
     if($_POST["file"] == 'weight'){
+        // Location id => name lookup
+        $locationNames = array();
+        $locationQuery = $db->query("SELECT id, location_name FROM Location");
+        while($locationRow = $locationQuery->fetch_assoc()){
+            $locationNames[$locationRow['id']] = $locationRow['location_name'];
+        }
+
         if ($select_stmt = $db->prepare("select * from Weight WHERE status = '0'".$searchQuery.' ORDER BY tare_weight1_date')) {
             // Execute the prepared query.
             if (! $select_stmt->execute()) {
@@ -268,6 +279,7 @@ if(isset($_POST["file"])){
                                             <th>VARIANCE</th>
                                             <th>SUB TOTAL WEIGHT</th>
                                             <th>USER</th>
+                                            <th>LOCATION</th>
                                         </tr>
                                     </thead>
                                     <tbody>';
@@ -354,6 +366,8 @@ if(isset($_POST["file"])){
                                                 <td>' . $row['delivery_no'] . '</td>
                                                 <td>' . $row['container_no'] . '</td>
                                                 <td>' . $row['seal_no'] . '</td>
+                                                <td>' . $row['container_no2'] . '</td>
+                                                <td>' . $row['seal_no2'] . '</td>
                                                 <td>' . (!empty($row['order_weight']) ? number_format($row['order_weight'] / 1000, 2) : '') . '</td>
                                                 <td>' . (!empty($row['supplier_weight']) ? number_format($row['supplier_weight'] / 1000, 2) : '') . '</td>
                                                 <td>' . number_format($row['gross_weight1']/1000, 2) . '</td>
@@ -369,6 +383,7 @@ if(isset($_POST["file"])){
                                                 <td>' . (!empty($row['weight_different']) ? number_format($row['weight_different'] / 1000, 2) : '') . '</td>
                                                 <td>' . number_format($row['final_weight']/1000, 2) . '</td>
                                                 <td>' . $row['created_by'] . '</td>
+                                                <td>' . ($locationNames[$row['location_id']] ?? '') . '</td>
                                             </tr>';
                                     
                                             // Calculate subtotals

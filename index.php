@@ -73,10 +73,12 @@ if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
     $selectedPlantId = intval($_SESSION['selected_plant_id'] ?? 0);
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and id = $selectedPlantId");
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0' and id = $selectedPlantId");
+    $location = $db->query("SELECT * FROM Location WHERE status = '0' and plant_id = $selectedPlantId ORDER BY location_name ASC");
 }
 else{
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
     $plant2 = $db->query("SELECT * FROM Plant WHERE status = '0'");
+    $location = $db->query("SELECT * FROM Location WHERE status = '0' ORDER BY location_name ASC");
 }
 ?>
 
@@ -267,6 +269,17 @@ else{
                                                                 <option selected>-</option>
                                                                 <?php while($rowPlantF=mysqli_fetch_assoc($plant2)){ ?>
                                                                     <option value="<?=$rowPlantF['plant_code'] ?>"><?=$rowPlantF['name'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div><!--end col-->
+                                                    <div class="col-3">
+                                                        <div class="mb-3">
+                                                            <label for="locationSearch" class="form-label">Location</label>
+                                                            <select id="locationSearch" class="form-select select2" >
+                                                                <option selected>-</option>
+                                                                <?php while($rowLocationF=mysqli_fetch_assoc($location)){ ?>
+                                                                    <option value="<?=$rowLocationF['id'] ?>"><?=$rowLocationF['location_name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -1546,6 +1559,7 @@ else{
             $('#productSearch').val('-').trigger('change');
             $('#rawMatSearch').val('-').trigger('change');
             $('#plantSearch').val('-').trigger('change');
+            $('#locationSearch').val('-').trigger('change');
             $('#transactionIdSearch').val('');
             $('#containerNoSearch').val('');
             $('#sealNoSearch').val('');
@@ -1605,6 +1619,7 @@ else{
         var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
         var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
         var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
         var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
         var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
         var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
@@ -1631,6 +1646,7 @@ else{
                     product: productSearchI,
                     rawMaterial: rawMaterialI,
                     plant: plantNoI,
+                    location: locationI,
                     transactionId: transactionIdI,
                     containerNo: containerNoI,
                     sealNo: sealNoI,
@@ -1699,14 +1715,14 @@ else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
+                                            <i class="fas fa-weight-hanging"></i>
                                         </button>
                                     </div>`;    
                                 }else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
+                                            <i class="fas fa-weight-hanging"></i>
                                         </button>
                                     </div>`;  
                                 }
@@ -1766,7 +1782,8 @@ else{
                 'url':'php/filterEmptyContainer.php',
                 'data': {
                     fromDate: fromDateI,
-                    toDate: toDateI
+                    toDate: toDateI,
+                    location: locationI
                 } 
             },
             'columns': [
@@ -1808,7 +1825,7 @@ else{
                                 buttons += `
                                 <div class="col-auto">
                                     <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fa-solid fa-weight-hanging"></i>
+                                        <i class="fas fa-weight-hanging"></i>
                                     </button>
                                 </div>`;
                             }
@@ -2244,6 +2261,7 @@ else{
             var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
             var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
             var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
             var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
@@ -2275,6 +2293,7 @@ else{
                         product: productSearchI,
                         rawMaterial: rawMaterialI,
                         plant: plantNoI,
+                    location: locationI,
                         transactionId: transactionIdI,
                         containerNo: containerNoI,
                         sealNo: sealNoI,
@@ -2343,14 +2362,14 @@ else{
                                         buttons += `
                                         <div class="col-auto">
                                             <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
+                                                <i class="fas fa-weight-hanging"></i>
                                             </button>
                                         </div>`;    
                                     }else{
                                         buttons += `
                                         <div class="col-auto">
                                             <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
+                                                <i class="fas fa-weight-hanging"></i>
                                             </button>
                                         </div>`;  
                                     }
@@ -2411,7 +2430,8 @@ else{
                     'url':'php/filterEmptyContainer.php',
                     'data': {
                         fromDate: fromDateI,
-                        toDate: toDateI
+                        toDate: toDateI,
+                        location: locationI
                     } 
                 },
                 'columns': [
@@ -2453,7 +2473,7 @@ else{
                                     buttons += `
                                     <div class="col-auto">
                                         <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
+                                            <i class="fas fa-weight-hanging"></i>
                                         </button>
                                     </div>`;
                                 }
@@ -2603,6 +2623,7 @@ else{
             var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
 
             if (batchNoI == 'N'){
                 batchNoI = 'Pending';
@@ -2634,6 +2655,7 @@ else{
                     product : productSearchI,
                     rawMat : rawMaterialI,
                     plant : plantNoI,
+                    location : locationI,
                     isMulti : 'Y',
                     ids : selectedIds,
                     file : 'weight'
@@ -2672,6 +2694,7 @@ else{
                     product : productSearchI,
                     rawMat : rawMaterialI,
                     plant : plantNoI,
+                    location : locationI,
                     isMulti : 'N',
                     file : 'weight'
                 }, function(response){
@@ -2711,6 +2734,11 @@ else{
             var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
+            var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
+            var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
+            var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
+            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
             
             if (batchNoI == 'N'){
                 batchNoI = 'Pending';
@@ -2732,11 +2760,15 @@ else{
             if (selectedIds.length > 0) {
                 window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI+"&isMulti=Y&ids="+selectedIds);
+                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&location="+locationI+"&status="+batchNoI+
+                "&transactionId="+encodeURIComponent(transactionIdI)+"&containerNo="+encodeURIComponent(containerNoI)+
+                "&sealNo="+encodeURIComponent(sealNoI)+"&invDelPo="+encodeURIComponent(invDelPoI)+"&isMulti=Y&ids="+selectedIds);
             }else{
                 window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
-                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI+"&isMulti=N");
+                "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&location="+locationI+"&status="+batchNoI+
+                "&transactionId="+encodeURIComponent(transactionIdI)+"&containerNo="+encodeURIComponent(containerNoI)+
+                "&sealNo="+encodeURIComponent(sealNoI)+"&invDelPo="+encodeURIComponent(invDelPoI)+"&isMulti=N");
             }
         });
 
