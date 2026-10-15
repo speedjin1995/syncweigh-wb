@@ -1855,3 +1855,11 @@ END
 $$
 DELIMITER ;
 
+INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_by`) SELECT 'transaction_dispatch', 'Dispatch', 'Show Dispatch transaction status on the weighing screen', 'SYSTEM' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Features` WHERE `feature_code` = 'transaction_dispatch');
+INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_by`) SELECT 'transaction_receiving', 'Receiving', 'Show Receiving transaction status on the weighing screen', 'SYSTEM' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Features` WHERE `feature_code` = 'transaction_receiving');
+INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_by`) SELECT 'transaction_internal_transfer', 'Internal Transfer', 'Show Internal Transfer transaction status on the weighing screen', 'SYSTEM' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Features` WHERE `feature_code` = 'transaction_internal_transfer');
+INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_by`) SELECT 'transaction_miscellaneous', 'Miscellaneous', 'Show Miscellaneous transaction status on the weighing screen', 'SYSTEM' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Features` WHERE `feature_code` = 'transaction_miscellaneous');
+INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) SELECT 1, 'transaction_dispatch', 1, 'SYSTEM' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Company_Features` WHERE `company_id` = 1 AND `feature_code` = 'transaction_dispatch');
+INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) SELECT 1, 'transaction_receiving', 1, 'SYSTEM' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Company_Features` WHERE `company_id` = 1 AND `feature_code` = 'transaction_receiving');
+INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) SELECT 1, 'transaction_internal_transfer', 1, 'SYSTEM' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Company_Features` WHERE `company_id` = 1 AND `feature_code` = 'transaction_internal_transfer');
+INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) SELECT 1, 'transaction_miscellaneous', 1, 'SYSTEM' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Company_Features` WHERE `company_id` = 1 AND `feature_code` = 'transaction_miscellaneous');
