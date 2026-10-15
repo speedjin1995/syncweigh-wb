@@ -66,6 +66,7 @@ $transporter = $db->query("SELECT * FROM Transporter WHERE status = '0' ORDER BY
 $destination = $db->query("SELECT * FROM Destination WHERE status = '0' ORDER BY name ASC");
 $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
+$contractor = $db->query("SELECT * FROM Contractor WHERE status = '0' ORDER BY name ASC");
 $purchaseOrder = $db->query("SELECT * FROM Purchase_Order WHERE status = 'Open' AND deleted = '0' ORDER BY po_no ASC");
 $salesOrder = $db->query("SELECT * FROM Sales_Order WHERE status = 'Open' AND deleted = '0' ORDER BY order_no ASC");
 $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
@@ -586,8 +587,8 @@ else{
                                                                                     <label for="transactionStatus" class="col-sm-4 col-form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <select id="transactionStatus" name="transactionStatus" class="form-select select2">
-                                                                                            <option value="Sales" selected><?=$languageArray['dispatch_code'][$language]?></option>
-                                                                                            <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
+                                                                                            <option value="Sales"><?=$languageArray['dispatch_code'][$language]?></option>
+                                                                                            <option value="Purchase" selected><?=$languageArray['receiving_code'][$language]?></option>
                                                                                             <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
                                                                                             <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
                                                                                         </select>  
@@ -650,6 +651,19 @@ else{
                                                                                             <option selected="-">-</option>
                                                                                             <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
                                                                                                 <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="contractorId" class="col-sm-4 col-form-label"><?=$languageArray['contractor_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="contractorId" name="contractorId">
+                                                                                            <option value="">-</option>
+                                                                                            <?php while($rowContractor=mysqli_fetch_assoc($contractor)){ ?>
+                                                                                                <option value="<?=$rowContractor['id'] ?>"><?=$rowContractor['name'] ?></option>
                                                                                             <?php } ?>
                                                                                         </select>
                                                                                     </div>
@@ -2696,7 +2710,7 @@ else{
             $('#addModal').find('#id').val("");
             $('#addModal').find('#currentWeight').text("0");
             $('#addModal').find('#transactionId').val("");
-            $('#addModal').find('#transactionStatus').val("Sales").trigger('change');
+            $('#addModal').find('#transactionStatus').val("Purchase").trigger('change');
             $('#addModal').find('#emptyContainerNo').val("").trigger('change');
             $('#addModal').find('#weightType option.feature-hidden').remove();
             $('#addModal').find('#weightType').val("Normal").trigger('change');
@@ -2712,6 +2726,7 @@ else{
             $('#addModal').find('#productCode').val("");
             $('#addModal').find('#productName').val("-").trigger('change');
             $('#addModal').find('#rawMaterialCode').val("");
+            $('#addModal').find('#contractorId').val("").trigger('change');
             $('#addModal').find('#rawMaterialName').val("-").trigger('change');
             $('#addModal').find('#plantCode').val("");
             $('#addModal').find('#sealNo').val("");
@@ -3229,6 +3244,7 @@ else{
                         var customerCode = obj.message.customer_code;
                         var supplierName = obj.message.supplier_name;
                         var supplierCode = obj.message.supplier_code;
+                        $('#addModal').find('#contractorId').val(obj.message.contractor_id || '').trigger('change');
 
                         if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
                             $('#addModal').find('#customerName').val(customerName).trigger('change');
@@ -3236,6 +3252,7 @@ else{
                         }else{
                             $('#addModal').find('#supplierName').val(supplierName).trigger('change');
                             $('#addModal').find('#supplierCode').val(supplierCode);
+                            $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name || '-').trigger('change');
                         }
                     }
                     else if(obj.status === 'error'){
@@ -3268,6 +3285,7 @@ else{
                         var customerCode = obj.message.customer_code;
                         var supplierName = obj.message.supplier_name;
                         var supplierCode = obj.message.supplier_code;
+                        $('#addModal').find('#contractorId').val(obj.message.contractor_id || '').trigger('change');
 
                         if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
                             $('#addModal').find('#customerName').val(customerName).trigger('change');
@@ -3275,6 +3293,7 @@ else{
                         }else{
                             $('#addModal').find('#supplierName').val(supplierName).trigger('change');
                             $('#addModal').find('#supplierCode').val(supplierCode);
+                            $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name || '-').trigger('change');
                         }
                     }
                     else if(obj.status === 'error'){
@@ -3794,7 +3813,7 @@ else{
                         $('#addModal').find('#destination').val(obj.message.destination).trigger('change');
 
                         
-                        $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
+                        $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).select2('destroy').select2();
                         $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
                         grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date)); 
                         // $('#addModal').find('#grossIncomingDate').val(obj.message.gross_weight1_date);
@@ -3813,7 +3832,7 @@ else{
                             $('#vehicleNoTxt').show();
                         }
                         else{
-                            $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
+                            $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).select2('destroy').select2();
                             $('#manualVehicle').val(0);
                             $('#manualVehicle').prop("checked", false);
                             $('.index-vehicle').show();
@@ -4297,6 +4316,7 @@ else{
                 $('#addModal').find('#supplierName').val(obj.message.supplier_name).select2('destroy').select2();
                 $('#addModal').find('#supplierCode').val(obj.message.supplier_code);
                 $('#addModal').find('#rawMaterialCode').val(obj.message.raw_mat_code);
+                $('#addModal').find('#contractorId').val(obj.message.contractor_id || '').trigger('change');
                 $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
                 $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
                 $('#addModal').find('#productCode').val(obj.message.product_code);
@@ -4404,6 +4424,7 @@ else{
                     $('#addModal').find('#supplierCode').val(obj.message.supplier_code);
                     $('#addModal').find('#supplierName').val(obj.message.supplier_name).trigger('change')
                     $('#addModal').find('#rawMaterialCode').val(obj.message.raw_mat_code);
+                    $('#addModal').find('#contractorId').val(obj.message.contractor_id || '').trigger('change');
                     $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name).trigger('change');
                     $('#addModal').find('#productName').val(obj.message.product_name).trigger('change');
                     $('#addModal').find('#productCode').val(obj.message.product_code);
