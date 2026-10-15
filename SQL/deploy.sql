@@ -1867,3 +1867,7 @@ INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `create
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'vehicle_not_registered_title_code', 'Vehicle Not Registered', '车辆未登记', 'Kenderaan Belum Didaftarkan', 'வாகனம் பதிவு செய்யப்படவில்லை' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'vehicle_not_registered_title_code');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'vehicle_not_registered_code', 'Vehicle {vehicle} is not registered yet.', '车辆 {vehicle} 尚未登记。', 'Kenderaan {vehicle} belum didaftarkan lagi.', 'வாகனம் {vehicle} இன்னும் பதிவு செய்யப்படவில்லை.' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'vehicle_not_registered_code');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'go_to_vehicle_code', 'Go to Vehicle', '前往车辆', 'Pergi ke Kenderaan', 'வாகனத்திற்குச் செல்' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'go_to_vehicle_code');
+
+UPDATE `message_resource` SET `en` = 'Waste', `zh` = '废料', `my` = 'Sisa', `ne` = 'கழிவு' WHERE `message_key_code` = 'raw_material_code';
+UPDATE `message_resource` SET `en` = 'Waste Code', `zh` = '废料代码', `my` = 'Kod Sisa', `ne` = 'கழிவு குறியீடு' WHERE `message_key_code` = 'raw_material_code_code';
+UPDATE `message_resource` SET `en` = 'Waste Name', `zh` = '废料名称', `my` = 'Nama Sisa', `ne` = 'கழிவு பெயர்' WHERE `message_key_code` = 'raw_material_name_code';
