@@ -20,6 +20,10 @@ $controller = new PlannedScheduleController($db);
 switch ($action) {
     case 'getAll': $controller->getAll(); break;
     case 'upload': $controller->upload(); break;
+    case 'save': $controller->save(); break;
+    case 'deactivate': $controller->deactivate(); break;
+    case 'deactivateMulti': $controller->deactivateMulti(); break;
+    case 'getLogs': $controller->getLogs(); break;
     default:
         echo json_encode(['status' => 'failed', 'message' => 'Invalid action']);
 }

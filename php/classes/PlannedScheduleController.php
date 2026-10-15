@@ -12,7 +12,7 @@ class PlannedScheduleController extends BaseController {
     }
 
     /**
-     * Upcoming daily limits (for DataTables)
+     * Upcoming limit ranges (for DataTables)
      */
     public function getAll() {
         try {
@@ -22,6 +22,96 @@ class PlannedScheduleController extends BaseController {
         } catch (Exception $e) {
             $this->failed($e->getMessage());
         }
+    }
+
+    /**
+     * Add or edit one planned schedule row from the form (id present = edit)
+     */
+    public function save() {
+        $id = $this->getPost('id');
+
+        if ($id !== null && !ctype_digit($id)) {
+            $this->failed('Invalid planned schedule row');
+        }
+
+        $this->db->begin_transaction();
+        try {
+            $this->plannedScheduleService->saveRow($_POST, $id);
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollback();
+            $this->failed($e->getMessage());
+        }
+
+        $this->success($id === null ? 'Planned schedule added' : 'Planned schedule updated');
+    }
+
+    /**
+     * Soft delete one planned schedule row
+     */
+    public function deactivate() {
+        $id = $this->getRequiredPost('id');
+
+        if (!ctype_digit($id)) {
+            $this->failed('Invalid planned schedule row');
+        }
+
+        try {
+            $this->plannedScheduleService->deactivate($id);
+        } catch (Exception $e) {
+            $this->failed($e->getMessage());
+        }
+
+        $this->success('Planned schedule deleted');
+    }
+
+    /**
+     * Soft delete several planned schedule rows (ids sent as an array)
+     */
+    public function deactivateMulti() {
+        $ids = $this->getPost('ids');
+
+        if (!is_array($ids) || count($ids) === 0) {
+            $this->failed('Please select at least one planned schedule');
+        }
+
+        foreach ($ids as $id) {
+            if (!ctype_digit((string)$id)) {
+                $this->failed('Invalid planned schedule row');
+            }
+        }
+
+        $this->db->begin_transaction();
+        try {
+            foreach ($ids as $id) {
+                $this->plannedScheduleService->deactivate($id);
+            }
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollback();
+            $this->failed($e->getMessage());
+        }
+
+        $this->success(count($ids) . ' planned schedule(s) deleted');
+    }
+
+    /**
+     * Change log rows of one planned schedule row (message = list of log rows)
+     */
+    public function getLogs() {
+        $id = $this->getRequiredPost('id');
+
+        if (!ctype_digit($id)) {
+            $this->failed('Invalid planned schedule row');
+        }
+
+        try {
+            $logs = $this->plannedScheduleService->getLogs($id);
+        } catch (Exception $e) {
+            $this->failed($e->getMessage());
+        }
+
+        $this->success($logs);
     }
 
     /**
@@ -48,7 +138,7 @@ class PlannedScheduleController extends BaseController {
             exit();
         }
 
-        $this->success("{$result['vehicles']} vehicles and {$result['days']} daily limits saved");
+        $this->success("{$result['vehicles']} vehicles and {$result['ranges']} date ranges saved");
     }
 }
 ?>

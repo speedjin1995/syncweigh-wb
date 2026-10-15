@@ -199,92 +199,6 @@
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
                                     </div><!-- /.modal -->
-                                    <div class="modal fade" id="entryLimitModal" tabindex="-1" role="dialog" aria-labelledby="entryLimitModalTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="entryLimitModalTitle"><?=$languageArray['entry_limit_code'][$language]?> - <span id="entryLimitVehicleNo"></span></h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form role="form" id="entryLimitForm" class="needs-validation" novalidate autocomplete="off">
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="card border h-100">
-                                                                    <div class="card-header">
-                                                                        <h5 class="card-title mb-0"><?=$languageArray['default_limit_code'][$language]?></h5>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <div class="row mb-3">
-                                                                            <label for="maxEntryPerDay" class="col-sm-5 col-form-label"><?=$languageArray['max_entry_per_day_code'][$language]?></label>
-                                                                            <div class="col-sm-7">
-                                                                                <input type="number" class="form-control" id="maxEntryPerDay" name="maxEntryPerDay" min="0" step="1" placeholder="<?=$languageArray['zero_unlimited_code'][$language]?>">
-                                                                                <small class="text-muted"><?=$languageArray['max_entry_per_day_hint_code'][$language]?></small>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="card border h-100">
-                                                                    <div class="card-header">
-                                                                        <h5 class="card-title mb-0"><?=$languageArray['date_limit_code'][$language]?></h5>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <div class="row mb-3">
-                                                                            <label for="limitDate" class="col-sm-5 col-form-label"><?=$languageArray['limit_date_code'][$language]?></label>
-                                                                            <div class="col-sm-7">
-                                                                                <input type="text" class="form-control" id="limitDate" name="limitDate" placeholder="<?=$languageArray['limit_date_code'][$language]?>">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <label for="dateMaxEntry" class="col-sm-5 col-form-label"><?=$languageArray['max_entry_for_date_code'][$language]?></label>
-                                                                            <div class="col-sm-7">
-                                                                                <input type="number" class="form-control" id="dateMaxEntry" name="dateMaxEntry" min="0" step="1" placeholder="<?=$languageArray['blank_use_default_code'][$language]?>">
-                                                                                <small class="text-muted"><?=$languageArray['max_entry_for_date_hint_code'][$language]?></small>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <label class="col-sm-5 col-form-label"><?=$languageArray['used_code'][$language]?></label>
-                                                                            <div class="col-sm-7">
-                                                                                <input type="text" class="form-control" id="entryUsed" readonly>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <input type="hidden" id="entryLimitId" name="id">
-                                                        <div class="hstack gap-2 justify-content-end mt-3">
-                                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                            <button type="button" class="btn btn-success" id="submitEntryLimit"><?=$languageArray['submit_code'][$language]?></button>
-                                                        </div>
-                                                    </form>
-
-                                                    <div class="card border mt-3 mb-0">
-                                                        <div class="card-header">
-                                                            <h5 class="card-title mb-0"><?=$languageArray['date_limit_records_code'][$language]?></h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <table id="entryLimitTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th><?=$languageArray['limit_date_code'][$language]?></th>
-                                                                        <th><?=$languageArray['max_entry_code'][$language]?></th>
-                                                                        <th><?=$languageArray['status_code'][$language]?></th>
-                                                                        <th><?=$languageArray['created_by_code'][$language]?></th>
-                                                                        <th><?=$languageArray['modified_by_code'][$language]?></th>
-                                                                        <th><?=$languageArray['modified_date_code'][$language]?></th>
-                                                                        <th><?=$languageArray['action_code'][$language]?></th>
-                                                                    </tr>
-                                                                </thead>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="modal fade" id="uploadModal" style="display:none">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
                                             <div class="modal-content">
@@ -430,8 +344,6 @@
 <script type="text/javascript">
 
 var table;
-var entryLimitDatePicker;
-var entryLimitTable;
 
 $(function () {
     $('#selectAllCheckbox').on('change', function() {
@@ -494,7 +406,6 @@ $(function () {
                         return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                         '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
                         '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                        '<li><a class="dropdown-item" id="entryLimit'+data+'" onclick="entryLimit('+data+')"><i class="ri-timer-line align-bottom me-2 text-muted"></i> <?=$languageArray['entry_limit_code'][$language]?></a></li>' +
                         '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
                     }
                 }
@@ -553,70 +464,6 @@ $(function () {
                 $(element).removeClass('is-invalid');
             }
         });
-    });
-
-    entryLimitDatePicker = $('#limitDate').flatpickr({
-        dateFormat: "d-m-Y",
-        defaultDate: 'today'
-    });
-
-    $('#limitDate').on('change', function(){
-        loadEntryLimit($('#entryLimitId').val(), false);
-    });
-
-    $('#submitEntryLimit').on('click', function(){
-        var maxEntry = $('#maxEntryPerDay').val();
-        var dateMax = $('#dateMaxEntry').val();
-
-        if ((maxEntry !== '' && parseInt(maxEntry) < 0) || (dateMax !== '' && parseInt(dateMax) < 0)) {
-            $('#maxEntryPerDay').toggleClass('is-invalid', maxEntry !== '' && parseInt(maxEntry) < 0);
-            $('#dateMaxEntry').toggleClass('is-invalid', dateMax !== '' && parseInt(dateMax) < 0);
-            return;
-        }
-
-        $('#entryLimitForm .is-invalid').removeClass('is-invalid');
-        $('#spinnerLoading').show();
-        $.post('php/modules/vehicle/vehicleEntryLimit.php', $('#entryLimitForm').serialize(), function(data){
-            var obj = JSON.parse(data);
-            if(obj.status === 'success') {
-                table.ajax.reload();
-                $('#spinnerLoading').hide();
-                loadEntryLimit($('#entryLimitId').val(), false);
-                loadEntryLimitTable($('#entryLimitId').val());
-                toastr["success"](obj.message, "Success:");
-            }
-            else {
-                $('#spinnerLoading').hide();
-                toastr["error"](obj.message, "Failed:");
-            }
-        });
-    });
-
-    // View Log button: expand the date limit record to show its change log.
-    // Bound on the table because its tbody only exists after DataTables draws it.
-    $('#entryLimitTable').on('click', 'tbody .view-log-btn', function () {
-        var tr = $(this).closest('tr');
-        var row = entryLimitTable.row(tr);
-
-        if (!row.data()) {
-            return;
-        }
-
-        if (row.child.isShown()) {
-            row.child.hide();
-            tr.removeClass('shown');
-        } else {
-            $.post('php/modules/vehicle/vehicleEntryLimit.php', {mode: 'logs', id: $('#entryLimitId').val(), limitId: row.data().id}, function (data) {
-                var obj = JSON.parse(data);
-                if (obj.status === 'success') {
-                    row.child(formatEntryLimitLog(obj.message)).show();
-                    tr.addClass('shown');
-                }
-                else {
-                    toastr["error"](obj.message, "Failed:");
-                }
-            });
-        }
     });
 
     $('#vehicleNo').on('keyup', function(){
@@ -807,106 +654,6 @@ function edit(id){
             toastr["error"](obj.message, "Failed:");
         }
         $('#spinnerLoading').hide();
-    });
-}
-
-function entryLimit(id){
-    $('#entryLimitForm .is-invalid').removeClass('is-invalid');
-    $('#entryLimitId').val(id);
-    entryLimitDatePicker.setDate(new Date(), false);
-    loadEntryLimit(id, true);
-    loadEntryLimitTable(id);
-}
-
-function loadEntryLimitTable(id){
-    if (entryLimitTable) {
-        entryLimitTable.clear().destroy();
-    }
-
-    entryLimitTable = $("#entryLimitTable").DataTable({
-        // Not responsive: its collapsed-column child rows would clash with the log child rows
-        "responsive": false,
-        "autoWidth": false,
-        'processing': true,
-        'serverSide': true,
-        'searching': true,
-        'serverMethod': 'post',
-        'order': [[0, 'desc']],
-        'ajax': {
-            'url': 'php/modules/vehicle/loadVehicleEntryLimit.php',
-            'data': {
-                vehicleId: id
-            }
-        },
-        'columns': [
-            { data: 'limit_date', name: 'limit_date' },
-            { data: 'max_entry' },
-            { data: 'status' },
-            { data: 'created_by' },
-            { data: 'modified_by' },
-            { data: 'modified_date' },
-            {
-                data: 'id',
-                orderable: false,
-                className: 'action-button',
-                render: function (data, type, row) {
-                    return '<button type="button" class="btn btn-soft-info btn-sm view-log-btn" title=<?=$languageArray['view_log_code'][$language]?>">' +
-                        '<i class="ri-file-list-3-line align-middle"></i> <?=$languageArray['view_log_code'][$language]?></button>';
-                }
-            }
-        ]
-    });
-}
-
-function formatEntryLimitLog(logs){
-    if (logs.length == 0) {
-        return '<div class="p-2 text-muted">' + <?=json_encode($languageArray['no_log_found_code'][$language])?> + '</div>';
-    }
-
-    var actionText = {
-        Create: <?=json_encode($languageArray['create_code'][$language])?>,
-        Update: <?=json_encode($languageArray['update_code'][$language])?>,
-        Delete: <?=json_encode($languageArray['delete_code'][$language])?>
-    };
-    var rows = '';
-
-    for (var i = 0; i < logs.length; i++) {
-        rows += '<tr><td>' + (actionText[logs[i].action] || logs[i].action) + '</td><td>' + logs[i].limit_date + '</td><td>' + logs[i].max_entry + '</td><td>' + (logs[i].action_by || '') + '</td><td>' + logs[i].event_date + '</td></tr>';
-    }
-
-    return '<table class="table table-sm table-bordered mb-0">' +
-        '<thead><tr><th>' + <?=json_encode($languageArray['action_code'][$language])?> + '</th><th>' + <?=json_encode($languageArray['limit_date_code'][$language])?> + '</th><th>' + <?=json_encode($languageArray['max_entry_code'][$language])?> + '</th>' +
-        '<th>' + <?=json_encode($languageArray['action_by_code'][$language])?> + '</th><th>' + <?=json_encode($languageArray['action_date_code'][$language])?> + '</th></tr></thead>' +
-        '<tbody>' + rows + '</tbody></table>';
-}
-
-// Fills the entry limit modal for the selected date; showModal also loads the default
-function loadEntryLimit(id, showModal){
-    if (!id) {
-        return;
-    }
-
-    $('#spinnerLoading').show();
-    $.post('php/modules/vehicle/vehicleEntryLimit.php', {mode: 'get', id: id, limitDate: $('#limitDate').val()}, function(data){
-        var obj = JSON.parse(data);
-        $('#spinnerLoading').hide();
-
-        if(obj.status === 'success'){
-            if (showModal) {
-                $('#entryLimitVehicleNo').text(obj.message.veh_number);
-                $('#maxEntryPerDay').val(obj.message.max_entry_per_day);
-            }
-
-            $('#dateMaxEntry').val(obj.message.date_max_entry === null ? '' : obj.message.date_max_entry);
-            $('#entryUsed').val(obj.message.count + ' / ' + (obj.message.max > 0 ? obj.message.max : <?=json_encode($languageArray['unlimited_code'][$language])?>));
-
-            if (showModal) {
-                $('#entryLimitModal').modal('show');
-            }
-        }
-        else{
-            toastr["error"](obj.message, "Failed:");
-        }
     });
 }
 

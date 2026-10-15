@@ -5,13 +5,13 @@
 // Vehicle_Entry_Log only holds IN (new weighing) and REVERSE (weighing cancelled) rows.
 // Count for a date = IN minus REVERSE rows.
 
-// Active date limit row for a vehicle and date, or null. No unique key on the table (a removed
-// limit can be set again as a new row), so the latest active row wins.
+// Active limit row whose date range covers the date, or null. No unique key on the table (an
+// overlapping range can be imported later), so the latest active row wins.
 function getVehicleDateLimitRow($db, $vehicleId, $date){
     $row = null;
 
-    if ($stmt = $db->prepare("SELECT id, max_entry FROM Vehicle_Entry_Limit WHERE vehicle_id = ? AND limit_date = ? AND status = '0' ORDER BY id DESC LIMIT 1")) {
-        $stmt->bind_param('ss', $vehicleId, $date);
+    if ($stmt = $db->prepare("SELECT id, max_entry FROM Vehicle_Entry_Limit WHERE vehicle_id = ? AND start_date <= ? AND end_date >= ? AND status = '0' ORDER BY id DESC LIMIT 1")) {
+        $stmt->bind_param('sss', $vehicleId, $date, $date);
 
         if ($stmt->execute()) {
             $result = $stmt->get_result();
