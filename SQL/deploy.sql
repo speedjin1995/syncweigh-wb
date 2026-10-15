@@ -1661,3 +1661,40 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALU
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('contractor_code_code', 'Contractor Code', '承包商代码', 'Kod Kontraktor', 'ஒப்பந்ததாரர் குறியீடு');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('contractor_name_code', 'Contractor Name', '承包商名称', 'Nama Kontraktor', 'ஒப்பந்ததாரர் பெயர்');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('add_new_contractor_code', 'Add New Contractor', '添加新承包商', 'Tambah Kontraktor Baru', 'புதிய ஒப்பந்ததாரரைச் சேர்');
+
+ALTER TABLE `Vehicle` ADD `vehicle_type` VARCHAR(50) NULL AFTER `max_entry_per_day`;
+ALTER TABLE `Vehicle_Log` ADD `vehicle_type` VARCHAR(50) NULL AFTER `max_entry_per_day`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_VEH` AFTER INSERT ON `Vehicle` FOR EACH ROW
+INSERT INTO Vehicle_Log (
+    vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_VEH` BEFORE UPDATE ON `Vehicle` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Vehicle_Log table
+    INSERT INTO Vehicle_Log (
+        vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('vehicle_type_code', 'Vehicle Type', '车辆类型', 'Jenis Kenderaan', 'வாகன வகை');

@@ -110,6 +110,15 @@
                                                                                 </div>
                                                                             </div>
 
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="vehicleType" class="col-sm-4 col-form-label"><?=$languageArray['vehicle_type_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="vehicleType" name="vehicleType" placeholder="<?=$languageArray['vehicle_type_code'][$language]?>">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
                                                                             <div class="col-xxl-12 col-lg-12 mb-3" style="display:none">
                                                                                 <div class="row">
                                                                                     <label for="transporter" class="col-sm-4 col-form-label"><?=$languageArray['transporter_code'][$language]?></label>
@@ -505,6 +514,7 @@ $(function () {
         $('#addModal').find('#id').val("");
         $('#addModal').find('#vehicleNo').val("");
         $('#addModal').find('#vehicleWeight').val("");
+        $('#addModal').find('#vehicleType').val("");
         $('#addModal').find('#customer').val("").trigger('change');
         $('#addModal').find('#customerCode').val("");
         $('#addModal').find('#supplier').val("").trigger('change');
@@ -748,6 +758,7 @@ function edit(id){
             $('#addModal').find('#id').val(obj.message.id);
             $('#addModal').find('#vehicleNo').val(obj.message.veh_number);
             $('#addModal').find('#vehicleWeight').val(obj.message.vehicle_weight);
+            $('#addModal').find('#vehicleType').val(obj.message.vehicle_type);
             $('#addModal').find('#customer').val(obj.message.customer_name).trigger('change');
             $('#addModal').find('#supplier').val(obj.message.supplier_name).trigger('change');
 
@@ -920,10 +931,6 @@ function displayPreview(data) {
     // Get the headers
     var headers = jsonData[0];
 
-    // Ensure we handle cases where there may be less than 6 columns
-    while (headers.length < 6) {
-        headers.push(''); // Adding empty headers to reach 6 columns
-    }
 
     // Create HTML table headers
     var htmlTable = '<table style="width:50%;"><thead><tr>';
@@ -937,12 +944,7 @@ function displayPreview(data) {
         htmlTable += '<tr>';
         var rowData = jsonData[i];
 
-        // Ensure we handle cases where there may be less than 6 cells in a row
-        while (rowData.length < 6) {
-            rowData.push(''); // Adding empty cells to reach 6 columns
-        }
-
-        for (var j = 0; j < 6; j++) {
+        for (var j = 0; j < headers.length; j++) {
             var cellData = rowData[j];
             var formattedData = cellData;
 
