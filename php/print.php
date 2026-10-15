@@ -273,8 +273,10 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                         <body>
                             <div class="header">
                                 <span style="font-size: 18px; font-weight: bold;">'.$compname.'</span><br>
-                                <span>'.$compaddress.' '.$compaddress2.'</span><br>
-                                <span>'.$compaddress3.' Tel : '.$compphone.'</span>
+                                <span>'.$compaddress.'</span><br>
+                                <span>'.$compaddress2.'</span><br>
+                                <span>'.$compaddress3.'</span><br>
+                                <span> Tel : '.$compphone.'</span>
                             </div>
 
                             <table class="slip">
