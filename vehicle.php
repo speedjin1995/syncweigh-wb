@@ -5,6 +5,7 @@
     $customer = $db->query("SELECT * FROM Customer WHERE status = '0'");
     $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0'");
     $transporter = $db->query("SELECT * FROM Transporter WHERE status = '0'");
+    $contractor = $db->query("SELECT * FROM Contractor WHERE status = '0'");
 ?>
 
 <head>
@@ -115,6 +116,20 @@
                                                                                     <label for="vehicleType" class="col-sm-4 col-form-label"><?=$languageArray['vehicle_type_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="text" class="form-control" id="vehicleType" name="vehicleType" placeholder="<?=$languageArray['vehicle_type_code'][$language]?>">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="contractor" class="col-sm-4 col-form-label"><?=$languageArray['contractor_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="contractor" name="contractorId">
+                                                                                            <option value="" selected>-</option>
+                                                                                            <?php while($rowContractor=mysqli_fetch_assoc($contractor)){ ?>
+                                                                                                <option value="<?=$rowContractor['id'] ?>"><?=$rowContractor['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -515,6 +530,7 @@ $(function () {
         $('#addModal').find('#vehicleNo').val("");
         $('#addModal').find('#vehicleWeight').val("");
         $('#addModal').find('#vehicleType').val("");
+        $('#addModal').find('#contractor').val("").trigger('change');
         $('#addModal').find('#customer').val("").trigger('change');
         $('#addModal').find('#customerCode').val("");
         $('#addModal').find('#supplier').val("").trigger('change');
@@ -759,6 +775,7 @@ function edit(id){
             $('#addModal').find('#vehicleNo').val(obj.message.veh_number);
             $('#addModal').find('#vehicleWeight').val(obj.message.vehicle_weight);
             $('#addModal').find('#vehicleType').val(obj.message.vehicle_type);
+            $('#addModal').find('#contractor').val(obj.message.contractor_id || '').trigger('change');
             $('#addModal').find('#customer').val(obj.message.customer_name).trigger('change');
             $('#addModal').find('#supplier').val(obj.message.supplier_name).trigger('change');
 

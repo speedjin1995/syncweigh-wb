@@ -41,6 +41,8 @@ if (isset($_POST['userID'])) {
                                 $message['supplier_code'] = $row['supplier_code'];
                                 $message['supplier_name'] = $row['supplier_name'];
                                 $message['vehicle_type'] = $row['vehicle_type'];
+                                $message['contractor_id'] = $row['contractor_id'];
+                                $message['contractor_id'] = $row['contractor_id'];
                             }
                             echo json_encode(array("status" => "success", "message" => $message));
                         }
@@ -68,6 +70,7 @@ if (isset($_POST['userID'])) {
                     $message['supplier_code'] = $row['supplier_code'];
                     $message['supplier_name'] = $row['supplier_name'];
                     $message['vehicle_type'] = $row['vehicle_type'];
+                    $message['contractor_id'] = $row['contractor_id'];
                 }
                 echo json_encode(array("status" => "success", "message" => $message));
             }
@@ -92,6 +95,7 @@ if (isset($_POST['userID'])) {
                     $message['supplier_code'] = $row['supplier_code'];
                     $message['supplier_name'] = $row['supplier_name'];
                     $message['vehicle_type'] = $row['vehicle_type'];
+                    $message['contractor_id'] = $row['contractor_id'];
                 }
                 echo json_encode(array("status" => "success", "message" => $message));
             }

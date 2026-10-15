@@ -1698,3 +1698,44 @@ $$
 DELIMITER ;
 
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('vehicle_type_code', 'Vehicle Type', '车辆类型', 'Jenis Kenderaan', 'வாகன வகை');
+
+ALTER TABLE `Vehicle` ADD `contractor_id` INT(11) NULL AFTER `vehicle_type`, ADD `raw_mat_code` VARCHAR(50) NULL AFTER `contractor_name`, ADD `raw_mat_name` VARCHAR(255) NULL AFTER `raw_mat_code`;
+ALTER TABLE `Vehicle_Log` ADD `contractor_id` INT(11) NULL AFTER `vehicle_type`, ADD `raw_mat_code` VARCHAR(50) NULL AFTER `contractor_name`, ADD `raw_mat_name` VARCHAR(255) NULL AFTER `raw_mat_code`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_VEH` AFTER INSERT ON `Vehicle` FOR EACH ROW
+INSERT INTO Vehicle_Log (
+    vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, NEW.contractor_id, NEW.raw_mat_code, NEW.raw_mat_name, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_VEH` BEFORE UPDATE ON `Vehicle` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Vehicle_Log table
+    INSERT INTO Vehicle_Log (
+        vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, NEW.contractor_id, NEW.raw_mat_code, NEW.raw_mat_name, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'planned_schedule_code', 'Planned Schedule', '计划排程', 'Jadual Dirancang', 'திட்டமிடப்பட்ட அட்டவணை' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'planned_schedule_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'trips_per_day_code', 'Trips / Day', '每日车次', 'Trip / Hari', 'ஒரு நாளைக்கான பயணங்கள்' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'trips_per_day_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'start_date_code', 'Start Date', '开始日期', 'Tarikh Mula', 'தொடக்க தேதி' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'start_date_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'end_date_code', 'End Date', '结束日期', 'Tarikh Tamat', 'முடிவு தேதி' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'end_date_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'waste_code', 'Waste', '废料', 'Sisa', 'கழிவு' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'waste_code');
