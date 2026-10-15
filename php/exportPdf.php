@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'db_connect.php';
+require_once 'requires/lookup.php';
 
 $searchQuery = "";
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
@@ -33,6 +34,14 @@ if(isset($_POST['toDate']) && $_POST['toDate'] != null && $_POST['toDate'] != ''
         $searchQuery .= " and count.transaction_date <= '".$formatted_date."'";
     }
 }
+
+if($_POST["file"] == 'weight'){
+    $searchQuery .= transactionStatusExclusion($db, 'Weight.transaction_status');
+}
+else{
+    $searchQuery .= transactionStatusExclusion($db, 'count.transaction_status');
+}
+
 
 if(isset($_POST['transactionStatus']) && $_POST['transactionStatus'] != null && $_POST['transactionStatus'] != '' && $_POST['transactionStatus'] != '-'){
     if($_POST["file"] == 'weight'){

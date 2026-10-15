@@ -2,6 +2,7 @@
 session_start();
 require_once 'db_connect.php';
 require_once 'modules/vehicle/vehicleEntry.php';
+require_once 'requires/lookup.php';
 
 if(!isset($_SESSION['id'])){
 	echo '<script type="text/javascript">location.href = "../login.php";</script>'; 
@@ -20,6 +21,11 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
     $isComplete = 'N';
     $isApproved = 'Y';
     $misValue = '';
+
+    if (!isTransactionStatusEnabled($_POST['transactionStatus'], $db)) {
+        echo json_encode(array("status" => "failed", "message" => "Transaction status is not enabled for this company."));
+        exit();
+    }
     
     if (empty($_SESSION['location_id'])) {
         $locationId = null;
