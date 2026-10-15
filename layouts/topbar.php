@@ -1,4 +1,9 @@
 <?php
+require_once 'php/classes/BaseController.php';
+$baseController = new BaseController($db);
+$containerWeighingEnabled = $baseController->isFeatureEnabled('container_weighing');
+$differentBinWeighingEnabled = $baseController->isFeatureEnabled('different_bin_weighing');
+
 ## Fetch records
 // Lorry SQL
 $lorryWeighingSQL = "(select * from Weight where status = '0' AND is_complete = 'N' AND is_cancel='N') UNION ALL (select * from Weight_Container where status = '0' AND is_complete = 'N' AND is_cancel='N')";
@@ -348,7 +353,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                     </div>
                 </div>
 
-                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="cwNotificationDropdown">
+                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="cwNotificationDropdown" <?php if(!$containerWeighingEnabled && !$differentBinWeighingEnabled){ echo 'style="display:none;"'; } ?>>
                     <span class="fw-bold">CW</span>
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
                         id="page-header-cw-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"

@@ -416,12 +416,15 @@ else{
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
+                                                                    <th><?=$languageArray['location_code'][$language]?></th>
                                                                     <th><?=$languageArray['transaction_id_code'][$language]?></th>
                                                                     <th><?=$languageArray['weight_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['weight_status_code'][$language]?></th>
                                                                     <th><?=$languageArray['customer_supplier_code'][$language]?></th>
+                                                                    <th><?=$languageArray['container_no2_code'][$language]?></th>
+                                                                    <th><?=$languageArray['seal_no2_code'][$language]?></th>
                                                                     <th><?=$languageArray['container_no_code'][$language]?></th>
-                                                                    <th><?=$languageArray['seal_no_code'][$language]?></th>
+                                                                    <!-- <th><?=$languageArray['seal_no_code'][$language]?></th> -->
                                                                     <th><?=$languageArray['vehicle_code'][$language]?></th>
                                                                     <th><?=$languageArray['gross_incoming_code'][$language]?></th>
                                                                     <th><?=$languageArray['incoming_date_code'][$language]?></th>
@@ -674,12 +677,15 @@ else{
                         return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                     }
                 },
+                { data: 'location' },
                 { data: 'transaction_id' },
                 { data: 'weight_type' },
                 { data: 'transaction_status' },
                 { data: 'customer' },
+                { data: 'container_no2' },
+                { data: 'seal_no2' },
                 { data: 'container_no' },
-                { data: 'seal_no' },
+                // { data: 'seal_no' },
                 { data: 'lorry_plate_no1' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
@@ -768,12 +774,15 @@ else{
                             return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                         }
                     },
+                    { data: 'location' },
                     { data: 'transaction_id' },
                     { data: 'weight_type' },
                     { data: 'transaction_status' },
                     { data: 'customer' },
+                    { data: 'container_no2' },
+                    { data: 'seal_no2' },
                     { data: 'container_no' },
-                    { data: 'seal_no' },
+                    // { data: 'seal_no' },
                     { data: 'lorry_plate_no1' },
                     { data: 'gross_weight1' },
                     { data: 'gross_weight1_date' },
