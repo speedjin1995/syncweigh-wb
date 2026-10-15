@@ -213,6 +213,18 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                     $pricePerTon = number_format((float)$row['unit_price'], 2, '.', ',');
                     $amount = number_format((float)$row['total_price'], 2, '.', ',');
 
+                    $contractorCode = '';
+                    $contractorName = '';
+                    if (!empty($row['contractor_id']) && $contractor_stmt = $db->prepare("SELECT * FROM Contractor WHERE id=?")) {
+                        $contractor_stmt->bind_param('i', $row['contractor_id']);
+                        if ($contractor_stmt->execute()) {
+                            if ($rowContractor = $contractor_stmt->get_result()->fetch_assoc()) {
+                                $contractorCode = $rowContractor['contractor_code'];
+                                $contractorName = $rowContractor['name'];
+                            }
+                        }
+                    }
+
                     $message = 
                     '<html>
                         <head>
@@ -280,8 +292,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     <td colspan="4">'.$custName.'</td>
                                 </tr>
                                 <tr>
-                                    <td>Contractor</td><td>: '.$row['transporter_code'].'</td>
-                                    <td colspan="4">'.$row['transporter'].'</td>
+                                    <td>Contractor</td><td>: '.$contractorCode.'</td>
+                                    <td colspan="4">'.$contractorName.'</td>
                                 </tr>
                                 <tr>
                                     <td>Area</td><td>: '.$row['destination_code'].'</td>
