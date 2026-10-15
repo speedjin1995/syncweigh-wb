@@ -2,6 +2,7 @@
 session_start();
 ## Database configuration
 require_once 'db_connect.php';
+require_once 'requires/lookup.php';
 
 ## Read value
 $draw = $_POST['draw'];
@@ -157,6 +158,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
 
   $data[] = array( 
     "id"=>$row['id'],
+    "location"=>searchLocationNameById($row['location_id'], $db),
     "transaction_id"=>$row['transaction_id'],
     "transaction_status"=>$transactionStatus,
     "weight_type"=>$weightType,
@@ -173,6 +175,8 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     "product_name"=>($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local' ? $row['raw_mat_name'] : $row['product_name']), 
     "container_no"=>$row['container_no'],
     "seal_no"=>$row['seal_no'],
+    "container_no2"=>$row['container_no2'],
+    "seal_no2"=>$row['seal_no2'],
     "invoice_no"=>$row['invoice_no'],
     "purchase_order"=>$row['purchase_order'],
     "delivery_no"=>$row['delivery_no'],
