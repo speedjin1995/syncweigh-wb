@@ -1595,6 +1595,7 @@ INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_
 INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) VALUES (1, 'container_weighing', 0, 'SYSTEM');
 INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) VALUES (1, 'different_bin_weighing', 0, 'SYSTEM');
 
+-- 15/10/2026 --
 CREATE TABLE `Contractor` (
   `id` int(11) NOT NULL,
   `contractor_code` varchar(50) NOT NULL,
@@ -1699,8 +1700,8 @@ DELIMITER ;
 
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('vehicle_type_code', 'Vehicle Type', '车辆类型', 'Jenis Kenderaan', 'வாகன வகை');
 
-ALTER TABLE `Vehicle` ADD `contractor_id` INT(11) NULL AFTER `vehicle_type`, ADD `raw_mat_code` VARCHAR(50) NULL AFTER `contractor_name`, ADD `raw_mat_name` VARCHAR(255) NULL AFTER `raw_mat_code`;
-ALTER TABLE `Vehicle_Log` ADD `contractor_id` INT(11) NULL AFTER `vehicle_type`, ADD `raw_mat_code` VARCHAR(50) NULL AFTER `contractor_name`, ADD `raw_mat_name` VARCHAR(255) NULL AFTER `raw_mat_code`;
+ALTER TABLE `Vehicle` ADD `contractor_id` INT(11) NULL AFTER `vehicle_type`, ADD `raw_mat_code` VARCHAR(50) NULL AFTER `contractor_id`, ADD `raw_mat_name` VARCHAR(255) NULL AFTER `raw_mat_code`;
+ALTER TABLE `Vehicle_Log` ADD `contractor_id` INT(11) NULL AFTER `vehicle_type`, ADD `raw_mat_code` VARCHAR(50) NULL AFTER `contractor_id`, ADD `raw_mat_name` VARCHAR(255) NULL AFTER `raw_mat_code`;
 
 DELIMITER $$
 CREATE OR REPLACE TRIGGER `TRG_INS_VEH` AFTER INSERT ON `Vehicle` FOR EACH ROW
@@ -1757,7 +1758,7 @@ ALTER TABLE `Weight_Container` ADD `contractor_id` INT(11) NULL AFTER `raw_mat_n
 ALTER TABLE `Weight_Container_Log` ADD `contractor_id` INT(11) NULL AFTER `raw_mat_name`;
 
 DELIMITER $$
-CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT` AFTER INSERT ON `weight` FOR EACH ROW
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT` AFTER INSERT ON `Weight` FOR EACH ROW
 INSERT INTO Weight_Log (
     transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, raw_mat_code, raw_mat_name, contractor_id, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, is_printed, manual_weight, indicator_id, weighbridge_id, location_id, indicator_id_2, unit_price, sub_total, sst, total_price, status, action_id, action_by, event_date
 ) 
@@ -1768,7 +1769,7 @@ $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT_CONTAINER` AFTER INSERT ON `weight_container` FOR EACH ROW
+CREATE OR REPLACE TRIGGER `TRG_INS_WEIGHT_CONTAINER` AFTER INSERT ON `Weight_Container` FOR EACH ROW
 INSERT INTO Weight_Container_Log (
     transaction_id, transaction_status, weight_type, transaction_date, lorry_plate_no1, lorry_plate_no2, supplier_weight, order_weight, plant_code, plant_name, customer_code, customer_name, supplier_code, supplier_name, product_code, product_name, product_description, raw_mat_code, raw_mat_name, contractor_id, container_no, invoice_no, purchase_order, delivery_no, transporter_code, transporter, destination_code, destination, remarks, gross_weight1, gross_weight1_date, tare_weight1, tare_weight1_date, nett_weight1, lorry_no2_weight, empty_container2_weight, replacement_container, gross_weight2, gross_weight2_date, tare_weight2, tare_weight2_date, nett_weight2, reduce_weight, final_weight, weight_different, weight_different_perc, is_complete, is_cancel, is_approved, is_printed, manual_weight, indicator_id, weighbridge_id, location_id, indicator_id_2, unit_price, sub_total, sst, total_price, status, action_id, action_by, event_date
 ) 
@@ -1779,7 +1780,7 @@ $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT` BEFORE UPDATE ON `weight` FOR EACH ROW
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT` BEFORE UPDATE ON `Weight` FOR EACH ROW
 BEGIN
     DECLARE action_value INT;
 
@@ -1817,7 +1818,7 @@ $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `weight_container` FOR EACH ROW
+CREATE OR REPLACE TRIGGER `TRG_UPD_WEIGHT_CONTAINER` BEFORE UPDATE ON `Weight_Container` FOR EACH ROW
 BEGIN
     DECLARE action_value INT;
 
