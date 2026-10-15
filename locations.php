@@ -64,40 +64,6 @@
                             <button type="button" hidden id="successBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
                             <button type="button" hidden id="failBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
 
-                            <div class="col-xxl-12 col-lg-12">
-                                <div class="card">
-                                    <div class="card-header fs-5 text-white" href="#collapseSearch" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseSearch" style="background-color: #405189; cursor:pointer;">
-                                        <i class="mdi mdi-chevron-down pull-right"></i>
-                                        <?=$languageArray['search_records_code'][$language] ?? 'Search Records'?>
-                                    </div>
-                                    <div id="collapseSearch" class="collapse" aria-labelledby="collapseSearch">
-                                        <div class="card-body">
-                                            <form action="javascript:void(0);">
-                                                <div class="row">
-                                                    <div class="col-3">
-                                                        <div class="mb-3">
-                                                            <label class="form-label"><?=$languageArray['location_code_code'][$language]?></label>
-                                                            <input type="text" class="form-control" id="locationCodeSearch" placeholder="<?=$languageArray['location_code_code'][$language]?>">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-3">
-                                                        <div class="mb-3">
-                                                            <label class="form-label"><?=$languageArray['location_name_code'][$language]?></label>
-                                                            <input type="text" class="form-control" id="locationNameSearch" placeholder="<?=$languageArray['location_name_code'][$language]?>">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="text-end">
-                                                            <button type="submit" class="btn btn-success" id="filterSearch"><i class="bx bx-search-alt"></i> <?=$languageArray['search_code'][$language] ?? 'Search'?></button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="row">
                                 <div class="col-xl-3 col-md-6 add-new-weight">
 
@@ -315,10 +281,10 @@
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="card">
-                                                    <div class="card-header" style="background-color: #405189;">
+                                                    <div class="card-header">
                                                         <div class="d-flex justify-content-between">
                                                             <div>
-                                                                <h5 class="card-title mb-0 text-white"><?=$languageArray['previous_records_code'][$language]?></h5>
+                                                                <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
                                                                 <button type="button" id="addLocation" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
@@ -397,13 +363,6 @@ var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
 
 $(function () {
     // Initialize all Select2 elements in the modal
-    $('#collapseSearch .select2').select2({
-        allowClear: true,
-        placeholder: "Please Select",
-        dropdownParent: $('#collapseSearch') // Ensures dropdown is not cut off
-    });
-
-    // Initialize all Select2 elements in the modal
     $('#addModal .select2').select2({
         allowClear: true,
         placeholder: "Please Select",
@@ -439,10 +398,6 @@ $(function () {
     // });
 
     renderTable();
-
-    $('#filterSearch').on('click', function() {
-        renderTable();
-    });
 
     $('#submitLocation').on('click', function(){
         if($('#locationForm').valid()){
@@ -518,9 +473,6 @@ $(function () {
 });
 
 function renderTable(){
-    var locationCode = $('#locationCodeSearch').val() || '';
-    var locationName = $('#locationNameSearch').val() || '';
-
     // Destroy old DataTables if exist
     if ($.fn.DataTable.isDataTable('#locationTable')) {
         $("#locationTable").DataTable().clear().destroy();
@@ -534,7 +486,7 @@ function renderTable(){
         'serverMethod': 'post',
         'ajax': {
             'url':'php/modules/locations/index.php',
-            'data': { action: 'getAll', locationCode: locationCode, locationName: locationName }
+            'data': { action: 'getAll' }
         },
         'columns': [
             // {

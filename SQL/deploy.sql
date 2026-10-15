@@ -1594,3 +1594,70 @@ INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_
 INSERT INTO `Features` (`feature_code`, `feature_name`, `description`, `created_by`) VALUES ('different_bin_weighing', 'Different Bin Weighing', 'Show Primer Mover + Different Bins / Primer Mover + Container weight types', 'SYSTEM');
 INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) VALUES (1, 'container_weighing', 0, 'SYSTEM');
 INSERT INTO `Company_Features` (`company_id`, `feature_code`, `enabled`, `created_by`) VALUES (1, 'different_bin_weighing', 0, 'SYSTEM');
+
+CREATE TABLE `Contractor` (
+  `id` int(11) NOT NULL,
+  `contractor_code` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `Contractor` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Contractor` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `Contractor_Log` (
+  `id` int(11) NOT NULL,
+  `contractor_id` int(11) NOT NULL,
+  `contractor_code` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `action_id` int(11) DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `Contractor_Log` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Contractor_Log` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_CONTRACTOR` AFTER INSERT ON `Contractor` FOR EACH ROW
+INSERT INTO Contractor_Log (
+    contractor_id, contractor_code, name, status, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.contractor_code, NEW.name, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_CONTRACTOR` BEFORE UPDATE ON `Contractor` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Contractor_Log table
+    INSERT INTO Contractor_Log (
+        contractor_id, contractor_code, name, status, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.contractor_code, NEW.name, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('contractor_code', 'Contractor', '承包商', 'Kontraktor', 'ஒப்பந்ததாரர்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('contractor_code_code', 'Contractor Code', '承包商代码', 'Kod Kontraktor', 'ஒப்பந்ததாரர் குறியீடு');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('contractor_name_code', 'Contractor Name', '承包商名称', 'Nama Kontraktor', 'ஒப்பந்ததாரர் பெயர்');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) VALUES ('add_new_contractor_code', 'Add New Contractor', '添加新承包商', 'Tambah Kontraktor Baru', 'புதிய ஒப்பந்ததாரரைச் சேர்');

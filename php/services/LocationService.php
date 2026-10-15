@@ -14,8 +14,6 @@ class LocationService extends BaseService {
         $start = $post['start'] ?? 0;
         $length = $post['length'] ?? 10;
         $searchValue = isset($post['search']['value']) ? mysqli_real_escape_string($this->db, $post['search']['value']) : '';
-        $locationCode = isset($post['locationCode']) ? mysqli_real_escape_string($this->db, $post['locationCode']) : '';
-        $locationName = isset($post['locationName']) ? mysqli_real_escape_string($this->db, $post['locationName']) : '';
 
         $columnIndex = $post['order'][0]['column'] ?? 0;
         $columnName = $post['columns'][$columnIndex]['data'] ?? 'id';
@@ -29,12 +27,6 @@ class LocationService extends BaseService {
         $searchQuery = "";
         if ($searchValue != '') {
             $searchQuery = " AND (cust.location_code LIKE '%{$searchValue}%' OR cust.location_name LIKE '%{$searchValue}%' OR pl.name LIKE '%{$searchValue}%')";
-        }
-        if ($locationCode !== '') {
-            $searchQuery .= " AND cust.location_code LIKE '%{$locationCode}%'";
-        }
-        if ($locationName !== '') {
-            $searchQuery .= " AND cust.location_name LIKE '%{$locationName}%'";
         }
 
         // Filtered records
