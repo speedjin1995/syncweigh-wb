@@ -76,6 +76,9 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                     <div id="collapseSearch" class="collapse show" aria-labelledby="collapseSearch">
                                         <div class="card-body">
                                             <?php $vehicles = $db->query("SELECT veh_number FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC"); ?>
+                                            <?php $suppliers = $db->query("SELECT supplier_code, name FROM Supplier WHERE status = '0' ORDER BY name ASC"); ?>
+                                            <?php $contractors = $db->query("SELECT id, name FROM Contractor WHERE status = '0' ORDER BY name ASC"); ?>
+                                            <?php $wastes = $db->query("SELECT raw_mat_code, name FROM Raw_Mat WHERE status = '0' ORDER BY name ASC"); ?>
                                             <form action="javascript:void(0);">
                                                 <div class="row">
                                                     <div class="col-3">
@@ -135,6 +138,90 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                     </div>
                                 </div>
                             </div>
+                            <div class="modal fade" id="scheduleModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <form role="form" id="scheduleForm" autocomplete="off">
+                                            <div class="modal-header bg-gray-dark color-palette">
+                                                <h4 class="modal-title" id="scheduleModalTitle"><?=$languageArray['add_new_code'][$language]?></h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" id="scheduleId" name="id">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="scheduleVehNumber" class="form-label"><?=$languageArray['vehicle_no_code'][$language]?></label>
+                                                        <input type="text" class="form-control" id="scheduleVehNumber" name="vehNumber" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="scheduleSupplier" class="form-label"><?=$languageArray['supplier_code'][$language]?></label>
+                                                        <select class="form-select select2" id="scheduleSupplier" name="supplierCode">
+                                                            <option value="">-</option>
+                                                            <?php while($rowSupplier=mysqli_fetch_assoc($suppliers)){ ?>
+                                                                <option value="<?=htmlspecialchars($rowSupplier['supplier_code']) ?>"><?=htmlspecialchars($rowSupplier['supplier_code'].' - '.$rowSupplier['name']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="scheduleContractor" class="form-label"><?=$languageArray['contractor_code'][$language]?></label>
+                                                        <select class="form-select select2" id="scheduleContractor" name="contractorId">
+                                                            <option value="">-</option>
+                                                            <?php while($rowContractor=mysqli_fetch_assoc($contractors)){ ?>
+                                                                <option value="<?=$rowContractor['id'] ?>"><?=htmlspecialchars($rowContractor['name']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="scheduleWaste" class="form-label"><?=$languageArray['waste_code'][$language]?></label>
+                                                        <select class="form-select select2" id="scheduleWaste" name="rawMatCode">
+                                                            <option value="">-</option>
+                                                            <?php while($rowWaste=mysqli_fetch_assoc($wastes)){ ?>
+                                                                <option value="<?=htmlspecialchars($rowWaste['raw_mat_code']) ?>"><?=htmlspecialchars($rowWaste['name']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="scheduleVehicleType" class="form-label"><?=$languageArray['vehicle_type_code'][$language]?></label>
+                                                        <input type="text" class="form-control" id="scheduleVehicleType" name="vehicleType">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4 mb-3">
+                                                        <label for="scheduleStartDate" class="form-label"><?=$languageArray['start_date_code'][$language]?></label>
+                                                        <input type="text" class="form-control" id="scheduleStartDate" name="startDate" placeholder="dd/mm/yyyy" required>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <label for="scheduleEndDate" class="form-label"><?=$languageArray['end_date_code'][$language]?></label>
+                                                        <input type="text" class="form-control" id="scheduleEndDate" name="endDate" placeholder="dd/mm/yyyy" required>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <label for="scheduleTrips" class="form-label"><?=$languageArray['trips_per_day_code'][$language]?></label>
+                                                        <input type="number" class="form-control" id="scheduleTrips" name="trips" min="0" step="1" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer justify-content-between bg-gray-dark color-palette">
+                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                <button type="button" class="btn btn-success" id="saveSchedule"><?=$languageArray['submit_code'][$language]?></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="scheduleLogModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-gray-dark color-palette">
+                                            <h4 class="modal-title"><?=$languageArray['view_log_code'][$language]?></h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body" id="scheduleLogBody"></div>
+                                        <div class="modal-footer justify-content-end bg-gray-dark color-palette">
+                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="modal fade" id="errorModal" style="display:none">
                                 <div class="modal-dialog modal-xl" style="max-width: 50%;">
                                     <div class="modal-content">
@@ -176,6 +263,14 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['upload_excel_code'][$language]?>
                                                                 </button>
+                                                                <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
+                                                                    <i class="ri-delete-bin-fill align-middle me-1"></i>
+                                                                    <?=$languageArray['delete_code'][$language]?>
+                                                                </button>
+                                                                <button type="button" id="addSchedule" class="btn btn-success waves-effect waves-light">
+                                                                    <i class="ri-add-line align-middle me-1"></i>
+                                                                    <?=$languageArray['add_new_code'][$language]?>
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -183,12 +278,15 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                                         <table id="scheduleTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                                                             <thead>
                                                                 <tr>
-                                                                    <th><?=$languageArray['limit_date_code'][$language]?></th>
+                                                                    <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
+                                                                    <th><?=$languageArray['start_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['end_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['vehicle_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['contractor_code'][$language]?></th>
                                                                     <th><?=$languageArray['waste_code'][$language]?></th>
                                                                     <th><?=$languageArray['vehicle_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['trips_per_day_code'][$language]?></th>
+                                                                    <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
                                                             </thead>
                                                         </table>
@@ -251,6 +349,12 @@ $(function () {
         allowClear: true,
         placeholder: "Please Select"
     });
+
+    $('#scheduleModal .select2').select2({
+        allowClear: true,
+        placeholder: "Please Select",
+        dropdownParent: $('#scheduleModal')
+    });
     
     // Apply custom styling to Select2 elements in search bar
     $('.select2-container .select2-selection--single').css({
@@ -276,6 +380,13 @@ $(function () {
 
     renderTable();
 
+    var savedToast = sessionStorage.getItem('scheduleToast');
+    if (savedToast) {
+        sessionStorage.removeItem('scheduleToast');
+        $("#successBtn").attr('data-toast-text', savedToast);
+        $("#successBtn").click();
+    }
+
     $('#filterSearch').on('click', function(){
         renderTable();
     });
@@ -287,6 +398,81 @@ $(function () {
         });
         $('#vehicleNoSearch').val('').trigger('change');
         renderTable();
+    });
+
+    ['#scheduleStartDate', '#scheduleEndDate'].forEach(function(sel) {
+        $(sel).flatpickr({ dateFormat: "d/m/Y" });
+    });
+
+    $('#scheduleForm').validate({
+        errorElement: 'div',
+        errorClass: 'invalid-feedback',
+        highlight: function (element) { $(element).addClass('is-invalid'); },
+        unhighlight: function (element) { $(element).removeClass('is-invalid'); }
+    });
+
+    $('#scheduleVehNumber').on('keyup', function(){
+        $(this).val($(this).val().toUpperCase());
+    });
+
+    $('#selectAllCheckbox').on('change', function(){
+        $('#scheduleTable tbody input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+    });
+
+    $('#multiDeactivate').on('click', function(){
+        var selectedIds = [];
+        $('#scheduleTable tbody input[type="checkbox"]:checked').each(function(){
+            selectedIds.push($(this).val());
+        });
+
+        if (selectedIds.length === 0) {
+            alert("Please select at least one planned schedule to delete.");
+            return;
+        }
+        if (!confirm('Are you sure you want to delete these planned schedules?')) {
+            return;
+        }
+
+        $('#spinnerLoading').show();
+        $.post('php/modules/plannedSchedule/index.php?action=deactivateMulti', {ids: selectedIds}, function(response){
+            var obj = JSON.parse(response);
+            $('#spinnerLoading').hide();
+            if (obj.status === 'success') {
+                $('#selectAllCheckbox').prop('checked', false);
+                table.ajax.reload(null, false);
+                $("#successBtn").attr('data-toast-text', obj.message);
+                $("#successBtn").click();
+            }
+            else {
+                $("#failBtn").attr('data-toast-text', obj.message);
+                $("#failBtn").click();
+            }
+        });
+    });
+
+    $('#addSchedule').on('click', function(){
+        openScheduleModal(null);
+    });
+
+    $('#saveSchedule').on('click', function(){
+        if (!$('#scheduleForm').valid()) {
+            return;
+        }
+
+        $('#spinnerLoading').show();
+        $.post('php/modules/plannedSchedule/index.php?action=save', $('#scheduleForm').serialize(), function(response){
+            var obj = JSON.parse(response);
+            $('#spinnerLoading').hide();
+            if (obj.status === 'success') {
+                // Reload so the vehicle filter (rendered by PHP) includes a new plate; the toast shows after reload
+                sessionStorage.setItem('scheduleToast', obj.message);
+                location.reload();
+            }
+            else {
+                $("#failBtn").attr('data-toast-text', obj.message);
+                $("#failBtn").click();
+            }
+        });
     });
 
     $('#uploadExcel').on('click', function(){
@@ -358,6 +544,94 @@ $(function () {
     });
 });
 
+function openScheduleModal(row){
+    var form = $('#scheduleForm');
+    form.validate().resetForm();
+    form.find('.is-invalid').removeClass('is-invalid');
+
+    $('#scheduleId').val(row ? row.id : '');
+    $('#scheduleModalTitle').text(row ? <?=json_encode($languageArray['edit_code'][$language])?> : <?=json_encode($languageArray['add_new_code'][$language])?>);
+    $('#scheduleVehNumber').val(row ? row.veh_number : '');
+    $('#scheduleSupplier').val(row && row.supplier_code ? row.supplier_code : '').trigger('change');
+    $('#scheduleContractor').val(row && row.contractor_id ? row.contractor_id : '').trigger('change');
+    $('#scheduleWaste').val(row && row.raw_mat_code ? row.raw_mat_code : '').trigger('change');
+    $('#scheduleVehicleType').val(row ? row.vehicle_type : '');
+    $('#scheduleTrips').val(row ? row.max_entry : '');
+    $('#scheduleStartDate')[0]._flatpickr.setDate(row ? row.start_date : null, false, 'd/m/Y');
+    $('#scheduleEndDate')[0]._flatpickr.setDate(row ? row.end_date : null, false, 'd/m/Y');
+
+    $('#scheduleModal').modal('show');
+}
+
+function editSchedule(id){
+    var rows = table.rows().data();
+    for (var i = 0; i < rows.length; i++) {
+        if (rows[i].id == id) {
+            openScheduleModal(rows[i]);
+            return;
+        }
+    }
+}
+
+function deactivate(id){
+    if (!confirm('Are you sure you want to delete this planned schedule?')) {
+        return;
+    }
+
+    $('#spinnerLoading').show();
+    $.post('php/modules/plannedSchedule/index.php?action=deactivate', {id: id}, function(response){
+        var obj = JSON.parse(response);
+        $('#spinnerLoading').hide();
+        if (obj.status === 'success') {
+            table.ajax.reload(null, false);
+            $("#successBtn").attr('data-toast-text', obj.message);
+            $("#successBtn").click();
+        }
+        else {
+            $("#failBtn").attr('data-toast-text', obj.message);
+            $("#failBtn").click();
+        }
+    });
+}
+
+function showScheduleLog(id){
+    $('#spinnerLoading').show();
+    $.post('php/modules/plannedSchedule/index.php?action=getLogs', {id: id}, function(response){
+        var obj = JSON.parse(response);
+        $('#spinnerLoading').hide();
+        if (obj.status === 'success') {
+            $('#scheduleLogBody').html(formatScheduleLog(obj.message));
+            $('#scheduleLogModal').modal('show');
+        }
+        else {
+            $("#failBtn").attr('data-toast-text', obj.message);
+            $("#failBtn").click();
+        }
+    });
+}
+
+function formatScheduleLog(logs){
+    if (logs.length == 0) {
+        return '<div class="p-2 text-muted">' + <?=json_encode($languageArray['no_log_found_code'][$language])?> + '</div>';
+    }
+
+    var actionText = {
+        1: <?=json_encode($languageArray['create_code'][$language])?>,
+        2: <?=json_encode($languageArray['update_code'][$language])?>,
+        3: <?=json_encode($languageArray['delete_code'][$language])?>
+    };
+    var rows = '';
+
+    for (var i = 0; i < logs.length; i++) {
+        rows += '<tr><td>' + (actionText[logs[i].action] || logs[i].action) + '</td><td>' + logs[i].start_date + '</td><td>' + logs[i].end_date + '</td><td>' + logs[i].max_entry + '</td><td>' + (logs[i].action_by || '') + '</td><td>' + logs[i].event_date + '</td></tr>';
+    }
+
+    return '<table class="table table-sm table-bordered mb-0">' +
+        '<thead><tr><th><?=$languageArray['action_code'][$language]?></th><th><?=$languageArray['start_date_code'][$language]?></th><th><?=$languageArray['end_date_code'][$language]?></th>' +
+        '<th><?=$languageArray['trips_per_day_code'][$language]?></th><th><?=$languageArray['action_by_code'][$language]?></th><th><?=$languageArray['action_date_code'][$language]?></th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table>';
+}
+
 function renderTable(){
     // Destroy old DataTables if exist
     if ($.fn.DataTable.isDataTable('#scheduleTable')) {
@@ -380,12 +654,33 @@ function renderTable(){
             }
         },
         'columns': [
-            { data: 'limit_date' },
+            {
+                data: 'id',
+                className: 'select-checkbox',
+                orderable: false,
+                render: function (data, type, row) {
+                    return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="' + data + '"/>';
+                }
+            },
+            { data: 'start_date' },
+            { data: 'end_date' },
             { data: 'veh_number' },
             { data: 'contractor_name' },
             { data: 'raw_mat_name' },
             { data: 'vehicle_type' },
-            { data: 'max_entry' }
+            { data: 'max_entry' },
+            {
+                data: null,
+                orderable: false,
+                className: 'action-button',
+                render: function (data, type, row) {
+                    return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+                    '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
+                    '<li><a class="dropdown-item edit-item-btn" id="edit'+row.id+'" onclick="editSchedule('+row.id+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language]?></a></li>' +
+                    '<li><a class="dropdown-item" id="log'+row.id+'" onclick="showScheduleLog('+row.id+')"><i class="ri-file-list-3-line align-bottom me-2 text-muted"></i> <?=$languageArray['view_log_code'][$language]?></a></li>' +
+                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+row.id+'" onclick="deactivate('+row.id+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language]?> </a></li></ul></div>';
+                }
+            }
         ]
     });
 }

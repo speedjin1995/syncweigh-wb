@@ -1871,3 +1871,57 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELE
 UPDATE `message_resource` SET `en` = 'Waste', `zh` = '废料', `my` = 'Sisa', `ne` = 'கழிவு' WHERE `message_key_code` = 'raw_material_code';
 UPDATE `message_resource` SET `en` = 'Waste Code', `zh` = '废料代码', `my` = 'Kod Sisa', `ne` = 'கழிவு குறியீடு' WHERE `message_key_code` = 'raw_material_code_code';
 UPDATE `message_resource` SET `en` = 'Waste Name', `zh` = '废料名称', `my` = 'Nama Sisa', `ne` = 'கழிவு பெயர்' WHERE `message_key_code` = 'raw_material_name_code';
+
+-- 16/10/2026 --
+-- Run once. Re-running fails at the UPDATE after limit_date is dropped; skip this block on a migrated DB.
+ALTER TABLE `Vehicle_Entry_Limit`
+  ADD COLUMN IF NOT EXISTS `start_date` date NULL AFTER `veh_number`,
+  ADD COLUMN IF NOT EXISTS `end_date`   date NULL AFTER `start_date`;
+UPDATE `Vehicle_Entry_Limit` SET `start_date` = `limit_date`, `end_date` = `limit_date` WHERE `start_date` IS NULL;
+
+ALTER TABLE `Vehicle_Entry_Limit_Log`
+  ADD COLUMN IF NOT EXISTS `start_date` date NULL AFTER `veh_number`,
+  ADD COLUMN IF NOT EXISTS `end_date`   date NULL AFTER `start_date`;
+UPDATE `Vehicle_Entry_Limit_Log` SET `start_date` = `limit_date`, `end_date` = `limit_date` WHERE `start_date` IS NULL;
+
+-- Triggers switch to the range columns before limit_date is dropped
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_VEH_ENTRY_LIMIT` AFTER INSERT ON `Vehicle_Entry_Limit` FOR EACH ROW
+INSERT INTO Vehicle_Entry_Limit_Log (
+    limit_id, vehicle_id, veh_number, start_date, end_date, max_entry, status, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.vehicle_id, NEW.veh_number, NEW.start_date, NEW.end_date, NEW.max_entry, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_VEH_ENTRY_LIMIT` BEFORE UPDATE ON `Vehicle_Entry_Limit` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Vehicle_Entry_Limit_Log table
+    INSERT INTO Vehicle_Entry_Limit_Log (
+        limit_id, vehicle_id, veh_number, start_date, end_date, max_entry, status, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.vehicle_id, NEW.veh_number, NEW.start_date, NEW.end_date, NEW.max_entry, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Vehicle_Entry_Limit`
+  MODIFY `start_date` date NOT NULL, MODIFY `end_date` date NOT NULL,
+  DROP INDEX IF EXISTS `idx_vehicle_limit_date`,
+  DROP COLUMN IF EXISTS `limit_date`,
+  ADD KEY `idx_vehicle_range` (`vehicle_id`, `start_date`, `end_date`);
+
+ALTER TABLE `Vehicle_Entry_Limit_Log` DROP COLUMN IF EXISTS `limit_date`;

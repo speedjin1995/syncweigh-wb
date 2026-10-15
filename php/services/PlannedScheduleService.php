@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/BaseService.php';
-require_once __DIR__ . '/../modules/vehicle/vehicleEntry.php';
 
 class PlannedScheduleService extends BaseService {
 
@@ -8,8 +7,8 @@ class PlannedScheduleService extends BaseService {
     private static $statusMap = ['AKTIF' => '0', 'TIDAK AKTIF' => '1'];
 
     /**
-     * Daily limits for the planned schedule list (for DataTables).
-     * No date filter: today onward. With a date filter: exactly that range, past dates included.
+     * Limit ranges for the planned schedule list (for DataTables).
+     * No date filter: ranges ending today or later. With a date filter: ranges overlapping that span, past dates included.
      */
     public function getAll($post) {
         $draw = $post['draw'] ?? 1;
@@ -25,17 +24,17 @@ class PlannedScheduleService extends BaseService {
         $params = [];
 
         if ($fromDate === null && $toDate === null) {
-            $where .= " AND l.limit_date >= ?";
+            $where .= " AND l.end_date >= ?";
             $types .= 's';
             $params[] = date('Y-m-d');
         } else {
             if ($fromDate !== null) {
-                $where .= " AND l.limit_date >= ?";
+                $where .= " AND l.end_date >= ?";
                 $types .= 's';
                 $params[] = $fromDate;
             }
             if ($toDate !== null) {
-                $where .= " AND l.limit_date <= ?";
+                $where .= " AND l.start_date <= ?";
                 $types .= 's';
                 $params[] = $toDate;
             }
@@ -57,7 +56,7 @@ class PlannedScheduleService extends BaseService {
 
         $filteredRow = $this->fetchOne("SELECT COUNT(*) AS total" . $from, $types, $params);
 
-        $stmt = $this->db->prepare("SELECT l.limit_date, l.max_entry, v.veh_number, c.name AS contractor_name, v.raw_mat_name, v.vehicle_type" . $from . " ORDER BY l.limit_date, v.veh_number LIMIT ?, ?");
+        $stmt = $this->db->prepare("SELECT l.id, l.start_date, l.end_date, l.max_entry, v.veh_number, c.name AS contractor_name, v.raw_mat_name, v.vehicle_type, v.supplier_code, v.contractor_id, v.raw_mat_code" . $from . " ORDER BY l.start_date, v.veh_number LIMIT ?, ?");
         if (!$stmt) throw new Exception($this->db->error);
         $stmt->bind_param($types . 'ii', ...array_merge($params, [$start, $length]));
         if (!$stmt->execute()) throw new Exception($stmt->error);
@@ -66,12 +65,17 @@ class PlannedScheduleService extends BaseService {
         $data = [];
         while ($row = $result->fetch_assoc()) {
             $data[] = [
-                'limit_date'      => date('d/m/Y', strtotime($row['limit_date'])),
+                'id'              => $row['id'],
+                'start_date'      => date('d/m/Y', strtotime($row['start_date'])),
+                'end_date'        => date('d/m/Y', strtotime($row['end_date'])),
                 'veh_number'      => $row['veh_number'],
                 'contractor_name' => $row['contractor_name'] ?? '',
                 'raw_mat_name'    => $row['raw_mat_name'] ?? '',
                 'vehicle_type'    => $row['vehicle_type'] ?? '',
-                'max_entry'       => $row['max_entry']
+                'max_entry'       => $row['max_entry'],
+                'supplier_code'   => $row['supplier_code'] ?? '',
+                'contractor_id'   => $row['contractor_id'] ?? '',
+                'raw_mat_code'    => $row['raw_mat_code'] ?? ''
             ];
         }
         $stmt->close();
@@ -101,12 +105,12 @@ class PlannedScheduleService extends BaseService {
 
     /**
      * Save Excel rows. Invalid rows are skipped and reported in 'errors'.
-     * Returns ['errors' => [...], 'vehicles' => n, 'days' => n]
+     * Returns ['errors' => [...], 'vehicles' => n, 'ranges' => n]
      */
     public function importRows($rows) {
         $errors = [];
         $vehicles = 0;
-        $days = 0;
+        $ranges = 0;
 
         foreach ($rows as $index => $row) {
             $line = $row['ExcelRow'] ?? ($index + 2); // Excel row number from the preview, else position + header
@@ -154,11 +158,11 @@ class PlannedScheduleService extends BaseService {
                 );
 
                 $vehicles++;
-                $days += $this->saveDailyLimits($vehicleId, $plate, $startDate, $endDate, $trips);
+                $ranges += $this->saveRangeLimit($vehicleId, $plate, $startDate, $endDate, $trips);
             }
         }
 
-        return ['errors' => $errors, 'vehicles' => $vehicles, 'days' => $days];
+        return ['errors' => $errors, 'vehicles' => $vehicles, 'ranges' => $ranges];
     }
 
     /**
@@ -239,28 +243,155 @@ class PlannedScheduleService extends BaseService {
     }
 
     /**
-     * One Vehicle_Entry_Limit row per day in the range. Returns how many rows were written.
+     * Add (id null) or edit one planned schedule row from the form. Throws Exception with the message to show.
+     * Supplier, contractor and waste come from dropdowns, so they must match an active master row.
      */
-    private function saveDailyLimits($vehicleId, $plate, $startDate, $endDate, $trips) {
-        $saved = 0;
-        $current = clone $startDate;
+    public function saveRow($data, $id = null) {
+        $plate = strtoupper(trim($data['vehNumber'] ?? ''));
+        $supplierCode = trim($data['supplierCode'] ?? '');
+        $contractorId = trim($data['contractorId'] ?? '');
+        $rawMatCode = trim($data['rawMatCode'] ?? '');
+        $vehicleType = trim($data['vehicleType'] ?? '');
+        $trips = trim($data['trips'] ?? '');
+        $startDate = $this->parseDate(trim($data['startDate'] ?? ''));
+        $endDate = $this->parseDate(trim($data['endDate'] ?? ''));
 
-        while ($current <= $endDate) {
-            $limitDate = $current->format('Y-m-d');
-            $existing = getVehicleDateLimitRow($this->db, $vehicleId, $limitDate);
-
-            if (empty($existing)) {
-                $this->run("INSERT INTO Vehicle_Entry_Limit (vehicle_id, veh_number, limit_date, max_entry, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?)", 'ssssss', [$vehicleId, $plate, $limitDate, $trips, $this->username, $this->username]);
-                $saved++;
-            } elseif ((int)$existing['max_entry'] !== (int)$trips) {
-                $this->run("UPDATE Vehicle_Entry_Limit SET max_entry = ?, modified_by = ? WHERE id = ?", 'sss', [$trips, $this->username, $existing['id']]);
-                $saved++;
-            }
-
-            $current->modify('+1 day');
+        if ($plate === '') {
+            throw new Exception('Vehicle plate is required.');
+        }
+        if (!ctype_digit($trips)) {
+            throw new Exception('Trips per day must be a whole number, 0 or more.');
+        }
+        if ($startDate === null || $endDate === null) {
+            throw new Exception('Start and end date must be dd/mm/yyyy.');
+        }
+        if ($startDate > $endDate) {
+            throw new Exception('Start date is after end date.');
+        }
+        if ($startDate->diff($endDate)->days > 365) {
+            throw new Exception('Date range is longer than 366 days.');
         }
 
-        return $saved;
+        $supplierName = null;
+        if ($supplierCode !== '') {
+            $supplier = $this->fetchOne("SELECT name FROM Supplier WHERE supplier_code = ? AND status = '0' LIMIT 1", 's', [$supplierCode]);
+            if (!$supplier) {
+                throw new Exception('Supplier not found.');
+            }
+            $supplierName = $supplier['name'];
+        }
+        $supplierCode = $supplierCode !== '' ? $supplierCode : null;
+
+        if ($contractorId !== '') {
+            if (!ctype_digit($contractorId) || !$this->fetchOne("SELECT id FROM Contractor WHERE id = ? AND status = '0' LIMIT 1", 's', [$contractorId])) {
+                throw new Exception('Contractor not found.');
+            }
+        }
+        $contractorId = $contractorId !== '' ? $contractorId : null;
+
+        $rawMatName = null;
+        if ($rawMatCode !== '') {
+            $rawMat = $this->fetchOne("SELECT name FROM Raw_Mat WHERE raw_mat_code = ? AND status = '0' LIMIT 1", 's', [$rawMatCode]);
+            if (!$rawMat) {
+                throw new Exception('Waste not found.');
+            }
+            $rawMatName = $rawMat['name'];
+        }
+        $rawMatCode = $rawMatCode !== '' ? $rawMatCode : null;
+
+        $vehicleId = $this->findOrCreateVehicle($plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType ?: null);
+
+        if ($id === null) {
+            $this->saveRangeLimit($vehicleId, $plate, $startDate, $endDate, $trips);
+            return;
+        }
+
+        $existing = $this->fetchOne("SELECT id FROM Vehicle_Entry_Limit WHERE id = ? AND status = '0' LIMIT 1", 's', [$id]);
+        if (!$existing) {
+            throw new Exception('Planned schedule row not found.');
+        }
+        $this->run(
+            "UPDATE Vehicle_Entry_Limit SET vehicle_id = ?, veh_number = ?, start_date = ?, end_date = ?, max_entry = ?, modified_by = ? WHERE id = ?",
+            'sssssss', [$vehicleId, $plate, $startDate->format('Y-m-d'), $endDate->format('Y-m-d'), $trips, $this->username, $id]
+        );
+    }
+
+    /**
+     * Soft delete (status 1) one planned schedule row. The trigger writes the log row.
+     */
+    public function deactivate($id) {
+        $existing = $this->fetchOne("SELECT id FROM Vehicle_Entry_Limit WHERE id = ? AND status = '0' LIMIT 1", 's', [$id]);
+        if (!$existing) {
+            throw new Exception('Planned schedule row not found.');
+        }
+        $this->run("UPDATE Vehicle_Entry_Limit SET status = '1', modified_by = ? WHERE id = ?", 'ss', [$this->username, $id]);
+    }
+
+    /**
+     * Change log of one planned schedule row, oldest first (for the View Log popup)
+     */
+    public function getLogs($id) {
+        $stmt = $this->db->prepare("SELECT action_id, start_date, end_date, max_entry, action_by, event_date FROM Vehicle_Entry_Limit_Log WHERE limit_id = ? ORDER BY id ASC");
+        if (!$stmt) throw new Exception($this->db->error);
+        $stmt->bind_param('s', $id);
+        if (!$stmt->execute()) throw new Exception($stmt->error);
+        $result = $stmt->get_result();
+
+        $logs = [];
+        while ($row = $result->fetch_assoc()) {
+            $logs[] = [
+                'action'     => (int)$row['action_id'],
+                'start_date' => date('d/m/Y', strtotime($row['start_date'])),
+                'end_date'   => date('d/m/Y', strtotime($row['end_date'])),
+                'max_entry'  => $row['max_entry'],
+                'action_by'  => $row['action_by'] ?? '',
+                'event_date' => date('d/m/Y H:i:s', strtotime($row['event_date']))
+            ];
+        }
+        $stmt->close();
+
+        return $logs;
+    }
+
+    /**
+     * Vehicle id by plate. A new vehicle is created as active. An existing one keeps its status.
+     */
+    private function findOrCreateVehicle($plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType) {
+        $row = $this->fetchOne("SELECT id FROM Vehicle WHERE veh_number = ? ORDER BY id DESC LIMIT 1", 's', [$plate]);
+
+        if ($row) {
+            $this->run(
+                "UPDATE Vehicle SET supplier_code = ?, supplier_name = ?, contractor_id = ?, raw_mat_code = ?, raw_mat_name = ?, vehicle_type = ?, modified_by = ? WHERE id = ?",
+                'ssssssss', [$supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $this->username, $row['id']]
+            );
+            return $row['id'];
+        }
+
+        return $this->run(
+            "INSERT INTO Vehicle (veh_number, vehicle_weight, supplier_code, supplier_name, contractor_id, raw_mat_code, raw_mat_name, vehicle_type, status, created_by, modified_by) VALUES (?, '0', ?, ?, ?, ?, ?, ?, '0', ?, ?)",
+            'sssssssss', [$plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $this->username, $this->username]
+        );
+    }
+
+    /**
+     * One Vehicle_Entry_Limit row per exact range. Returns 1 when a row was written, else 0.
+     */
+    private function saveRangeLimit($vehicleId, $plate, $startDate, $endDate, $trips) {
+        $start = $startDate->format('Y-m-d');
+        $end = $endDate->format('Y-m-d');
+        $existing = $this->fetchOne("SELECT id, max_entry FROM Vehicle_Entry_Limit WHERE vehicle_id = ? AND start_date = ? AND end_date = ? AND status = '0' ORDER BY id DESC LIMIT 1", 'sss', [$vehicleId, $start, $end]);
+
+        if (!$existing) {
+            $this->run("INSERT INTO Vehicle_Entry_Limit (vehicle_id, veh_number, start_date, end_date, max_entry, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?)", 'sssssss', [$vehicleId, $plate, $start, $end, $trips, $this->username, $this->username]);
+            return 1;
+        }
+
+        if ((int)$existing['max_entry'] !== (int)$trips) {
+            $this->run("UPDATE Vehicle_Entry_Limit SET max_entry = ?, modified_by = ? WHERE id = ?", 'sss', [$trips, $this->username, $existing['id']]);
+            return 1;
+        }
+
+        return 0;
     }
 
     private function fetchOne($sql, $types, $params) {
