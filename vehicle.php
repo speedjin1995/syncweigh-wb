@@ -218,7 +218,7 @@
                                                                         <div class="row mb-3">
                                                                             <label for="maxEntryPerDay" class="col-sm-5 col-form-label"><?=$languageArray['max_entry_per_day_code'][$language]?></label>
                                                                             <div class="col-sm-7">
-                                                                                <input type="number" class="form-control" id="maxEntryPerDay" name="maxEntryPerDay" min="0" step="1" placeholder="<?=$languageArray['zero_unlimited_code'][$language]?>" required>
+                                                                                <input type="number" class="form-control" id="maxEntryPerDay" name="maxEntryPerDay" min="0" step="1" placeholder="<?=$languageArray['zero_unlimited_code'][$language]?>">
                                                                                 <small class="text-muted"><?=$languageArray['max_entry_per_day_hint_code'][$language]?></small>
                                                                             </div>
                                                                         </div>
@@ -568,8 +568,8 @@ $(function () {
         var maxEntry = $('#maxEntryPerDay').val();
         var dateMax = $('#dateMaxEntry').val();
 
-        if (maxEntry === '' || parseInt(maxEntry) < 0 || (dateMax !== '' && parseInt(dateMax) < 0)) {
-            $('#maxEntryPerDay').toggleClass('is-invalid', maxEntry === '' || parseInt(maxEntry) < 0);
+        if ((maxEntry !== '' && parseInt(maxEntry) < 0) || (dateMax !== '' && parseInt(dateMax) < 0)) {
+            $('#maxEntryPerDay').toggleClass('is-invalid', maxEntry !== '' && parseInt(maxEntry) < 0);
             $('#dateMaxEntry').toggleClass('is-invalid', dateMax !== '' && parseInt(dateMax) < 0);
             return;
         }

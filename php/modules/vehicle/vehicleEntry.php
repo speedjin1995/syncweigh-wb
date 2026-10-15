@@ -1,6 +1,7 @@
 <?php
 // Vehicle daily entry limit helpers. Functions only: the caller owns the session and $db.
-// Limit for a date = active Vehicle_Entry_Limit row for that date, else Vehicle.max_entry_per_day (0 = unlimited).
+// Limit for a date = active Vehicle_Entry_Limit row for that date, else Vehicle.max_entry_per_day.
+// NULL = no limit, 0 = blocked (no entry allowed without the password override).
 // Vehicle_Entry_Log only holds IN (new weighing) and REVERSE (weighing cancelled) rows.
 // Count for a date = IN minus REVERSE rows.
 
@@ -26,7 +27,7 @@ function getVehicleDateLimitRow($db, $vehicleId, $date){
 function getVehicleEntryLimit($db, $vehicleId, $defaultMax, $date){
     $row = getVehicleDateLimitRow($db, $vehicleId, $date);
 
-    return empty($row) ? (int)$defaultMax : (int)$row['max_entry'];
+    return empty($row) ? ($defaultMax === null ? null : (int)$defaultMax) : (int)$row['max_entry'];
 }
 
 function getVehicleEntryCount($db, $vehicleId, $date){
@@ -81,8 +82,8 @@ function getVehicleEntryStatus($db, $vehNumber, $date){
         "date" => $date,
         "max" => $max,
         "count" => $count,
-        "limited" => $max > 0,
-        "exceeded" => $max > 0 && $count >= $max
+        "limited" => $max !== null,
+        "exceeded" => $max !== null && $count >= $max
     );
 }
 

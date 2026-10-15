@@ -1739,3 +1739,14 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELE
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'start_date_code', 'Start Date', '开始日期', 'Tarikh Mula', 'தொடக்க தேதி' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'start_date_code');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'end_date_code', 'End Date', '结束日期', 'Tarikh Tamat', 'முடிவு தேதி' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'end_date_code');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'waste_code', 'Waste', '废料', 'Sisa', 'கழிவு' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'waste_code');
+
+ALTER TABLE `Vehicle_Log` MODIFY `max_entry_per_day` INT(11) NULL DEFAULT NULL;
+ALTER TABLE `Vehicle` MODIFY `max_entry_per_day` INT(11) NULL DEFAULT NULL;
+ALTER TABLE `Vehicle_Entry_Log` MODIFY `max_entry` INT(11) NULL DEFAULT NULL COMMENT 'Limit in force at the time, NULL = no limit, 0 = blocked';
+UPDATE `Vehicle` SET `max_entry_per_day` = NULL WHERE `max_entry_per_day` = 0;
+
+UPDATE `message_resource` SET `en` = 'Blank = No Limit', `zh` = '留空 = 无限制', `my` = 'Kosong = Tanpa Had', `ne` = 'காலியாக = வரம்பற்றது' WHERE `message_key_code` = 'zero_unlimited_code';
+UPDATE `message_resource` SET `en` = 'Default for every day. Blank = no limit, 0 = blocked.', `zh` = '每天的默认值。留空 = 无限制，0 = 禁止进场。', `my` = 'Lalai untuk setiap hari. Kosong = tiada had, 0 = disekat.', `ne` = 'ஒவ்வொரு நாளுக்குமான இயல்புநிலை. காலியாக = வரம்பற்றது, 0 = தடுக்கப்பட்டது.' WHERE `message_key_code` = 'max_entry_per_day_hint_code';
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'vehicle_blocked_code', 'Vehicle {vehicle} is blocked today (daily limit 0).', '车辆 {vehicle} 今日被禁止进场（每日限制为 0）。', 'Kenderaan {vehicle} disekat hari ini (had harian 0).', '{vehicle} இன்று தடுக்கப்பட்டது (தினசரி வரம்பு 0).' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'vehicle_blocked_code');
+
+ALTER TABLE `Vehicle` MODIFY `max_entry_per_day` INT(11) NULL DEFAULT 0;

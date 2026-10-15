@@ -4082,7 +4082,7 @@ else{
             rows += '<tr>' +
                 '<td>' + action + '</td>' +
                 '<td>' + log.entry_date + '</td>' +
-                '<td>' + log.entry_count + ' / ' + (log.max_entry > 0 ? log.max_entry : <?=json_encode($languageArray['unlimited_code'][$language])?>) + '</td>' +
+                '<td>' + log.entry_count + ' / ' + (log.max_entry !== null ? log.max_entry : <?=json_encode($languageArray['unlimited_code'][$language])?>) + '</td>' +
                 '<td>' + override + '</td>' +
                 '<td>' + log.approved_by + (log.approved_date ? '<br><small class="text-muted">' + log.approved_date + '</small>' : '') + '</td>' +
                 '<td>' + $('<div>').text(log.remarks).html() + '</td>' +
@@ -4182,10 +4182,14 @@ else{
             $('#spinnerLoading').hide();
 
             if (obj.status === 'success' && obj.exceeded) {
-                var message = <?=json_encode($languageArray['insufficient_entry_code'][$language])?>
-                    .replace('{vehicle}', vehicleNo).replace('{count}', obj.count).replace('{max}', obj.max);
+                var blocked = obj.max === 0;
+                var message = blocked
+                    ? <?=json_encode($languageArray['vehicle_blocked_code'][$language])?>.replace('{vehicle}', vehicleNo)
+                    : <?=json_encode($languageArray['insufficient_entry_code'][$language])?>
+                        .replace('{vehicle}', vehicleNo).replace('{count}', obj.count).replace('{max}', obj.max);
 
-                if (confirm(message + ' ' + <?=json_encode($languageArray['proceed_code'][$language])?>)) {
+                // Limit 0: straight to the password. Otherwise confirm first, then the password.
+                if (blocked || confirm(message + ' ' + <?=json_encode($languageArray['proceed_code'][$language])?>)) {
                     entryOverrideProceed = proceed;
                     $('#entryOverrideMessage').text(message);
                     $('#entryOverridePassword').val('').removeClass('is-invalid');

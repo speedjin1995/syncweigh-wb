@@ -567,7 +567,11 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
             $overridePassword = $_POST['overridePassword'] ?? '';
 
             if (!verifyUserPassword($db, $_SESSION['id'], $overridePassword)) {
-                $entryMessage = 'Insufficient entry for '.$vehiclePlateNo1.' ('.$vehicleEntryStatus['count'].'/'.$vehicleEntryStatus['max'].' used today). ';
+                if ($vehicleEntryStatus['max'] === 0) {
+                    $entryMessage = 'Vehicle '.$vehiclePlateNo1.' is blocked today (daily limit 0). ';
+                } else {
+                    $entryMessage = 'Insufficient entry for '.$vehiclePlateNo1.' ('.$vehicleEntryStatus['count'].'/'.$vehicleEntryStatus['max'].' used today). ';
+                }
                 $entryMessage .= ($overridePassword === '') ? 'Password confirmation is required.' : 'Invalid password.';
                 echo json_encode(array("status"=> "failed", "message"=> $entryMessage));
                 $db->close();
