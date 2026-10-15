@@ -1235,6 +1235,27 @@ else{
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="modal fade" id="vehicleNotRegisteredModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content border border-2 border-danger shadow-lg">
+                                                <div class="modal-header bg-danger p-3">
+                                                    <h5 class="modal-title text-white"><i class="ri-truck-line align-middle me-2"></i><?=$languageArray['vehicle_not_registered_title_code'][$language]?></h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body pt-4">
+                                                    <div class="alert alert-danger d-flex align-items-center mb-0" role="alert">
+                                                        <i class="ri-error-warning-line fs-20 me-2"></i>
+                                                        <div id="vehicleNotRegisteredMessage" class="fw-semibold"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                    <button type="button" class="btn btn-danger" id="goToVehicle"><?=$languageArray['go_to_vehicle_code'][$language]?></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="modal fade" id="cancelModal">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
                                             <div class="modal-content">
@@ -2257,7 +2278,7 @@ else{
 
             // The backdrop is added right after this event
             setTimeout(function(){
-                $('.modal-backdrop').last().css({'z-index': 1060, 'opacity': 0.7});
+                $('.modal-backdrop').last().css({'z-index': 1060, 'opacity': 0.7, 'backdrop-filter': 'blur(4px)', '-webkit-backdrop-filter': 'blur(4px)'});
             }, 0);
         });
 
@@ -3254,17 +3275,17 @@ else{
             }
         });
 
-        $('#vehicleNoTxt').on('keyup', function(){
-            var x = $('#vehicleNoTxt').val();
-            x = x.toUpperCase();
-            $('#vehicleNoTxt').val(x);
+        $('#vehiclePlateNo1').on('change', function(){
+            var vehiclePlateNo1 = $(this).val();
             var transactionStatus = $('#transactionStatus').val();
-
-            if (x){
-                $.post('php/modules/vehicle/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
+            if (vehiclePlateNo1){
+                $.post('php/modules/vehicle/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
+                        if (!obj.message.id && vehiclePlateNo1 != '-'){
+                            showVehicleNotRegistered(vehiclePlateNo1);
+                        }
                         var customerName = obj.message.customer_name;
                         var customerCode = obj.message.customer_code;
                         var supplierName = obj.message.supplier_name;
@@ -3298,14 +3319,26 @@ else{
             }
         });
 
-        $('#vehiclePlateNo1').on('change', function(){
-            var vehiclePlateNo1 = $(this).val();
+        $('#vehicleNoTxt').on('keyup', function(){
+            var x = $('#vehicleNoTxt').val();
+            x = x.toUpperCase();
+            $('#vehicleNoTxt').val(x);
+        });
+
+        $('#vehicleNoTxt').on('change', function(){
+            var x = $(this).val().toUpperCase();
+            $(this).val(x);
             var transactionStatus = $('#transactionStatus').val();
-            if (vehiclePlateNo1){
-                $.post('php/modules/vehicle/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
+
+            if (x){
+                $.post('php/modules/vehicle/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
-                    if (obj.status == 'success'){
+                    if (obj.status == 'success' && !obj.message.id){
+                        $('#addModal').find('#contractorId').val('').trigger('change');
+                        showVehicleNotRegistered(x);
+                    }
+                    else if (obj.status == 'success'){
                         var customerName = obj.message.customer_name;
                         var customerCode = obj.message.customer_code;
                         var supplierName = obj.message.supplier_name;
@@ -3337,6 +3370,29 @@ else{
                     }
                 });
             }
+        });
+
+        // Stack the not-registered popup above the open Add New modal, with a darker blurred backdrop
+        $('#vehicleNotRegisteredModal').on('show.bs.modal', function(){
+            $(this).css('z-index', 1065);
+
+            // The backdrop is added right after this event
+            setTimeout(function(){
+                $('.modal-backdrop').last().css({'z-index': 1060, 'opacity': 0.7, 'backdrop-filter': 'blur(4px)', '-webkit-backdrop-filter': 'blur(4px)'});
+            }, 0);
+        });
+
+        // Closing the popup clears the vehicle that was not found
+        $('#vehicleNotRegisteredModal').on('hidden.bs.modal', function(){
+            if ($('#manualVehicle').is(':checked')){
+                $('#vehicleNoTxt').val('');
+            }else{
+                $('#vehiclePlateNo1').val('-').trigger('change');
+            }
+        });
+
+        $('#goToVehicle').on('click', function(){
+            window.location.href = 'vehicle.php';
         });
 
         $('#manualVehicle2').on('change', function(){
@@ -3948,6 +4004,11 @@ else{
             }
         ?>
     });
+
+    function showVehicleNotRegistered(vehicleNo){
+        $('#vehicleNotRegisteredMessage').text(<?=json_encode($languageArray['vehicle_not_registered_code'][$language])?>.replace('{vehicle}', vehicleNo));
+        $('#vehicleNotRegisteredModal').modal('show');
+    }
     
     function showEntryOverrideError(message){
         $('#entryOverridePassword').val('').addClass('is-invalid').trigger('focus');
