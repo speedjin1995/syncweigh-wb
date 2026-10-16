@@ -259,8 +259,8 @@ else{
                                                         <div class="mb-3">
                                                             <label for="batchNoSearch" class="form-label"><?=$languageArray['status_code'][$language]?></label>
                                                             <select id="batchNoSearch" class="form-select select2">
-                                                                <option value="N" selected><?=$languageArray['pending_code'][$language]?></option>
-                                                                <option value="Y"><?=$languageArray['complete_code'][$language]?></option>
+                                                                <option value="Pending" selected><?=$languageArray['pending_code'][$language]?></option>
+                                                                <option value="Complete"><?=$languageArray['complete_code'][$language]?></option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->                                                
@@ -1666,7 +1666,7 @@ else{
             $('#supplierSearch').val('-').trigger('change');
             $('#vehicleNo').val('');
             $('#invoiceNoSearch').val('-').trigger('change');
-            $('#batchNoSearch').val('N').trigger('change');
+            $('#batchNoSearch').val('Pending').trigger('change');
             $('#productSearch').val('-').trigger('change');
             $('#rawMatSearch').val('-').trigger('change');
             $('#plantSearch').val('-').trigger('change');
@@ -2370,13 +2370,6 @@ else{
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
             var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
-
-            if (batchNoI == 'N'){
-                batchNoI = 'Pending';
-            }else if (batchNoI == 'Y'){
-                batchNoI = 'Complete';
-            }
-
             var selectedIds = []; // An array to store the selected 'id' values
 
             $("#weightTable tbody input[type='checkbox']").each(function () {
@@ -2485,13 +2478,6 @@ else{
             var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
             var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
             var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
-            
-            if (batchNoI == 'N'){
-                batchNoI = 'Pending';
-            }else if (batchNoI == 'Y'){
-                batchNoI = 'Complete';
-            }
-
             var selectedIds = []; // An array to store the selected 'id' values
 
             $("#weightTable tbody input[type='checkbox']").each(function () {
