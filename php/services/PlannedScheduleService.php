@@ -354,15 +354,14 @@ class PlannedScheduleService extends BaseService {
     }
 
     /**
-     * Vehicle id of the active vehicle with this plate. A new active vehicle is created when there is none,
-     * so a deactivated vehicle is never reused (the weighing check only reads active vehicles).
+     * Vehicle id by plate. A found vehicle is reactivated (status 0) even if it was deleted; a new one is created as active.
      */
     private function findOrCreateVehicle($plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType) {
-        $row = $this->fetchOne("SELECT id FROM Vehicle WHERE veh_number = ? AND status = '0' ORDER BY id DESC LIMIT 1", 's', [$plate]);
+        $row = $this->fetchOne("SELECT id FROM Vehicle WHERE veh_number = ? ORDER BY id DESC LIMIT 1", 's', [$plate]);
 
         if ($row) {
             $this->run(
-                "UPDATE Vehicle SET supplier_code = ?, supplier_name = ?, contractor_id = ?, raw_mat_code = ?, raw_mat_name = ?, vehicle_type = ?, modified_by = ? WHERE id = ?",
+                "UPDATE Vehicle SET supplier_code = ?, supplier_name = ?, contractor_id = ?, raw_mat_code = ?, raw_mat_name = ?, vehicle_type = ?, status = '0', modified_by = ? WHERE id = ?",
                 'ssssssss', [$supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $this->username, $row['id']]
             );
             return $row['id'];
