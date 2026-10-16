@@ -48,7 +48,7 @@ if(isset($_POST['userID'])){
         }
     }else{
         if ($type == 'Container'){
-            if ($update_stmt = $db->prepare("SELECT * FROM Weight_Container WHERE id=?")) {
+            if ($update_stmt = $db->prepare("SELECT wc.*, c.name AS contractor_name FROM Weight_Container wc LEFT JOIN Contractor c ON c.id = wc.contractor_id WHERE wc.id=?")) {
                 $update_stmt->bind_param('s', $id);
                 
                 // Execute the prepared query.
@@ -143,6 +143,8 @@ if(isset($_POST['userID'])){
                             $message['product_name'] = $row['product_name'] ?? '';
                             $message['raw_mat_code'] = $row['raw_mat_code'];
                             $message['raw_mat_name'] = $row['raw_mat_name'];
+                            $message['contractor_id'] = $row['contractor_id'] ?? null;
+                            $message['contractor_name'] = $row['contractor_name'] ?? '';
                             $message['container_no'] = $row['container_no'];
                             $message['seal_no'] = $row['seal_no'];
                             $message['container_no2'] = $row['container_no2'];
@@ -242,7 +244,7 @@ if(isset($_POST['userID'])){
                 }
             }
         }else{
-            if ($update_stmt = $db->prepare("SELECT * FROM Weight WHERE id=?")) {
+            if ($update_stmt = $db->prepare("SELECT w.*, c.name AS contractor_name FROM Weight w LEFT JOIN Contractor c ON c.id = w.contractor_id WHERE w.id=?")) {
                 $update_stmt->bind_param('s', $id);
                 
                 // Execute the prepared query.
@@ -358,6 +360,8 @@ if(isset($_POST['userID'])){
                             $message['product_name'] = $row['product_name'];
                             $message['raw_mat_code'] = $row['raw_mat_code'];
                             $message['raw_mat_name'] = $row['raw_mat_name'];
+                            $message['contractor_id'] = $row['contractor_id'] ?? null;
+                            $message['contractor_name'] = $row['contractor_name'] ?? '';
                             $message['container_no'] = $row['container_no'];
                             $message['seal_no'] = $row['seal_no'];
                             $message['container_no2'] = $row['container_no2'];

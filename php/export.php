@@ -2,7 +2,8 @@
 session_start();
 // Load the database configuration file 
 require_once 'db_connect.php';
- 
+require_once 'requires/lookup.php';
+
 // Filter the excel data 
 function filterData(&$str){ 
     $str = preg_replace("/\t/", "\\t", $str); 
@@ -51,6 +52,15 @@ if($_GET['toDate'] != null && $_GET['toDate'] != ''){
         $searchQuery .= " and count.transaction_date <= '".$formatted_date."'";
     }
 }
+
+if($_GET["file"] == 'weight'){
+    $searchQuery .= transactionStatusExclusion($db, 'Weight.transaction_status');
+    $searchContainerQuery .= transactionStatusExclusion($db, 'Weight_Container.transaction_status');
+}
+else{
+    $searchQuery .= transactionStatusExclusion($db, 'count.transaction_status');
+}
+
 
 if($_GET['transactionStatus'] != null && $_GET['transactionStatus'] != '' && $_GET['transactionStatus'] != '-'){
     if($_GET["file"] == 'weight'){

@@ -99,7 +99,7 @@ if (isset($_POST['mode']) && $_POST['mode'] == 'get') {
         "message" => array(
             "id" => $vehicle['id'],
             "veh_number" => $vehicle['veh_number'],
-            "max_entry_per_day" => (int)$vehicle['max_entry_per_day'],
+            "max_entry_per_day" => $vehicle['max_entry_per_day'] === null ? null : (int)$vehicle['max_entry_per_day'],
             "date_max_entry" => $currentDateMax,
             "max" => $entryStatus['max'],
             "count" => $entryStatus['count']
@@ -113,8 +113,8 @@ if (isset($_POST['mode']) && $_POST['mode'] == 'get') {
 $maxEntryInput = isset($_POST['maxEntryPerDay']) ? trim($_POST['maxEntryPerDay']) : '';
 $dateMaxInput = isset($_POST['dateMaxEntry']) ? trim($_POST['dateMaxEntry']) : '';
 
-if ($maxEntryInput === '' || !ctype_digit($maxEntryInput)) {
-    echo json_encode(array("status" => "failed", "message" => "Max Entry / Day must be 0 or more"));
+if ($maxEntryInput !== '' && !ctype_digit($maxEntryInput)) {
+    echo json_encode(array("status" => "failed", "message" => "Max Entry / Day must be blank or 0 or more"));
     exit;
 }
 
@@ -123,7 +123,7 @@ if ($dateMaxInput !== '' && !ctype_digit($dateMaxInput)) {
     exit;
 }
 
-$maxEntryPerDay = (int)$maxEntryInput;
+$maxEntryPerDay = $maxEntryInput === '' ? null : (int)$maxEntryInput;
 $dateMax = $dateMaxInput === '' ? null : (int)$dateMaxInput;
 $saved = true;
 
@@ -152,7 +152,9 @@ $dateLimitRow = getVehicleDateLimitRow($db, $vehicleId, $limitDate);
 $currentDateMax = empty($dateLimitRow) ? null : (int)$dateLimitRow['max_entry'];
 
 // Default daily limit
-if ($saved && $maxEntryPerDay != (int)$vehicle['max_entry_per_day']) {
+$currentDefault = $vehicle['max_entry_per_day'] === null ? null : (int)$vehicle['max_entry_per_day'];
+
+if ($saved && $maxEntryPerDay !== $currentDefault) {
     if ($stmt = $db->prepare("UPDATE Vehicle SET max_entry_per_day = ?, modified_by = ? WHERE id = ?")) {
         $stmt->bind_param('sss', $maxEntryPerDay, $username, $vehicleId);
         $saved = $stmt->execute();

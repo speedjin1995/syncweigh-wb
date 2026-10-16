@@ -1,16 +1,17 @@
 <?php
 // Vehicle daily entry limit helpers. Functions only: the caller owns the session and $db.
-// Limit for a date = active Vehicle_Entry_Limit row for that date, else Vehicle.max_entry_per_day (0 = unlimited).
+// Limit for a date = active Vehicle_Entry_Limit row for that date, else Vehicle.max_entry_per_day.
+// NULL = no limit, 0 = blocked (no entry allowed without the password override).
 // Vehicle_Entry_Log only holds IN (new weighing) and REVERSE (weighing cancelled) rows.
 // Count for a date = IN minus REVERSE rows.
 
-// Active date limit row for a vehicle and date, or null. No unique key on the table (a removed
-// limit can be set again as a new row), so the latest active row wins.
+// Active limit row whose date range covers the date, or null. No unique key on the table (an
+// overlapping range can be imported later), so the latest active row wins.
 function getVehicleDateLimitRow($db, $vehicleId, $date){
     $row = null;
 
-    if ($stmt = $db->prepare("SELECT id, max_entry FROM Vehicle_Entry_Limit WHERE vehicle_id = ? AND limit_date = ? AND status = '0' ORDER BY id DESC LIMIT 1")) {
-        $stmt->bind_param('ss', $vehicleId, $date);
+    if ($stmt = $db->prepare("SELECT id, max_entry FROM Vehicle_Entry_Limit WHERE vehicle_id = ? AND start_date <= ? AND end_date >= ? AND status = '0' ORDER BY id DESC LIMIT 1")) {
+        $stmt->bind_param('sss', $vehicleId, $date, $date);
 
         if ($stmt->execute()) {
             $result = $stmt->get_result();
@@ -26,7 +27,7 @@ function getVehicleDateLimitRow($db, $vehicleId, $date){
 function getVehicleEntryLimit($db, $vehicleId, $defaultMax, $date){
     $row = getVehicleDateLimitRow($db, $vehicleId, $date);
 
-    return empty($row) ? (int)$defaultMax : (int)$row['max_entry'];
+    return empty($row) ? ($defaultMax === null ? null : (int)$defaultMax) : (int)$row['max_entry'];
 }
 
 function getVehicleEntryCount($db, $vehicleId, $date){
@@ -81,8 +82,8 @@ function getVehicleEntryStatus($db, $vehNumber, $date){
         "date" => $date,
         "max" => $max,
         "count" => $count,
-        "limited" => $max > 0,
-        "exceeded" => $max > 0 && $count >= $max
+        "limited" => $max !== null,
+        "exceeded" => $max !== null && $count >= $max
     );
 }
 

@@ -28,6 +28,8 @@ if($_POST['toDate'] != null && $_POST['toDate'] != ''){
 	$searchQuery .= " and transaction_date <= '".$toDateTime."'";
 }
 
+$searchQuery .= transactionStatusExclusion($db, 'transaction_status');
+
 if($_POST['transactionStatus'] != null && $_POST['transactionStatus'] != '' && $_POST['transactionStatus'] != '-'){
 	$searchQuery .= " and transaction_status = '".$_POST['transactionStatus']."'";
 }

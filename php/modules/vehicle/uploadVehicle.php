@@ -19,6 +19,7 @@ if (!empty($data)) {
         $CustomerName = !empty($rows['CustomerName']) ? trim($rows['CustomerName']) : '';
         $SupplierCode = !empty($rows['SupplierCode']) ? trim($rows['SupplierCode']) : '';
         $SupplierName = !empty($rows['SupplierName']) ? trim($rows['SupplierName']) : '';
+        $VehicleType = !empty($rows['VehicleType']) ? trim($rows['VehicleType']) : null;
         $actionId = 1;
 
         # Customer check
@@ -58,8 +59,8 @@ if (!empty($data)) {
             $check->close();
 
             if (empty($vehRow)) {
-                if ($insert_stmt = $db->prepare("INSERT INTO Vehicle (veh_number, vehicle_weight, customer_code, customer_name, supplier_code, supplier_name, status, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                    $insert_stmt->bind_param('sssssssss', $VehicleNo, $VehicleWeight, $CustomerCode, $CustomerName, $SupplierCode, $SupplierName, $status, $uid, $uid);
+                if ($insert_stmt = $db->prepare("INSERT INTO Vehicle (veh_number, vehicle_weight, customer_code, customer_name, supplier_code, supplier_name, vehicle_type, status, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    $insert_stmt->bind_param('ssssssssss', $VehicleNo, $VehicleWeight, $CustomerCode, $CustomerName, $SupplierCode, $SupplierName, $VehicleType, $status, $uid, $uid);
                     $insert_stmt->execute();
                     $insert_stmt->close();
                 }

@@ -40,6 +40,9 @@ if (isset($_POST['userID'])) {
                                 $message['customer_name'] = $row['customer_name'];
                                 $message['supplier_code'] = $row['supplier_code'];
                                 $message['supplier_name'] = $row['supplier_name'];
+                                $message['vehicle_type'] = $row['vehicle_type'];
+                                $message['contractor_id'] = $row['contractor_id'];
+                                $message['contractor_id'] = $row['contractor_id'];
                             }
                             echo json_encode(array("status" => "success", "message" => $message));
                         }
@@ -48,7 +51,7 @@ if (isset($_POST['userID'])) {
             }
         }
     } else if ($type == 'pullCustomer') {
-        if ($stmt = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=? AND status='0'")) {
+        if ($stmt = $db->prepare("SELECT v.*, c.name AS contractor_name FROM Vehicle v LEFT JOIN Contractor c ON c.id = v.contractor_id WHERE v.veh_number=? AND v.status='0'")) {
             $stmt->bind_param('s', $id);
 
             if (!$stmt->execute()) {
@@ -66,6 +69,11 @@ if (isset($_POST['userID'])) {
                     $message['customer_name'] = $row['customer_name'];
                     $message['supplier_code'] = $row['supplier_code'];
                     $message['supplier_name'] = $row['supplier_name'];
+                    $message['vehicle_type'] = $row['vehicle_type'];
+                    $message['contractor_id'] = $row['contractor_id'];
+                    $message['contractor_name'] = $row['contractor_name'] ?? '';
+                    $message['raw_mat_code'] = $row['raw_mat_code'];
+                    $message['raw_mat_name'] = $row['raw_mat_name'];
                 }
                 echo json_encode(array("status" => "success", "message" => $message));
             }
@@ -89,6 +97,8 @@ if (isset($_POST['userID'])) {
                     $message['customer_name'] = $row['customer_name'];
                     $message['supplier_code'] = $row['supplier_code'];
                     $message['supplier_name'] = $row['supplier_name'];
+                    $message['vehicle_type'] = $row['vehicle_type'];
+                    $message['contractor_id'] = $row['contractor_id'];
                 }
                 echo json_encode(array("status" => "success", "message" => $message));
             }

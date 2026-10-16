@@ -3,6 +3,13 @@
 
 <?php
 $plantId = $_SESSION['plant'];
+require_once 'php/classes/BaseController.php';
+$baseController = new BaseController($db);
+$transactionDispatchEnabled = $baseController->isFeatureEnabled('transaction_dispatch');
+$transactionReceivingEnabled = $baseController->isFeatureEnabled('transaction_receiving');
+$transactionInternalTransferEnabled = $baseController->isFeatureEnabled('transaction_internal_transfer');
+$transactionMiscellaneousEnabled = $baseController->isFeatureEnabled('transaction_miscellaneous');
+$defaultTransactionStatusSearch = $transactionDispatchEnabled ? 'Sales' : '-';
 
 $vehicles = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
 $vehicles2 = $db->query("SELECT * FROM Vehicle WHERE status = '0'");
@@ -142,10 +149,18 @@ else{
                                                             <label for="transactionStatusSearch" class="form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
                                                             <select id="transactionStatusSearch" class="form-select select2">
                                                                 <option selected>-</option>
+                                                                <?php if($transactionDispatchEnabled){ ?>
                                                                 <option value="Sales" selected><?=$languageArray['dispatch_code'][$language]?></option>
+                                                                <?php } ?>
+                                                                <?php if($transactionReceivingEnabled){ ?>
                                                                 <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
+                                                                <?php } ?>
+                                                                <?php if($transactionInternalTransferEnabled){ ?>
                                                                 <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
+                                                                <?php } ?>
+                                                                <?php if($transactionMiscellaneousEnabled){ ?>
                                                                 <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
+                                                                <?php } ?>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -605,7 +620,7 @@ else{
         $('#clearAllSearch').on('click', function(){
             fromDateSearchPicker.setDate(yesterday);
             toDateSearchPicker.setDate(today);
-            $('#transactionStatusSearch').val('Sales').trigger('change');
+            $('#transactionStatusSearch').val('<?=$defaultTransactionStatusSearch ?>').trigger('change');
             $('#customerNoSearch').val('-').trigger('change');
             $('#supplierSearch').val('-').trigger('change');
             $('#vehicleNo').val('');
