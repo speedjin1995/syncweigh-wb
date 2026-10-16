@@ -259,8 +259,8 @@ else{
                                                         <div class="mb-3">
                                                             <label for="batchNoSearch" class="form-label"><?=$languageArray['status_code'][$language]?></label>
                                                             <select id="batchNoSearch" class="form-select select2">
-                                                                <option value="N" selected><?=$languageArray['pending_code'][$language]?></option>
-                                                                <option value="Y"><?=$languageArray['complete_code'][$language]?></option>
+                                                                <option value="Pending" selected><?=$languageArray['pending_code'][$language]?></option>
+                                                                <option value="Complete"><?=$languageArray['complete_code'][$language]?></option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->                                                
@@ -1539,6 +1539,7 @@ else{
     <script type="text/javascript">
     var table = null;
     var emptyContainerTable = null;
+    var containerColumnsEnabled = <?= json_encode($containerWeighingEnabled || $differentBinWeighingEnabled) ?>;
     let clickTimer = null;
 
     var fromDateSearchPicker;
@@ -1547,9 +1548,9 @@ else{
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
+    var userRole = '<?=$role ?>';
 
     $(function () {
-        var userRole = '<?=$role ?>';
         var ind = '<?=$indicator ?>';
         const today = new Date();
         const tomorrow = new Date(today);
@@ -1665,7 +1666,7 @@ else{
             $('#supplierSearch').val('-').trigger('change');
             $('#vehicleNo').val('');
             $('#invoiceNoSearch').val('-').trigger('change');
-            $('#batchNoSearch').val('N').trigger('change');
+            $('#batchNoSearch').val('Pending').trigger('change');
             $('#productSearch').val('-').trigger('change');
             $('#rawMatSearch').val('-').trigger('change');
             $('#plantSearch').val('-').trigger('change');
@@ -1718,254 +1719,10 @@ else{
             checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
         });
 
-        var fromDateI = $('#fromDateSearch').val();
-        var toDateI = $('#toDateSearch').val();
-        var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-        var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-        var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-        var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-        var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-        var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
-        var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
-        var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-        var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
-        var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
-        var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
-        var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
-        var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+        renderTable();
 
-        table = $("#weightTable").DataTable({
-            "responsive": true,
-            "autoWidth": false,
-            'processing': true,
-            'serverSide': true,
-            'searching': true,
-            'serverMethod': 'post',
-            'ajax': {
-                'url':'php/filterWeight.php',
-                'data': {
-                    fromDate: fromDateI,
-                    toDate: toDateI,
-                    status: statusI,
-                    customer: customerNoI,
-                    supplier: supplierI,
-                    vehicle: vehicleNoI,
-                    invoice: invoiceNoI,
-                    batch: batchNoI,
-                    product: productSearchI,
-                    rawMaterial: rawMaterialI,
-                    plant: plantNoI,
-                    location: locationI,
-                    transactionId: transactionIdI,
-                    containerNo: containerNoI,
-                    sealNo: sealNoI,
-                    invDelPo: invDelPoI
-                } 
-            },
-            'columns': [
-                {
-                    // Add a checkbox with a unique ID for each row
-                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                    className: 'select-checkbox',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        if (row.weight_type == 'Primer Mover + Container'){
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
-                        }else{
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
-                        }
-                    }
-                },
-                { data: 'location' },                
-                { data: 'transaction_id' },                
-                { data: 'weight_type' },
-                { data: 'transaction_status' },
-                { data: 'customer' },
-                // { data: 'seal_no' },
-                { data: 'container_no2' },
-                { data: 'seal_no2' },
-                { data: 'container_no' },
-                { data: 'lorry_plate_no1' },
-                { data: 'gross_weight1' },
-                { data: 'gross_weight1_date' },
-                { data: 'tare_weight1' },
-                { data: 'tare_weight1_date' },
-                { data: 'nett_weight1' },
-                { data: 'lorry_plate_no2' },
-                { data: 'gross_weight2' },
-                { data: 'gross_weight2_date' },
-                { data: 'tare_weight2' },
-                { data: 'tare_weight2_date' },
-                { data: 'nett_weight2' },
-                { 
-                    data: 'id',
-                    class: 'action-button',
-                    render: function (data, type, row) {
-                        let buttons = `<div class="row g-1 d-flex">`;
-
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                            // if (row.is_complete != 'Y' ){
-                            if (row.weight_type == 'Primer Mover + Container'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </div>`;
-                            }else{
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </div>`;
-                            }
-                            // }
-                        }else {
-                            if (row.is_complete != 'Y' ){
-                                if (row.weight_type == 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;    
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;  
-                                }
-
-                            }
-                        }
-
-                        if (row.weight_type != 'Primer Mover + Container'){
-                            buttons += `
-                            <div class="col-auto">
-                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                            </div>`;
-                        }
-
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                            if (row.weight_type == 'Primer Mover + Container'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>`;
-                            }else{
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>`;
-                            }
-                        }
-                            
-                        buttons += `</div>`;
-
-                        return buttons;
-                    }
-                }
-            ],
-            "drawCallback": function(settings) {
-                $('#salesInfo').text(settings.json.salesTotal);
-                $('#purchaseInfo').text(settings.json.purchaseTotal);
-                $('#localInfo').text(settings.json.localTotal);
-                $('#miscInfo').text(settings.json.miscTotal);
-            }   
-        });
-
-        emptyContainerTable = $("#emptyContainerTable").DataTable({
-            "responsive": true,
-            "autoWidth": false,
-            'processing': true,
-            'serverSide': true,
-            'searching': true,
-            'serverMethod': 'post',
-            'ajax': {
-                'url':'php/filterEmptyContainer.php',
-                'data': {
-                    fromDate: fromDateI,
-                    toDate: toDateI,
-                    location: locationI
-                } 
-            },
-            'columns': [
-                {
-                    // Add a checkbox with a unique ID for each row
-                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                    className: 'select-checkbox',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                    }
-                },
-                { data: 'container_no' },                
-                { data: 'seal_no' },                
-                { data: 'transaction_status' },
-                { data: 'lorry_plate_no1' },
-                { data: 'gross_weight1' },
-                { data: 'gross_weight1_date' },
-                { data: 'tare_weight1' },
-                { data: 'tare_weight1_date' },
-                { data: 'nett_weight1' },
-                { 
-                    data: 'id',
-                    class: 'action-button',
-                    render: function (data, type, row) {
-                        let buttons = `<div class="row g-1 d-flex">`;
-
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                            if (row.is_complete != 'Y' ){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </div>`;
-                            }
-                        }else {
-                            if (row.is_complete != 'Y' ){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-weight-hanging"></i>
-                                    </button>
-                                </div>`;
-                            }
-                        }
-
-                        buttons += `
-                        <div class="col-auto">
-                            <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                <i class="fas fa-print"></i>
-                            </button>
-                        </div>`;
-
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                            buttons += `
-                            <div class="col-auto">
-                                <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </div>`;
-                        }
-                            
-                        buttons += `</div>`;
-
-                        return buttons;
-                    }
-                }
-            ]
+        $('#filterSearch').on('click', function(){
+            renderTable();
         });
 
         // Add event listener for opening and closing details on row click
@@ -2491,264 +2248,6 @@ else{
             });
         }, 250);
 
-        $('#filterSearch').on('click', function(){
-            var fromDateI = $('#fromDateSearch').val();
-            var toDateI = $('#toDateSearch').val();
-            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-            var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-            var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-            var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
-            var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
-            var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-            var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
-            var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
-            var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
-            var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
-            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
-
-            //Destroy the old Datatable
-            $("#weightTable").DataTable().clear().destroy();
-            $("#emptyContainerTable").DataTable().clear().destroy();
-
-            //Create new Datatable
-            table = $("#weightTable").DataTable({
-                "responsive": true,
-                "autoWidth": false,
-                'processing': true,
-                'serverSide': true,
-                'searching': true,
-                'serverMethod': 'post',
-                'ajax': {
-                    'url':'php/filterWeight.php',
-                    'data': {
-                        fromDate: fromDateI,
-                        toDate: toDateI,
-                        status: statusI,
-                        customer: customerNoI,
-                        supplier: supplierI,
-                        vehicle: vehicleNoI,
-                        invoice: invoiceNoI,
-                        batch: batchNoI,
-                        product: productSearchI,
-                        rawMaterial: rawMaterialI,
-                        plant: plantNoI,
-                        location: locationI,
-                        transactionId: transactionIdI,
-                        containerNo: containerNoI,
-                        sealNo: sealNoI,
-                        invDelPo: invDelPoI
-                    } 
-                },
-                'columns': [
-                    {
-                        // Add a checkbox with a unique ID for each row
-                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                        className: 'select-checkbox',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            if (row.weight_type == 'Primer Mover + Container'){
-                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
-                            }else{
-                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
-                            }
-                        }
-                    },
-                    { data: 'location' },                
-                    { data: 'transaction_id' },                
-                    { data: 'weight_type' },
-                    { data: 'transaction_status' },
-                    { data: 'customer' },
-                    // { data: 'seal_no' },
-                    { data: 'container_no2' },
-                    { data: 'seal_no2' },
-                    { data: 'container_no' },
-                    { data: 'lorry_plate_no1' },
-                    { data: 'gross_weight1' },
-                    { data: 'gross_weight1_date' },
-                    { data: 'tare_weight1' },
-                    { data: 'tare_weight1_date' },
-                    { data: 'nett_weight1' },
-                    { data: 'lorry_plate_no2' },
-                    { data: 'gross_weight2' },
-                    { data: 'gross_weight2_date' },
-                    { data: 'tare_weight2' },
-                    { data: 'tare_weight2_date' },
-                    { data: 'nett_weight2' },
-                    { 
-                        data: 'id',
-                        class: 'action-button',
-                        render: function (data, type, row) {
-                            let buttons = `<div class="row g-1 d-flex">`;
-
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                                // if (row.is_complete != 'Y' ){
-                                if (row.weight_type == 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                    </div>`;
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                                // }
-                            }else {
-                                if (row.is_complete != 'Y' ){
-                                    if (row.weight_type == 'Primer Mover + Container'){
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;    
-                                    }else{
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;  
-                                    }
-
-                                }
-                            }
-
-                            if (row.weight_type != 'Primer Mover + Container'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                        <i class="fas fa-print"></i>
-                                    </button>
-                                </div>`;
-                            }
-
-                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                                if (row.weight_type == 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>`;
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                            }
-                                
-                            buttons += `</div>`;
-
-                            return buttons;
-                        }
-                    }
-                ],
-                "drawCallback": function(settings) {
-                    $('#salesInfo').text(settings.json.salesTotal);
-                    $('#purchaseInfo').text(settings.json.purchaseTotal);
-                    $('#localInfo').text(settings.json.localTotal);
-                    $('#miscInfo').text(settings.json.miscTotal);
-                }   
-            });
-
-            //Create new Datatable for empty container
-            emptyContainerTable = $("#emptyContainerTable").DataTable({
-                "responsive": true,
-                "autoWidth": false,
-                'processing': true,
-                'serverSide': true,
-                'searching': true,
-                'serverMethod': 'post',
-                'ajax': {
-                    'url':'php/filterEmptyContainer.php',
-                    'data': {
-                        fromDate: fromDateI,
-                        toDate: toDateI,
-                        location: locationI
-                    } 
-                },
-                'columns': [
-                    {
-                        // Add a checkbox with a unique ID for each row
-                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                        className: 'select-checkbox',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                        }
-                    },
-                    { data: 'container_no' },                
-                    { data: 'seal_no' },                
-                    { data: 'transaction_status' },
-                    { data: 'lorry_plate_no1' },
-                    { data: 'gross_weight1' },
-                    { data: 'gross_weight1_date' },
-                    { data: 'tare_weight1' },
-                    { data: 'tare_weight1_date' },
-                    { data: 'nett_weight1' },
-                    { 
-                        data: 'id',
-                        class: 'action-button',
-                        render: function (data, type, row) {
-                            let buttons = `<div class="row g-1 d-flex">`;
-
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                                if (row.is_complete != 'Y' ){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                            }else {
-                                if (row.is_complete != 'Y' ){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                            }
-
-                            buttons += `
-                            <div class="col-auto">
-                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                            </div>`;
-
-                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>`;
-                            }
-                                
-                            buttons += `</div>`;
-
-                            return buttons;
-                        }
-                    }
-                ]
-            });
-        });
-
         $('#addWeight').on('click', function(){
             // Show Capture Buttons When Add New
             $('#addModal').find('#grossCapture').show();
@@ -2871,13 +2370,6 @@ else{
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
             var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
-
-            if (batchNoI == 'N'){
-                batchNoI = 'Pending';
-            }else if (batchNoI == 'Y'){
-                batchNoI = 'Complete';
-            }
-
             var selectedIds = []; // An array to store the selected 'id' values
 
             $("#weightTable tbody input[type='checkbox']").each(function () {
@@ -2986,13 +2478,6 @@ else{
             var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
             var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
             var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
-            
-            if (batchNoI == 'N'){
-                batchNoI = 'Pending';
-            }else if (batchNoI == 'Y'){
-                batchNoI = 'Complete';
-            }
-
             var selectedIds = []; // An array to store the selected 'id' values
 
             $("#weightTable tbody input[type='checkbox']").each(function () {
@@ -4004,6 +3489,264 @@ else{
             }
         ?>
     });
+
+    function renderTable() {
+        var fromDateI = $('#fromDateSearch').val();
+        var toDateI = $('#toDateSearch').val();
+        var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+        var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+        var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+        var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+        var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
+        var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
+        var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
+        var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+        var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+        var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
+        var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
+        var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
+        var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
+        var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+
+        //Destroy the old Datatable
+        if ($.fn.DataTable.isDataTable("#weightTable")) $("#weightTable").DataTable().clear().destroy();
+        if ($.fn.DataTable.isDataTable("#emptyContainerTable")) $("#emptyContainerTable").DataTable().clear().destroy();
+
+        //Create new Datatable
+        table = $("#weightTable").DataTable({
+            "responsive": true,
+            "autoWidth": false,
+            'processing': true,
+            'serverSide': true,
+            'searching': true,
+            'serverMethod': 'post',
+            'ajax': {
+                'url':'php/filterWeight.php',
+                'data': {
+                    fromDate: fromDateI,
+                    toDate: toDateI,
+                    status: statusI,
+                    customer: customerNoI,
+                    supplier: supplierI,
+                    vehicle: vehicleNoI,
+                    invoice: invoiceNoI,
+                    batch: batchNoI,
+                    product: productSearchI,
+                    rawMaterial: rawMaterialI,
+                    plant: plantNoI,
+                    location: locationI,
+                    transactionId: transactionIdI,
+                    containerNo: containerNoI,
+                    sealNo: sealNoI,
+                    invDelPo: invDelPoI
+                } 
+            },
+            'columns': [
+                {
+                    // Add a checkbox with a unique ID for each row
+                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
+                    className: 'select-checkbox',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        if (row.weight_type == 'Primer Mover + Container'){
+                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
+                        }else{
+                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
+                        }
+                    }
+                },
+                { data: 'location' },                
+                { data: 'transaction_id' },                
+                { data: 'weight_type' },
+                { data: 'transaction_status' },
+                { data: 'customer' },
+                // { data: 'seal_no' },
+                { data: 'container_no2' },
+                { data: 'seal_no2' },
+                { data: 'container_no' },
+                { data: 'lorry_plate_no1' },
+                { data: 'gross_weight1' },
+                { data: 'gross_weight1_date' },
+                { data: 'tare_weight1' },
+                { data: 'tare_weight1_date' },
+                { data: 'nett_weight1' },
+                { data: 'lorry_plate_no2', visible: containerColumnsEnabled },
+                { data: 'gross_weight2', visible: containerColumnsEnabled },
+                { data: 'gross_weight2_date', visible: containerColumnsEnabled },
+                { data: 'tare_weight2', visible: containerColumnsEnabled },
+                { data: 'tare_weight2_date', visible: containerColumnsEnabled },
+                { data: 'nett_weight2', visible: containerColumnsEnabled },
+                { 
+                    data: 'id',
+                    class: 'action-button',
+                    render: function (data, type, row) {
+                        let buttons = `<div class="row g-1 d-flex">`;
+
+                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                            // if (row.is_complete != 'Y' ){
+                            if (row.weight_type == 'Primer Mover + Container'){
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                </div>`;
+                            }else{
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                </div>`;
+                            }
+                            // }
+                        }else {
+                            if (row.is_complete != 'Y' ){
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-weight-hanging"></i>
+                                        </button>
+                                    </div>`;    
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-weight-hanging"></i>
+                                        </button>
+                                    </div>`;  
+                                }
+
+                            }
+                        }
+
+                        if (row.weight_type != 'Primer Mover + Container'){
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </div>`;
+                        }
+
+                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                            if (row.weight_type == 'Primer Mover + Container'){
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>`;
+                            }else{
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>`;
+                            }
+                        }
+                            
+                        buttons += `</div>`;
+
+                        return buttons;
+                    }
+                }
+            ],
+            "drawCallback": function(settings) {
+                $('#salesInfo').text(settings.json.salesTotal);
+                $('#purchaseInfo').text(settings.json.purchaseTotal);
+                $('#localInfo').text(settings.json.localTotal);
+                $('#miscInfo').text(settings.json.miscTotal);
+            }   
+        });
+
+        //Create new Datatable for empty container
+        emptyContainerTable = $("#emptyContainerTable").DataTable({
+            "responsive": true,
+            "autoWidth": false,
+            'processing': true,
+            'serverSide': true,
+            'searching': true,
+            'serverMethod': 'post',
+            'ajax': {
+                'url':'php/filterEmptyContainer.php',
+                'data': {
+                    fromDate: fromDateI,
+                    toDate: toDateI,
+                    location: locationI
+                } 
+            },
+            'columns': [
+                {
+                    // Add a checkbox with a unique ID for each row
+                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
+                    className: 'select-checkbox',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
+                    }
+                },
+                { data: 'container_no' },                
+                { data: 'seal_no' },                
+                { data: 'transaction_status' },
+                { data: 'lorry_plate_no1' },
+                { data: 'gross_weight1' },
+                { data: 'gross_weight1_date' },
+                { data: 'tare_weight1' },
+                { data: 'tare_weight1_date' },
+                { data: 'nett_weight1' },
+                { 
+                    data: 'id',
+                    class: 'action-button',
+                    render: function (data, type, row) {
+                        let buttons = `<div class="row g-1 d-flex">`;
+
+                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                            if (row.is_complete != 'Y' ){
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                </div>`;
+                            }
+                        }else {
+                            if (row.is_complete != 'Y' ){
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-weight-hanging"></i>
+                                    </button>
+                                </div>`;
+                            }
+                        }
+
+                        buttons += `
+                        <div class="col-auto">
+                            <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
+                                <i class="fas fa-print"></i>
+                            </button>
+                        </div>`;
+
+                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>`;
+                        }
+                            
+                        buttons += `</div>`;
+
+                        return buttons;
+                    }
+                }
+            ]
+        });
+    }
 
     function showVehicleNotRegistered(vehicleNo){
         $('#vehicleNotRegisteredMessage').text(<?=json_encode($languageArray['vehicle_not_registered_code'][$language])?>.replace('{vehicle}', vehicleNo));
