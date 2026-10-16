@@ -5,6 +5,8 @@
 $plantId = $_SESSION['plant'];
 require_once 'php/classes/BaseController.php';
 $baseController = new BaseController($db);
+$containerWeighingEnabled = $baseController->isFeatureEnabled('container_weighing');
+$differentBinWeighingEnabled = $baseController->isFeatureEnabled('different_bin_weighing');
 $transactionDispatchEnabled = $baseController->isFeatureEnabled('transaction_dispatch');
 $transactionReceivingEnabled = $baseController->isFeatureEnabled('transaction_receiving');
 $transactionInternalTransferEnabled = $baseController->isFeatureEnabled('transaction_internal_transfer');
@@ -574,6 +576,8 @@ else{
     
     var fromDateSearchPicker;
     var toDateSearchPicker;
+    var table = null;
+    var containerColumnsEnabled = <?= json_encode($containerWeighingEnabled || $differentBinWeighingEnabled) ?>;
 
     $(function () {
         const today = new Date();
@@ -639,194 +643,10 @@ else{
             checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
         });
 
-        var fromDateI = $('#fromDateSearch').val();
-        var toDateI = $('#toDateSearch').val();
-        var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
-        var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-        var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-        var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-        var weightTypeI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-        var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
-        var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
-        var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-        var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
-        var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-        var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
-        var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-        var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
-
-        var table = $("#weightTable").DataTable({
-            "responsive": true,
-            "autoWidth": false,
-            'processing': true,
-            'serverSide': true,
-            'searching': true,
-            'serverMethod': 'post',
-            'ajax': {
-                'url':'php/filterReports.php',
-                'data': {
-                    fromDate: fromDateI,
-                    toDate: toDateI,
-                    transactionStatus: transactionStatusI,
-                    customer: customerNoI,
-                    supplier: supplierNoI,
-                    vehicle: vehicleNoI,
-                    weightType: weightTypeI,
-                    customerType: customerTypeI,
-                    product: productI,
-                    rawMaterial: rawMatI,
-                    destination: destinationI,
-                    plant: plantI,
-                    location: locationI,
-                    status: statusI,
-                    invDelPo: invDelPoI
-                } 
-            },
-            'columns': [
-                {
-                    // Add a checkbox with a unique ID for each row
-                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                    className: 'select-checkbox',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                    }
-                },
-                { data: 'location' },
-                { data: 'transaction_id' },
-                { data: 'weight_type' },
-                { data: 'transaction_status' },
-                { data: 'customer' },
-                { data: 'container_no2' },
-                { data: 'seal_no2' },
-                { data: 'container_no' },
-                // { data: 'seal_no' },
-                { data: 'lorry_plate_no1' },
-                { data: 'gross_weight1' },
-                { data: 'gross_weight1_date' },
-                { data: 'tare_weight1' },
-                { data: 'tare_weight1_date' },
-                { data: 'nett_weight1' },
-                { data: 'lorry_plate_no2' },
-                { data: 'gross_weight2' },
-                { data: 'gross_weight2_date' },
-                { data: 'tare_weight2' },
-                { data: 'tare_weight2_date' },
-                { data: 'nett_weight2' },
-                { 
-                    data: 'id',
-                    render: function ( data, type, row ) {
-                        // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
-                        return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                        '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li></ul></div>';
-                    }
-                }
-            ],
-            "drawCallback": function(settings) {
-                $('#salesInfo').text(settings.json.salesTotal);
-                $('#purchaseInfo').text(settings.json.purchaseTotal);
-                $('#localInfo').text(settings.json.localTotal);
-                $('#miscInfo').text(settings.json.miscTotal);
-            }   
-        });
+        renderTable();
 
         $('#filterSearch').on('click', function(){
-            var fromDateI = $('#fromDateSearch').val();
-            var toDateI = $('#toDateSearch').val();
-            var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
-            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-            var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-            var weightTypeI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-            var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
-            var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
-            var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-            var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
-            var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-            var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
-            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
-
-            //Destroy the old Datatable
-            $("#weightTable").DataTable().clear().destroy();
-
-            //Create new Datatable
-            table = $("#weightTable").DataTable({
-                "responsive": true,
-                "autoWidth": false,
-                'processing': true,
-                'serverSide': true,
-                'searching': true,
-                'serverMethod': 'post',
-                'ajax': {
-                    'url':'php/filterReports.php',
-                    'data': {
-                        fromDate: fromDateI,
-                        toDate: toDateI,
-                        transactionStatus: transactionStatusI,
-                        customer: customerNoI,
-                        supplier: supplierNoI,
-                        vehicle: vehicleNoI,
-                        weightType: weightTypeI,
-                        customerType: customerTypeI,
-                        product: productI,
-                        rawMaterial: rawMatI,
-                        destination: destinationI,
-                        plant: plantI,
-                        location: locationI,
-                        status: statusI,
-                        invDelPo: invDelPoI
-                    } 
-                },
-                'columns': [
-                    {
-                        // Add a checkbox with a unique ID for each row
-                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                        className: 'select-checkbox',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                        }
-                    },
-                    { data: 'location' },
-                    { data: 'transaction_id' },
-                    { data: 'weight_type' },
-                    { data: 'transaction_status' },
-                    { data: 'customer' },
-                    { data: 'container_no2' },
-                    { data: 'seal_no2' },
-                    { data: 'container_no' },
-                    // { data: 'seal_no' },
-                    { data: 'lorry_plate_no1' },
-                    { data: 'gross_weight1' },
-                    { data: 'gross_weight1_date' },
-                    { data: 'tare_weight1' },
-                    { data: 'tare_weight1_date' },
-                    { data: 'nett_weight1' },
-                    { data: 'lorry_plate_no2' },
-                    { data: 'gross_weight2' },
-                    { data: 'gross_weight2_date' },
-                    { data: 'tare_weight2' },
-                    { data: 'tare_weight2_date' },
-                    { data: 'nett_weight2' },
-                    { 
-                        data: 'id',
-                        render: function ( data, type, row ) {
-                            // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></div>';
-                            return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                            '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                            '<li><a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li></ul></div>';
-                        }
-                    }
-                ],
-                "drawCallback": function(settings) {
-                    $('#salesInfo').text(settings.json.salesTotal);
-                    $('#purchaseInfo').text(settings.json.purchaseTotal);
-                    $('#localInfo').text(settings.json.localTotal);
-                    $('#miscInfo').text(settings.json.miscTotal);
-                }   
-            });
+            renderTable();
         });
 
         $.validator.setDefaults({
@@ -1037,6 +857,104 @@ else{
             }
         });
     });
+
+    function renderTable() {
+        var fromDateI = $('#fromDateSearch').val();
+        var toDateI = $('#toDateSearch').val();
+        var transactionStatusI = $('#transactionStatusSearch').val() ? $('#transactionStatusSearch').val() : '';
+        var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+        var supplierNoI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+        var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+        var weightTypeI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
+        var customerTypeI = $('#customerTypeSearch').val() ? $('#customerTypeSearch').val() : '';
+        var productI = $('#productSearch').val() ? $('#productSearch').val() : '';
+        var rawMatI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+        var destinationI = $('#destinationSearch').val() ? $('#destinationSearch').val() : '';
+        var plantI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+        var locationI = $('#locationSearch').val() ? $('#locationSearch').val() : '';
+        var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+        var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+
+        //Destroy the old Datatable
+        if ($.fn.DataTable.isDataTable("#weightTable")) $("#weightTable").DataTable().clear().destroy();
+
+        //Create new Datatable
+        table = $("#weightTable").DataTable({
+            "responsive": true,
+            "autoWidth": false,
+            'processing': true,
+            'serverSide': true,
+            'searching': true,
+            'serverMethod': 'post',
+            'ajax': {
+                'url':'php/filterReports.php',
+                'data': {
+                    fromDate: fromDateI,
+                    toDate: toDateI,
+                    transactionStatus: transactionStatusI,
+                    customer: customerNoI,
+                    supplier: supplierNoI,
+                    vehicle: vehicleNoI,
+                    weightType: weightTypeI,
+                    customerType: customerTypeI,
+                    product: productI,
+                    rawMaterial: rawMatI,
+                    destination: destinationI,
+                    plant: plantI,
+                    location: locationI,
+                    status: statusI,
+                    invDelPo: invDelPoI
+                } 
+            },
+            'columns': [
+                {
+                    // Add a checkbox with a unique ID for each row
+                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
+                    className: 'select-checkbox',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
+                    }
+                },
+                { data: 'location' },
+                { data: 'transaction_id' },
+                { data: 'weight_type' },
+                { data: 'transaction_status' },
+                { data: 'customer' },
+                { data: 'container_no2' },
+                { data: 'seal_no2' },
+                { data: 'container_no' },
+                // { data: 'seal_no' },
+                { data: 'lorry_plate_no1' },
+                { data: 'gross_weight1' },
+                { data: 'gross_weight1_date' },
+                { data: 'tare_weight1' },
+                { data: 'tare_weight1_date' },
+                { data: 'nett_weight1' },
+                { data: 'lorry_plate_no2', visible: containerColumnsEnabled },
+                { data: 'gross_weight2', visible: containerColumnsEnabled },
+                { data: 'gross_weight2_date', visible: containerColumnsEnabled },
+                { data: 'tare_weight2', visible: containerColumnsEnabled },
+                { data: 'tare_weight2_date', visible: containerColumnsEnabled },
+                { data: 'nett_weight2', visible: containerColumnsEnabled },
+                { 
+                    data: 'id',
+                    render: function ( data, type, row ) {
+                        // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></div>';
+                        return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+                        '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
+                        '<li><a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li></ul></div>';
+                    }
+                }
+            ],
+            "drawCallback": function(settings) {
+                $('#salesInfo').text(settings.json.salesTotal);
+                $('#purchaseInfo').text(settings.json.purchaseTotal);
+                $('#localInfo').text(settings.json.localTotal);
+                $('#miscInfo').text(settings.json.miscTotal);
+            }   
+        });
+    }
 
     function edit(id){
         $('#spinnerLoading').show();
