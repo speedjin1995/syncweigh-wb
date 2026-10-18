@@ -2070,7 +2070,7 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELE
 
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'duration_code', 'Duration', '时长', 'Tempoh', 'கால அளவு' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'duration_code');
 
-INSERT INTO `log_action` (`id`, `description`) SELECT 6, 'Reactivated' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `log_action` WHERE `id` = 6);
+INSERT INTO `Log_Action` (`id`, `description`) SELECT 6, 'Reactivated' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Log_Action` WHERE `id` = 6);
 
 -- UPDATE triggers: skip while @skip_audit = 1; Users_Log now also gets status (NOT NULL)
 DELIMITER $$
