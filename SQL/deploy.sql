@@ -2290,3 +2290,20 @@ $$
 DELIMITER ;
 
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pending_record_loaded_code', 'Pending record found for this vehicle, loaded for second weighing', '找到该车辆的待处理记录，已载入进行第二次称重', 'Rekod tertunggak ditemui untuk kenderaan ini, dimuatkan untuk timbangan kedua', 'இந்த வாகனத்திற்கான நிலுவை பதிவு கண்டறியப்பட்டது, இரண்டாவது எடைக்காக ஏற்றப்பட்டது' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pending_record_loaded_code');
+
+-- 19/10/2026 --
+INSERT INTO message_resource (message_key_code, en, zh, my, ne) VALUES
+('delivery_order_info_code', 'Delivery Order Info', '交货单信息', 'Maklumat Pesanan Penghantaran', 'डेलिभरी अर्डर जानकारी'),
+('weighing_info_code', 'Weighing Info', '称重信息', 'Maklumat Penimbangan', 'तौल जानकारी'),
+('in_weigh_by_code', 'In Weigh By', '入站称重员', 'Ditimbang Masuk Oleh', 'भित्र तौल गर्ने'),
+('out_weigh_by_code', 'Out Weigh By', '出站称重员', 'Ditimbang Keluar Oleh', 'बाहिर तौल गर्ने'),
+('sub_total_weight_code', 'Sub Total Weight', '小计重量', 'Jumlah Berat Kecil', 'उप कुल तौल'),
+('container_weighing_code', 'Container Weighing', '集装箱称重', 'Penimbangan Kontena', 'कन्टेनर तौल'),
+('primer_mover_code', 'Primer Mover', '牵引车', 'Penggerak Utama', 'प्राइमर मुभर'),
+('primer_mover_container_code', 'Primer Mover + Container', '牵引车 + 集装箱', 'Penggerak Utama + Kontena', 'प्राइमर मुभर + कन्टेनर'),
+('primer_mover_diff_bins_code', 'Primer Mover + Different Bins', '牵引车 + 不同箱', 'Penggerak Utama + Tong Berbeza', 'प्राइमर मुभर + फरक बिनहरू');
+
+INSERT INTO message_resource (message_key_code, en, zh, my, ne) VALUES
+('purchase_info_code', 'Purchase Information', '采购信息', 'Maklumat Pembelian', 'खरिद जानकारी');
+
+UPDATE message_resource SET en = 'Delivery Order Information' WHERE message_key_code = 'delivery_order_info_code';
