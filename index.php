@@ -1279,7 +1279,7 @@ else{
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_pdf_code'][$language]?>
                                                                 </button>
-                                                                <button type="button" id="exportExcel" class="btn btn-info waves-effect waves-light" >
+                                                                <button type="button" id="exportExcel" class="btn btn-success waves-effect waves-light" >
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_excel_code'][$language]?>
                                                                 </button>
@@ -1289,10 +1289,18 @@ else{
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
                                                                 <?php } ?>
-                                                                <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                <?php if($transactionReceivingEnabled){ ?>
+                                                                <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-transaction-status="Purchase" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
-                                                                    <?=$languageArray['add_new_code'][$language]?>
+                                                                    <?=$languageArray['receiving_code'][$language]?>
                                                                 </button>
+                                                                <?php } ?>
+                                                                <?php if($transactionDispatchEnabled){ ?>
+                                                                <button type="button" id="addDispatch" class="btn btn-info waves-effect waves-light" data-transaction-status="Sales" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                    <i class="ri-add-circle-line align-middle me-1"></i>
+                                                                    <?=$languageArray['dispatch_code'][$language]?>
+                                                                </button>
+                                                                <?php } ?>
                                                             </div> 
                                                         </div> 
                                                     </div>
@@ -2140,14 +2148,14 @@ else{
             });
         }, 250);
 
-        $('#addWeight').on('click', function(){
+        $('#addWeight, #addDispatch').on('click', function(){
             // Show Capture Buttons When Add New
             $('#addModal').find('#grossCapture').show();
             $('#addModal').find('#tareCapture').show();
             $('#addModal').find('#id').val("");
             $('#addModal').find('#currentWeight').text("0");
             $('#addModal').find('#transactionId').val("");
-            $('#addModal').find('#transactionStatus').val("<?=$defaultTransactionStatus ?>").trigger('change');
+            $('#addModal').find('#transactionStatus').val($(this).data('transactionStatus')).trigger('change');
             $('#addModal').find('#emptyContainerNo').val("").trigger('change');
             $('#addModal').find('#weightType option.feature-hidden').remove();
             $('#addModal').find('#weightType').val("Normal").trigger('change');
@@ -2653,49 +2661,7 @@ else{
         });
 
         $('#vehiclePlateNo1').on('change', function(){
-            var vehiclePlateNo1 = $(this).val();
-            var transactionStatus = $('#transactionStatus').val();
-            if (vehiclePlateNo1){
-                $.post('php/modules/vehicle/getVehicle.php', {userID: vehiclePlateNo1, type: 'pullCustomer'}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success'){
-                        if (!obj.message.id && vehiclePlateNo1 != '-'){
-                            showVehicleNotRegistered(vehiclePlateNo1);
-                        }
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
-                        $('#addModal').find('#contractorId').val(obj.message.contractor_id || '').trigger('change');
-                        $('#addModal').find('#containerNo2').val(obj.message.bin_no || '').trigger('change');
-                        $('#addModal').find('#sealNo2').val(obj.message.bin_type || '').trigger('change');
-
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#addModal').find('#customerName').val(customerName).trigger('change');
-                            $('#addModal').find('#customerCode').val(customerCode);
-                        }else{
-                            $('#addModal').find('#supplierName').val(supplierName).trigger('change');
-                            $('#addModal').find('#supplierCode').val(supplierCode);
-                            $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name || '-').trigger('change');
-                        }
-                    }
-                    else if(obj.status === 'error'){
-                        alert(obj.message);
-                        $('#vehicleNoTxt').val('');
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }
+            vehicleChanged($(this).val());
         });
 
         $('#vehicleNoTxt').on('keyup', function(){
@@ -2707,52 +2673,7 @@ else{
         $('#vehicleNoTxt').on('change', function(){
             var x = $(this).val().toUpperCase();
             $(this).val(x);
-            var transactionStatus = $('#transactionStatus').val();
-
-            if (x){
-                $.post('php/modules/vehicle/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
-                    var obj = JSON.parse(data);
-
-                    if (obj.status == 'success' && !obj.message.id){
-                        $('#addModal').find('#contractorId').val('').trigger('change');
-                        $('#addModal').find('#containerNo2').val('').trigger('change');
-                        $('#addModal').find('#sealNo2').val('').trigger('change');
-                        showVehicleNotRegistered(x);
-                    }
-                    else if (obj.status == 'success'){
-                        var customerName = obj.message.customer_name;
-                        var customerCode = obj.message.customer_code;
-                        var supplierName = obj.message.supplier_name;
-                        var supplierCode = obj.message.supplier_code;
-                        $('#addModal').find('#contractorId').val(obj.message.contractor_id || '').trigger('change');
-                        $('#addModal').find('#containerNo2').val(obj.message.bin_no || '').trigger('change');
-                        $('#addModal').find('#sealNo2').val(obj.message.bin_type || '').trigger('change');
-
-                        if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
-                            $('#addModal').find('#customerName').val(customerName).trigger('change');
-                            $('#addModal').find('#customerCode').val(customerCode);
-                        }else{
-                            $('#addModal').find('#supplierName').val(supplierName).trigger('change');
-                            $('#addModal').find('#supplierCode').val(supplierCode);
-                            $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name || '-').trigger('change');
-                        }
-                    }
-                    else if(obj.status === 'error'){
-                        alert(obj.message);
-                        $('#vehicleNoTxt').val('');
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                });
-            }
+            vehicleChanged(x);
         });
 
         // Stack the not-registered popup above the open Add New modal, with a darker blurred backdrop
@@ -3948,6 +3869,80 @@ else{
             else {
                 // weight.php checks the limit again before saving
                 proceed();
+            }
+        });
+    }
+
+    // Vehicle picked (dropdown or typed): open its pending record for a second weighing, else fill a new record
+    function vehicleChanged(vehicleNo){
+        if (!vehicleNo){
+            return;
+        }
+        if (vehicleNo == '-' || $('#addModal').find('#id').val()){
+            pullVehicleDetails(vehicleNo);
+            return;
+        }
+
+        $.post('php/modules/weight/index.php', {action: 'getPendingByVehicle', vehicleNo: vehicleNo, transactionStatus: $('#transactionStatus').val()}, function(data){
+            var obj = JSON.parse(data);
+
+            if (obj.status === 'success' && obj.id){
+                edit(obj.id, 'N');
+                $("#successBtn").attr('data-toast-text', <?=json_encode($languageArray['pending_record_loaded_code'][$language])?>);
+                $("#successBtn").click();
+            }
+            else{
+                if (obj.status !== 'success'){
+                    $("#failBtn").attr('data-toast-text', obj.message);
+                    $("#failBtn").click();
+                }
+                pullVehicleDetails(vehicleNo);
+            }
+        });
+    }
+
+    // Vehicle master data for a new record: customer / supplier, bin and vehicle weight
+    function pullVehicleDetails(vehicleNo){
+        var transactionStatus = $('#transactionStatus').val();
+
+        $.post('php/modules/vehicle/getVehicle.php', {userID: vehicleNo, type: 'pullCustomer'}, function (data){
+            var obj = JSON.parse(data);
+
+            if (obj.status == 'success' && !obj.message.id && vehicleNo != '-'){
+                $('#addModal').find('#contractorId').val('').trigger('change');
+                $('#addModal').find('#containerNo2').val('').trigger('change');
+                $('#addModal').find('#sealNo2').val('').trigger('change');
+                showVehicleNotRegistered(vehicleNo);
+            }
+            else if (obj.status == 'success'){
+                if (transactionStatus == 'Sales'){
+                    $('#addModal').find('#grossIncoming').val(obj.message.vehicle_weight || 0).trigger('keyup');
+                }
+                var customerName = obj.message.customer_name;
+                var customerCode = obj.message.customer_code;
+                var supplierName = obj.message.supplier_name;
+                var supplierCode = obj.message.supplier_code;
+                $('#addModal').find('#contractorId').val(obj.message.contractor_id || '').trigger('change');
+                $('#addModal').find('#containerNo2').val(obj.message.bin_no || '').trigger('change');
+                $('#addModal').find('#sealNo2').val(obj.message.bin_type || '').trigger('change');
+
+                if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
+                    $('#addModal').find('#customerName').val(customerName).trigger('change');
+                    $('#addModal').find('#customerCode').val(customerCode);
+                }else{
+                    $('#addModal').find('#supplierName').val(supplierName).trigger('change');
+                    $('#addModal').find('#supplierCode').val(supplierCode);
+                    $('#addModal').find('#rawMaterialName').val(obj.message.raw_mat_name || '-').trigger('change');
+                }
+            }
+            else if(obj.status === 'error'){
+                alert(obj.message);
+                $('#vehicleNoTxt').val('');
+            }
+            else{
+                $('#spinnerLoading').hide();
+                $("#failBtn").attr('data-toast-text', obj.message );
+                $("#failBtn").click();
             }
         });
     }

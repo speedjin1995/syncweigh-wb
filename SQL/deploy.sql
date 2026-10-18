@@ -2288,3 +2288,5 @@ CREATE OR REPLACE TRIGGER `TRG_UPD_VEH` BEFORE UPDATE ON `Vehicle` FOR EACH ROW 
 END
 $$
 DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pending_record_loaded_code', 'Pending record found for this vehicle, loaded for second weighing', '找到该车辆的待处理记录，已载入进行第二次称重', 'Rekod tertunggak ditemui untuk kenderaan ini, dimuatkan untuk timbangan kedua', 'இந்த வாகனத்திற்கான நிலுவை பதிவு கண்டறியப்பட்டது, இரண்டாவது எடைக்காக ஏற்றப்பட்டது' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pending_record_loaded_code');
