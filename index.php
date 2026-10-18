@@ -1338,6 +1338,7 @@ else{
                                                                     <th><?=$languageArray['vehicle_code'][$language]?></th>
                                                                     <th><?=$languageArray['gross_incoming_code'][$language]?></th>
                                                                     <th><?=$languageArray['incoming_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['duration_code'][$language]?></th>
                                                                     <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
                                                                     <th><?=$languageArray['outgoing_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['nett_weight_code'][$language]?></th>
@@ -3567,6 +3568,7 @@ else{
                 { data: 'lorry_plate_no1' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
+                { data: 'duration', orderable: false },
                 { data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
