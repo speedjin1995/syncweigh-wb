@@ -42,6 +42,8 @@ if (isset($_POST['userID'])) {
                                 $message['supplier_name'] = $row['supplier_name'];
                                 $message['vehicle_type'] = $row['vehicle_type'];
                                 $message['contractor_id'] = $row['contractor_id'];
+                                $message['bin_no'] = $row['bin_no'];
+                                $message['bin_type'] = $row['bin_type'];
                                 $message['contractor_id'] = $row['contractor_id'];
                             }
                             echo json_encode(array("status" => "success", "message" => $message));
@@ -71,6 +73,8 @@ if (isset($_POST['userID'])) {
                     $message['supplier_name'] = $row['supplier_name'];
                     $message['vehicle_type'] = $row['vehicle_type'];
                     $message['contractor_id'] = $row['contractor_id'];
+                    $message['bin_no'] = $row['bin_no'];
+                    $message['bin_type'] = $row['bin_type'];
                     $message['contractor_name'] = $row['contractor_name'] ?? '';
                     $message['raw_mat_code'] = $row['raw_mat_code'];
                     $message['raw_mat_name'] = $row['raw_mat_name'];
@@ -99,6 +103,8 @@ if (isset($_POST['userID'])) {
                     $message['supplier_name'] = $row['supplier_name'];
                     $message['vehicle_type'] = $row['vehicle_type'];
                     $message['contractor_id'] = $row['contractor_id'];
+                    $message['bin_no'] = $row['bin_no'];
+                    $message['bin_type'] = $row['bin_type'];
                 }
                 echo json_encode(array("status" => "success", "message" => $message));
             }

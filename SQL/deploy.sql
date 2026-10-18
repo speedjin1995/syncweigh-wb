@@ -1925,3 +1925,145 @@ ALTER TABLE `Vehicle_Entry_Limit`
   ADD KEY `idx_vehicle_range` (`vehicle_id`, `start_date`, `end_date`);
 
 ALTER TABLE `Vehicle_Entry_Limit_Log` DROP COLUMN IF EXISTS `limit_date`;
+
+-- 18/10/2026 --
+CREATE TABLE IF NOT EXISTS `Bin_No` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `bin_no_code` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Bin_No_Log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `bin_no_id` int(11) NOT NULL,
+  `bin_no_code` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `action_id` int(11) DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Bin_Type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `bin_type_code` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Bin_Type_Log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `bin_type_id` int(11) NOT NULL,
+  `bin_type_code` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `action_id` int(11) DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_BIN_NO` AFTER INSERT ON `Bin_No` FOR EACH ROW
+INSERT INTO Bin_No_Log (
+    bin_no_id, bin_no_code, name, status, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.bin_no_code, NEW.name, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_BIN_NO` BEFORE UPDATE ON `Bin_No` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    INSERT INTO Bin_No_Log (
+        bin_no_id, bin_no_code, name, status, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.bin_no_code, NEW.name, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+CREATE OR REPLACE TRIGGER `TRG_INS_BIN_TYPE` AFTER INSERT ON `Bin_Type` FOR EACH ROW
+INSERT INTO Bin_Type_Log (
+    bin_type_id, bin_type_code, name, status, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.bin_type_code, NEW.name, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_BIN_TYPE` BEFORE UPDATE ON `Bin_Type` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    INSERT INTO Bin_Type_Log (
+        bin_type_id, bin_type_code, name, status, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.bin_type_code, NEW.name, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Vehicle` ADD COLUMN IF NOT EXISTS `bin_no` varchar(50) NULL AFTER `raw_mat_name`, ADD COLUMN IF NOT EXISTS `bin_type` varchar(50) NULL AFTER `bin_no`;
+ALTER TABLE `Vehicle_Log` ADD COLUMN IF NOT EXISTS `bin_no` varchar(50) NULL AFTER `raw_mat_name`, ADD COLUMN IF NOT EXISTS `bin_type` varchar(50) NULL AFTER `bin_no`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_VEH` AFTER INSERT ON `Vehicle` FOR EACH ROW
+INSERT INTO Vehicle_Log (
+    vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, bin_no, bin_type, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, NEW.contractor_id, NEW.raw_mat_code, NEW.raw_mat_name, NEW.bin_no, NEW.bin_type, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_VEH` BEFORE UPDATE ON `Vehicle` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Vehicle_Log table
+    INSERT INTO Vehicle_Log (
+        vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, bin_no, bin_type, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, NEW.contractor_id, NEW.raw_mat_code, NEW.raw_mat_name, NEW.bin_no, NEW.bin_type, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_no_code', 'Bin No', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'container_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_no_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_no_code_code', 'Bin No Code', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'container_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_no_code_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_no_name_code', 'Bin No Name', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'container_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_no_name_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'add_new_bin_no_code', 'Add New Bin No', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'container_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'add_new_bin_no_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_type_code', 'Bin Type', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'seal_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_type_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_type_code_code', 'Bin Type Code', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'seal_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_type_code_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_type_name_code', 'Bin Type Name', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'seal_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_type_name_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'add_new_bin_type_code', 'Add New Bin Type', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'seal_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'add_new_bin_type_code');

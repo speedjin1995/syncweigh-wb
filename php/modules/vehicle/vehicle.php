@@ -22,10 +22,12 @@ if (isset($_POST['vehicleNo'])) {
     $supplierCode = empty($_POST["supplierCode"]) ? null : trim($_POST["supplierCode"]);
     $vehicleType = empty($_POST["vehicleType"]) ? null : trim($_POST["vehicleType"]);
     $contractorId = empty($_POST["contractorId"]) ? null : intval($_POST["contractorId"]);
+    $binNo = empty($_POST["binNo"]) ? null : trim($_POST["binNo"]);
+    $binType = empty($_POST["binType"]) ? null : trim($_POST["binType"]);
 
     if (!empty($vehicleId)) {
-        if ($stmt = $db->prepare("UPDATE Vehicle SET veh_number=?, vehicle_weight=?, transporter_code=?, transporter_name=?, customer_code=?, customer_name=?, supplier_code=?, supplier_name=?, vehicle_type=?, contractor_id=?, created_by=?, modified_by=? WHERE id=?")) {
-            $stmt->bind_param('sssssssssssss', $vehicleNo, $vehicleWeight, $transporterCode, $transporter, $customerCode, $customer, $supplierCode, $supplier, $vehicleType, $contractorId, $username, $username, $vehicleId);
+        if ($stmt = $db->prepare("UPDATE Vehicle SET veh_number=?, vehicle_weight=?, transporter_code=?, transporter_name=?, customer_code=?, customer_name=?, supplier_code=?, supplier_name=?, vehicle_type=?, contractor_id=?, bin_no=?, bin_type=?, created_by=?, modified_by=? WHERE id=?")) {
+            $stmt->bind_param('sssssssssssssss', $vehicleNo, $vehicleWeight, $transporterCode, $transporter, $customerCode, $customer, $supplierCode, $supplier, $vehicleType, $contractorId, $binNo, $binType, $username, $username, $vehicleId);
 
             if (!$stmt->execute()) {
                 echo json_encode(array("status" => "failed", "message" => $stmt->error));
@@ -36,8 +38,8 @@ if (isset($_POST['vehicleNo'])) {
             }
         }
     } else {
-        if ($stmt = $db->prepare("INSERT INTO Vehicle (veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, vehicle_type, contractor_id, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            $stmt->bind_param('ssssssssssss', $vehicleNo, $vehicleWeight, $transporterCode, $transporter, $customerCode, $customer, $supplierCode, $supplier, $vehicleType, $contractorId, $username, $username);
+        if ($stmt = $db->prepare("INSERT INTO Vehicle (veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, vehicle_type, contractor_id, bin_no, bin_type, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            $stmt->bind_param('ssssssssssssss', $vehicleNo, $vehicleWeight, $transporterCode, $transporter, $customerCode, $customer, $supplierCode, $supplier, $vehicleType, $contractorId, $binNo, $binType, $username, $username);
 
             if (!$stmt->execute()) {
                 echo json_encode(array("status" => "failed", "message" => $stmt->error));

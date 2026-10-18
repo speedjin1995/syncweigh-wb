@@ -129,6 +129,12 @@
                                             <li class="nav-item">
                                                 <a href="contractor.php" class="nav-link">'.$languageArray['contractor_code'][$language].'</a>
                                             </li>
+                                            <li class="nav-item">
+                                                <a href="binNo.php" class="nav-link">'.$languageArray['bin_no_code'][$language].'</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="binType.php" class="nav-link">'.$languageArray['bin_type_code'][$language].'</a>
+                                            </li>
                                         ';
                                     }
                             echo '</ul>

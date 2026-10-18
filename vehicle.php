@@ -6,6 +6,8 @@
     $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0'");
     $transporter = $db->query("SELECT * FROM Transporter WHERE status = '0'");
     $contractor = $db->query("SELECT * FROM Contractor WHERE status = '0'");
+    $binNoList = $db->query("SELECT * FROM Bin_No WHERE status = '0' ORDER BY name");
+    $binTypeList = $db->query("SELECT * FROM Bin_Type WHERE status = '0' ORDER BY name");
 ?>
 
 <head>
@@ -128,6 +130,34 @@
                                                                                             <option value="" selected>-</option>
                                                                                             <?php while($rowContractor=mysqli_fetch_assoc($contractor)){ ?>
                                                                                                 <option value="<?=$rowContractor['id'] ?>"><?=$rowContractor['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="binNo" class="col-sm-4 col-form-label"><?=$languageArray['bin_no_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="binNo" name="binNo">
+                                                                                            <option value="" selected>-</option>
+                                                                                            <?php while($row=mysqli_fetch_assoc($binNoList)){ ?>
+                                                                                                <option value="<?=$row['name'] ?>"><?=$row['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="binType" class="col-sm-4 col-form-label"><?=$languageArray['bin_type_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="binType" name="binType">
+                                                                                            <option value="" selected>-</option>
+                                                                                            <?php while($row=mysqli_fetch_assoc($binTypeList)){ ?>
+                                                                                                <option value="<?=$row['name'] ?>"><?=$row['name'] ?></option>
                                                                                             <?php } ?>
                                                                                         </select>
                                                                                     </div>
@@ -442,6 +472,8 @@ $(function () {
         $('#addModal').find('#vehicleWeight').val("");
         $('#addModal').find('#vehicleType').val("");
         $('#addModal').find('#contractor').val("").trigger('change');
+        $('#addModal').find('#binNo').val("").trigger('change');
+        $('#addModal').find('#binType').val("").trigger('change');
         $('#addModal').find('#customer').val("").trigger('change');
         $('#addModal').find('#customerCode').val("");
         $('#addModal').find('#supplier').val("").trigger('change');
@@ -623,6 +655,11 @@ function edit(id){
             $('#addModal').find('#vehicleWeight').val(obj.message.vehicle_weight);
             $('#addModal').find('#vehicleType').val(obj.message.vehicle_type);
             $('#addModal').find('#contractor').val(obj.message.contractor_id || '').trigger('change');
+            // Keep a bin saved before it was added to master data
+            if (obj.message.bin_no && !$('#binNo option[value="' + obj.message.bin_no + '"]').length) { $('#binNo').append(new Option(obj.message.bin_no, obj.message.bin_no)); }
+            if (obj.message.bin_type && !$('#binType option[value="' + obj.message.bin_type + '"]').length) { $('#binType').append(new Option(obj.message.bin_type, obj.message.bin_type)); }
+            $('#addModal').find('#binNo').val(obj.message.bin_no || '').trigger('change');
+            $('#addModal').find('#binType').val(obj.message.bin_type || '').trigger('change');
             $('#addModal').find('#customer').val(obj.message.customer_name).trigger('change');
             $('#addModal').find('#supplier').val(obj.message.supplier_name).trigger('change');
 
