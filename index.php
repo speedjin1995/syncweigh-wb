@@ -3659,39 +3659,42 @@ else{
         <div class="row">
             <div class="col-6">
                 <p><span><strong style="font-size:120%; text-decoration: underline;">Customer/Supplier</strong></span><br>
-                <p><strong>${row.name}</strong></p>
-                <p>${row.address_line_1}</p>
-                <p>${row.address_line_2}</p>
-                <p>${row.address_line_3}</p>
-                <p>TEL: ${row.phone_no} FAX: ${row.fax_no}</p>
+                <p>
+                    ${row.name ? `<span><strong>${row.name}</strong></span><br>` : ''}
+                    ${row.address_line_1 ? `<span>${row.address_line_1}</span><br>` : ''}
+                    ${row.address_line_2 ? `<span>${row.address_line_2}</span><br>` : ''}
+                    ${row.address_line_3 ? `<span>${row.address_line_3}</span><br>` : ''}
+                    ${row.phone_no || row.fax_no ? `<span>${row.phone_no ? 'TEL: ' + row.phone_no : ''}${row.phone_no && row.fax_no ? ' ' : ''}${row.fax_no ? 'FAX: ' + row.fax_no : ''}</span>` : ''}
+                </p>
             </div>
         </div>
         <hr>
         <!-- Delivery Order Section -->
         <div class="row">
             <p><span><strong style="font-size:120%; text-decoration: underline;">Delivery Order Information</strong></span><br>
-            <div class="col-6">
-                <p><strong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
-                <p><strong>DESTINATION NAME:</strong> ${row.destination}</p>
-                <p><strong>PLANT NAME:</strong> ${row.plant_name}</p>`;
+            <div class="col-12 row">
+                <p class="col-4"><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
+                <p class="col-4"><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
+                <p class="col-4"><strong>BIN NO:</strong> ${row.container_no2}</p>
+
+
+                <p class="col-4"><strong>TRANSACTION DATE:</strong> ${row.transaction_date}</p>
+                <p class="col-4"><strong>PLANT:</strong> ${row.plant_name}</p>
+                <p class="col-4"><strong>BIN TYPE:</strong> ${row.seal_no2}</p>
+
+                <p class="col-4"><strong>WEIGHT TYPE:</strong> ${weightType}</p>
+                `;
+
                 if (row.transaction_status == 'Purchase' || row.transaction_status == 'Local'){
-                    returnString += `<p><strong>PURCHASE PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
+                    returnString += `<p class="col-4"><strong>WASTE:</strong> ${row.product_rawmat_name}</p>`;
                 }else{
-                    returnString += `<p><strong>SALES PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
+                    returnString += `<p class="col-4"><strong>PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
                 }
         
             returnString += `
-                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
-                <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
-                <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
-            </div>
-            <div class="col-6">
-                <p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
-                <p><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
-                <p><strong>WEIGHT TYPE:</strong> ${weightType}</p>
-                <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p>
-                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
-                <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>
+                <p class="col-4"><strong>CONTAINER NO:</strong> ${row.container_no}</p>
+                <p class="col-4"><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
+                <p class="col-4"><strong>CONTRACTOR:</strong> ${row.contractorName}</p>
             </div>
         </div>
         <hr>
@@ -3700,28 +3703,32 @@ else{
         <div class="row">
             <p><span><strong style="font-size:120%; text-decoration: underline;">Weighing Information</strong></span><br>
             <!-- Normal -->
-            <div class="col-6">
-                <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
-                <p><strong>IN WEIGHT:</strong> ${row.gross_weight1}</p>
-                <p><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
-                <p><strong>IN WEIGH BY:</strong> ${row.gross_weight_by1}</p>
-                <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1}</p>
-                <p><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
-                <p><strong>OUT WEIGH BY:</strong> ${row.tare_weight_by1}</p>
-                <p><strong>NETT WEIGHT:</strong> ${row.nett_weight1}</p>
-                <p><strong>SUB TOTAL WEIGHT:</strong> ${row.final_weight}</p>
+            <div class="col-12 row">
+                <p class="col-4"><strong>IN WEIGHT:</strong> ${row.gross_weight1}</p>
+                <p class="col-4"><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
+                <p class="col-4"><strong>IN WEIGH BY:</strong> ${row.gross_weight_by1}</p>
+                <p class="col-4"><strong>OUT WEIGHT:</strong> ${row.tare_weight1}</p>
+                <p class="col-4"><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
+                <p class="col-4"><strong>OUT WEIGH BY:</strong> ${row.tare_weight_by1}</p>
+                <p class="col-4"><strong>NETT WEIGHT:</strong> ${row.nett_weight1}</p>
             </div>
             <!-- Container -->
-            <div class="col-6">
-                <p><strong>VEHICLE PLATE 2:</strong> ${row.lorry_plate_no2}</p>
-                <p><strong>IN WEIGHT 2:</strong> ${row.gross_weight2}</p>
-                <p><strong>IN DATE / TIME 2:</strong> ${row.gross_weight2_date}</p>
-                <p><strong>IN WEIGH BY 2:</strong> ${row.gross_weight_by2}</p>
-                <p><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2}</p>
-                <p><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
-                <p><strong>OUT WEIGH BY 2:</strong> ${row.tare_weight_by2}</p>
-                <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2}</p>            
-                </div>
+            ${containerColumnsEnabled ? `
+            <p><strong style="font-size:110%; text-decoration: underline;">Container Weighing</strong></p>
+            <div class="col-12 row">
+                <p class="col-4"><strong>VEHICLE PLATE 2:</strong> ${row.lorry_plate_no2}</p>
+                <p class="col-4"><strong>IN WEIGHT 2:</strong> ${row.gross_weight2}</p>
+                <p class="col-4"><strong>IN DATE / TIME 2:</strong> ${row.gross_weight2_date}</p>
+                <p class="col-4"><strong>IN WEIGH BY 2:</strong> ${row.gross_weight_by2}</p>
+                <p class="col-4"><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2}</p>
+                <p class="col-4"><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
+                <p class="col-4"><strong>OUT WEIGH BY 2:</strong> ${row.tare_weight_by2}</p>
+                <p class="col-4"><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2}</p>            
+            </div>
+            <div class="col-12 row">
+                <p class="col-4"><strong>SUB TOTAL WEIGHT:</strong> ${row.final_weight}</p>
+            </div>
+            ` : ''}
         </div>
         `;
         

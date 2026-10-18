@@ -197,6 +197,60 @@ function searchLocationNameById($value, $db) {
     return $id;
 }
 
+function searchCustomerByCode($value, $db) {
+    $id = null;
+
+    if(isset($value)){
+        if ($select_stmt = $db->prepare("SELECT * FROM Customer WHERE customer_code=? AND status = '0'")) {
+            $select_stmt->bind_param('s', $value);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $id = $row;
+            }
+            $select_stmt->close();
+        }
+    }
+
+    return $id;
+}
+
+function searchSupplierByCode($value, $db) {
+    $id = null;
+
+    if(isset($value)){
+        if ($select_stmt = $db->prepare("SELECT * FROM Supplier WHERE supplier_code=? AND status = '0'")) {
+            $select_stmt->bind_param('s', $value);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $id = $row;
+            }
+            $select_stmt->close();
+        }
+    }
+
+    return $id;
+}
+
+function searchContractorById($value, $db) {
+    $id = null;
+
+    if(isset($value)){
+        if ($select_stmt = $db->prepare("SELECT * FROM Contractor WHERE id=?")) {
+            $select_stmt->bind_param('s', $value);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $id = $row;
+            }
+            $select_stmt->close();
+        }
+    }
+
+    return $id;
+}
+
 function excelSerialToDate($serial) {
     // Excel date starts from 1900-01-01, subtract 1 for correct calculation
     $baseDate = strtotime('1899-12-30');
