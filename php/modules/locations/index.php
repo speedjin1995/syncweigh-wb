@@ -15,6 +15,7 @@ switch ($action) {
     case 'create':  $controller->create(); break;
     case 'update':  $controller->update(); break;
     case 'delete':  $controller->delete(); break;
+    case 'reactivate': $controller->reactivate(); break;
     case 'get':     $controller->get(); break;
     case 'getAll':  $controller->getAll(); break;
     case 'savePortSetup': $controller->savePortSetup(); break;

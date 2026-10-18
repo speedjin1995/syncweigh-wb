@@ -20,7 +20,7 @@ class LocationService extends BaseService {
         $columnSortOrder = $post['order'][0]['dir'] ?? 'asc';
 
         // Total records
-        $totalResult = $this->db->query("SELECT COUNT(*) as total FROM {$this->table} WHERE status = '0'");
+        $totalResult = $this->db->query("SELECT COUNT(*) as total FROM {$this->table} WHERE status IN ('0','1')");
         $totalRecords = $totalResult->fetch_assoc()['total'];
 
         // Search filter
@@ -30,7 +30,7 @@ class LocationService extends BaseService {
         }
 
         // Filtered records
-        $filteredResult = $this->db->query("SELECT COUNT(*) as total FROM {$this->table} cust LEFT JOIN Plant pl ON cust.plant_id = pl.id WHERE cust.status = '0' {$searchQuery}");
+        $filteredResult = $this->db->query("SELECT COUNT(*) as total FROM {$this->table} cust LEFT JOIN Plant pl ON cust.plant_id = pl.id WHERE cust.status IN ('0','1') {$searchQuery}");
         $totalFiltered = $filteredResult->fetch_assoc()['total'];
 
         // Order by (plant is a computed column, not a real DB column)
@@ -41,7 +41,7 @@ class LocationService extends BaseService {
         }
 
         // Data
-        $dataResult = $this->db->query("SELECT cust.*, pl.name as plant FROM {$this->table} cust LEFT JOIN Plant pl ON cust.plant_id = pl.id WHERE cust.status = '0' {$searchQuery} ORDER BY {$orderBy} LIMIT {$start}, {$length}");
+        $dataResult = $this->db->query("SELECT cust.*, pl.name as plant FROM {$this->table} cust LEFT JOIN Plant pl ON cust.plant_id = pl.id WHERE cust.status IN ('0','1') {$searchQuery} ORDER BY cust.status ASC, {$orderBy} LIMIT {$start}, {$length}");
 
         $data = [];
         while ($row = $dataResult->fetch_assoc()) {
@@ -139,6 +139,17 @@ class LocationService extends BaseService {
      */
     public function delete($id) {
         $stmt = $this->db->prepare("UPDATE {$this->table} SET status=1 WHERE id=?");
+        if (!$stmt) throw new Exception($this->db->error);
+        $stmt->bind_param('s', $id);
+        if (!$stmt->execute()) throw new Exception($stmt->error);
+        $stmt->close();
+    }
+
+    /**
+     * Reactivate (restore soft-deleted) location
+     */
+    public function reactivate($id) {
+        $stmt = $this->db->prepare("UPDATE {$this->table} SET status=0 WHERE id=?");
         if (!$stmt) throw new Exception($this->db->error);
         $stmt->bind_param('s', $id);
         if (!$stmt->execute()) throw new Exception($stmt->error);

@@ -65,6 +65,20 @@ class LocationController extends BaseController {
     }
 
     /**
+     * Reactivate location
+     */
+    public function reactivate() {
+        $id = $this->getRequiredPost('id');
+
+        try {
+            $this->locationService->reactivate($id);
+            $this->success('Reactivated');
+        } catch (Exception $e) {
+            $this->failed($e->getMessage());
+        }
+    }
+
+    /**
      * Get single location by ID
      */
     public function get() {

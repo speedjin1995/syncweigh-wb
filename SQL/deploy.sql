@@ -2069,3 +2069,222 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELE
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'add_new_bin_type_code', 'Add New Bin Type', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'seal_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'add_new_bin_type_code');
 
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'duration_code', 'Duration', '时长', 'Tempoh', 'கால அளவு' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'duration_code');
+
+INSERT INTO `log_action` (`id`, `description`) SELECT 6, 'Reactivated' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `log_action` WHERE `id` = 6);
+
+-- UPDATE triggers: skip while @skip_audit = 1; Users_Log now also gets status (NOT NULL)
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_CUSTOMER` BEFORE UPDATE ON `Customer` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Customer_Log (
+            customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_DESTINATION` BEFORE UPDATE ON `Destination` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Destination_Log (
+            destination_id, destination_code, name, description, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.destination_code, NEW.name, NEW.description, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PLANT` BEFORE UPDATE ON `Plant` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Plant_Log (
+            plant_id, plant_code, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, sales, purchase, locals, misc, do_no, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.plant_code, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.sales, NEW.purchase, NEW.locals, NEW.misc, NEW.do_no, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PRODUCT` BEFORE UPDATE ON `Product` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Product_Log (
+            product_id, product_code, name, description, variance, high, low, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.product_code, NEW.name, NEW.description, NEW.variance, NEW.high, NEW.low, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_RAW_MAT` BEFORE UPDATE ON `Raw_Mat` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Raw_Mat_Log (
+            raw_mat_id, raw_mat_code, name, description, variance, high, low, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.raw_mat_code, NEW.name, NEW.description, NEW.variance, NEW.high, NEW.low, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_SUPPLIER` BEFORE UPDATE ON `Supplier` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Supplier_Log (
+            supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_TRANSPORTER` BEFORE UPDATE ON `Transporter` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Transporter_Log (
+            transporter_id, transporter_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.transporter_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Users_Log (
+            user_id, employee_code, username, name, useremail, password, plant_id, languages, status, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.password, NEW.plant_id, NEW.languages, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_VEH` BEFORE UPDATE ON `Vehicle` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Vehicle_Log (
+            vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, bin_no, bin_type, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, NEW.contractor_id, NEW.raw_mat_code, NEW.raw_mat_name, NEW.bin_no, NEW.bin_type, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;

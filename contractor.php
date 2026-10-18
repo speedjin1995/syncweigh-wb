@@ -450,6 +450,10 @@ function renderTable(){
                 data: 'id',
                 responsivePriority: 1,
                 render: function ( data, type, row ) {
+                    if (row.status == '1') {
+                        return `<button title="Reactivate" type="button" id="reactivate${data}" onclick="reactivate(${data})" class="btn btn-warning btn-sm">Reactivate</button>`;
+                    }
+
                     var buttons = `
                         <div class="dropdown d-inline-block">
                             <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -524,6 +528,29 @@ function edit(id){
         }
         $('#spinnerLoading').hide();
     });
+}
+
+function reactivate(id){
+    $('#spinnerLoading').show();
+    if (confirm('Do you want to reactivate this item?')) {
+        $.post('php/modules/contractor/index.php', {action: 'reactivate', id: id}, function(data){
+            var obj = JSON.parse(data);
+
+            $('#spinnerLoading').hide();
+            if(obj.status === 'success'){
+                table.ajax.reload();
+                $("#successBtn").attr('data-toast-text', obj.message);
+                $("#successBtn").click();
+            }
+            else {
+                $("#failBtn").attr('data-toast-text', obj.message );
+                $("#failBtn").click();
+            }
+        });
+    }
+    else {
+        $('#spinnerLoading').hide();
+    }
 }
 
 function deactivate(id){

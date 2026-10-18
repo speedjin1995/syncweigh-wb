@@ -15,6 +15,7 @@ switch ($action) {
     case 'create':  $controller->create(); break;
     case 'update':  $controller->update(); break;
     case 'delete':  $controller->delete(); break;
+    case 'reactivate': $controller->reactivate(); break;
     case 'deleteMulti': $controller->deleteMulti(); break;
     case 'upload':  $controller->upload(); break;
     case 'get':     $controller->get(); break;

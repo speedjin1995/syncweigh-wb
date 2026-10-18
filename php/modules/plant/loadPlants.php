@@ -19,11 +19,11 @@ $sel = mysqli_query($db, "select count(*) as allcount from Plant");
 $records = mysqli_fetch_assoc($sel);
 $totalRecords = $records['allcount'];
 
-$sel = mysqli_query($db, "select count(*) as allcount from Plant WHERE status IN (0)".$searchQuery);
+$sel = mysqli_query($db, "select count(*) as allcount from Plant WHERE status IN (0,1)".$searchQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
-$empQuery = "select * from Plant WHERE status IN (0)".$searchQuery."order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
+$empQuery = "select * from Plant WHERE status IN (0,1)".$searchQuery."order by status ASC, ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 $empRecords = mysqli_query($db, $empQuery);
 $data = array();
 
