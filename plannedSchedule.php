@@ -79,6 +79,8 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                             <?php $suppliers = $db->query("SELECT supplier_code, name FROM Supplier WHERE status = '0' ORDER BY name ASC"); ?>
                                             <?php $contractors = $db->query("SELECT id, name FROM Contractor WHERE status = '0' ORDER BY name ASC"); ?>
                                             <?php $wastes = $db->query("SELECT raw_mat_code, name FROM Raw_Mat WHERE status = '0' ORDER BY name ASC"); ?>
+                                            <?php $binNos = $db->query("SELECT name FROM Bin_No WHERE status = '0' ORDER BY name ASC"); ?>
+                                            <?php $binTypes = $db->query("SELECT name FROM Bin_Type WHERE status = '0' ORDER BY name ASC"); ?>
                                             <form action="javascript:void(0);">
                                                 <div class="row">
                                                     <div class="col-3">
@@ -184,6 +186,24 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                                         <label for="scheduleVehicleType" class="form-label"><?=$languageArray['vehicle_type_code'][$language]?></label>
                                                         <input type="text" class="form-control" id="scheduleVehicleType" name="vehicleType">
                                                     </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="scheduleBinNo" class="form-label"><?=$languageArray['bin_no_code'][$language]?></label>
+                                                        <select class="form-select select2" id="scheduleBinNo" name="binNo">
+                                                            <option value="">-</option>
+                                                            <?php while($rowBinNo=mysqli_fetch_assoc($binNos)){ ?>
+                                                                <option value="<?=htmlspecialchars($rowBinNo['name']) ?>"><?=htmlspecialchars($rowBinNo['name']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="scheduleBinType" class="form-label"><?=$languageArray['bin_type_code'][$language]?></label>
+                                                        <select class="form-select select2" id="scheduleBinType" name="binType">
+                                                            <option value="">-</option>
+                                                            <?php while($rowBinType=mysqli_fetch_assoc($binTypes)){ ?>
+                                                                <option value="<?=htmlspecialchars($rowBinType['name']) ?>"><?=htmlspecialchars($rowBinType['name']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-4 mb-3">
@@ -285,6 +305,8 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                                                     <th><?=$languageArray['contractor_code'][$language]?></th>
                                                                     <th><?=$languageArray['waste_code'][$language]?></th>
                                                                     <th><?=$languageArray['vehicle_type_code'][$language]?></th>
+                                                                    <th><?=$languageArray['bin_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['bin_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['trips_per_day_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -556,6 +578,8 @@ function openScheduleModal(row){
     $('#scheduleContractor').val(row && row.contractor_id ? row.contractor_id : '').trigger('change');
     $('#scheduleWaste').val(row && row.raw_mat_code ? row.raw_mat_code : '').trigger('change');
     $('#scheduleVehicleType').val(row ? row.vehicle_type : '');
+    $('#scheduleBinNo').val(row && row.bin_no ? row.bin_no : '').trigger('change');
+    $('#scheduleBinType').val(row && row.bin_type ? row.bin_type : '').trigger('change');
     $('#scheduleTrips').val(row ? row.max_entry : '');
     $('#scheduleStartDate')[0]._flatpickr.setDate(row ? row.start_date : null, false, 'd/m/Y');
     $('#scheduleEndDate')[0]._flatpickr.setDate(row ? row.end_date : null, false, 'd/m/Y');
@@ -668,6 +692,8 @@ function renderTable(){
             { data: 'contractor_name' },
             { data: 'raw_mat_name' },
             { data: 'vehicle_type' },
+            { data: 'bin_no' },
+            { data: 'bin_type' },
             { data: 'max_entry' },
             {
                 data: null,

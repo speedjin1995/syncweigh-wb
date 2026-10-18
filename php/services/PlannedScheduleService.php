@@ -56,7 +56,7 @@ class PlannedScheduleService extends BaseService {
 
         $filteredRow = $this->fetchOne("SELECT COUNT(*) AS total" . $from, $types, $params);
 
-        $stmt = $this->db->prepare("SELECT l.id, l.start_date, l.end_date, l.max_entry, v.veh_number, c.name AS contractor_name, v.raw_mat_name, v.vehicle_type, v.supplier_code, v.contractor_id, v.raw_mat_code" . $from . " ORDER BY l.start_date, v.veh_number LIMIT ?, ?");
+        $stmt = $this->db->prepare("SELECT l.id, l.start_date, l.end_date, l.max_entry, v.veh_number, c.name AS contractor_name, v.raw_mat_name, v.vehicle_type, v.supplier_code, v.contractor_id, v.raw_mat_code, v.bin_no, v.bin_type" . $from . " ORDER BY l.start_date, v.veh_number LIMIT ?, ?");
         if (!$stmt) throw new Exception($this->db->error);
         $stmt->bind_param($types . 'ii', ...array_merge($params, [$start, $length]));
         if (!$stmt->execute()) throw new Exception($stmt->error);
@@ -75,7 +75,9 @@ class PlannedScheduleService extends BaseService {
                 'max_entry'       => $row['max_entry'],
                 'supplier_code'   => $row['supplier_code'] ?? '',
                 'contractor_id'   => $row['contractor_id'] ?? '',
-                'raw_mat_code'    => $row['raw_mat_code'] ?? ''
+                'raw_mat_code'    => $row['raw_mat_code'] ?? '',
+                'bin_no'          => $row['bin_no'] ?? '',
+                'bin_type'        => $row['bin_type'] ?? ''
             ];
         }
         $stmt->close();
@@ -119,6 +121,8 @@ class PlannedScheduleService extends BaseService {
             $supplierName = trim($row['NAMASYARIKAT'] ?? '');
             $contractorName = trim($row['CUSTOMER'] ?? '');
             $wasteName = trim($row['WASTE'] ?? '');
+            $binNo = trim($row['BINNO'] ?? '');
+            $binType = trim($row['BINTYPE'] ?? '');
             $vehicleType = trim($row['VEHICLETYPE'] ?? '');
             $trips = trim($row['JUMLAHTRIPKEPSPHARI'] ?? '');
             $statusText = strtoupper(trim($row['STATUSSYARIKAT'] ?? ''));
@@ -126,7 +130,7 @@ class PlannedScheduleService extends BaseService {
             $endDate = $this->parseDate(trim($row['ENDDATE'] ?? ''));
 
             // Skip rows where every cell is empty
-            if ($plate === '' && $supplierCode === '' && $supplierName === '' && $contractorName === '' && $wasteName === '' && $vehicleType === '' && $trips === '' && $statusText === '') {
+            if ($plate === '' && $supplierCode === '' && $supplierName === '' && $contractorName === '' && $wasteName === '' && $vehicleType === '' && $binNo === '' && $binType === '' && $trips === '' && $statusText === '') {
                 continue;
             }
 
@@ -151,10 +155,13 @@ class PlannedScheduleService extends BaseService {
                 }
                 $contractorId = $this->findOrCreateContractor($contractorName);
                 $rawMatCode = $this->findOrCreateByName('Raw_Mat', 'raw_mat_code', $wasteName);
+                $this->findOrCreateByName('Bin_No', 'bin_no_code', $binNo);
+                $this->findOrCreateByName('Bin_Type', 'bin_type_code', $binType);
 
                 $vehicleId = $this->saveVehicle(
                     $plate, $supplierCode, $supplierName, $contractorId,
-                    $rawMatCode, $wasteName ?: null, $vehicleType ?: null, self::$statusMap[$statusText]
+                    $rawMatCode, $wasteName ?: null, $vehicleType ?: null, self::$statusMap[$statusText],
+                    $binNo ?: null, $binType ?: null
                 );
 
                 $vehicles++;
@@ -224,21 +231,22 @@ class PlannedScheduleService extends BaseService {
     /**
      * Update the vehicle with this plate, or insert it. Returns the vehicle id.
      */
-    private function saveVehicle($plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $status) {
+    private function saveVehicle($plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $status, $binNo, $binType) {
         $row = $this->fetchOne("SELECT id FROM Vehicle WHERE veh_number = ? ORDER BY id DESC LIMIT 1", 's', [$plate]);
 
         if ($row) {
             $vehicleId = $row['id'];
+            // Blank bin cells keep the bin already on the vehicle
             $this->run(
-                "UPDATE Vehicle SET supplier_code = ?, supplier_name = ?, contractor_id = ?, raw_mat_code = ?, raw_mat_name = ?, vehicle_type = ?, status = ?, modified_by = ? WHERE id = ?",
-                'sssssssss', [$supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $status, $this->username, $vehicleId]
+                "UPDATE Vehicle SET supplier_code = ?, supplier_name = ?, contractor_id = ?, raw_mat_code = ?, raw_mat_name = ?, vehicle_type = ?, status = ?, bin_no = COALESCE(?, bin_no), bin_type = COALESCE(?, bin_type), modified_by = ? WHERE id = ?",
+                'sssssssssss', [$supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $status, $binNo, $binType, $this->username, $vehicleId]
             );
             return $vehicleId;
         }
 
         return $this->run(
-            "INSERT INTO Vehicle (veh_number, vehicle_weight, supplier_code, supplier_name, contractor_id, raw_mat_code, raw_mat_name, vehicle_type, status, created_by, modified_by) VALUES (?, '0', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            'ssssssssss', [$plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $status, $this->username, $this->username]
+            "INSERT INTO Vehicle (veh_number, vehicle_weight, supplier_code, supplier_name, contractor_id, raw_mat_code, raw_mat_name, vehicle_type, status, bin_no, bin_type, created_by, modified_by) VALUES (?, '0', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            'ssssssssssss', [$plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $status, $binNo, $binType, $this->username, $this->username]
         );
     }
 
@@ -252,6 +260,8 @@ class PlannedScheduleService extends BaseService {
         $contractorId = trim($data['contractorId'] ?? '');
         $rawMatCode = trim($data['rawMatCode'] ?? '');
         $vehicleType = trim($data['vehicleType'] ?? '');
+        $binNo = trim($data['binNo'] ?? '');
+        $binType = trim($data['binType'] ?? '');
         $trips = trim($data['trips'] ?? '');
         $startDate = $this->parseDate(trim($data['startDate'] ?? ''));
         $endDate = $this->parseDate(trim($data['endDate'] ?? ''));
@@ -299,7 +309,23 @@ class PlannedScheduleService extends BaseService {
         }
         $rawMatCode = $rawMatCode !== '' ? $rawMatCode : null;
 
-        $vehicleId = $this->findOrCreateVehicle($plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType ?: null);
+        $binNoName = null;
+        if ($binNo !== '') {
+            if (!$this->fetchOne("SELECT name FROM Bin_No WHERE name = ? AND status = '0' LIMIT 1", 's', [$binNo])) {
+                throw new Exception('Bin No not found.');
+            }
+            $binNoName = $binNo;
+        }
+
+        $binTypeName = null;
+        if ($binType !== '') {
+            if (!$this->fetchOne("SELECT name FROM Bin_Type WHERE name = ? AND status = '0' LIMIT 1", 's', [$binType])) {
+                throw new Exception('Bin Type not found.');
+            }
+            $binTypeName = $binType;
+        }
+
+        $vehicleId = $this->findOrCreateVehicle($plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType ?: null, $binNoName, $binTypeName);
 
         if ($id === null) {
             $this->saveRangeLimit($vehicleId, $plate, $startDate, $endDate, $trips);
@@ -356,20 +382,20 @@ class PlannedScheduleService extends BaseService {
     /**
      * Vehicle id by plate. A found vehicle is reactivated (status 0) even if it was deleted; a new one is created as active.
      */
-    private function findOrCreateVehicle($plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType) {
+    private function findOrCreateVehicle($plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $binNo, $binType) {
         $row = $this->fetchOne("SELECT id FROM Vehicle WHERE veh_number = ? ORDER BY id DESC LIMIT 1", 's', [$plate]);
 
         if ($row) {
             $this->run(
-                "UPDATE Vehicle SET supplier_code = ?, supplier_name = ?, contractor_id = ?, raw_mat_code = ?, raw_mat_name = ?, vehicle_type = ?, status = '0', modified_by = ? WHERE id = ?",
-                'ssssssss', [$supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $this->username, $row['id']]
+                "UPDATE Vehicle SET supplier_code = ?, supplier_name = ?, contractor_id = ?, raw_mat_code = ?, raw_mat_name = ?, vehicle_type = ?, bin_no = ?, bin_type = ?, status = '0', modified_by = ? WHERE id = ?",
+                'ssssssssss', [$supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $binNo, $binType, $this->username, $row['id']]
             );
             return $row['id'];
         }
 
         return $this->run(
-            "INSERT INTO Vehicle (veh_number, vehicle_weight, supplier_code, supplier_name, contractor_id, raw_mat_code, raw_mat_name, vehicle_type, status, created_by, modified_by) VALUES (?, '0', ?, ?, ?, ?, ?, ?, '0', ?, ?)",
-            'sssssssss', [$plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $this->username, $this->username]
+            "INSERT INTO Vehicle (veh_number, vehicle_weight, supplier_code, supplier_name, contractor_id, raw_mat_code, raw_mat_name, vehicle_type, bin_no, bin_type, status, created_by, modified_by) VALUES (?, '0', ?, ?, ?, ?, ?, ?, ?, ?, '0', ?, ?)",
+            'sssssssssss', [$plate, $supplierCode, $supplierName, $contractorId, $rawMatCode, $rawMatName, $vehicleType, $binNo, $binType, $this->username, $this->username]
         );
     }
 

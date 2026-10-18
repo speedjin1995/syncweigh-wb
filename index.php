@@ -72,6 +72,8 @@ $destination = $db->query("SELECT * FROM Destination WHERE status = '0' ORDER BY
 $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $supplier2 = $db->query("SELECT * FROM Supplier WHERE status = '0' ORDER BY name ASC");
 $contractor = $db->query("SELECT * FROM Contractor WHERE status = '0' ORDER BY name ASC");
+$binNoList = $db->query("SELECT * FROM Bin_No WHERE status = '0' ORDER BY name ASC");
+$binTypeList = $db->query("SELECT * FROM Bin_Type WHERE status = '0' ORDER BY name ASC");
 $purchaseOrder = $db->query("SELECT * FROM Purchase_Order WHERE status = 'Open' AND deleted = '0' ORDER BY po_no ASC");
 $salesOrder = $db->query("SELECT * FROM Sales_Order WHERE status = 'Open' AND deleted = '0' ORDER BY order_no ASC");
 $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
@@ -721,7 +723,12 @@ else{
                                                                                 <div class="row">
                                                                                     <label for="containerNo2" class="col-sm-4 col-form-label"><?=$languageArray['container_no2_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="containerNo2" name="containerNo2" placeholder="<?=$languageArray['container_no2_code'][$language]?>">
+                                                                                        <select class="form-select select2" id="containerNo2" name="containerNo2">
+                                                                                            <option value="" selected>-</option>
+                                                                                            <?php while($rowBinNo=mysqli_fetch_assoc($binNoList)){ ?>
+                                                                                                <option value="<?=$rowBinNo['name'] ?>"><?=$rowBinNo['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -730,7 +737,12 @@ else{
                                                                                 <div class="row">
                                                                                     <label for="sealNo2" class="col-sm-4 col-form-label"><?=$languageArray['seal_no2_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="sealNo2" name="sealNo2" placeholder="<?=$languageArray['seal_no2_code'][$language]?>">
+                                                                                        <select class="form-select select2" id="sealNo2" name="sealNo2">
+                                                                                            <option value="" selected>-</option>
+                                                                                            <?php while($rowBinType=mysqli_fetch_assoc($binTypeList)){ ?>
+                                                                                                <option value="<?=$rowBinType['name'] ?>"><?=$rowBinType['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -1168,43 +1180,6 @@ else{
                                         </div><!-- /.modal-dialog -->
                                     </div><!-- /.modal -->
 
-                                    <div class="modal fade" id="prePrintModal">
-                                        <div class="modal-dialog modal-xl" style="max-width: 90%;">
-                                            <div class="modal-content">
-                                                <form role="form" id="prePrintForm">
-                                                    <div class="modal-header bg-gray-dark color-palette">
-                                                        <h4 class="modal-title"><?=$languageArray['language_code'][$language]?></h4>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="row mb-3">
-                                                            <label for="prePrint" class="col-sm-4 col-form-label"><?=$languageArray['language_code'][$language]?></label>
-                                                            <div class="col-sm-8">
-                                                                <div class="input-group">
-                                                                    <div class="col-12">
-                                                                        <select class="form-select select2" id="prePrint" name="prePrint" >
-                                                                            <option value="en">English</option>
-                                                                            <option value="zh">Chinese</option>
-                                                                            <option value="my">Bahasa Malaysia</option>
-                                                                            <option value="ne">नेपाली</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                            
-                                                        <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">
-                                                        <input type="hidden" class="form-control" id="id" name="id">
-                                                    </div>
-                                                    <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                        <button type="button" class="btn btn-success" id="submitPrePrint"><?=$languageArray['submit_code'][$language]?></button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
                                     <div class="modal fade" id="entryOverrideModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content border border-2 border-danger shadow-lg">
@@ -1469,39 +1444,6 @@ else{
                     </form>
                 </div>
             </div>
-            <!--div class="modal fade" id="prePrintModal">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                    <form role="form" id="prePrintForm">
-                        <div class="modal-header bg-gray-dark color-palette">
-                            <h4 class="modal-title"></h4>
-                            <button type="button" class="close bg-gray-dark color-palette" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label><?=$languageArray['language_code'][$language]?></label>
-                                        <select name="prePrint" id="prePrint">
-                                            <option value="en">English</option>
-                                            <option value="zh">Chinese</option>
-                                            <option value="my">Bahasa Malaysia</option>
-                                            <option value="ne">नेपाली</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                            <button type="button" class="btn btn-light" data-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                            <button type="submit" class="btn btn-primary"><?=$languageArray['submit_code'][$language]?></button>
-                        </div>
-                    </form>
-                </div>
-            </div-->
             <?php include 'layouts/footer.php'; ?>
         </div>
         <!-- end main content-->
@@ -1959,24 +1901,7 @@ else{
                         $('#addModal').modal('hide');
                         $("#successBtn").attr('data-toast-text', obj.message);
                         $("#successBtn").click();
-                        $('#prePrintModal').find('#id').val(obj.id);
-                        $('#prePrintModal').find('#isEmptyContainer').val(isEmptyContainer);
-                        $('#prePrintModal').find('#prePrint').val("<?=$language ?>");
-                        $("#prePrintModal").modal("show");
-
-                        $('#prePrintForm').validate({
-                            errorElement: 'span',
-                            errorPlacement: function (error, element) {
-                                error.addClass('invalid-feedback');
-                                element.closest('.form-group').append(error);
-                            },
-                            highlight: function (element, errorClass, validClass) {
-                                $(element).addClass('is-invalid');
-                            },
-                            unhighlight: function (element, errorClass, validClass) {
-                                $(element).removeClass('is-invalid');
-                            }
-                        });
+                        print(obj.id, null, isEmptyContainer);
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -2054,40 +1979,6 @@ else{
         $('#entryOverridePassword').on('keypress', function(e){
             if (e.which == 13) {
                 $('#submitEntryOverride').click();
-            }
-        });
-
-        $('#submitPrePrint').on('click', function(){
-            if($('#prePrintForm').valid()){
-                $('#spinnerLoading').show();
-                var id = $('#prePrintModal').find('#id').val();
-                var prePrintStatus = $('#prePrintModal').find('#prePrint').val();
-                var isEmptyContainer = $('#prePrintModal').find('#isEmptyContainer').val();
-
-                $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
-                    var obj = JSON.parse(data);
-
-                    if(obj.status === 'success'){
-                        var printWindow = window.open('', '', 'height=' + screen.height + ',width=' + screen.width);
-                        printWindow.document.write(obj.message);
-                        printWindow.document.close();
-                        setTimeout(function(){
-                            printWindow.print();
-                            printWindow.close();
-                        }, 500);
-
-                        $("#prePrintModal").modal("hide");
-                        $('#spinnerLoading').hide();
-                    }
-                    else if(obj.status === 'failed'){
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $("#failBtn").attr('data-toast-text', "Something wrong when print");
-                        $("#failBtn").click();
-                    }
-                });
             }
         });
 
@@ -2322,8 +2213,8 @@ else{
             $('#addModal').find('#insufficientBalDisplay').hide();
             $('#addModal').find('#containerNoInput').val("");
             $('#addModal').find('#containerNo').val("");
-            $('#addModal').find('#containerNo2').val("");
-            $('#addModal').find('#sealNo2').val("");
+            $('#addModal').find('#containerNo2').val("").trigger('change');
+            $('#addModal').find('#sealNo2').val("").trigger('change');
 
             // Show select and hide input readonly
             $('#addModal').find('#salesOrderEdit').val("").hide();
@@ -2777,6 +2668,8 @@ else{
                         var supplierName = obj.message.supplier_name;
                         var supplierCode = obj.message.supplier_code;
                         $('#addModal').find('#contractorId').val(obj.message.contractor_id || '').trigger('change');
+                        $('#addModal').find('#containerNo2').val(obj.message.bin_no || '').trigger('change');
+                        $('#addModal').find('#sealNo2').val(obj.message.bin_type || '').trigger('change');
 
                         if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
                             $('#addModal').find('#customerName').val(customerName).trigger('change');
@@ -2822,6 +2715,8 @@ else{
 
                     if (obj.status == 'success' && !obj.message.id){
                         $('#addModal').find('#contractorId').val('').trigger('change');
+                        $('#addModal').find('#containerNo2').val('').trigger('change');
+                        $('#addModal').find('#sealNo2').val('').trigger('change');
                         showVehicleNotRegistered(x);
                     }
                     else if (obj.status == 'success'){
@@ -2830,6 +2725,8 @@ else{
                         var supplierName = obj.message.supplier_name;
                         var supplierCode = obj.message.supplier_code;
                         $('#addModal').find('#contractorId').val(obj.message.contractor_id || '').trigger('change');
+                        $('#addModal').find('#containerNo2').val(obj.message.bin_no || '').trigger('change');
+                        $('#addModal').find('#sealNo2').val(obj.message.bin_type || '').trigger('change');
 
                         if (transactionStatus == 'Sales' || transactionStatus == 'Misc'){
                             $('#addModal').find('#customerName').val(customerName).trigger('change');
@@ -3364,8 +3261,10 @@ else{
                         $('#addModal').find('#sealNo').val(obj.message.seal_no);
 
                         if (weightType != 'Different Container'){
-                            $('#addModal').find('#containerNo2').val(obj.message.container_no2);
-                            $('#addModal').find('#sealNo2').val(obj.message.seal_no2);
+                            if (obj.message.container_no2 && !$('#containerNo2 option[value="' + obj.message.container_no2 + '"]').length) { $('#containerNo2').append(new Option(obj.message.container_no2, obj.message.container_no2)); }
+                            if (obj.message.seal_no2 && !$('#sealNo2 option[value="' + obj.message.seal_no2 + '"]').length) { $('#sealNo2').append(new Option(obj.message.seal_no2, obj.message.seal_no2)); }
+                            $('#addModal').find('#containerNo2').val(obj.message.container_no2).trigger('change');
+                            $('#addModal').find('#sealNo2').val(obj.message.seal_no2).trigger('change');
                         }
 
                         if (obj.message.transaction_status == 'Sales' || obj.message.transaction_status == 'Misc'){
@@ -4392,28 +4291,9 @@ else{
     }
 
     function print(id, transactionStatus, isEmptyContainer = 'N') {
-        $('#prePrintModal').find('#id').val(id);
-        $('#prePrintModal').find('#isEmptyContainer').val(isEmptyContainer);
-        $('#prePrintModal').find('#prePrint').val("<?=$language ?>");
-        $("#prePrintModal").modal("show");
+        $('#spinnerLoading').show();
 
-        $('#prePrintForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
-        //var id = $('#prePrintModal').find('#id').val();
-        /*var prePrintStatus = 'N';
-
-        $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+        $.post('php/print.php', {userID: id, file: 'weight', prePrint: 'en', isEmptyContainer: isEmptyContainer}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){
@@ -4428,14 +4308,16 @@ else{
                 $('#spinnerLoading').hide();
             }
             else if(obj.status === 'failed'){
+                $('#spinnerLoading').hide();
                 $("#failBtn").attr('data-toast-text', obj.message );
                 $("#failBtn").click();
             }
             else{
+                $('#spinnerLoading').hide();
                 $("#failBtn").attr('data-toast-text', "Something wrong when print");
                 $("#failBtn").click();
             }
-        });*/
+        });
     }
     </script>
 </body>
