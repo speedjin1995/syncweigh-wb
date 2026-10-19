@@ -33,6 +33,27 @@ function formatWeight($weight){
     return $formatted;
 }
 
+// Report screen: the record's transaction status must allow Print on Reports
+if (($_POST['source'] ?? '') == 'report') {
+    require_once 'requires/lookup.php';
+    $printStatus = '';
+    $printId = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
+    $printStmt = $db->prepare("SELECT transaction_status FROM Weight WHERE id = ?");
+    if (!$printStmt) {
+        echo json_encode(array("status" => "failed", "message" => "Something went wrong"));
+        exit;
+    }
+    $printStmt->bind_param('s', $printId);
+    $printStmt->execute();
+    $printStmt->bind_result($printStatus);
+    $printStmt->fetch();
+    $printStmt->close();
+    if (!reportStatusPermitted($printStatus, 'print')) {
+        echo json_encode(array("status" => "failed", "message" => "You do not have permission to print this record"));
+        exit;
+    }
+}
+
 if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
     $stmt = $db->prepare("SELECT * FROM Company WHERE id=?");
     $stmt->bind_param('s', $compids);

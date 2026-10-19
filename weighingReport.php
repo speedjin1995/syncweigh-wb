@@ -1,9 +1,24 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
+<?php
+if (!hasPermission('Reports', ['view'])){
+    header('Location: no-permission.php');
+    exit;
+}
+?>
 
 <?php
 $plantId = $_SESSION['plant'];
 require_once 'php/classes/BaseController.php';
+require_once 'php/requires/lookup.php';
+// Statuses whose Print item shows on the report (display names used in the table rows)
+$reportDisplayStatuses = array('Sales' => 'Dispatch', 'Purchase' => 'Receiving', 'Local' => 'Internal Transfer', 'Misc' => 'Miscellaneous');
+$printableReportStatuses = array();
+foreach ($reportDisplayStatuses as $status => $display) {
+    if (reportStatusPermitted($status, 'print')) {
+        $printableReportStatuses[] = $display;
+    }
+}
 $baseController = new BaseController($db);
 $containerWeighingEnabled = $baseController->isFeatureEnabled('container_weighing');
 $differentBinWeighingEnabled = $baseController->isFeatureEnabled('different_bin_weighing');
@@ -38,10 +53,14 @@ if($plantId != null && count($plantId) > 0){
     }
 }
 
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
-    $username = implode("', '", $_SESSION["plant"]);
-    $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and plant_code IN ('$username')");
-    $location = $db->query("SELECT * FROM Location WHERE status = '0' and plant_id IN (SELECT id FROM Plant WHERE plant_code IN ('$username')) ORDER BY location_name ASC");
+$defaultPlantCode = '-';
+if(!hasPermission('Reports', ['view_all_plants'])){
+    // Only the plant picked on selectLocation.php, pre-selected in the plant filter
+    $selectedPlantId = intval($_SESSION['selected_plant_id'] ?? 0);
+    $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and id = $selectedPlantId");
+    $location = $db->query("SELECT * FROM Location WHERE status = '0' and plant_id = $selectedPlantId ORDER BY location_name ASC");
+    $selectedPlantRow = $db->query("SELECT plant_code FROM Plant WHERE status = '0' and id = $selectedPlantId")->fetch_assoc();
+    $defaultPlantCode = $selectedPlantRow['plant_code'] ?? '-';
 }
 else{
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
@@ -151,16 +170,16 @@ else{
                                                             <label for="transactionStatusSearch" class="form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
                                                             <select id="transactionStatusSearch" class="form-select select2">
                                                                 <option selected>-</option>
-                                                                <?php if($transactionDispatchEnabled){ ?>
-                                                                <option value="Sales" selected><?=$languageArray['dispatch_code'][$language]?></option>
+                                                                <?php if($transactionDispatchEnabled && reportStatusPermitted('Sales')){ ?>
+                                                                <option value="Sales"><?=$languageArray['dispatch_code'][$language]?></option>
                                                                 <?php } ?>
-                                                                <?php if($transactionReceivingEnabled){ ?>
+                                                                <?php if($transactionReceivingEnabled && reportStatusPermitted('Purchase')){ ?>
                                                                 <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
                                                                 <?php } ?>
-                                                                <?php if($transactionInternalTransferEnabled){ ?>
+                                                                <?php if($transactionInternalTransferEnabled && reportStatusPermitted('Local')){ ?>
                                                                 <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
                                                                 <?php } ?>
-                                                                <?php if($transactionMiscellaneousEnabled){ ?>
+                                                                <?php if($transactionMiscellaneousEnabled && reportStatusPermitted('Misc')){ ?>
                                                                 <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
                                                                 <?php } ?>
                                                             </select>
@@ -199,7 +218,9 @@ else{
                                                             <label for="invoiceNoSearch" class="form-label"><?=$languageArray['weighing_type_code'][$language]?></label>
                                                             <select id="invoiceNoSearch" class="form-select select2">
                                                                 <option selected>-</option>
+                                                                <?php if(reportWeightTypePermitted('Normal')): ?>
                                                                 <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
+                                                                <?php endif; ?>
                                                                 <!-- <option value="Container">Primer Mover</option> -->
                                                             </select>
                                                         </div>
@@ -251,9 +272,9 @@ else{
                                                         <div class="mb-3">
                                                             <label for="plantSearch" class="form-label"><?=$languageArray['plant_code'][$language]?></label>
                                                             <select id="plantSearch" class="form-select select2">
-                                                                <option selected>-</option>
+                                                                <option value="-" <?=$defaultPlantCode == '-' ? 'selected' : ''?>>-</option>
                                                                 <?php while($rowPlantF=mysqli_fetch_assoc($plant)){ ?>
-                                                                    <option value="<?=$rowPlantF['plant_code'] ?>"><?=$rowPlantF['name'] ?></option>
+                                                                    <option value="<?=$rowPlantF['plant_code'] ?>" <?=$rowPlantF['plant_code'] == $defaultPlantCode ? 'selected' : ''?>><?=$rowPlantF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -417,14 +438,18 @@ else{
                                                                 <h5 class="card-title text-white mb-0"><?=$languageArray['weighing_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <?php if(hasPermission('Reports', ['export'])): ?>
                                                                 <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_pdf_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasPermission('Reports', ['export'])): ?>
                                                                 <button type="button" id="exportExcel" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_excel_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
                                                             </div> 
                                                         </div> 
                                                     </div>
@@ -632,7 +657,7 @@ else{
             $('#productSearch').val('-').trigger('change');
             $('#rawMatSearch').val('-').trigger('change');
             $('#destinationSearch').val('-').trigger('change');
-            $('#plantSearch').val('-').trigger('change');
+            $('#plantSearch').val(defaultPlantCode).trigger('change');
             $('#locationSearch').val('-').trigger('change');
             $('#statusSearch').val('Complete').trigger('change');
             $('#invDelPoSearch').val('');
@@ -943,7 +968,7 @@ else{
                         // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></div>';
                         return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                         '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li></ul></div>';
+                        (printableStatuses.includes(row.transaction_status) ? '<li><a class="dropdown-item print-item-btn" id="print'+data+'" onclick="print('+data+')"><i class="ri-printer-fill align-bottom me-2 text-muted"></i> Print</a></li>' : '') + '</ul></div>';
                     }
                 }
             ],
@@ -1078,8 +1103,11 @@ else{
         });
     }
 
+    var printableStatuses = <?= json_encode($printableReportStatuses) ?>;
+    var defaultPlantCode = <?= json_encode($defaultPlantCode) ?>;
+
     function print(id) {
-        $.post('php/print.php', {userID: id, file: 'weight'}, function(data){
+        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N', source: 'report'}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

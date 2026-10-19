@@ -2,6 +2,9 @@
 session_start();
 require_once 'db_connect.php';
 require_once 'requires/lookup.php';
+if (!hasPermission('Reports', ['export'])) {
+    exit('You do not have permission to export');
+}
 
 $searchQuery = "";
 if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
@@ -37,9 +40,11 @@ if(isset($_POST['toDate']) && $_POST['toDate'] != null && $_POST['toDate'] != ''
 
 if($_POST["file"] == 'weight'){
     $searchQuery .= transactionStatusExclusion($db, 'Weight.transaction_status');
+    $searchQuery .= reportPermissionExclusion('Weight.transaction_status', 'Weight.weight_type', 'export');
 }
 else{
     $searchQuery .= transactionStatusExclusion($db, 'count.transaction_status');
+    $searchQuery .= reportPermissionExclusion('count.transaction_status', 'count.weight_type', 'export');
 }
 
 

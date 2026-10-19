@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/permissions.php';
 function convertDatetimeToDate($datetime){
     $date = new DateTime($datetime);
   
@@ -256,6 +257,41 @@ function excelSerialToDate($serial) {
     $baseDate = strtotime('1899-12-30');
     return date('Y-m-d', strtotime("+$serial days", $baseDate));
 }
+// Report permissions: transaction status uses the Reports module, weight type uses the Weighing module
+function reportStatusModules() {
+    return array('Sales' => 'Sales', 'Purchase' => 'Purchase', 'Local' => 'Internal Transfer', 'Misc' => 'Miscellaneous');
+}
+
+function reportWeightTypeModules() {
+    return array('Normal' => 'Normal Type', 'Container' => 'Container Type', 'Empty Container' => 'Empty Container Type', 'Different Container' => 'Different Container Type');
+}
+
+function reportStatusPermitted($status, $action = 'view') {
+    $modules = reportStatusModules();
+    return isset($modules[$status]) && hasModulePermission('Reports', $modules[$status], [$action]);
+}
+
+function reportWeightTypePermitted($weightType) {
+    $modules = reportWeightTypeModules();
+    return isset($modules[$weightType]) && hasModulePermission('Weighing', $modules[$weightType], ['view']);
+}
+
+// SQL clause that keeps only the statuses and weight types the user may view (skipped when all are allowed)
+function reportPermissionExclusion($statusColumn, $weightTypeColumn, $statusAction = 'view') {
+    $sql = '';
+    $statuses = array_values(array_filter(array_keys(reportStatusModules()), function ($s) use ($statusAction) {
+        return reportStatusPermitted($s, $statusAction);
+    }));
+    if (count($statuses) < count(reportStatusModules())) {
+        $sql .= empty($statuses) ? " and 1 = 0" : " and {$statusColumn} in ('" . implode("', '", $statuses) . "')";
+    }
+    $weightTypes = array_values(array_filter(array_keys(reportWeightTypeModules()), 'reportWeightTypePermitted'));
+    if (count($weightTypes) < count(reportWeightTypeModules())) {
+        $sql .= empty($weightTypes) ? " and 1 = 0" : " and {$weightTypeColumn} in ('" . implode("', '", $weightTypes) . "')";
+    }
+    return $sql;
+}
+
 function transactionStatusFeatures() {
     return array(
         'Sales' => 'transaction_dispatch',
