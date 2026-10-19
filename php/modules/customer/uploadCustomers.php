@@ -2,9 +2,15 @@
 session_start();
 require_once '../../db_connect.php';
 require_once '../../requires/lookup.php';
+require_once '../../requires/permissions.php';
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $uid = $_SESSION['username'];
+
+if (!hasModulePermission('Master Data', 'Customer', ['upload_excel'])) {
+    echo json_encode(array("status" => "failed", "message" => "You do not have permission to do this"));
+    exit;
+}
 
 $data = json_decode(file_get_contents('php://input'), true);
 
