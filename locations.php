@@ -1,6 +1,12 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 <?php
+if (!hasModulePermission('Master Data', 'Locations', ['view'])){
+    header('Location: no-permission.php');
+    exit;
+}
+?>
+<?php
     include 'php/db_connect.php';
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0'");
 ?>
@@ -287,10 +293,12 @@
                                                                 <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <?php if(hasModulePermission('Master Data', 'Locations', ['create'])): ?>
                                                                 <button type="button" id="addLocation" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
                                                             </div> 
                                                         </div> 
                                                     </div>
@@ -359,6 +367,12 @@
     <script type="text/javascript">
 
 var table;
+var permissions = <?= json_encode($_SESSION['permissions'] ?? []) ?>;
+var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
+
+function canDo(permission) {
+    return isSADMIN || (permissions['Master Data'] && permissions['Master Data']['Locations'] && permissions['Master Data']['Locations'].includes(permission));
+}
 var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
 
 $(function () {
@@ -507,6 +521,7 @@ function renderTable(){
                 responsivePriority: 1,
                 render: function ( data, type, row ) {
                     if (row.status == 'inactive') {
+                        if (!canDo('reactivate')) { return ''; }
                         return `<button title="Reactivate" type="button" id="reactivate${data}" onclick="reactivate(${data})" class="btn btn-warning btn-sm">Reactivate</button>`;
                     }
 
@@ -516,21 +531,21 @@ function renderTable(){
                                 <i class="ri-more-fill align-middle"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
+                                ${canDo('edit') ? `<li>
                                     <a class="dropdown-item edit-item-btn" id="edit${data}" onclick="edit(${data})">
                                         <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit Location
                                     </a>
-                                </li>
-                                <li>
+                                </li>` : ''}
+                                ${canDo('edit') ? `<li>
                                     <a class="dropdown-item" id="portSetup${data}" onclick="openPortSetup(${data})">
                                         <i class="ri-settings-3-line align-bottom me-2 text-muted"></i> Port Setup
                                     </a>
-                                </li>
-                                <li>
+                                </li>` : ''}
+                                ${canDo('cancelled') ? `<li>
                                     <a class="dropdown-item remove-item-btn" id="deactivate${data}" onclick="deactivate(${data})">
                                         <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
                                     </a>
-                                </li>
+                                </li>` : ''}
                             </ul>
                         </div>`;
 

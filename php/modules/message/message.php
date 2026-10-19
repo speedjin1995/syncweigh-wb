@@ -1,6 +1,12 @@
 <?php
 session_start();
 require_once '../../db_connect.php';
+require_once '../../requires/permissions.php';
+$requiredPermission = empty($_POST["keyId"]) ? 'create' : 'edit';
+if (!hasModulePermission('Master Data', 'Translation', [$requiredPermission])) {
+    echo json_encode(array("status" => "failed", "message" => "You do not have permission to do this"));
+    exit;
+}
 
 if (isset($_POST['keyCode'], $_POST['englishDecs'], $_POST['chineseDecs'], $_POST['malayDecs'], $_POST['nepaliDecs'])) {
     $keyCode = filter_input(INPUT_POST, 'keyCode', FILTER_SANITIZE_STRING);

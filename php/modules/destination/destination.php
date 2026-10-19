@@ -1,6 +1,12 @@
 <?php
 session_start();
 require_once '../../db_connect.php';
+require_once '../../requires/permissions.php';
+$requiredPermission = empty($_POST["id"]) ? 'create' : 'edit';
+if (!hasModulePermission('Master Data', 'Destination', [$requiredPermission])) {
+    echo json_encode(array("status" => "failed", "message" => "You do not have permission to do this"));
+    exit;
+}
 require_once '../../services/BaseService.php';
 
 if (!isset($_SESSION['id'])) {

@@ -1,5 +1,11 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
+<?php
+if (!hasModulePermission('Master Data', 'Transporter', ['view'])){
+    header('Location: no-permission.php');
+    exit;
+}
+?>
 
 <head>
     <title><?=$languageArray['transporter_code'][$language]?> | Synctronix - Weighing System</title>
@@ -259,24 +265,32 @@
                                                                 <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <?php if(hasModulePermission('Master Data', 'Transporter', ['download_template'])): ?>
                                                                 <a href="template/Transporter_Template.xlsx" download>
                                                                     <button type="button" id="downloadTemplate" class="btn btn-info waves-effect waves-light">
                                                                         <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                         <?=$languageArray['download_template_code'][$language]?>
                                                                     </button>
                                                                 </a>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Transporter', ['upload_excel'])): ?>
                                                                 <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['upload_excel_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Transporter', ['cancelled'])): ?>
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Transporter', ['create'])): ?>
                                                                 <button type="button" id="addTransporter" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
                                                             </div> 
                                                         </div> 
                                                     </div>
@@ -353,6 +367,12 @@
 <script type="text/javascript">
 
 var table;
+var permissions = <?= json_encode($_SESSION['permissions'] ?? []) ?>;
+var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
+
+function canDo(permission) {
+    return isSADMIN || (permissions['Master Data'] && permissions['Master Data']['Transporter'] && permissions['Master Data']['Transporter'].includes(permission));
+}
 
 $(function () {
     $('#selectAllCheckbox').on('change', function() {
@@ -395,6 +415,7 @@ $(function () {
                 data: 'id',
                 render: function ( data, type, row ) {
                     if (row.status == '1'){
+                        if (!canDo('reactivate')) { return ''; }
                         return '<button title="Reactivate" type="button" id="reactivate'+data+'" onclick="reactivate('+data+')" class="btn btn-warning btn-sm">Reactivate</button>';
                     }else{
                         return 'Active';
@@ -407,8 +428,8 @@ $(function () {
                     if (row.status == '1'){ return ''; }
                     return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                     '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
+                    (canDo('edit') ? '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' : '') +
+                    (canDo('cancelled') ? '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li>' : '') + '</ul></div>';
                 }
             }
         ]       
