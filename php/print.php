@@ -33,12 +33,13 @@ function formatWeight($weight){
     return $formatted;
 }
 
-// Report screen: the record's transaction status must allow Print on Reports
-if (($_POST['source'] ?? '') == 'report') {
+// Report and weighing screens: the record's transaction status must allow Print on that screen
+if (in_array(($_POST['source'] ?? ''), array('report', 'weighing'))) {
     require_once 'requires/lookup.php';
-    $printStatus = '';
     $printId = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
-    $printStmt = $db->prepare("SELECT transaction_status FROM Weight WHERE id = ?");
+    $printTableCheck = (($_POST['isEmptyContainer'] ?? 'N') == 'Y') ? 'Weight_Container' : 'Weight';
+    $printStatus = '';
+    $printStmt = $db->prepare("SELECT transaction_status FROM {$printTableCheck} WHERE id = ?");
     if (!$printStmt) {
         echo json_encode(array("status" => "failed", "message" => "Something went wrong"));
         exit;
@@ -48,7 +49,10 @@ if (($_POST['source'] ?? '') == 'report') {
     $printStmt->bind_result($printStatus);
     $printStmt->fetch();
     $printStmt->close();
-    if (!reportStatusPermitted($printStatus, 'print')) {
+    $printAllowed = ($_POST['source'] == 'report')
+        ? statusPermitted('Reports', $printStatus, 'print')
+        : statusPermitted('Weighing', $printStatus, 'print');
+    if (!$printAllowed) {
         echo json_encode(array("status" => "failed", "message" => "You do not have permission to print this record"));
         exit;
     }
