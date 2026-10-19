@@ -1,6 +1,12 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 <?php
+if (!hasModulePermission('Settings', 'Company Profile', ['view'])){
+    header('Location: no-permission.php');
+    exit;
+}
+?>
+<?php
 // Initialize the session
 //session_start();
 // Include config file

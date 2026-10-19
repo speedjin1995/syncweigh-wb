@@ -207,13 +207,11 @@
                     <div class="collapse menu-dropdown" id="sidebarAuth">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <?php
-                                    if($_SESSION["roles"] == 'ADMIN' || $_SESSION["roles"] == 'SADMIN'){
-                                        echo '<li class="nav-item">
-                                            <a href="companyProfile.php" class="nav-link">'.$languageArray['company_profile_code'][$language].'</a>
-                                        </li> ';
-                                    }
-                                ?>
+                                <?php if(hasModulePermission('Settings', 'Company Profile', ['view'])): ?>
+                                <li class="nav-item">
+                                    <a href="companyProfile.php" class="nav-link"><?=$languageArray['company_profile_code'][$language]?></a>
+                                </li>
+                                <?php endif; ?>
                                 
                                 <!-- <li class="nav-item">
                                     <a href="portSetup.php" class="nav-link"><?=$languageArray['port_setup_code'][$language]?></a>
