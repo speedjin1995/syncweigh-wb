@@ -35,7 +35,7 @@ class ModuleController extends BaseController {
     }
 
     public function delete() {
-        $id   = $_POST['moduleID'] ?? null;
+        $id = $_POST['moduleID'] ?? null;
         $type = $_POST['type'] ?? '';
         if (!$id) { $this->failed('Missing ID'); return; }
         try {

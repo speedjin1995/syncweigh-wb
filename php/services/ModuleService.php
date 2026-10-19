@@ -6,13 +6,13 @@ class ModuleService extends BaseService {
 
     public function getAll($post) {
         $languageArray = $_SESSION['languageArray'] ?? [];
-        $draw     = $post['draw'] ?? 1;
-        $start    = (int)($post['start'] ?? 0);
-        $length   = (int)($post['length'] ?? 10);
-        $search   = $post['search']['value'] ?? '';
+        $draw = $post['draw'] ?? 1;
+        $start = (int)($post['start'] ?? 0);
+        $length = (int)($post['length'] ?? 10);
+        $search = $post['search']['value'] ?? '';
         $colIndex = $post['order'][0]['column'] ?? 0;
-        $cols     = ['id', 'name', 'category', 'id'];
-        $orderBy  = $cols[$colIndex] ?? 'id';
+        $cols = ['id', 'name', 'category', 'id'];
+        $orderBy = $cols[$colIndex] ?? 'id';
         $orderDir = ($post['order'][0]['dir'] ?? 'asc') === 'desc' ? 'DESC' : 'ASC';
 
         // Build exclusion list based on features
@@ -30,13 +30,13 @@ class ModuleService extends BaseService {
 
         $where = $baseWhere;
         $params = [];
-        $types  = '';
+        $types = '';
         if ($search !== '') {
             $searchClause = "(name LIKE ? OR category LIKE ?)";
             $where = $baseWhere ? "$baseWhere AND $searchClause" : "WHERE $searchClause";
-            $like  = "%$search%";
+            $like = "%$search%";
             $params = [$like, $like];
-            $types  = 'ss';
+            $types = 'ss';
         }
 
         $filtered = $total;
@@ -49,7 +49,7 @@ class ModuleService extends BaseService {
         }
 
         $stmt = $this->db->prepare("SELECT id, name, category FROM {$this->table} $where ORDER BY $orderBy $orderDir LIMIT ?, ?");
-        $allTypes  = $types . 'ii';
+        $allTypes = $types . 'ii';
         $allParams = array_merge($params, [$start, $length]);
         $stmt->bind_param($allTypes, ...$allParams);
         $stmt->execute();
@@ -209,7 +209,7 @@ class ModuleService extends BaseService {
         if (!$stmt) throw new Exception($this->db->error);
 
         $inserted = 0;
-        $skipped  = 0;
+        $skipped = 0;
         foreach ($defaultModules as $m) {
             $stmt->bind_param('ssss', $m['name'], $m['category'], $m['name'], $m['category']);
             $stmt->execute();

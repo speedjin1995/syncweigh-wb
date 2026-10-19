@@ -243,7 +243,7 @@ $(function () {
                             buttons += `
                                 <li>
                                     <a class="dropdown-item edit-item-btn" onclick="edit(${data})">
-                                        <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+                                        <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language]?>
                                     </a>
                                 </li>`;
                         }
@@ -252,7 +252,7 @@ $(function () {
                             buttons += `
                                 <li>
                                     <a class="dropdown-item remove-item-btn" onclick="deactivate(${data})">
-                                        <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+                                        <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language]?>
                                     </a>
                                 </li>`;
                         }
