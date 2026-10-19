@@ -1218,6 +1218,21 @@ else{
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="modal fade" id="confirmCaptureModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-body pt-4">
+                                                    <div class="alert alert-info mb-0" role="alert">
+                                                        <div id="confirmCaptureMessage" class="fw-semibold"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                    <button type="button" class="btn btn-primary" id="submitCaptureConfirm"><?=$languageArray['confirm_code'][$language]?></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="modal fade" id="vehicleNotRegisteredModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content border border-2 border-danger shadow-lg">
@@ -2805,6 +2820,7 @@ else{
                 $('#grossIncoming2').attr('readonly', 'readonly');
                 $('#tareOutgoing2').attr('readonly', 'readonly');
             }
+            toggleSubmitButtons();
         });
 
         $('#grossIncoming').on('keyup', function(){
@@ -2825,6 +2841,22 @@ else{
             var text = $('#indicatorWeight').text();
             $('#grossIncoming').val(parseFloat(text).toFixed(0));
             $('#grossIncoming').trigger('keyup');
+            $('#confirmCaptureMessage').text('<?=$languageArray['confirm_first_weighing_code'][$language]?>: ' + $('#grossIncoming').val() + ' kg');
+            $('#confirmCaptureModal').modal('show');
+        });
+
+        $('#confirmCaptureModal').on('show.bs.modal', function(){
+            $(this).css('z-index', 1065);
+
+            // The backdrop is added right after this event
+            setTimeout(function(){
+                $('.modal-backdrop').last().css({'z-index': 1060, 'opacity': 0.7, 'backdrop-filter': 'blur(4px)', '-webkit-backdrop-filter': 'blur(4px)'});
+            }, 0);
+        });
+
+        $('#submitCaptureConfirm').on('click', function(){
+            $('#confirmCaptureModal').modal('hide');
+            $('#submitWeight').trigger('click');
         });
 
         $('#tareOutgoing').on('keyup', function(){
@@ -2846,6 +2878,8 @@ else{
             var text = $('#indicatorWeight').text();
             $('#tareOutgoing').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing').trigger('keyup');
+            $('#confirmCaptureMessage').text('<?=$languageArray['confirm_second_weighing_code'][$language]?>: ' + $('#tareOutgoing').val() + ' kg');
+            $('#confirmCaptureModal').modal('show');
         });
 
         $('#nettWeight').on('change', function(){
@@ -3189,6 +3223,7 @@ else{
                 $('#normalCard').hide();
                 $('#grossCapture').show();
                 $('#tareCapture').show();
+                toggleSubmitButtons();
             } else if (emptyContainerNo) { 
                 $.post('php/getEmptyContainer.php', {userID: emptyContainerNo}, function (data){
                     var obj = JSON.parse(data);
@@ -3249,6 +3284,7 @@ else{
                         $('#normalCard').show();
                         $('#grossCapture').hide();
                         $('#tareCapture').hide();
+                        toggleSubmitButtons();
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -3272,6 +3308,7 @@ else{
                 $('#normalCard').hide();
                 $('#grossCapture').show();
                 $('#tareCapture').show();
+                toggleSubmitButtons();
             }
         });
 
@@ -3337,6 +3374,7 @@ else{
         if (!allowed && $('#manualWeightYes').is(':checked')) {
             $('#manualWeightNo').prop('checked', true).trigger('click');
         }
+        toggleSubmitButtons();
         // Date pickers stay visible but read-only when the status lacks manual_date_change
         var dateAllowed = manualDateStatuses.includes(status);
         [grossIncomingDatePicker, tareOutgoingDatePicker, grossIncomingDatePicker2, tareOutgoingDatePicker2].forEach(function (picker) {
@@ -3619,6 +3657,13 @@ else{
         $('#entryOverridePasswordError').text(message);
     }
 
+    function toggleSubmitButtons(){
+        // Capture is usable only while its capture button is shown
+        var canCapture = $('#grossCapture').css('display') != 'none';
+        var show = $('#manualWeightYes').is(':checked') || !canCapture;
+        $('#submitWeight, #submitWeightPrint').toggle(show);
+    }
+
     function handleWeightType(weightType){
         if (weightType == 'Container'){
             $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
@@ -3665,6 +3710,7 @@ else{
             $('#tareCapture').show();
             $('#containerCard').hide();
         }
+        toggleSubmitButtons();
     }
 
     function format (row) {

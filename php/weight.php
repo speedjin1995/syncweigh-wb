@@ -33,36 +33,6 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         echo json_encode(array("status" => "failed", "message" => "You do not have permission to save this weighing record"));
         exit();
     }
-    if ($_POST['manualWeight'] == 'true' && !statusPermitted('Weighing', $_POST['transactionStatus'], 'manual_weighing')) {
-        echo json_encode(array("status" => "failed", "message" => "You do not have permission for manual weighing"));
-        exit();
-    }
-
-    // Changing a date on an existing record needs manual_date_change for its status
-    if (!empty($_POST["id"]) && !statusPermitted('Weighing', $_POST['transactionStatus'], 'manual_date_change')) {
-        $dateCheck = $db->prepare("SELECT gross_weight1_date, tare_weight1_date, gross_weight2_date, tare_weight2_date FROM Weight WHERE id = ?");
-        if (!$dateCheck) {
-            echo json_encode(array("status" => "failed", "message" => "Something went wrong"));
-            exit();
-        }
-        $dateId = trim($_POST["id"]);
-        $dateCheck->bind_param('s', $dateId);
-        $dateCheck->execute();
-        $existingDates = $dateCheck->get_result()->fetch_assoc();
-        $dateCheck->close();
-        $dateFields = array('gross_weight1_date' => 'grossIncomingDate', 'tare_weight1_date' => 'tareOutgoingDate', 'gross_weight2_date' => 'grossIncomingDate2', 'tare_weight2_date' => 'tareOutgoingDate2');
-        foreach ($dateFields as $column => $field) {
-            if (!$existingDates || empty($_POST[$field])) {
-                continue;
-            }
-            $newTime = strtotime($_POST[$field]);
-            $oldTime = empty($existingDates[$column]) ? false : strtotime($existingDates[$column]);
-            if ($newTime !== false && $newTime !== $oldTime) {
-                echo json_encode(array("status" => "failed", "message" => "You do not have permission to change the date of this weighing record"));
-                exit();
-            }
-        }
-    }
     
     if (empty($_SESSION['location_id'])) {
         $locationId = null;
