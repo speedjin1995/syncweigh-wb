@@ -2410,3 +2410,47 @@ FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
 SELECT 'delete_code', 'Delete', '删除', 'Padam', 'நீக்கு' 
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'delete_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'role_and_permissions_code', 'Role and Permissions', '角色和权限', 'Peranan dan Kebenaran', 'பங்கு மற்றும் அனுமதிகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'role_and_permissions_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'role_records_code', 'Role Records', '角色记录', 'Rekod Peranan', 'பங்கு பதிவுகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'role_records_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'role_code_code', 'Role Code', '角色代码', 'Kod Peranan', 'பங்கு குறியீடு' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'role_code_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'role_name_code', 'Role Name', '角色名称', 'Nama Peranan', 'பங்கு பெயர்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'role_name_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'manage_permissions_code', 'Manage Permissions', '管理权限', 'Urus Kebenaran', 'அனுமதிகளை நிர்வகி' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'manage_permissions_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'no_module_found_code', 'No Module Found', '未找到模块', 'Tiada Modul Ditemui', 'தொகுதி கிடைக்கவில்லை' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'no_module_found_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'select_all_code', 'Select All', '全选', 'Pilih Semua', 'அனைத்தையும் தேர்ந்தெடு' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'select_all_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'multi_roles_delete_confirmation_code', 'Are you sure you want to delete the selected roles?', '您确定要删除所选角色吗？', 'Adakah anda pasti mahu memadamkan peranan yang dipilih?', 'தேர்ந்தெடுக்கப்பட்ட பங்குகளை நீக்க விரும்புகிறீர்களா?' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'multi_roles_delete_confirmation_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'min_one_role_delete_code', 'Please select at least one role to delete', '请至少选择一个要删除的角色', 'Sila pilih sekurang-kurangnya satu peranan untuk dipadamkan', 'நீக்க குறைந்தது ஒரு பங்கையாவது தேர்ந்தெடுக்கவும்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'min_one_role_delete_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'deselect_all_code', 'Deselect All', '取消全选', 'Nyahpilih Semua', 'அனைத்தையும் தேர்வுநீக்கு' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'deselect_all_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'roles_delete_confirmation_code', 'Are you sure you want to delete this role?', '您确定要删除此角色吗？', 'Adakah anda pasti mahu memadamkan peranan ini?', 'இந்த பங்கை நீக்க விரும்புகிறீர்களா?' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'roles_delete_confirmation_code');
