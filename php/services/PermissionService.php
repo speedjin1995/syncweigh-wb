@@ -321,7 +321,7 @@ class PermissionService extends BaseService {
                 ['Role', 'User Management']
             ]],
             ['name' => 'reset_password', 'modules' => [
-                ['User Setup', 'User Management']
+                ['Staff', 'User Management']
             ]]
         ];
 
