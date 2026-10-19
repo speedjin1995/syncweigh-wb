@@ -1006,7 +1006,7 @@ else{
                                                                                 <div class="input-group">
                                                                                     <input type="number" class="form-control input-readonly" id="grossIncoming2" name="grossIncoming2" placeholder="0" readonly>
                                                                                     <div class="input-group-text">Kg</div>
-                                                                                    <button class="input-group-text btn btn-success fs-5" id="grossCapture2"><i class="mdi mdi-sync" type="button"></i></button>
+                                                                                    <button class="input-group-text btn btn-success fs-5" id="grossCapture2" type="button"><i class="mdi mdi-sync"></i></button>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -3632,24 +3632,61 @@ else{
         var transactionStatus = '';
         var weightType = '';
 
+        // Translation variables
+        var lang = {
+            customerSupplier: <?=json_encode($languageArray['customer_supplier_code'][$language])?>,
+            deliveryOrderInfo: <?=json_encode($languageArray['delivery_order_info_code'][$language])?>,
+            purchaseInfo: <?=json_encode($languageArray['purchase_info_code'][$language])?>,
+            transactionId: <?=json_encode($languageArray['transaction_id_code'][$language])?>,
+            transactionDate: <?=json_encode($languageArray['transaction_date_code'][$language])?>,
+            vehiclePlate: <?=json_encode($languageArray['vehicle_code'][$language])?>,
+            plant: <?=json_encode($languageArray['plant_code'][$language])?>,
+            binNo: <?=json_encode($languageArray['container_no2_code'][$language])?>,
+            binType: <?=json_encode($languageArray['seal_no2_code'][$language])?>,
+            weightType: <?=json_encode($languageArray['weight_type_code'][$language])?>,
+            weightStatus: <?=json_encode($languageArray['weight_status_code'][$language])?>,
+            waste: <?=json_encode($languageArray['raw_material_code'][$language])?>,
+            product: <?=json_encode($languageArray['product_code'][$language])?>,
+            containerNo: <?=json_encode($languageArray['container_no_code'][$language])?>,
+            contractor: <?=json_encode($languageArray['contractor_code'][$language])?>,
+            weighingInfo: <?=json_encode($languageArray['weighing_info_code'][$language])?>,
+            inWeight: <?=json_encode($languageArray['gross_incoming_code'][$language])?>,
+            inDateTime: <?=json_encode($languageArray['incoming_date_code'][$language])?>,
+            inWeighBy: <?=json_encode($languageArray['in_weigh_by_code'][$language])?>,
+            outWeight: <?=json_encode($languageArray['tare_outgoing_code'][$language])?>,
+            outDateTime: <?=json_encode($languageArray['outgoing_date_code'][$language])?>,
+            outWeighBy: <?=json_encode($languageArray['out_weigh_by_code'][$language])?>,
+            nettWeight: <?=json_encode($languageArray['nett_weight_code'][$language])?>,
+            subTotalWeight: <?=json_encode($languageArray['sub_total_weight_code'][$language])?>,
+            containerWeighing: <?=json_encode($languageArray['container_weighing_code'][$language])?>,
+            dispatch: <?=json_encode($languageArray['dispatch_code'][$language])?>,
+            receiving: <?=json_encode($languageArray['receiving_code'][$language])?>,
+            internalTransfer: <?=json_encode($languageArray['internal_transfer_code'][$language])?>,
+            miscellaneous: <?=json_encode($languageArray['miscellaneous_code'][$language])?>,
+            primerMover: <?=json_encode($languageArray['primer_mover_code'][$language])?>,
+            primerMoverContainer: <?=json_encode($languageArray['primer_mover_container_code'][$language])?>,
+            normalWeighing: <?=json_encode($languageArray['normal_weighing_code'][$language])?>,
+            primerMoverDiffBins: <?=json_encode($languageArray['primer_mover_diff_bins_code'][$language])?>
+        };
+
         if (row.transaction_status == 'Sales') {
-            transactionStatus = 'Dispatch';
+            transactionStatus = lang.dispatch;
         } else if (row.transaction_status == 'Purchase') {
-            transactionStatus = 'Receiving';
+            transactionStatus = lang.receiving;
         } else if (row.transaction_status == 'Local') {
-            transactionStatus = 'Internal Transfer';
+            transactionStatus = lang.internalTransfer;
         } else {
-            transactionStatus = 'Miscellaneous';
+            transactionStatus = lang.miscellaneous;
         }
 
         if(row.weight_type == 'Container'){
-            weightType = 'Primer Mover';
+            weightType = lang.primerMover;
         }else if(row.weight_type == 'Empty Container'){
-            weightType = 'Primer Mover + Container';
+            weightType = lang.primerMoverContainer;
         }else if(row.weight_type == 'Normal'){
-            weightType = 'Normal Weighing';
+            weightType = lang.normalWeighing;
         }else if(row.weight_type == 'Different Container'){
-            weightType = 'Primer Mover + Different Bins';
+            weightType = lang.primerMoverDiffBins;
         }else{
             weightType = row.weight_type;
         }
@@ -3658,70 +3695,77 @@ else{
         <!-- Customer Section -->
         <div class="row">
             <div class="col-6">
-                <p><span><strong style="font-size:120%; text-decoration: underline;">Customer/Supplier</strong></span><br>
-                <p><strong>${row.name}</strong></p>
-                <p>${row.address_line_1}</p>
-                <p>${row.address_line_2}</p>
-                <p>${row.address_line_3}</p>
-                <p>TEL: ${row.phone_no} FAX: ${row.fax_no}</p>
+                <p><span><strong style="font-size:120%; text-decoration: underline;">${lang.customerSupplier}</strong></span><br>
+                <p>
+                    ${row.name ? `<span><strong>${row.name}</strong></span><br>` : ''}
+                    ${row.address_line_1 ? `<span>${row.address_line_1}</span><br>` : ''}
+                    ${row.address_line_2 ? `<span>${row.address_line_2}</span><br>` : ''}
+                    ${row.address_line_3 ? `<span>${row.address_line_3}</span><br>` : ''}
+                    ${row.phone_no || row.fax_no ? `<span>${row.phone_no ? 'TEL: ' + row.phone_no : ''}${row.phone_no && row.fax_no ? ' ' : ''}${row.fax_no ? 'FAX: ' + row.fax_no : ''}</span>` : ''}
+                </p>
             </div>
         </div>
         <hr>
         <!-- Delivery Order Section -->
         <div class="row">
-            <p><span><strong style="font-size:120%; text-decoration: underline;">Delivery Order Information</strong></span><br>
-            <div class="col-6">
-                <p><strong>TRANSPORTER NAME:</strong> ${row.transporter}</p>
-                <p><strong>DESTINATION NAME:</strong> ${row.destination}</p>
-                <p><strong>PLANT NAME:</strong> ${row.plant_name}</p>`;
+            <p><span><strong style="font-size:120%; text-decoration: underline;">${row.transaction_status === 'Purchase' ? lang.purchaseInfo : lang.deliveryOrderInfo}</strong></span><br>
+            <div class="col-12 row">
+                <p class="col-4"><strong>${lang.transactionId}:</strong> ${row.transaction_id}</p>
+                <p class="col-4"><strong>${lang.vehiclePlate}:</strong> ${row.lorry_plate_no1}</p>
+                <p class="col-4"><strong>${lang.binNo}:</strong> ${row.container_no2}</p>
+
+
+                <p class="col-4"><strong>${lang.transactionDate}:</strong> ${row.transaction_date}</p>
+                <p class="col-4"><strong>${lang.plant}:</strong> ${row.plant_name}</p>
+                <p class="col-4"><strong>${lang.binType}:</strong> ${row.seal_no2}</p>
+
+                <p class="col-4"><strong>${lang.weightType}:</strong> ${weightType}</p>
+                `;
+
                 if (row.transaction_status == 'Purchase' || row.transaction_status == 'Local'){
-                    returnString += `<p><strong>PURCHASE PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
+                    returnString += `<p class="col-4"><strong>${lang.waste}:</strong> ${row.product_rawmat_name}</p>`;
                 }else{
-                    returnString += `<p><strong>SALES PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
+                    returnString += `<p class="col-4"><strong>${lang.product}:</strong> ${row.product_rawmat_name}</p>`;
                 }
         
             returnString += `
-                <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
-                <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
-                <p><strong>CONTAINER NO 2:</strong> ${row.container_no2}</p>
-            </div>
-            <div class="col-6">
-                <p><strong>TRANSACTION ID:</strong> ${row.transaction_id}</p>
-                <p><strong>WEIGHT STATUS:</strong> ${transactionStatus}</p>
-                <p><strong>WEIGHT TYPE:</strong> ${weightType}</p>
-                <p><strong>DELIVERY NO:</strong> ${row.delivery_no}</p>
-                <p><strong>SEAL NO:</strong> ${row.seal_no}</p>
-                <p><strong>SEAL NO 2:</strong> ${row.seal_no2}</p>
+                <p class="col-4"><strong>${lang.containerNo}:</strong> ${row.container_no}</p>
+                <p class="col-4"><strong>${lang.weightStatus}:</strong> ${transactionStatus}</p>
+                <p class="col-4"><strong>${lang.contractor}:</strong> ${row.contractorName}</p>
             </div>
         </div>
         <hr>
 
         <!-- Weighing Section -->
         <div class="row">
-            <p><span><strong style="font-size:120%; text-decoration: underline;">Weighing Information</strong></span><br>
+            <p><span><strong style="font-size:120%; text-decoration: underline;">${lang.weighingInfo}</strong></span><br>
             <!-- Normal -->
-            <div class="col-6">
-                <p><strong>VEHICLE PLATE:</strong> ${row.lorry_plate_no1}</p>
-                <p><strong>IN WEIGHT:</strong> ${row.gross_weight1}</p>
-                <p><strong>IN DATE / TIME:</strong> ${row.gross_weight1_date}</p>
-                <p><strong>IN WEIGH BY:</strong> ${row.gross_weight_by1}</p>
-                <p><strong>OUT WEIGHT:</strong> ${row.tare_weight1}</p>
-                <p><strong>OUT DATE / TIME:</strong> ${row.tare_weight1_date}</p>
-                <p><strong>OUT WEIGH BY:</strong> ${row.tare_weight_by1}</p>
-                <p><strong>NETT WEIGHT:</strong> ${row.nett_weight1}</p>
-                <p><strong>SUB TOTAL WEIGHT:</strong> ${row.final_weight}</p>
+            <div class="col-12 row">
+                <p class="col-4"><strong>${lang.inWeight}:</strong> ${row.gross_weight1}</p>
+                <p class="col-4"><strong>${lang.inDateTime}:</strong> ${row.gross_weight1_date}</p>
+                <p class="col-4"><strong>${lang.inWeighBy}:</strong> ${row.gross_weight_by1}</p>
+                <p class="col-4"><strong>${lang.outWeight}:</strong> ${row.tare_weight1}</p>
+                <p class="col-4"><strong>${lang.outDateTime}:</strong> ${row.tare_weight1_date}</p>
+                <p class="col-4"><strong>${lang.outWeighBy}:</strong> ${row.tare_weight_by1}</p>
+                <p class="col-4"><strong>${lang.nettWeight}:</strong> ${row.nett_weight1}</p>
             </div>
             <!-- Container -->
-            <div class="col-6">
-                <p><strong>VEHICLE PLATE 2:</strong> ${row.lorry_plate_no2}</p>
-                <p><strong>IN WEIGHT 2:</strong> ${row.gross_weight2}</p>
-                <p><strong>IN DATE / TIME 2:</strong> ${row.gross_weight2_date}</p>
-                <p><strong>IN WEIGH BY 2:</strong> ${row.gross_weight_by2}</p>
-                <p><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2}</p>
-                <p><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
-                <p><strong>OUT WEIGH BY 2:</strong> ${row.tare_weight_by2}</p>
-                <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2}</p>            
-                </div>
+            ${containerColumnsEnabled ? `
+            <p><strong style="font-size:110%; text-decoration: underline;">${lang.containerWeighing}</strong></p>
+            <div class="col-12 row">
+                <p class="col-4"><strong>${lang.vehiclePlate} 2:</strong> ${row.lorry_plate_no2}</p>
+                <p class="col-4"><strong>${lang.inWeight} 2:</strong> ${row.gross_weight2}</p>
+                <p class="col-4"><strong>${lang.inDateTime} 2:</strong> ${row.gross_weight2_date}</p>
+                <p class="col-4"><strong>${lang.inWeighBy} 2:</strong> ${row.gross_weight_by2}</p>
+                <p class="col-4"><strong>${lang.outWeight} 2:</strong> ${row.tare_weight2}</p>
+                <p class="col-4"><strong>${lang.outDateTime} 2:</strong> ${row.tare_weight2_date}</p>
+                <p class="col-4"><strong>${lang.outWeighBy} 2:</strong> ${row.tare_weight_by2}</p>
+                <p class="col-4"><strong>${lang.nettWeight} 2:</strong> ${row.nett_weight2}</p>            
+            </div>
+            <div class="col-12 row">
+                <p class="col-4"><strong>${lang.subTotalWeight}:</strong> ${row.final_weight}</p>
+            </div>
+            ` : ''}
         </div>
         `;
         
