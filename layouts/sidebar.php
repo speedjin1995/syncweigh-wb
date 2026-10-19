@@ -1,3 +1,14 @@
+<?php
+    $hasWeighingView = hasPermission('Weighing', ['view', 'create', 'edit']);
+    $canViewAllCompanies = hasModulePermission('Sawn Timber', 'Sawn Timber', ['view_all_companies']);
+    $hasSawnTimberView = hasPermission('Sawn Timber', ['view', 'create', 'edit']) && ($canViewAllCompanies || (($currentCompanyHasSawnTimber ?? 'N') === 'Y'));
+    $hasAccountingView = hasPermission('Accounting', ['view', 'create', 'edit']);
+    $hasMasterDataView = hasPermission('Master Data', ['view', 'create', 'edit']);
+    $hasReportView = hasPermission('Reports', ['view']);
+    $hasDashboardView = hasModulePermission('Dashboard', 'Dashboard', ['view']);
+    $hasUserManagementView = hasPermission('User Management', ['view', 'create', 'edit']);
+?>
+
 <!-- ========== App Menu ========== -->
 <div class="app-menu navbar-menu">
     <!-- LOGO -->
@@ -118,9 +129,6 @@
                                                 <a href="transporter.php" class="nav-link">'.$languageArray['transporter_code'][$language].'</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a href="user.php" class="nav-link">'.$languageArray['staff_code'][$language].'</a>
-                                            </li>
-                                            <li class="nav-item">
                                                 <a href="plant.php" class="nav-link">'.$languageArray['plant_code'][$language].'</a>
                                             </li>
                                             <li class="nav-item">
@@ -171,6 +179,40 @@
                         </ul>
                     </div>
                 </li>
+
+                <?php if($hasUserManagementView): ?>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#userManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="userManagement">
+                        <i class="ri-shield-user-line"></i> <span><?=$languageArray['user_management_code'][$language]?></span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="userManagement">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <?php if(hasModulePermission('User Management', 'Staff', ['view', 'create', 'edit'])): ?>
+                                <li class="nav-item">
+                                    <a href="user.php" class="nav-link"><?=$languageArray['staff_code'][$language]?></a>
+                                </li>
+                                <?php endif; ?>
+                                <?php if(hasModulePermission('User Management', 'Role', ['view', 'create', 'edit'])): ?>
+                                <li class="nav-item">
+                                    <a href="roles.php" class="nav-link"><?=$languageArray['roles_code'][$language]?></a>
+                                </li>
+                                <?php endif; ?>
+                                <?php if(hasModulePermission('User Management', 'Modules', ['view', 'create', 'edit'])): ?>
+                                <li class="nav-item">
+                                    <a href="modules.php" class="nav-link"><?=$languageArray['module_code'][$language]?></a>
+                                </li>
+                                <?php endif; ?>
+                                <?php if(hasModulePermission('User Management', 'Permission', ['view', 'create', 'edit'])): ?>
+                                <li class="nav-item">
+                                    <a href="permissions.php" class="nav-link"><?=$languageArray['permissions_code'][$language]?></a>
+                                </li>
+                                <?php endif; ?>                 
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
                 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button"

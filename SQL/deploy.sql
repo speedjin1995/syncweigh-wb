@@ -2290,3 +2290,62 @@ $$
 DELIMITER ;
 
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pending_record_loaded_code', 'Pending record found for this vehicle, loaded for second weighing', '找到该车辆的待处理记录，已载入进行第二次称重', 'Rekod tertunggak ditemui untuk kenderaan ini, dimuatkan untuk timbangan kedua', 'இந்த வாகனத்திற்கான நிலுவை பதிவு கண்டறியப்பட்டது, இரண்டாவது எடைக்காக ஏற்றப்பட்டது' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pending_record_loaded_code');
+
+-- 20/10/2026 --
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'user_management_code', 'User Management', '用户管理', 'Pengurusan Pengguna', 'பயனர் மேலாண்மை' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'user_management_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'roles_code', 'Roles', '角色', 'Peranan', 'பாத்திரங்கள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'roles_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'module_code', 'Module', '模块', 'Modul', 'தொகுதி' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'module_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'permissions_code', 'Permissions', '权限', 'Kebenaran', 'அனுமதிகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'permissions_code');
+
+CREATE TABLE `modules` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `category` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ALTER TABLE `modules` ADD PRIMARY KEY (`id`);
+ALTER TABLE `modules` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `permissions` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `modules` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ALTER TABLE `permissions` ADD PRIMARY KEY (`id`);
+ALTER TABLE `permissions` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `role_permissions` (
+  `role_id` int(11) NOT NULL,
+  `module_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'module_name_code', 'Module Name', '模块名称', 'Nama Modul', 'தொகுதி பெயர்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'module_name_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'category_code', 'Category', '类别', 'Kategori', 'வகை' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'category_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'please_fill_in_the_field_code', 'Please fill in the field.', '请填写此字段。', 'Sila isi ruangan ini.', 'தயவுசெய்து புலத்தை நிரப்பவும்.' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'please_fill_in_the_field_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'module_records_code', 'Module Records', '模块记录', 'Rekod Modul', 'தொகுதி பதிவுகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'module_records_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'insert_defaults_code', 'Insert Defaults', '插入默认值', 'Masukkan Lalai', 'இயல்புநிலைகளை செருகு' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'insert_defaults_code');
