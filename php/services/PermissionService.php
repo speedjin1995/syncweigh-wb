@@ -320,6 +320,9 @@ class PermissionService extends BaseService {
             ['name' => 'assign_permissions', 'modules' => [
                 ['Role', 'User Management']
             ]],
+            ['name' => 'view_log', 'modules' => [
+                ['Planned Schedule', 'Planned Schedule']
+            ]],
             ['name' => 'reset_password', 'modules' => [
                 ['Staff', 'User Management']
             ]]

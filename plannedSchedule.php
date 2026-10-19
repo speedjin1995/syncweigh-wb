@@ -1,11 +1,11 @@
 <?php include 'layouts/session.php'; ?>
+<?php include 'layouts/head-main.php'; ?>
 <?php
-if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
-    echo '<script type="text/javascript">location.href = "index.php";</script>';
-    exit();
+if (!hasModulePermission('Planned Schedule', 'Planned Schedule', ['view'])){
+    header('Location: no-permission.php');
+    exit;
 }
 ?>
-<?php include 'layouts/head-main.php'; ?>
 
 <head>
     <title><?=$languageArray['planned_schedule_code'][$language]?> | Synctronix - Weighing System</title>
@@ -273,24 +273,32 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                                                 <h5 class="card-title mb-0 text-white"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <?php if(hasModulePermission('Planned Schedule', 'Planned Schedule', ['download_template'])): ?>
                                                                 <a href="template/Planned_Schedule_Template.xlsx" download>
                                                                     <button type="button" class="btn btn-info waves-effect waves-light">
                                                                         <i class="mdi mdi-file-import-outline align-middle me-1"></i>
                                                                         <?=$languageArray['download_template_code'][$language]?>
                                                                     </button>
                                                                 </a>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Planned Schedule', 'Planned Schedule', ['upload_excel'])): ?>
                                                                 <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['upload_excel_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Planned Schedule', 'Planned Schedule', ['cancelled'])): ?>
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Planned Schedule', 'Planned Schedule', ['create'])): ?>
                                                                 <button type="button" id="addSchedule" class="btn btn-success waves-effect waves-light">
                                                                     <i class="ri-add-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -364,6 +372,12 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
     <script type="text/javascript">
 
 var table;
+var permissions = <?= json_encode($_SESSION['permissions'] ?? []) ?>;
+var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
+
+function canDo(permission) {
+    return isSADMIN || (permissions['Planned Schedule'] && permissions['Planned Schedule']['Planned Schedule'] && permissions['Planned Schedule']['Planned Schedule'].includes(permission));
+}
 
 $(function () {
     // Search box, same as index.php
@@ -702,9 +716,9 @@ function renderTable(){
                 render: function (data, type, row) {
                     return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                     '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                    '<li><a class="dropdown-item edit-item-btn" id="edit'+row.id+'" onclick="editSchedule('+row.id+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language]?></a></li>' +
-                    '<li><a class="dropdown-item" id="log'+row.id+'" onclick="showScheduleLog('+row.id+')"><i class="ri-file-list-3-line align-bottom me-2 text-muted"></i> <?=$languageArray['view_log_code'][$language]?></a></li>' +
-                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+row.id+'" onclick="deactivate('+row.id+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language]?> </a></li></ul></div>';
+                    (canDo('edit') ? '<li><a class="dropdown-item edit-item-btn" id="edit'+row.id+'" onclick="editSchedule('+row.id+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language]?></a></li>' : '') +
+                    (canDo('view_log') ? '<li><a class="dropdown-item" id="log'+row.id+'" onclick="showScheduleLog('+row.id+')"><i class="ri-file-list-3-line align-bottom me-2 text-muted"></i> <?=$languageArray['view_log_code'][$language]?></a></li>' : '') +
+                    (canDo('cancelled') ? '<li><a class="dropdown-item remove-item-btn" id="deactivate'+row.id+'" onclick="deactivate('+row.id+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language]?> </a></li>' : '') + '</ul></div>';
                 }
             }
         ]

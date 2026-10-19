@@ -8,13 +8,20 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
-// Same roles that can see Master Data in layouts/sidebar.php
-if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
-    echo json_encode(['status' => 'failed', 'message' => 'You do not have permission to use the planned schedule']);
-    exit();
-}
+require_once '../../requires/permissions.php';
 
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
+
+$actionPermissions = ['getAll' => 'view', 'getLogs' => 'view_log', 'upload' => 'upload_excel', 'deactivate' => 'cancelled', 'deactivateMulti' => 'cancelled'];
+if ($action === 'save') {
+    $requiredPermission = empty($_POST['id']) ? 'create' : 'edit';
+} else {
+    $requiredPermission = $actionPermissions[$action] ?? null;
+}
+if ($requiredPermission !== null && !hasModulePermission('Planned Schedule', 'Planned Schedule', [$requiredPermission])) {
+    echo json_encode(['status' => 'failed', 'message' => 'You do not have permission to do this']);
+    exit();
+}
 $controller = new PlannedScheduleController($db);
 
 switch ($action) {
