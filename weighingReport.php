@@ -15,7 +15,7 @@ require_once 'php/requires/lookup.php';
 $reportDisplayStatuses = array('Sales' => 'Dispatch', 'Purchase' => 'Receiving', 'Local' => 'Internal Transfer', 'Misc' => 'Miscellaneous');
 $printableReportStatuses = array();
 foreach ($reportDisplayStatuses as $status => $display) {
-    if (reportStatusPermitted($status, 'print')) {
+    if (statusPermitted('Reports', $status, 'print')) {
         $printableReportStatuses[] = $display;
     }
 }
@@ -170,16 +170,16 @@ else{
                                                             <label for="transactionStatusSearch" class="form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
                                                             <select id="transactionStatusSearch" class="form-select select2">
                                                                 <option selected>-</option>
-                                                                <?php if($transactionDispatchEnabled && reportStatusPermitted('Sales')){ ?>
+                                                                <?php if($transactionDispatchEnabled && statusPermitted('Reports', 'Sales')){ ?>
                                                                 <option value="Sales"><?=$languageArray['dispatch_code'][$language]?></option>
                                                                 <?php } ?>
-                                                                <?php if($transactionReceivingEnabled && reportStatusPermitted('Purchase')){ ?>
+                                                                <?php if($transactionReceivingEnabled && statusPermitted('Reports', 'Purchase')){ ?>
                                                                 <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
                                                                 <?php } ?>
-                                                                <?php if($transactionInternalTransferEnabled && reportStatusPermitted('Local')){ ?>
+                                                                <?php if($transactionInternalTransferEnabled && statusPermitted('Reports', 'Local')){ ?>
                                                                 <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
                                                                 <?php } ?>
-                                                                <?php if($transactionMiscellaneousEnabled && reportStatusPermitted('Misc')){ ?>
+                                                                <?php if($transactionMiscellaneousEnabled && statusPermitted('Reports', 'Misc')){ ?>
                                                                 <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
                                                                 <?php } ?>
                                                             </select>
@@ -218,7 +218,7 @@ else{
                                                             <label for="invoiceNoSearch" class="form-label"><?=$languageArray['weighing_type_code'][$language]?></label>
                                                             <select id="invoiceNoSearch" class="form-select select2">
                                                                 <option selected>-</option>
-                                                                <?php if(reportWeightTypePermitted('Normal')): ?>
+                                                                <?php if(weightTypePermitted('Normal')): ?>
                                                                 <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
                                                                 <?php endif; ?>
                                                                 <!-- <option value="Container">Primer Mover</option> -->
