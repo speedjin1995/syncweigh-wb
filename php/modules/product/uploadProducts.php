@@ -1,6 +1,12 @@
 <?php
 session_start();
 require_once '../../db_connect.php';
+require_once '../../requires/permissions.php';
+$requiredPermission = 'upload_excel';
+if (!hasModulePermission('Master Data', 'Products', [$requiredPermission])) {
+    echo json_encode(array("status" => "failed", "message" => "You do not have permission to do this"));
+    exit;
+}
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $uid = $_SESSION['username'];

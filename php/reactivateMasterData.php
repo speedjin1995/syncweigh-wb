@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'db_connect.php';
+require_once 'requires/permissions.php';
 
 $username = $_SESSION["username"];
 
@@ -45,6 +46,11 @@ if(isset($_POST['userID'])){
 		$type = $_POST['type'];
 	}
 
+	$reactivateModules = array('Customer' => 'Customer', 'Destination' => 'Destination', 'Product' => 'Products', 'RawMat' => 'Raw Material', 'Supplier' => 'Supplier', 'Vehicle' => 'Vehicles', 'Transporter' => 'Transporter', 'Plant' => 'Plant');
+	if (isset($reactivateModules[$type]) && !hasModulePermission('Master Data', $reactivateModules[$type], ['reactivate'])) {
+		echo json_encode(array("status" => "failed", "message" => "You do not have permission to do this"));
+		exit;
+	}
 	if ($type == 'Customer') {
 		echo json_encode(reactivateRow($db, $username, 'Customer', 'Customer_Log',
 			"customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no",

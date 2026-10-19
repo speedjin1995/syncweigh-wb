@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/functions.php';
 function convertDatetimeToDate($datetime){
     $date = new DateTime($datetime);
   
@@ -255,41 +256,5 @@ function excelSerialToDate($serial) {
     // Excel date starts from 1900-01-01, subtract 1 for correct calculation
     $baseDate = strtotime('1899-12-30');
     return date('Y-m-d', strtotime("+$serial days", $baseDate));
-}
-function transactionStatusFeatures() {
-    return array(
-        'Sales' => 'transaction_dispatch',
-        'Purchase' => 'transaction_receiving',
-        'Local' => 'transaction_internal_transfer',
-        'Misc' => 'transaction_miscellaneous'
-    );
-}
-
-function isTransactionStatusEnabled($status, $db) {
-    $featureCodes = transactionStatusFeatures();
-    if (!isset($featureCodes[$status])) {
-        return true;
-    }
-    require_once __DIR__ . '/../classes/BaseController.php';
-    $baseController = new BaseController($db);
-    return $baseController->isFeatureEnabled($featureCodes[$status]);
-}
-
-// SQL clause that keeps only the statuses whose feature is enabled
-function transactionStatusExclusion($db, $column) {
-    $features = transactionStatusFeatures();
-    $enabled = array();
-    foreach ($features as $status => $featureCode) {
-        if (isTransactionStatusEnabled($status, $db)) {
-            $enabled[] = "'" . $status . "'";
-        }
-    }
-    if (count($enabled) == count($features)) {
-        return '';
-    }
-    if (empty($enabled)) {
-        return " and 1 = 0";
-    }
-    return " and " . $column . " IN (" . implode(', ', $enabled) . ")";
 }
 ?>

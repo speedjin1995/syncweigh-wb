@@ -2,10 +2,37 @@
 session_start();
 require_once 'db_connect.php';
 require_once 'modules/vehicle/vehicleEntry.php';
+require_once 'requires/lookup.php';
 
 $username = $_SESSION["username"];
 
 if(isset($_POST['cancelReason'], $_POST['isEmptyContainer'])){
+	// Cancel needs the Weighing cancelled permission on the status of every record being cancelled
+	$cancelChecks = array();
+	if (!empty($_POST['id'])) {
+		$cancelChecks[] = array(($_POST['isEmptyContainer'] == 'Y') ? 'Weight_Container' : 'Weight', $_POST['id']);
+	}
+	if (!empty($_POST['containerId'])) {
+		$cancelChecks[] = array('Weight_Container', $_POST['containerId']);
+	}
+	foreach ($cancelChecks as $cancelCheck) {
+		$cancelIds = array_filter(array_map('intval', explode(',', $cancelCheck[1])));
+		if (empty($cancelIds)) {
+			continue;
+		}
+		$cancelResult = $db->query("SELECT transaction_status FROM {$cancelCheck[0]} WHERE id IN (" . implode(',', $cancelIds) . ")");
+		if ($cancelResult === false) {
+			echo json_encode(array("status" => "failed", "message" => "Something went wrong"));
+			exit();
+		}
+		while ($cancelRow = $cancelResult->fetch_assoc()) {
+			if (!statusPermitted('Weighing', $cancelRow['transaction_status'], 'cancelled')) {
+				echo json_encode(array("status" => "failed", "message" => "You do not have permission to cancel this weighing record"));
+				exit();
+			}
+		}
+	}
+
 	$cancelReason = filter_input(INPUT_POST, 'cancelReason', FILTER_SANITIZE_STRING);
 	$isEmptyContainer = filter_input(INPUT_POST, 'isEmptyContainer', FILTER_SANITIZE_STRING);
 	//$del = "1";

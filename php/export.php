@@ -3,6 +3,11 @@ session_start();
 // Load the database configuration file 
 require_once 'db_connect.php';
 require_once 'requires/lookup.php';
+// Weighing screen exports use the Weighing export permission; report exports use the Reports one
+$exportCategory = (($_GET['source'] ?? '') == 'weighing') ? 'Weighing' : 'Reports';
+if (!hasPermission($exportCategory, ['export'])) {
+    exit('You do not have permission to export');
+}
 
 // Filter the excel data 
 function filterData(&$str){ 
@@ -55,10 +60,13 @@ if($_GET['toDate'] != null && $_GET['toDate'] != ''){
 
 if($_GET["file"] == 'weight'){
     $searchQuery .= transactionStatusExclusion($db, 'Weight.transaction_status');
+    $searchQuery .= permissionExclusion($exportCategory, 'Weight.transaction_status', 'Weight.weight_type', 'export');
     $searchContainerQuery .= transactionStatusExclusion($db, 'Weight_Container.transaction_status');
+    $searchContainerQuery .= permissionExclusion($exportCategory, 'Weight_Container.transaction_status', 'Weight_Container.weight_type', 'export');
 }
 else{
     $searchQuery .= transactionStatusExclusion($db, 'count.transaction_status');
+    $searchQuery .= permissionExclusion($exportCategory, 'count.transaction_status', 'count.weight_type', 'export');
 }
 
 

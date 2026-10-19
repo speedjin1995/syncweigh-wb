@@ -29,6 +29,7 @@ if($_POST['toDate'] != null && $_POST['toDate'] != ''){
 }
 
 $searchQuery .= transactionStatusExclusion($db, 'transaction_status');
+$searchQuery .= permissionExclusion('Weighing', 'transaction_status', 'weight_type');
 
 if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
 	$searchQuery .= " and transaction_status = '".$_POST['status']."'";

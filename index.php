@@ -1,8 +1,15 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
+<?php
+if (!hasPermission('Weighing', ['view'])){
+    header('Location: no-permission.php');
+    exit;
+}
+?>
 
 <?php
 require_once 'php/classes/BaseController.php';
+require_once 'php/requires/lookup.php';
 $baseController = new BaseController($db);
 $containerWeighingEnabled = $baseController->isFeatureEnabled('container_weighing');
 $differentBinWeighingEnabled = $baseController->isFeatureEnabled('different_bin_weighing');
@@ -80,7 +87,7 @@ $rawMaterial = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY nam
 $rawMaterial2 = $db->query("SELECT * FROM Raw_Mat WHERE status = '0' ORDER BY name ASC");
 $container = $db->query("SELECT * FROM Weight_Container WHERE status = '0' AND is_complete = 'Y' AND is_cancel = 'N'");
 
-if($_SESSION["roles"] != 'ADMIN' && $_SESSION["roles"] != 'SADMIN'){
+if(!hasPermission('Weighing', ['view_all_plants'])){
     // Only the plant picked on selectLocation.php
     $selectedPlantId = intval($_SESSION['selected_plant_id'] ?? 0);
     $plant = $db->query("SELECT * FROM Plant WHERE status = '0' and id = $selectedPlantId");
@@ -196,16 +203,16 @@ else{
                                                             <label for="statusSearch" class="form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
                                                             <select id="statusSearch" class="form-select select2">
                                                                 <option selected>-</option>
-                                                                <?php if($transactionDispatchEnabled){ ?>
+                                                                <?php if($transactionDispatchEnabled && statusPermitted('Weighing', 'Sales')){ ?>
                                                                 <option value="Sales"><?=$languageArray['dispatch_code'][$language]?></option>
                                                                 <?php } ?>
-                                                                <?php if($transactionReceivingEnabled){ ?>
+                                                                <?php if($transactionReceivingEnabled && statusPermitted('Weighing', 'Purchase')){ ?>
                                                                 <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
                                                                 <?php } ?>
-                                                                <?php if($transactionInternalTransferEnabled){ ?>
+                                                                <?php if($transactionInternalTransferEnabled && statusPermitted('Weighing', 'Local')){ ?>
                                                                 <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
                                                                 <?php } ?>
-                                                                <?php if($transactionMiscellaneousEnabled){ ?>
+                                                                <?php if($transactionMiscellaneousEnabled && statusPermitted('Weighing', 'Misc')){ ?>
                                                                 <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
                                                                 <?php } ?>
                                                             </select>
@@ -244,14 +251,16 @@ else{
                                                             <label for="invoiceNoSearch" class="form-label"><?=$languageArray['weighing_type_code'][$language]?></label>
                                                             <select id="invoiceNoSearch" class="form-select select2"  >
                                                                 <option selected>-</option>
+                                                                <?php if(weightTypePermitted('Normal')): ?>
                                                                 <option value="Normal"><?=$languageArray['normal_weighing_code'][$language]?></option>
-                                                                <?php if($containerWeighingEnabled){ ?>
+                                                                <?php endif; ?>
+                                                                <?php if($containerWeighingEnabled && weightTypePermitted('Container')){ ?>
                                                                 <option value="Container">Primer Mover</option>
                                                                 <?php } ?>
-                                                                <?php if($containerWeighingEnabled || $differentBinWeighingEnabled){ ?>
+                                                                <?php if(($containerWeighingEnabled || $differentBinWeighingEnabled) && weightTypePermitted('Empty Container')){ ?>
                                                                 <option value="Empty Container">Primer Mover + Container</option>
                                                                 <?php } ?>
-                                                                <?php if($differentBinWeighingEnabled){ ?>
+                                                                <?php if($differentBinWeighingEnabled && weightTypePermitted('Different Container')){ ?>
                                                                 <option value="Different Container">Primer Mover + Different Bins</option>
                                                                 <?php } ?>
                                                             </select>
@@ -522,10 +531,7 @@ else{
                                                                 <div class="card bg-light">
                                                                     <div class="card-body">
                                                                         <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
-                                                                                if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN'){
-                                                                                    echo 'style="display:none;"';
-                                                                                }?>>
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3">
                                                                                 <div class="row">
                                                                                     <label for="vehiclePlateNo1" class="col-sm-4 col-form-label">
                                                                                         <?=$languageArray['vehicle_plate_no_code'][$language]?>
@@ -587,14 +593,16 @@ else{
                                                                                     <label for="weightType" class="col-sm-4 col-form-label"><?=$languageArray['weight_type_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <select id="weightType" name="weightType" class="form-select select2">
+                                                                                            <?php if(weightTypePermitted('Normal')): ?>
                                                                                             <option value="Normal" selected><?=$languageArray['normal_weighing_code'][$language]?></option>
-                                                                                            <?php if($containerWeighingEnabled){ ?>
+                                                                                            <?php endif; ?>
+                                                                                            <?php if($containerWeighingEnabled && weightTypePermitted('Container')){ ?>
                                                                                             <option value="Container">Primer Mover</option>
                                                                                             <?php } ?>
-                                                                                            <?php if($containerWeighingEnabled || $differentBinWeighingEnabled){ ?>
+                                                                                            <?php if(($containerWeighingEnabled || $differentBinWeighingEnabled) && weightTypePermitted('Empty Container')){ ?>
                                                                                             <option value="Empty Container">Primer Mover + Container</option>
                                                                                             <?php } ?>
-                                                                                            <?php if($differentBinWeighingEnabled){ ?>
+                                                                                            <?php if($differentBinWeighingEnabled && weightTypePermitted('Different Container')){ ?>
                                                                                             <option value="Different Container">Primer Mover + Different Bins</option>
                                                                                             <?php } ?>
                                                                                         </select>
@@ -606,16 +614,16 @@ else{
                                                                                     <label for="transactionStatus" class="col-sm-4 col-form-label"><?=$languageArray['transaction_status_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <select id="transactionStatus" name="transactionStatus" class="form-select select2">
-                                                                                            <?php if($transactionDispatchEnabled){ ?>
+                                                                                            <?php if($transactionDispatchEnabled && statusPermitted('Weighing', 'Sales')){ ?>
                                                                                             <option value="Sales" <?=$defaultTransactionStatus == 'Sales' ? 'selected' : '' ?>><?=$languageArray['dispatch_code'][$language]?></option>
                                                                                             <?php } ?>
-                                                                                            <?php if($transactionReceivingEnabled){ ?>
+                                                                                            <?php if($transactionReceivingEnabled && statusPermitted('Weighing', 'Purchase')){ ?>
                                                                                             <option value="Purchase" <?=$defaultTransactionStatus == 'Purchase' ? 'selected' : '' ?>><?=$languageArray['receiving_code'][$language]?></option>
                                                                                             <?php } ?>
-                                                                                            <?php if($transactionInternalTransferEnabled){ ?>
+                                                                                            <?php if($transactionInternalTransferEnabled && statusPermitted('Weighing', 'Local')){ ?>
                                                                                             <option value="Local" <?=$defaultTransactionStatus == 'Local' ? 'selected' : '' ?>><?=$languageArray['internal_transfer_code'][$language]?></option>
                                                                                             <?php } ?>
-                                                                                            <?php if($transactionMiscellaneousEnabled){ ?>
+                                                                                            <?php if($transactionMiscellaneousEnabled && statusPermitted('Weighing', 'Misc')){ ?>
                                                                                             <option value="Misc" <?=$defaultTransactionStatus == 'Misc' ? 'selected' : '' ?>><?=$languageArray['miscellaneous_code'][$language]?></option>
                                                                                             <?php } ?>
                                                                                         </select>  
@@ -896,7 +904,7 @@ else{
                                                             <div class="col-xxl-4 col-lg-4" id="normalCard">
                                                                 <div class="card bg-light">
                                                                     <div class="card-body">
-                                                                        <div class="row mb-3">
+                                                                        <div class="row mb-3" id="manualWeightRow">
                                                                             <label for="manualWeight" class="col-sm-4 col-form-label"><?=$languageArray['manual_weight_code'][$language]?></label>
                                                                             <div class="col-sm-8">
                                                                                 <div class="form-check align-radio mr-2">
@@ -1275,6 +1283,7 @@ else{
                                                                 <h5 class="card-title mb-0 text-white"><?=$languageArray['previous_records_code'][$language]?> (Lorry)</h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <?php if(hasPermission('Weighing', ['export'])): ?>
                                                                 <button type="button" id="exportPdf" class="btn btn-danger waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_pdf_code'][$language]?>
@@ -1283,19 +1292,20 @@ else{
                                                                     <i class="ri-file-excel-line align-middle me-1"></i>
                                                                     <?=$languageArray['export_excel_code'][$language]?>
                                                                 </button>
-                                                                <?php if ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER') { ?>
+                                                                <?php endif; ?>
+                                                                <?php if (hasPermission('Weighing', ['cancelled'])) { ?>
                                                                 <button type="button" id="multiDeleteLorry" class="btn btn-warning waves-effect waves-light" >
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
                                                                 <?php } ?>
-                                                                <?php if($transactionReceivingEnabled){ ?>
+                                                                <?php if($transactionReceivingEnabled && statusPermitted('Weighing', 'Purchase', 'create')){ ?>
                                                                 <button type="button" id="addWeight" class="btn btn-success waves-effect waves-light" data-transaction-status="Purchase" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['receiving_code'][$language]?>
                                                                 </button>
                                                                 <?php } ?>
-                                                                <?php if($transactionDispatchEnabled){ ?>
+                                                                <?php if($transactionDispatchEnabled && statusPermitted('Weighing', 'Sales', 'create')){ ?>
                                                                 <button type="button" id="addDispatch" class="btn btn-info waves-effect waves-light" data-transaction-status="Sales" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['dispatch_code'][$language]?>
@@ -1357,7 +1367,7 @@ else{
                                                                 <h5 class="card-title mb-0 text-white"><?=$languageArray['pending_empty_container_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
-                                                                <?php if ($role == 'SADMIN' || $role == 'ADMIN' || $role == 'MANAGER') { ?>
+                                                                <?php if (hasPermission('Weighing', ['cancelled'])) { ?>
                                                                 <button type="button" id="multiDeleteContainer" class="btn btn-warning waves-effect waves-light" >
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
@@ -1496,6 +1506,11 @@ else{
     var fromDateSearchPicker;
     var toDateSearchPicker;
     var grossIncomingDatePicker;
+    var canEditWeight = <?= json_encode(hasPermission('Weighing', ['edit'])) ?>;
+    var canWeightOut = <?= json_encode(hasPermission('Weighing', ['weight_out'])) ?>;
+    var canPrintWeight = <?= json_encode(hasPermission('Weighing', ['print'])) ?>;
+    var manualWeighingStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_weighing'); }))) ?>;
+    var manualDateStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_date_change'); }))) ?>;
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
@@ -2283,6 +2298,7 @@ else{
 
             if (selectedIds.length > 0) {
                 $.post('php/exportPdf.php', {
+                    source : 'weighing',
                     fromDate : fromDateI,
                     toDate : fromDateI,
                     transactionStatus : statusI,
@@ -2322,6 +2338,7 @@ else{
                 });
             }else{
                 $.post('php/exportPdf.php', {
+                    source : 'weighing',
                     fromDate : fromDateI,
                     toDate : fromDateI,
                     transactionStatus : statusI,
@@ -2390,13 +2407,13 @@ else{
             });
 
             if (selectedIds.length > 0) {
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                window.open("php/export.php?source=weighing&file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
                 "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&location="+locationI+"&status="+batchNoI+
                 "&transactionId="+encodeURIComponent(transactionIdI)+"&containerNo="+encodeURIComponent(containerNoI)+
                 "&sealNo="+encodeURIComponent(sealNoI)+"&invDelPo="+encodeURIComponent(invDelPoI)+"&isMulti=Y&ids="+selectedIds);
             }else{
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                window.open("php/export.php?source=weighing&file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
                 "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&location="+locationI+"&status="+batchNoI+
                 "&transactionId="+encodeURIComponent(transactionIdI)+"&containerNo="+encodeURIComponent(containerNoI)+
@@ -3033,6 +3050,7 @@ else{
         });
 
         $('#transactionStatus').on('change', function(){
+            applyManualPermissions();
             var customerType = $('#addModal').find('#customerType').val();
             var weightType = $('#addModal').find('#weightType').val();
 
@@ -3311,6 +3329,27 @@ else{
         ?>
     });
 
+    // Manual weighing is shown, and dates can be changed, only for statuses with their Weighing permission
+    function applyManualPermissions() {
+        var status = $('#addModal').find('#transactionStatus').val();
+        var allowed = manualWeighingStatuses.includes(status);
+        $('#manualWeightRow').toggle(allowed);
+        if (!allowed && $('#manualWeightYes').is(':checked')) {
+            $('#manualWeightNo').prop('checked', true).trigger('click');
+        }
+        // Date pickers stay visible but read-only when the status lacks manual_date_change
+        var dateAllowed = manualDateStatuses.includes(status);
+        [grossIncomingDatePicker, tareOutgoingDatePicker, grossIncomingDatePicker2, tareOutgoingDatePicker2].forEach(function (picker) {
+            if (!picker) {
+                return;
+            }
+            picker.set('allowInput', dateAllowed);
+            picker.set('clickOpens', dateAllowed);
+            $(picker.input).prop('readonly', !dateAllowed);
+            $(picker.altInput).prop('readonly', !dateAllowed);
+        });
+    }
+    
     function renderTable() {
         var fromDateI = $('#fromDateSearch').val();
         var toDateI = $('#toDateSearch').val();
@@ -3404,7 +3443,7 @@ else{
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                        if (canEditWeight) {
                             // if (row.is_complete != 'Y' ){
                             if (row.weight_type == 'Primer Mover + Container'){
                                 buttons += `
@@ -3422,7 +3461,7 @@ else{
                                 </div>`;
                             }
                             // }
-                        }else {
+                        }else if (canWeightOut) {
                             if (row.is_complete != 'Y' ){
                                 if (row.weight_type == 'Primer Mover + Container'){
                                     buttons += `
@@ -3445,11 +3484,11 @@ else{
 
                         if (row.weight_type != 'Primer Mover + Container'){
                             buttons += `
-                            <div class="col-auto">
+                            ${canPrintWeight ? `<div class="col-auto">
                                 <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
                                     <i class="fas fa-print"></i>
                                 </button>
-                            </div>`;
+                            </div>` : ''}`;
                         }
 
                         if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
@@ -3525,7 +3564,7 @@ else{
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                        if (canEditWeight) {
                             if (row.is_complete != 'Y' ){
                                 buttons += `
                                 <div class="col-auto">
@@ -3534,7 +3573,7 @@ else{
                                     </button>
                                 </div>`;
                             }
-                        }else {
+                        }else if (canWeightOut) {
                             if (row.is_complete != 'Y' ){
                                 buttons += `
                                 <div class="col-auto">
@@ -3546,11 +3585,11 @@ else{
                         }
 
                         buttons += `
-                        <div class="col-auto">
+                        ${canPrintWeight ? `<div class="col-auto">
                             <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
                                 <i class="fas fa-print"></i>
                             </button>
-                        </div>`;
+                        </div>` : ''}`;
 
                         if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
                             buttons += `
@@ -4129,6 +4168,7 @@ else{
                     $("#manualWeightNo").prop("checked", true);
                     $('#manualWeightNo').trigger('click');
                 }
+                applyManualPermissions();
 
                 $('#addModal').find('#indicatorId').val(obj.message.indicator_id);
                 $('#addModal').find('#weighbridge').val(obj.message.weighbridge_id);
@@ -4332,7 +4372,7 @@ else{
     function print(id, transactionStatus, isEmptyContainer = 'N') {
         $('#spinnerLoading').show();
 
-        $.post('php/print.php', {userID: id, file: 'weight', prePrint: 'en', isEmptyContainer: isEmptyContainer}, function(data){
+        $.post('php/print.php', {userID: id, file: 'weight', prePrint: 'en', isEmptyContainer: isEmptyContainer, source: 'weighing'}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

@@ -1,6 +1,12 @@
 <?php
 session_start();
 require_once '../../db_connect.php';
+require_once '../../requires/permissions.php';
+$requiredPermission = 'cancelled';
+if (!hasModulePermission('Master Data', 'Translation', [$requiredPermission])) {
+    echo json_encode(array("status" => "failed", "message" => "You do not have permission to do this"));
+    exit;
+}
 
 if (isset($_POST['messageId'])) {
     $id = filter_input(INPUT_POST, 'messageId', FILTER_SANITIZE_STRING);

@@ -66,6 +66,50 @@ class BaseService {
     }
 
     /**
+     * Modules hidden from the Weighing/Reports lists when their feature is off.
+     */
+    public function getExcludedModules() {
+        $excluded = [];
+        $containerWeighingEnabled = $this->isFeatureEnabled('container_weighing');
+        $differentBinWeighingEnabled = $this->isFeatureEnabled('different_bin_weighing');
+        $transactionDispatchEnabled = $this->isFeatureEnabled('transaction_dispatch');
+        $transactionReceivingEnabled = $this->isFeatureEnabled('transaction_receiving');
+        $transactionInternalTransferEnabled = $this->isFeatureEnabled('transaction_internal_transfer');
+        $transactionMiscellaneousEnabled = $this->isFeatureEnabled('transaction_miscellaneous');
+
+        // Container weighing modules
+        if (!$containerWeighingEnabled) {
+            $excluded[] = ['name' => 'Container Type', 'category' => 'Weighing'];
+            $excluded[] = ['name' => 'Empty Container Type', 'category' => 'Weighing'];
+        }
+
+        // Different bin weighing modules
+        if (!$differentBinWeighingEnabled) {
+            $excluded[] = ['name' => 'Different Container Type', 'category' => 'Weighing'];
+        }
+
+        // Transaction status modules
+        if (!$transactionDispatchEnabled) {
+            $excluded[] = ['name' => 'Sales', 'category' => 'Weighing'];
+            $excluded[] = ['name' => 'Sales', 'category' => 'Reports'];
+        }
+        if (!$transactionReceivingEnabled) {
+            $excluded[] = ['name' => 'Purchase', 'category' => 'Weighing'];
+            $excluded[] = ['name' => 'Purchase', 'category' => 'Reports'];
+        }
+        if (!$transactionInternalTransferEnabled) {
+            $excluded[] = ['name' => 'Internal Transfer', 'category' => 'Weighing'];
+            $excluded[] = ['name' => 'Internal Transfer', 'category' => 'Reports'];
+        }
+        if (!$transactionMiscellaneousEnabled) {
+            $excluded[] = ['name' => 'Miscellaneous', 'category' => 'Weighing'];
+            $excluded[] = ['name' => 'Miscellaneous', 'category' => 'Reports'];
+        }
+
+        return $excluded;
+    }
+
+    /**
      * Active features with their on/off state for the company.
      */
     public function getCompanyFeatures($companyId = '1') {
