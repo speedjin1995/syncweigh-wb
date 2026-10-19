@@ -307,7 +307,6 @@ class PermissionService extends BaseService {
                 ['Planned Schedule', 'Planned Schedule'],
             ]],
             ['name' => 'export', 'modules' => [
-                ['Audit Log', 'Reports'],
                 ['Sales', 'Reports'],
                 ['Purchase', 'Reports'],
                 ['Local', 'Reports'],
