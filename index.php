@@ -1826,10 +1826,8 @@ else{
 
                 if (obj.status === 'success') {
                     openPrintWindow(obj.message);
-                } else if (obj.status === 'failed') {
-                    toastr["error"](obj.message, "Failed:");
                 } else {
-                    toastr["error"]("Something wrong when activate", "Failed:");
+                    toastFail(obj.status === 'failed' ? obj.message : "Something wrong when export");
                 }
             }).fail(function (error) {
                 console.error("Error exporting PDF:", error);
