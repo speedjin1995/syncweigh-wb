@@ -2629,7 +2629,7 @@ else{
             });
 
             if (selectedIds.length > 0) {
-                $.post('php/exportPdf.php', {
+                $.post('php/modules/weight/api.php?action=exportPdf', {
                     fromDate : fromDateI,
                     toDate : fromDateI,
                     transactionStatus : statusI,
@@ -2667,7 +2667,7 @@ else{
                     alert("An error occurred while generating the PDF.");
                 });
             }else{
-                $.post('php/exportPdf.php', {
+                $.post('php/modules/weight/api.php?action=exportPdf', {
                     fromDate : fromDateI,
                     toDate : fromDateI,
                     transactionStatus : statusI,
@@ -2737,11 +2737,11 @@ else{
             });
 
             if (selectedIds.length > 0) {
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                window.open("php/modules/weight/api.php?action=exportExcel&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
                 "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI+"&isMulti=Y&ids="+selectedIds);
             }else{
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                window.open("php/modules/weight/api.php?action=exportExcel&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
                 "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&status="+batchNoI+"&isMulti=N");
             }
