@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($username_err) && empty($password_err)) {
         require_once "layouts/config.php";
         // Prepare a select statement
-        $sql = "SELECT id, employee_code, username, password, role, plant_id, languages FROM Users WHERE username = ?";
+        $sql = "SELECT id, employee_code, username, password, role, plant_id, languages FROM Users WHERE username = ? AND status = 0";
         
         // Login_Log values, filled in by the checks below
         $logUserId = null;
