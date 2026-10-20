@@ -2460,3 +2460,5 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELE
 
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_first_weighing_code', 'Confirm First Weighing', '确认第一次称重', 'Sahkan Timbangan Pertama', 'पहिलो तौल पुष्टि गर्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_first_weighing_code');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_second_weighing_code', 'Confirm Second Weighing', '确认第二次称重', 'Sahkan Timbangan Kedua', 'दोस्रो तौल पुष्टि गर्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_second_weighing_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'reset_password_code', 'Reset Password', '重置密码', 'Tetapkan Semula Kata Laluan', 'पासवर्ड रिसेट गर्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'reset_password_code');

@@ -289,6 +289,7 @@ class PermissionService extends BaseService {
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
                 ['Planned Schedule', 'Planned Schedule'],
+                ['Staff', 'User Management']
             ]],
             ['name' => 'upload_excel', 'modules' => [
                 ['Translation', 'Master Data'],
@@ -305,6 +306,7 @@ class PermissionService extends BaseService {
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
                 ['Planned Schedule', 'Planned Schedule'],
+                ['Staff', 'User Management']
             ]],
             ['name' => 'export', 'modules' => [
                 ['Sales', 'Reports'],
