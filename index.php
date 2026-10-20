@@ -1803,7 +1803,7 @@ else{
             var ids = checkedIds('#weightTable', (type) => type == 'Lorry');
             var request = {
                 fromDate: filters.fromDate,
-                toDate: filters.fromDate,
+                toDate: filters.toDate,
                 transactionStatus: filters.status,
                 customer: filters.customer,
                 supplier: filters.supplier,
