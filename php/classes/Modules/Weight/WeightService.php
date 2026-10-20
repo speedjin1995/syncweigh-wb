@@ -213,7 +213,8 @@ class WeightService extends BaseService
 
         $v = $this->saveInput($input);
 
-        if ($v['weightType'] == 'Empty Container' && (int)$v['grossIncoming'] < (int)$v['tareOutgoing']) {
+        // Only once an outgoing (tare) weight exists; a first weighing has tareOutgoing 0
+        if ($v['weightType'] == 'Empty Container' && (int)$v['tareOutgoing'] > 0 && (int)$v['grossIncoming'] > (int)$v['tareOutgoing']) {
             return ['status' => 'failed', 'message' => 'Incoming Weight cannot greater than outgoing weight'];
         }
 

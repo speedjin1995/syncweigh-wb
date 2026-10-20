@@ -2154,7 +2154,7 @@ else{
                 $modal.find('#transporter').val(container.transporter).trigger('change');
                 $modal.find('#destination').val(container.destination).trigger('change');
 
-                $modal.find('#vehiclePlateNo1').val(container.lorry_plate_no1).trigger('change');
+                $modal.find('#vehiclePlateNo1').val(container.lorry_plate_no1).trigger('change.select2');
                 $modal.find('#grossIncoming').val(container.gross_weight1);
                 grossIncomingDatePicker.setDate(new Date(container.gross_weight1_date));
                 $modal.find('#grossWeightBy1').val(container.gross_weight_by1);
@@ -2170,7 +2170,7 @@ else{
                     $('.index-vehicle').hide();
                     $('#vehicleNoTxt').show();
                 } else {
-                    $modal.find('#vehiclePlateNo1').val(container.lorry_plate_no1).trigger('change');
+                    $modal.find('#vehiclePlateNo1').val(container.lorry_plate_no1).trigger('change.select2');
                     $('#manualVehicle').val(0);
                     $('#manualVehicle').prop("checked", false);
                     $('.index-vehicle').show();
