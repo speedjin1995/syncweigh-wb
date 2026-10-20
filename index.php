@@ -1625,8 +1625,9 @@ else{
             'searching': true,
             'serverMethod': 'post',
             'ajax': {
-                'url':'php/filterWeight.php',
+                'url':'php/modules/weight/api.php',
                 'data': {
+                    action: 'list',
                     fromDate: fromDateI,
                     toDate: toDateI,
                     status: statusI,
@@ -1770,8 +1771,9 @@ else{
             'searching': true,
             'serverMethod': 'post',
             'ajax': {
-                'url':'php/filterEmptyContainer.php',
+                'url':'php/modules/weight/api.php',
                 'data': {
+                    action: 'listEmptyContainer',
                     fromDate: fromDateI,
                     toDate: toDateI
                 } 
@@ -1868,7 +1870,7 @@ else{
                     row.child.hide();
                     tr.removeClass('shown');
                 } else {
-                    $.post('php/getWeight.php', { userID: row.data().id, format: 'EXPANDABLE' }, function (data) {
+                    $.post('php/modules/weight/api.php', {action: 'get', userID: row.data().id, format: 'EXPANDABLE' }, function (data) {
                         var obj = JSON.parse(data);
                         if (obj.status === 'success') {
                             row.child(format(obj.message)).show();
@@ -1978,7 +1980,7 @@ else{
 
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
-                $.post('php/weight.php', $('#weightForm').serialize(), function(data){
+                $.post('php/modules/weight/api.php', $('#weightForm').serialize() + '&action=save', function(data){
                     var obj = JSON.parse(data); 
                     if(obj.status === 'success'){
                         <?php
@@ -2068,7 +2070,7 @@ else{
 
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
-                $.post('php/weight.php', $('#weightForm').serialize(), function(data){
+                $.post('php/modules/weight/api.php', $('#weightForm').serialize() + '&action=save', function(data){
                     var obj = JSON.parse(data); 
                     if(obj.status === 'success'){
                         $('#spinnerLoading').hide();
@@ -2115,7 +2117,7 @@ else{
                 var prePrintStatus = $('#prePrintModal').find('#prePrint').val();
                 var isEmptyContainer = $('#prePrintModal').find('#isEmptyContainer').val();
 
-                $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+                $.post('php/modules/weight/api.php', {action: 'print', userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
                     var obj = JSON.parse(data);
 
                     if(obj.status === 'success'){
@@ -2146,7 +2148,7 @@ else{
             if($('#cancelForm').valid()){
                 $('#spinnerLoading').show();
                 var id = $('#cancelModal').find('#id').val();
-                $.post('php/deleteWeight.php', $('#cancelForm').serialize(), function(data){
+                $.post('php/modules/weight/api.php', $('#cancelForm').serialize() + '&action=delete', function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -2269,8 +2271,9 @@ else{
                 'searching': true,
                 'serverMethod': 'post',
                 'ajax': {
-                    'url':'php/filterWeight.php',
+                    'url':'php/modules/weight/api.php',
                     'data': {
+                        action: 'list',
                         fromDate: fromDateI,
                         toDate: toDateI,
                         status: statusI,
@@ -2415,8 +2418,9 @@ else{
                 'searching': true,
                 'serverMethod': 'post',
                 'ajax': {
-                    'url':'php/filterEmptyContainer.php',
+                    'url':'php/modules/weight/api.php',
                     'data': {
+                        action: 'listEmptyContainer',
                         fromDate: fromDateI,
                         toDate: toDateI
                     } 
@@ -2829,7 +2833,7 @@ else{
             var transaType = $('#transactionStatus').val();
 
             if (weightType == 'Container'){
-                $.post('php/getContainers.php', {userID: transaType}, function (data){
+                $.post('php/modules/weight/api.php', {action: 'containers', userID: transaType}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -2893,7 +2897,7 @@ else{
                 $('#addModal').find('#containerNoInput').attr('required', true);
                 $('#addModal').find('#emptyContainerNo').attr('required', false);
             }else if (weightType == 'Different Container') {
-                $.post('php/getContainers.php', {userID: transaType}, function (data){
+                $.post('php/modules/weight/api.php', {action: 'containers', userID: transaType}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -3422,7 +3426,7 @@ else{
             var weightType = $('#addModal').find('#weightType').val();
 
             if(weightType == 'Container'){
-                $.post('php/getContainers.php', {userID: $(this).val()}, function (data){
+                $.post('php/modules/weight/api.php', {action: 'containers', userID: $(this).val()}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -3557,7 +3561,7 @@ else{
                 $('#grossCapture').show();
                 $('#tareCapture').show();
             } else if (emptyContainerNo) { 
-                $.post('php/getEmptyContainer.php', {userID: emptyContainerNo}, function (data){
+                $.post('php/modules/weight/api.php', {action: 'emptyContainer', userID: emptyContainerNo}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){ 
@@ -3911,7 +3915,7 @@ else{
             type = 'Weight'
         }
 
-        $.post('php/getWeight.php', {userID: id, type: type}, function(data)
+        $.post('php/modules/weight/api.php', {action: 'get', userID: id, type: type}, function(data)
         {
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
@@ -4179,7 +4183,7 @@ else{
 
     function loadContainerData(callback) {
         var transactionStatus = $('#transactionStatus').val();
-        $.post('php/getContainers.php', {userID: transactionStatus}, function (data){
+        $.post('php/modules/weight/api.php', {action: 'containers', userID: transactionStatus}, function (data){
             var obj = JSON.parse(data);
 
             if (obj.status == 'success'){
@@ -4254,7 +4258,7 @@ else{
         //var id = $('#prePrintModal').find('#id').val();
         /*var prePrintStatus = 'N';
 
-        $.post('php/print.php', {userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
+        $.post('php/modules/weight/api.php', {action: 'print', userID: id, file: 'weight', prePrint: prePrintStatus, isEmptyContainer: isEmptyContainer}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){
