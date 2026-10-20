@@ -242,6 +242,7 @@ else{
                                                             <select id="batchNoSearch" class="form-select select2">
                                                                 <option value="N" selected><?=$languageArray['pending_code'][$language]?></option>
                                                                 <option value="Y"><?=$languageArray['complete_code'][$language]?></option>
+                                                                <option value="C"><?=$languageArray['cancelled_code'][$language]?></option>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
@@ -316,115 +317,135 @@ else{
                             </div>
 
                             <div class="row">
-                                <!-- <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #4CAF50;">
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="card card-animate" id="dispatchCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Dispatch
-                                                    </p>
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0"><?=$languageArray['dispatch_code'][$language]?></p>
                                                 </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="salesInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
+                                                <div class="avatar-sm flex-shrink-0">
                                                     <span class="avatar-title bg-soft-success rounded fs-3">
-                                                        <i class="bx bx-dollar-circle text-success"></i>
+                                                        <i class="bx bx-export text-success"></i>
                                                     </span>
                                                 </div>
+                                            </div>
+                                            <hr>
+                                            <div class="mt-4 list-group list-group-flush">
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="N" data-transaction="Sales">
+                                        <span class="text-muted"><?=$languageArray['pending_code'][$language]?></span>
+                                        <span class="fw-semibold" id="salesPending">0</span>
+                                        </button>
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="Y" data-transaction="Sales">
+                                        <span class="text-muted"><?=$languageArray['complete_code'][$language]?></span>
+                                        <span class="fw-semibold text-success" id="salesComplete">0</span>
+                                        </button>
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="C" data-transaction="Sales">
+                                        <span class="text-muted"><?=$languageArray['cancelled_code'][$language]?></span>
+                                        <span class="fw-semibold text-danger" id="salesCancel">0</span>
+                                        </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #FFC107;">
+                                    <div class="card card-animate" id="receivingCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Receiving
-                                                    </p>
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0"><?=$languageArray['receiving_code'][$language]?></p>
                                                 </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="purchaseInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
+                                                <div class="avatar-sm flex-shrink-0">
                                                     <span class="avatar-title bg-soft-info rounded fs-3">
-                                                        <i class="bx bx-shopping-bag text-info"></i>
+                                                        <i class="bx bx-import text-info"></i>
                                                     </span>
                                                 </div>
+                                            </div>
+                                            <hr>
+                                            <div class="mt-4 list-group list-group-flush">
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="N" data-transaction="Purchase">
+                                        <span class="text-muted"><?=$languageArray['pending_code'][$language]?></span>
+                                        <span class="fw-semibold" id="purchasePending">0</span>
+                                        </button>
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="Y" data-transaction="Purchase">
+                                        <span class="text-muted"><?=$languageArray['complete_code'][$language]?></span>
+                                        <span class="fw-semibold text-success" id="purchaseComplete">0</span>
+                                        </button>
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="C" data-transaction="Purchase">
+                                        <span class="text-muted"><?=$languageArray['cancelled_code'][$language]?></span>
+                                        <span class="fw-semibold text-danger" id="purchaseCancel">0</span>
+                                        </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #81D4FA;">
+                                    <div class="card card-animate" id="transferCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Internal Transfer
-                                                    </p>
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0"><?=$languageArray['internal_transfer_code'][$language]?></p>
                                                 </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="localInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
+                                                <div class="avatar-sm flex-shrink-0">
                                                     <span class="avatar-title bg-soft-warning rounded fs-3">
-                                                        <i class="bx bx-user-circle text-warning"></i>
+                                                        <i class="bx bx-transfer text-warning"></i>
                                                     </span>
                                                 </div>
+                                            </div>
+                                            <hr>
+                                            <div class="mt-4 list-group list-group-flush">
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="N" data-transaction="Local">
+                                        <span class="text-muted"><?=$languageArray['pending_code'][$language]?></span>
+                                        <span class="fw-semibold" id="localPending">0</span>
+                                        </button>
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="Y" data-transaction="Local">
+                                        <span class="text-muted"><?=$languageArray['complete_code'][$language]?></span>
+                                        <span class="fw-semibold text-success" id="localComplete">0</span>
+                                        </button>
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="C" data-transaction="Local">
+                                        <span class="text-muted"><?=$languageArray['cancelled_code'][$language]?></span>
+                                        <span class="fw-semibold text-danger" id="localCancel">0</span>
+                                        </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #9C27B0;">
+                                    <div class="card card-animate" id="miscCard">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-white text-uppercase fw-medium text-truncate mb-0">
-                                                        Miscellaneous
-                                                    </p>
+                                                    <p class="text-uppercase fw-medium text-muted text-truncate mb-0"><?=$languageArray['miscellaneous_code'][$language]?></p>
                                                 </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="miscInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
-                                                        <i class="bx bx-user-circle text-warning"></i>
+                                                <div class="avatar-sm flex-shrink-0">
+                                                    <span class="avatar-title bg-soft-secondary rounded fs-3">
+                                                        <i class="bx bx-dots-horizontal-rounded text-secondary"></i>
                                                     </span>
                                                 </div>
                                             </div>
+                                            <hr>
+                                            <div class="mt-4 list-group list-group-flush">
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="N" data-transaction="Misc">
+                                        <span class="text-muted"><?=$languageArray['pending_code'][$language]?></span>
+                                        <span class="fw-semibold" id="miscPending">0</span>
+                                        </button>
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="Y" data-transaction="Misc">
+                                        <span class="text-muted"><?=$languageArray['complete_code'][$language]?></span>
+                                        <span class="fw-semibold text-success" id="miscComplete">0</span>
+                                        </button>
+                                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 status-item" data-status="C" data-transaction="Misc">
+                                        <span class="text-muted"><?=$languageArray['cancelled_code'][$language]?></span>
+                                        <span class="fw-semibold text-danger" id="miscCancel">0</span>
+                                        </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
 
                                 <div class="col-xl-3 col-md-6 add-new-weight">
-                                    <!-- <button type="button" class="btn btn-lg btn-soft-success" data-bs-toggle="modal" data-bs-target="#addModal"><i
-                                            class="ri-add-circle-line align-middle me-1"></i>
-                                        <?=$languageArray['add_new_code'][$language]?></button> -->
-
                                     <!-- /.modal-dialog -->
                                     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-scrollable custom-xxl">
@@ -1554,6 +1575,19 @@ else{
             checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
         });
 
+        // Handle status item clicks
+        $('.status-item').on('click', function() {
+            var status = $(this).data('status');
+            var transaction = $(this).data('transaction');
+
+            // Update the search form fields
+            $('#statusSearch').val(transaction).trigger('change');
+            $('#batchNoSearch').val(status).trigger('change');
+
+            // Trigger the search
+            $('#filterSearch').click();
+        });
+
         renderTable();
 
         $('#filterSearch').on('click', function(){
@@ -2078,6 +2112,8 @@ else{
                 batchNoI = 'Pending';
             }else if (batchNoI == 'Y'){
                 batchNoI = 'Complete';
+            }else if (batchNoI == 'C'){
+                batchNoI = 'Cancelled';
             }
 
             var selectedIds = []; // An array to store the selected 'id' values
@@ -2186,6 +2222,8 @@ else{
                 batchNoI = 'Pending';
             }else if (batchNoI == 'Y'){
                 batchNoI = 'Complete';
+            }else if (batchNoI == 'C'){
+                batchNoI = 'Cancelled';
             }
 
             var selectedIds = []; // An array to store the selected 'id' values
@@ -3157,6 +3195,16 @@ else{
         ?>
     });
 
+    function renderSummary(summary) {
+        var prefixes = { Sales: 'sales', Purchase: 'purchase', Local: 'local', Misc: 'misc' };
+        var suffixes = { Pending: 'Pending', Complete: 'Complete', Cancelled: 'Cancel' };
+        $.each(summary, function (type, counts) {
+            $.each(counts, function (progress, total) {
+                $('#' + prefixes[type] + suffixes[progress]).text(total);
+            });
+        });
+    }
+
     function renderTable() {
         var fromDateI = $('#fromDateSearch').val();
         var toDateI = $('#toDateSearch').val();
@@ -3256,14 +3304,14 @@ else{
                                 <div class="col-auto">
                                     <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
                                         <i class="fas fa-pen"></i>
-                                    </button>
+                                        </button>
                                 </div>`;
                             }else{
                                 buttons += `
                                 <div class="col-auto">
                                     <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
                                         <i class="fas fa-pen"></i>
-                                    </button>
+                                        </button>
                                 </div>`;
                             }
                             // }
@@ -3303,14 +3351,14 @@ else{
                                 <div class="col-auto">
                                     <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
                                         <i class="fa fa-times"></i>
-                                    </button>
+                                        </button>
                                 </div>`;
                             }else{
                                 buttons += `
                                 <div class="col-auto">
                                     <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
                                         <i class="fa fa-times"></i>
-                                    </button>
+                                        </button>
                                 </div>`;
                             }
                         }
@@ -3322,10 +3370,7 @@ else{
                 }
             ],
             "drawCallback": function(settings) {
-                $('#salesInfo').text(settings.json.salesTotal);
-                $('#purchaseInfo').text(settings.json.purchaseTotal);
-                $('#localInfo').text(settings.json.localTotal);
-                $('#miscInfo').text(settings.json.miscTotal);
+                renderSummary(settings.json.summary);
             }
         });
 
@@ -3376,7 +3421,7 @@ else{
                                 <div class="col-auto">
                                     <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
                                         <i class="fas fa-pen"></i>
-                                    </button>
+                                        </button>
                                 </div>`;
                             }
                         }else {
@@ -3385,7 +3430,7 @@ else{
                                 <div class="col-auto">
                                     <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
                                         <i class="fa-solid fa-weight-hanging"></i>
-                                    </button>
+                                        </button>
                                 </div>`;
                             }
                         }

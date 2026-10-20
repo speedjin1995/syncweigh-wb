@@ -599,7 +599,46 @@ class WeightService extends BaseService
             $rows = $this->fetchAll("SELECT * FROM Weight WHERE status = '0'$plantSql$search" . $order . $limit, $plantTypes . $types, array_merge($plantList, $params));
         }
 
-        return $this->listResponse($p['draw'], $totalRecords, $totalFiltered, $rows, true);
+        $response = $this->listResponse($p['draw'], $totalRecords, $totalFiltered, $rows, true);
+        $response['summary'] = $this->listSummary($input, $plants, $p['search']);
+
+        return $response;
+    }
+
+    /**
+     * Summary card counts for the table filters. The status and type filters are left out so every card keeps its numbers.
+     */
+    private function listSummary(array $input, ?array $plants, string $search): array
+    {
+        [$clauses, $types, $params] = $this->listClauses(array_diff_key($input, ['batch' => true, 'status' => true]), $search);
+
+        if ($plants !== null) {
+            $plantList = $plants === [] ? [''] : array_values($plants);
+            $clauses[] = 'plant_code IN (' . $this->placeholders(count($plantList)) . ')';
+            $types .= str_repeat('s', count($plantList));
+            $params = array_merge($params, $plantList);
+        }
+
+        $where = implode(' AND ', array_merge(["status = '0'"], $clauses));
+        $rows = $this->fetchAll("SELECT transaction_status, SUM(is_complete = 'N') AS Pending, SUM(is_complete = 'Y' AND is_cancel = 'N') AS Complete, SUM(is_cancel = 'Y') AS Cancelled FROM Weight WHERE $where GROUP BY transaction_status", $types, $params);
+        // Pending also lists Weight_Container, as batch = N does in getList
+        $containers = $this->fetchAll("SELECT transaction_status, COUNT(*) AS total FROM Weight_Container WHERE $where AND is_complete = 'N' GROUP BY transaction_status", $types, $params);
+
+        $summary = [];
+        foreach (['Sales', 'Purchase', 'Local', 'Misc'] as $type) {
+            $summary[$type] = ['Pending' => 0, 'Complete' => 0, 'Cancelled' => 0];
+        }
+        $typeOf = fn (string $status): string => in_array($status, ['Sales', 'Purchase', 'Misc'], true) ? $status : 'Local';
+        foreach ($rows as $row) {
+            foreach (['Pending', 'Complete', 'Cancelled'] as $progress) {
+                $summary[$typeOf($row['transaction_status'])][$progress] += (int)$row[$progress];
+            }
+        }
+        foreach ($containers as $row) {
+            $summary[$typeOf($row['transaction_status'])]['Pending'] += (int)$row['total'];
+        }
+
+        return $summary;
     }
 
     /**
@@ -775,7 +814,7 @@ class WeightService extends BaseService
         $set = fn (string $key): bool => !in_array($value($key), ['', '-'], true);
 
         $equals = ['status' => 'transaction_status', 'customer' => 'customer_code', 'supplier' => 'supplier_code', 'invoice' => 'weight_type',
-            'batch' => 'is_complete', 'product' => 'product_code', 'rawMaterial' => 'raw_mat_code', 'plant' => 'plant_code'];
+            'product' => 'product_code', 'rawMaterial' => 'raw_mat_code', 'plant' => 'plant_code'];
         foreach ($equals as $key => $column) {
             if ($set($key)) {
                 $add("$column = ?", [$value($key)]);
@@ -788,6 +827,15 @@ class WeightService extends BaseService
 
         if ($set('transactionId')) {
             $add("transaction_id LIKE ?", ['%' . $value('transactionId') . '%']);
+        }
+
+        // Status cards and status filter: N pending, Y complete, C cancelled
+        if ($value('batch') === 'N') {
+            $clauses[] = "is_complete = 'N'";
+        } elseif ($value('batch') === 'Y') {
+            $clauses[] = "is_complete = 'Y' AND is_cancel = 'N'";
+        } elseif ($value('batch') === 'C') {
+            $clauses[] = "is_cancel = 'Y'";
         }
 
         if ($set('containerNo')) {
@@ -838,16 +886,13 @@ class WeightService extends BaseService
     }
 
     /**
-     * DataTables response with the transaction status counts of the rows on this page
+     * DataTables response for one page of rows
      */
     private function listResponse(int $draw, int $totalRecords, int $totalFiltered, array $rows, bool $weightTypeLabels): array
     {
-        $counts = ['Sales' => 0, 'Purchase' => 0, 'Local' => 0, 'Misc' => 0];
         $data = [];
 
         foreach ($rows as $row) {
-            $status = in_array($row['transaction_status'], ['Sales', 'Purchase', 'Misc'], true) ? $row['transaction_status'] : 'Local';
-            $counts[$status]++;
             $data[] = $this->listRow($row, $weightTypeLabels);
         }
 
@@ -855,11 +900,7 @@ class WeightService extends BaseService
             'draw' => $draw,
             'iTotalRecords' => (string)$totalRecords,
             'iTotalDisplayRecords' => (string)$totalFiltered,
-            'aaData' => $data,
-            'salesTotal' => $counts['Sales'],
-            'purchaseTotal' => $counts['Purchase'],
-            'localTotal' => $counts['Local'],
-            'miscTotal' => $counts['Misc']
+            'aaData' => $data
         ];
     }
 
