@@ -21,6 +21,10 @@ try {
             echo json_encode($controller->list());
             break;
 
+        case 'auditLog':
+            echo json_encode($controller->auditLog());
+            break;
+
         default:
             echo json_encode(['status' => 'failed', 'message' => 'Invalid action']);
     }

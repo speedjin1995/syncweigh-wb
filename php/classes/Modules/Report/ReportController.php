@@ -32,4 +32,36 @@ class ReportController extends BaseController
             'miscTotal' => $result['miscTotal']
         ];
     }
+
+    /**
+     * Audit log rows and column names for the selected log type
+     */
+    public function auditLog(): array
+    {
+        $type = trim((string)($_POST['selectedValue'] ?? ''));
+
+        try {
+            $from = $this->auditLogDate('fromDateSearch', 'Y-m-d 00:00:00');
+            $to = $this->auditLogDate('toDateSearch', 'Y-m-d 23:59:59');
+        } catch (\Exception $e) {
+            return ['status' => 'failed', 'message' => 'Invalid date'];
+        }
+
+        $result = $this->service->getAuditLog($type, $from, $to, $_POST);
+        if ($result === null) {
+            return ['status' => 'failed', 'message' => 'Invalid report type'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Posted date in the given format, or null when empty
+     */
+    private function auditLogDate(string $key, string $format): ?string
+    {
+        $value = trim((string)($_POST[$key] ?? ''));
+
+        return $value === '' ? null : (new \DateTime($value))->format($format);
+    }
 }

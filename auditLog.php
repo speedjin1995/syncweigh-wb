@@ -585,9 +585,10 @@ $(function () {
         // });
 
         $.ajax({
-            url: "php/filterAuditLog.php",
+            url: "php/modules/report/api.php",
             type: "POST",
             data: {
+                action: 'auditLog',
                 selectedValue: selectedValue,
                 fromDateSearch: $('#fromDateSearch').val(),
                 toDateSearch: $('#toDateSearch').val(),
@@ -608,6 +609,12 @@ $(function () {
             },
             dataType: "json",
             success: function (response) {
+                if (response.status === 'failed') {
+                    $("#failBtn").attr("data-toast-text", response.message);
+                    $("#failBtn").click();
+                    return;
+                }
+
                 if ($.fn.DataTable.isDataTable("#dataTable")) {
                     $("#dataTable").DataTable().destroy();
                 }
