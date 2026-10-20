@@ -50,6 +50,59 @@ class VehicleService extends BaseService
         return ['totalRecords' => $totalRecords, 'totalFiltered' => $totalFiltered, 'data' => $data];
     }
 
+    /**
+     * Weighing screen check: an error when the vehicle has a pending weighing, otherwise its active record.
+     * Ported as-is from the legacy getVehicle.php (type = lookup).
+     */
+    public function lookup(string $plateNo): array
+    {
+        $pending = $this->fetchOne("SELECT COUNT(*) AS COUNT FROM Weight WHERE lorry_plate_no1 = ? AND is_complete='N'", 's', [$plateNo]);
+        if (($pending['COUNT'] ?? 0) > 0) {
+            return ['status' => 'error', 'message' => 'There is a pending record for this vehicle'];
+        }
+
+        return ['status' => 'success', 'message' => $this->findActive('veh_number', $plateNo)];
+    }
+
+    /**
+     * Active vehicle by number, for filling the weighing screen (type = pullCustomer)
+     */
+    public function pullCustomer(string $plateNo): array
+    {
+        return ['status' => 'success', 'message' => $this->findActive('veh_number', $plateNo)];
+    }
+
+    /**
+     * Active vehicle by ID (the vehicle page)
+     */
+    public function get(string $id): array
+    {
+        return ['status' => 'success', 'message' => $this->findActive('id', $id)];
+    }
+
+    /**
+     * Details of the last active vehicle matching the column, or an empty list when none. $column is never user input.
+     */
+    private function findActive(string $column, string $value): array
+    {
+        $message = [];
+        foreach ($this->fetchAll("SELECT * FROM Vehicle WHERE $column=? AND status='0'", 's', [$value]) as $row) {
+            $message = [
+                'id' => $row['id'],
+                'veh_number' => $row['veh_number'],
+                'vehicle_weight' => $row['vehicle_weight'],
+                'transporter_name' => $row['transporter_name'],
+                'transporter_code' => $row['transporter_code'],
+                'customer_code' => $row['customer_code'],
+                'customer_name' => $row['customer_name'],
+                'supplier_code' => $row['supplier_code'],
+                'supplier_name' => $row['supplier_name']
+            ];
+        }
+
+        return $message;
+    }
+
     public function create(array $data): array
     {
         if ($this->isDuplicateVehicle($data['veh_number'], 0)) {

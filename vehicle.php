@@ -559,7 +559,7 @@ $(function () {
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/modules/vehicle/getVehicle.php', {userID: id}, function(data)
+    $.post('php/modules/vehicle/api.php', {action: 'get', userID: id}, function(data)
     {
         var obj = JSON.parse(data);
         if(obj.status === 'success'){

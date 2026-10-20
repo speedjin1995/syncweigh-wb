@@ -33,6 +33,18 @@ try {
             echo json_encode($controller->upload());
             break;
 
+        case 'lookup':
+            echo json_encode($controller->lookup());
+            break;
+
+        case 'pullCustomer':
+            echo json_encode($controller->pullCustomer());
+            break;
+
+        case 'get':
+            echo json_encode($controller->get());
+            break;
+
         default:
             echo json_encode(['status' => 'failed', 'message' => 'Invalid action']);
     }
