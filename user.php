@@ -131,105 +131,64 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
         </div><!-- end main content-->
     </div><!-- END layout-wrapper -->
 
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable custom-xxl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language]?></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="memberForm" class="needs-validation" novalidate autocomplete="off">
-                        <div class="row col-12">
-                            <div class="col-12">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <input type="hidden" class="form-control" id="id" name="id"> 
-                                            <div class="col-12 mb-3">
-                                                <div class="row">
-                                                    <label for="employeeCode" class="col-sm-4 col-form-label"><?=$languageArray['employee_code_code'][$language]?> <span class="text-danger">*</span></label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="employeeCode" name="employeeCode" placeholder="<?=$languageArray['employee_code_code'][$language]?>" required>
-                                                        <div class="invalid-feedback">
-                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
-                                                        </div>
-                                                    </div>
+                                    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language]?></h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <div class="row">
-                                                <label for="username" class="col-sm-4 col-form-label"><?=$languageArray['username_code'][$language]?> <span class="text-danger">*</span></label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="username" name="username" placeholder="<?=$languageArray['username_code'][$language]?>" required>
-                                                        <div class="invalid-feedback">
-                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <div class="row">
-                                                <label for="name" class="col-sm-4 col-form-label"><?=$languageArray['name_code'][$language]?> <span class="text-danger">*</span></label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="name" name="name" placeholder="<?=$languageArray['name_code'][$language]?>" required>
-                                                        <div class="invalid-feedback">
-                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <div class="row">
-                                                <label for="useremail" class="col-sm-4 col-form-label"><?=$languageArray['email_code'][$language]?></label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="useremail" name="useremail" placeholder="<?=$languageArray['email_code'][$language]?>">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <div class="row">
-                                                    <label for="roles" class="col-sm-4 col-form-label"><?=$languageArray['role_code'][$language]?> <span class="text-danger">*</span></label>
-                                                    <div class="col-sm-8">
-                                                        <select id="roles" name="roles" class="select2" required>
+                                                <div class="modal-body">
+                                                    <form role="form" id="memberForm" class="needs-validation" novalidate autocomplete="off">
+                                                        <input type="hidden" id="id" name="id">
+                                                        <div class="row g-3">
+                                                            <div class="col-md-6">
+                                                                <label for="employeeCode" class="form-label"><?=$languageArray['employee_code_code'][$language]?> <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" id="employeeCode" name="employeeCode" placeholder="<?=$languageArray['employee_code_code'][$language]?>" required>
+                                                                <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="username" class="form-label"><?=$languageArray['username_code'][$language]?> <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" id="username" name="username" placeholder="<?=$languageArray['username_code'][$language]?>" required>
+                                                                <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="name" class="form-label"><?=$languageArray['name_code'][$language]?> <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" id="name" name="name" placeholder="<?=$languageArray['name_code'][$language]?>" required>
+                                                                <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="useremail" class="form-label"><?=$languageArray['email_code'][$language]?></label>
+                                                                <input type="text" class="form-control" id="useremail" name="useremail" placeholder="<?=$languageArray['email_code'][$language]?>">
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="roles" class="form-label"><?=$languageArray['role_code'][$language]?> <span class="text-danger">*</span></label>
+                                                                <select id="roles" name="roles" class="form-control select2" required>
                                                             <option select="selected" value="">Please Select</option>
                                                             <?php while(mysqli_stmt_fetch($stmt2)){ ?>
                                                                 <option value="<?=$code ?>"><?=$name ?></option>
                                                             <?php } ?>
                                                         </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <div class="row">
-                                                    <label for="plantId" class="col-sm-4 col-form-label"><?=$languageArray['plant_code'][$language]?></label>
-                                                    <div class="col-sm-8">
-                                                        <select id="plantId" name="plantId[]" class="form-control" multiple="multiple">
+                                                                <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="plantId" class="form-label"><?=$languageArray['plant_code'][$language]?></label>
+                                                                <select id="plantId" name="plantId[]" class="form-control select2" multiple="multiple">
                                                             <?php while(mysqli_stmt_fetch($stmt4)){ ?>
                                                                 <option value="<?=$pcode ?>"><?=$pname ?></option>
                                                             <?php } ?>
                                                         </select>
-                                                    </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
                                                 </div>
-                                            </div>                                              
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-12">
-                            <div class="hstack gap-2 justify-content-end">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                <button type="button" class="btn btn-success" id="submitMember"><?=$languageArray['submit_code'][$language]?></button>
-                            </div>
-                        </div><!--end col-->                                                               
-                    </form>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                    <button type="button" class="btn btn-success" id="submitMember"><?=$languageArray['submit_code'][$language]?></button>
+                                                </div>
+                                            </div><!-- /.modal-content -->
+                                        </div><!-- /.modal-dialog -->
+                                    </div><!-- /.modal -->
     <div class="modal fade" id="uploadModal">
         <div class="modal-dialog modal-xl" style="max-width: 90%;">
             <div class="modal-content">
@@ -345,6 +304,34 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             'height': 'auto'
         });
         
+    $('#memberForm').validate({
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    $('#uploadForm').validate({
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
         table = $("#usersTable").DataTable({
             "responsive": true,
             "autoWidth": false,
@@ -352,7 +339,8 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             'serverSide': true,
             'serverMethod': 'post',
             'ajax': {
-                'url':'php/modules/user/loadMembers.php'
+                'url':'php/modules/user/api.php',
+                'data': { action: 'list' }
             },
             'columns': [
                 {
@@ -373,17 +361,24 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                 { 
                     data: 'id',
                     render: function ( data, type, row ) {
-                        // return '<div class="row"><div class="col-3"><button type="button" id="edit'+data+'" onclick="edit('+data+')" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></button></div><div class="col-3"><button type="button" id="deactivate'+data+'" onclick="deactivate('+data+')" class="btn btn-success btn-sm"><i class="fas fa-trash"></i></button></div></div>';
                         return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                         '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                        '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
+                        '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" data-id="'+data+'"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
+                        '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" data-id="'+data+'"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
                     }
                 }
             ]
         });
         
-        $('#submitMember').on('click', function(){
+        $('#usersTable').on('click', '.edit-item-btn', function(){
+        edit($(this).data('id'));
+    });
+
+    $('#usersTable').on('click', '.remove-item-btn', function(){
+        deactivate($(this).data('id'));
+    });
+
+    $('#submitMember').on('click', function(){
             // custom validation for select2
             $('#addModal .select2[required]').each(function () {
                 var select2Field = $(this);
@@ -407,7 +402,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             });
             if($('#memberForm').valid()){
                 $('#spinnerLoading').show();
-                $.post('php/modules/user/users.php', $('#memberForm').serialize(), function(data){
+                $.post('php/modules/user/api.php', $('#memberForm').serialize() + '&action=save', function(data){
                     var obj = JSON.parse(data);
                     if(obj.status === 'success') {
                         table.ajax.reload();
@@ -449,19 +444,6 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
             $('#addModal').modal('show');
             
-            $('#memberForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
         });
 
         $('#uploadUser').on('click', function(){
@@ -484,7 +466,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
             // Send the JSON array to the server
             $.ajax({
-                url: 'php/modules/user/uploadUser.php',
+                url: 'php/modules/user/api.php?action=upload',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
@@ -524,24 +506,10 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             $('#fileInput').val('');
             $('#uploadModal').modal('show');
 
-            $('#uploadForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
         });
 
         $('#uploadModal').find('#previewButton').on('click', function(){
-            var fileInput = document.getElementById('fileInput');
-            var file = fileInput.files[0];
+            var file = $('#fileInput').prop('files')[0];
             var reader = new FileReader();
             
             reader.onload = function(e) {
@@ -558,14 +526,14 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
             var selectedIds = []; // An array to store the selected 'id' values
 
             $("#usersTable tbody input[type='checkbox']").each(function () {
-                if (this.checked) {
+                if ($(this).is(':checked')) {
                     selectedIds.push($(this).val());
                 }
             });
 
             if (selectedIds.length > 0) {
                 if (confirm('Are you sure you want to delete these users?')) {
-                    $.post('php/modules/user/deleteUser.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                    $.post('php/modules/user/api.php', {action: 'delete', ids: selectedIds}, function(data){
                         var obj = JSON.parse(data);
                         
                         if(obj.status === 'success'){
@@ -596,7 +564,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
     function edit(id){
         $('#spinnerLoading').show();
-        $.post('php/modules/user/getUser.php', {userID: id}, function(data){
+        $.post('php/modules/user/api.php', {action: 'get', id: id}, function(data){
             var obj = JSON.parse(data);
             
             if(obj.status === 'success'){
@@ -613,19 +581,6 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
                 $('#addModal').modal('show');
                 
-                $('#memberForm').validate({
-                    errorElement: 'span',
-                    errorPlacement: function (error, element) {
-                        error.addClass('invalid-feedback');
-                        element.closest('.form-group').append(error);
-                    },
-                    highlight: function (element, errorClass, validClass) {
-                        $(element).addClass('is-invalid');
-                    },
-                    unhighlight: function (element, errorClass, validClass) {
-                        $(element).removeClass('is-invalid');
-                    }
-                });
             }
             else if(obj.status === 'failed'){
                 toastr["error"](obj.message, "Failed:");
@@ -640,7 +595,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
     function deactivate(id){
         $('#spinnerLoading').show();
         if (confirm('Are you sure you want to delete this user?')) {
-        $.post('php/modules/user/deleteUser.php', {userID: id}, function(data){
+        $.post('php/modules/user/api.php', {action: 'delete', ids: [id]}, function(data){
                 var obj = JSON.parse(data);
 
                 if(obj.status === 'success'){
@@ -700,22 +655,15 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
 
             for (var j = 0; j < 5; j++) {
                 var cellData = rowData[j];
-                var formattedData = cellData;
 
-                // Check if cellData is a valid Excel date serial number and format it to DD/MM/YYYY
-                if (typeof cellData === 'number' && cellData > 0) {
-                    var excelDate = XLSX.SSF.parse_date_code(cellData);
-                }
-
-                htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (formattedData == null ? '' : formattedData) + '" /></td>';
+                htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (cellData == null ? '' : cellData) + '" /></td>';
             }
             htmlTable += '</tr>';
         }
 
         htmlTable += '</tbody></table>';
 
-        var previewTable = document.getElementById('previewTable');
-        previewTable.innerHTML = htmlTable;
+        $('#previewTable').html(htmlTable);
     }
 
     function reactivate(id) {

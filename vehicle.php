@@ -57,9 +57,6 @@
                                 <div class="col-12">
                                     <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                                         <div class="flex-grow-1">
-                                            <!--h4 class="fs-16 mb-1">Good Morning, Anna!</h4>
-                                            <p class="text-muted mb-0">Here's what's happening with your store
-                                                today.</p-->
                                         </div>
                                     </div><!-- end card header -->
                                 </div>
@@ -76,101 +73,57 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language]?></h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                    </button>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form role="form" id="vehicleForm" class="needs-validation" novalidate autocomplete="off">
-                                                        <div class=" row col-12">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="vehicleNo" class="col-sm-4 col-form-label"><?=$languageArray['vehicle_no_code'][$language]?> <span class="text-danger">*</span></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="<?=$languageArray['vehicle_no_code'][$language]?>" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="vehicleWeight" class="col-sm-4 col-form-label"><?=$languageArray['vehicle_weight_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="number" class="form-control" id="vehicleWeight" name="vehicleWeight" placeholder="<?=$languageArray['vehicle_weight_code'][$language]?>" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3" style="display:none">
-                                                                                <div class="row">
-                                                                                    <label for="transporter" class="col-sm-4 col-form-label"><?=$languageArray['transporter_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-control select2" id="transporter" name="transporter">
-                                                                                            <option value="" selected disabled hidden>Please Select</option>
-                                                                                            <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
-                                                                                                <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="customer" class="col-sm-4 col-form-label"><?=$languageArray['customer_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="customer" name="customer">
-                                                                                            <option selected>-</option>
-                                                                                            <?php while($rowC=mysqli_fetch_assoc($customer)){ ?>
-                                                                                                <option value="<?=$rowC['name'] ?>" data-code="<?=$rowC['customer_code'] ?>"><?=$rowC['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>        
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="supplier" class="col-sm-4 col-form-label"><?=$languageArray['supplier_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-select select2" id="supplier" name="supplier">
-                                                                                            <option selected>-</option>
-                                                                                            <?php while($rowS=mysqli_fetch_assoc($supplier)){ ?>
-                                                                                                <option value="<?=$rowS['name'] ?>" data-code="<?=$rowS['supplier_code'] ?>"><?=$rowS['name'] ?></option>
-                                                                                            <?php } ?>
-                                                                                        </select>        
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <input type="hidden" class="form-control" id="id" name="id">
-                                                                            <input type="hidden" id="transporterCode" name="transporterCode">
-                                                                            <input type="hidden" id="customerCode" name="customerCode">
-                                                                            <input type="hidden" id="supplierCode" name="supplierCode">
-                                                                                                                                                         
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                        <input type="hidden" id="id" name="id">
+                                                        <input type="hidden" id="transporterCode" name="transporterCode">
+                                                        <input type="hidden" id="customerCode" name="customerCode">
+                                                        <input type="hidden" id="supplierCode" name="supplierCode">
+                                                        <div class="row g-3">
+                                                            <div class="col-md-6">
+                                                                <label for="vehicleNo" class="form-label"><?=$languageArray['vehicle_no_code'][$language]?> <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="<?=$languageArray['vehicle_no_code'][$language]?>" required>
+                                                                <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
                                                             </div>
-
+                                                            <div class="col-md-6">
+                                                                <label for="vehicleWeight" class="form-label"><?=$languageArray['vehicle_weight_code'][$language]?></label>
+                                                                <input type="number" class="form-control" id="vehicleWeight" name="vehicleWeight" placeholder="<?=$languageArray['vehicle_weight_code'][$language]?>">
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="transporter" class="form-label"><?=$languageArray['transporter_code'][$language]?></label>
+                                                                <select class="form-control select2" id="transporter" name="transporter">
+                                                                    <option value="" selected disabled hidden>Please Select</option>
+                                                                    <?php while($rowTransporter=mysqli_fetch_assoc($transporter)){ ?>
+                                                                        <option value="<?=$rowTransporter['name'] ?>" data-code="<?=$rowTransporter['transporter_code'] ?>"><?=$rowTransporter['name'] ?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="customer" class="form-label"><?=$languageArray['customer_code'][$language]?></label>
+                                                                <select class="form-control select2" id="customer" name="customer">
+                                                                    <option value="" selected>-</option>
+                                                                    <?php while($rowC=mysqli_fetch_assoc($customer)){ ?>
+                                                                        <option value="<?=$rowC['name'] ?>" data-code="<?=$rowC['customer_code'] ?>"><?=$rowC['name'] ?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="supplier" class="form-label"><?=$languageArray['supplier_code'][$language]?></label>
+                                                                <select class="form-control select2" id="supplier" name="supplier">
+                                                                    <option value="" selected>-</option>
+                                                                    <?php while($rowS=mysqli_fetch_assoc($supplier)){ ?>
+                                                                        <option value="<?=$rowS['name'] ?>" data-code="<?=$rowS['supplier_code'] ?>"><?=$rowS['name'] ?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                            </div>
                                                         </div>
-                                                        
-                                                        <div class="col-lg-12">
-                                                            <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitVehicle"><?=$languageArray['submit_code'][$language]?></button>
-                                                            </div>
-                                                        </div><!--end col-->                                                               
                                                     </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                    <button type="button" class="btn btn-success" id="submitVehicle"><?=$languageArray['submit_code'][$language]?></button>
                                                 </div>
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
@@ -346,6 +299,34 @@ $(function () {
         'height': 'auto'
     });
 
+    $('#vehicleForm').validate({
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    $('#uploadForm').validate({
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
     table = $("#vehicleTable").DataTable({
         "responsive": true,
         "autoWidth": false,
@@ -353,7 +334,8 @@ $(function () {
         'serverSide': true,
         'serverMethod': 'post',
         'ajax': {
-            'url':'php/modules/vehicle/loadVehicle.php'
+            'url':'php/modules/vehicle/api.php',
+            'data': { action: 'list' }
         },
         'columns': [
             {
@@ -376,25 +358,35 @@ $(function () {
                     if(row.status == 'Inactive'){
                         return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                         '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item remove-item-btn" id="reactivate'+data+'" onclick="reactivate('+data+')">Reactivate </a></li></ul></div>';
+                        '<li><a class="dropdown-item reactivate-item-btn" id="reactivate'+data+'" data-id="'+data+'">Reactivate </a></li></ul></div>';
                     }
                     else{
                         return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                         '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                        '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
+                        '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" data-id="'+data+'"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
+                        '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" data-id="'+data+'"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
                     }
                 }
             }
         ]       
     });
     
-    // $.validator.setDefaults({
-    //     submitHandler: function() {
+    $('#vehicleTable').on('click', '.edit-item-btn', function(){
+        edit($(this).data('id'));
+    });
+
+    $('#vehicleTable').on('click', '.remove-item-btn', function(){
+        deactivate($(this).data('id'));
+    });
+
+    $('#vehicleTable').on('click', '.reactivate-item-btn', function(){
+        reactivate($(this).data('id'));
+    });
+
     $('#submitVehicle').on('click', function(){
         if($('#vehicleForm').valid()){
             $('#spinnerLoading').show();
-            $.post('php/modules/vehicle/vehicle.php', $('#vehicleForm').serialize(), function(data){
+            $.post('php/modules/vehicle/api.php', $('#vehicleForm').serialize() + '&action=save', function(data){
                 var obj = JSON.parse(data);
                 if(obj.status === 'success') {
                     table.ajax.reload();
@@ -416,6 +408,7 @@ $(function () {
         $('#addModal').find('#id').val("");
         $('#addModal').find('#vehicleNo').val("");
         $('#addModal').find('#vehicleWeight').val("");
+        $('#addModal').find('#transporter').val("").trigger('change');
         $('#addModal').find('#customer').val("").trigger('change');
         $('#addModal').find('#customerCode').val("");
         $('#addModal').find('#supplier').val("").trigger('change');
@@ -425,25 +418,17 @@ $(function () {
 
         $('#addModal').modal('show');
         
-        $('#vehicleForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
     });
 
     $('#vehicleNo').on('keyup', function(){
         var x = $('#vehicleNo').val();
         x = x.toUpperCase();
         $('#addModal').find('#vehicleNo').val(x);
+    });
+
+    //transporter
+    $('#transporter').on('change', function(){
+        $('#transporterCode').val($('#transporter :selected').data('code'));
     });
 
     //customer
@@ -476,7 +461,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/modules/vehicle/uploadVehicle.php',
+            url: 'php/modules/vehicle/api.php?action=upload',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -516,24 +501,10 @@ $(function () {
         $('#fileInput').val('');
         $('#uploadModal').modal('show');
 
-        $('#uploadForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
     });  
     
     $('#uploadModal').find('#previewButton').on('click', function(){
-        var fileInput = document.getElementById('fileInput');
-        var file = fileInput.files[0];
+        var file = $('#fileInput').prop('files')[0];
         var reader = new FileReader();
         
         reader.onload = function(e) {
@@ -550,14 +521,14 @@ $(function () {
         var selectedIds = []; // An array to store the selected 'id' values
 
         $("#vehicleTable tbody input[type='checkbox']").each(function () {
-            if (this.checked) {
+            if ($(this).is(':checked')) {
                 selectedIds.push($(this).val());
             }
         });
 
         if (selectedIds.length > 0) {
             if (confirm('Are you sure you want to delete these vehicles?')) {
-                $.post('php/modules/vehicle/deleteVehicle.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                $.post('php/modules/vehicle/api.php', {action: 'delete', ids: selectedIds}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -595,6 +566,7 @@ function edit(id){
             $('#addModal').find('#id').val(obj.message.id);
             $('#addModal').find('#vehicleNo').val(obj.message.veh_number);
             $('#addModal').find('#vehicleWeight').val(obj.message.vehicle_weight);
+            $('#addModal').find('#transporter').val(obj.message.transporter_name).trigger('change');
             $('#addModal').find('#customer').val(obj.message.customer_name).trigger('change');
             $('#addModal').find('#supplier').val(obj.message.supplier_name).trigger('change');
 
@@ -603,19 +575,6 @@ function edit(id){
 
             $('#addModal').modal('show');
 
-            $('#vehicleForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
@@ -632,7 +591,7 @@ function edit(id){
 function deactivate(id){
     $('#spinnerLoading').show();
     if (confirm('Are you sure you want to delete this vehicle?')) {
-        $.post('php/modules/vehicle/deleteVehicle.php', {userID: id}, function(data){
+        $.post('php/modules/vehicle/api.php', {action: 'delete', ids: [id]}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){
@@ -691,22 +650,15 @@ function displayPreview(data) {
 
         for (var j = 0; j < 6; j++) {
             var cellData = rowData[j];
-            var formattedData = cellData;
 
-            // Check if cellData is a valid Excel date serial number and format it to DD/MM/YYYY
-            if (typeof cellData === 'number' && cellData > 0) {
-                var excelDate = XLSX.SSF.parse_date_code(cellData);
-            }
-
-            htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (formattedData == null ? '' : formattedData) + '" /></td>';
+            htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (cellData == null ? '' : cellData) + '" /></td>';
         }
         htmlTable += '</tr>';
     }
 
     htmlTable += '</tbody></table>';
 
-    var previewTable = document.getElementById('previewTable');
-    previewTable.innerHTML = htmlTable;
+    $('#previewTable').html(htmlTable);
 }
 
 function reactivate(id) {
