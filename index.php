@@ -2186,7 +2186,7 @@ else{
 
         <?php
             if(isset($_GET['weight'])){
-                echo 'edit('.$_GET['weight'].');';
+                echo 'edit('.(int)$_GET['weight'].');';
             }
         ?>
     });
