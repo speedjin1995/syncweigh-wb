@@ -1570,7 +1570,7 @@ else{
             }
 
             var row = table.row(this);
-            edit(row.data().id, row.data().weight_type == 'Empty Container' ? 'Y' : 'N');
+            edit(row.data().id, row.data().weight_type == emptyContainerLabel ? 'Y' : 'N');
         });
 
         // ---------- Save, print and cancel ----------
