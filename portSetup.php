@@ -1,32 +1,30 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 <?php
-require_once 'php/db_connect.php';
+    require_once 'php/db_connect.php';
 
-$id = $_SESSION['id'];
-$stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
-$stmt->bind_param('s', $id);
-$stmt->execute();
-$result = $stmt->get_result();
-$port = '';
-$baudrate = '';
-$databits = '';
-$parity = '';
-$stopbits = '';
-$indicator = 'BX23';
+    $id = $_SESSION['id'];
+    $stmt = $db->prepare("SELECT * from Port WHERE weighind_id = ?");
+    $stmt->bind_param('s', $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $port = '';
+    $baudrate = '';
+    $databits = '';
+    $parity = '';
+    $stopbits = '';
+    $indicator = 'BX23';
 
-if($row = $result->fetch_assoc()){
-    $port = $row['com_port'];
-    $baudrate = $row['bits_per_second'];
-    $databits = $row['data_bits'];
-    $parity = $row['parity'];
-    $stopbits = $row['stop_bits'];
-    $indicator = $row['indicator'];
-}
+    if($row = $result->fetch_assoc()){
+        $port = $row['com_port'];
+        $baudrate = $row['bits_per_second'];
+        $databits = $row['data_bits'];
+        $parity = $row['parity'];
+        $stopbits = $row['stop_bits'];
+        $indicator = $row['indicator'];
+    }
 ?>
-
     <head>
-        
         <title>Port Setup | Synctronix - Weighing System</title>
         <?php include 'layouts/title-meta.php'; ?>
 
@@ -53,7 +51,7 @@ if($row = $result->fetch_assoc()){
                         <div class="row col-12">
                             <div class="card bg-white">
                                 <div class="card-body">
-                                    <form action="php/updatePort.php" method="post">
+                                    <form id="profileForm" action="php/modules/settings/api.php" method="post">
                                         <div class="row mb-3">
                                             <div class="col-4">
                                                 <div class="form-group">
