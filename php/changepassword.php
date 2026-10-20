@@ -28,22 +28,22 @@ if(isset($_POST['oldPassword'], $_POST['newPassword'], $_POST['confirmPassword']
     			$stmt2->close();
     			$db->close();
 
-				echo '<script type="text/javascript">alert("Update successfully!");window.location.href = "../ChangePassword.php";</script>'; 
+				echo '<script type="text/javascript">alert("Update successfully!");window.location.href = "../myProfile.php";</script>'; 
 				//header("location: ../ChangePassword.php");
     		} else{
-    		    echo '<script type="text/javascript">alert("Failed to update due to "'.$stmt2->error.');window.location.href = "../ChangePassword.php";</script>'; 
+    		    echo '<script type="text/javascript">alert("Failed to update due to "'.$stmt2->error.');window.location.href = "../myProfile.php";</script>'; 
 				//header("location: ../ChangePassword.php");
     		}
 		} else{
-		    echo '<script type="text/javascript">alert("Old password is not matched");window.location.href = "../ChangePassword.php";</script>'; 
+		    echo '<script type="text/javascript">alert("Old password is not matched");window.location.href = "../myProfile.php";</script>'; 
 			//header("location: ../ChangePassword.php");
 		}
 	} else{
-	    echo '<script type="text/javascript">alert("Data retrieve failed");window.location.href = "../ChangePassword.php";</script>'; 
+	    echo '<script type="text/javascript">alert("Data retrieve failed");window.location.href = "../myProfile.php";</script>'; 
 		//header("location: ../ChangePassword.php");
 	}
 } else{
-    echo '<script type="text/javascript">alert("Please fill in all the fields");window.location.href = "../ChangePassword.php";</script>'; 
+    echo '<script type="text/javascript">alert("Please fill in all the fields");window.location.href = "../myProfile.php";</script>'; 
 	//header("location: ../ChangePassword.php");
 }
 ?>

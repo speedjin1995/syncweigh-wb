@@ -73,9 +73,10 @@ if ($role != 'SADMIN'){
                 <div class="page-content">
                     <div class="container-fluid">
                         <div class="row col-12">
-                            <div class="card bg-light">
+                            <div class="card bg-white">
                                 <div class="card-body">
-                                    <form action="php/updateCompany.php" method="post">
+                                    <form id="companyForm" action="php/modules/settings/api.php" method="post">
+                                        <input type="hidden" name="action" value="updateCompany">
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="row">
@@ -154,6 +155,7 @@ if ($role != 'SADMIN'){
 
         <?php include 'layouts/customizer.php'; ?>
 
+        <script src="plugins/jquery/jquery.min.js"></script>
         <?php include 'layouts/vendor-scripts.php'; ?>
 
         <!-- swiper js -->
@@ -164,5 +166,23 @@ if ($role != 'SADMIN'){
         
         <!-- App js -->
         <script src="assets/js/app.js"></script>
+
+        <script type="text/javascript">
+            $(function () {
+                $('#companyForm').on('submit', function (e) {
+                    e.preventDefault();
+                    $.post('php/modules/settings/api.php', $(this).serialize(), function (data) {
+                        var obj = JSON.parse(data);
+
+                        if (obj.status === 'success') {
+                            toastr["success"](obj.message, "Success:");
+                        }
+                        else {
+                            toastr["error"](obj.message, "Failed:");
+                        }
+                    });
+                });
+            });
+        </script>
     </body>
 </html>

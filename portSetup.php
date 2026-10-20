@@ -51,7 +51,7 @@ if($row = $result->fetch_assoc()){
                 <div class="page-content">
                     <div class="container-fluid">
                         <div class="row col-12">
-                            <div class="card bg-light">
+                            <div class="card bg-white">
                                 <div class="card-body">
                                     <form action="php/updatePort.php" method="post">
                                         <div class="row mb-3">
@@ -151,6 +151,7 @@ if($row = $result->fetch_assoc()){
         
 
         <?php include 'layouts/customizer.php'; ?>
+        <script src="plugins/jquery/jquery.min.js"></script>
         <?php include 'layouts/vendor-scripts.php'; ?>
 
         <!-- swiper js -->
@@ -159,8 +160,6 @@ if($row = $result->fetch_assoc()){
         <script src="assets/js/pages/profile.init.js"></script>
         <!-- App js -->
         <script src="assets/js/app.js"></script>
-        <!-- Include jQuery library -->
-        <script src="plugins/jquery/jquery.min.js"></script>
         <!-- Include jQuery Validate plugin -->
         <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
         <script type="text/javascript">
@@ -180,7 +179,7 @@ if($row = $result->fetch_assoc()){
                 $.validator.setDefaults({
                     submitHandler: function () {
                         $('#spinnerLoading').show();
-                        $.post('php/updatePort.php', $('#profileForm').serialize(), function(data){
+                        $.post('php/modules/settings/api.php', $('#profileForm').serialize() + '&action=updatePort', function(data){
                             var obj = JSON.parse(data); 
                             
                             if(obj.status === 'success'){

@@ -1179,3 +1179,5 @@ END
 $$
 DELIMITER ;
 
+-- 20/10/2026 --
+CREATE OR REPLACE TRIGGER TRG_UPD_COMPANY BEFORE UPDATE ON Company FOR EACH ROW INSERT INTO Company_Log (company_id, company_code, company_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, action_id, action_by, event_date) VALUES (NEW.id, NEW.company_code, NEW.company_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, 2, NEW.modified_by, NEW.modified_date);
