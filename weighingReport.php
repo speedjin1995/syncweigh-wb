@@ -629,7 +629,7 @@ else{
             'searching': true,
             'serverMethod': 'post',
             'ajax': {
-                'url':'php/filterReports.php',
+                'url':'php/modules/report/api.php?action=list',
                 'data': {
                     fromDate: fromDateI,
                     toDate: toDateI,
@@ -721,7 +721,7 @@ else{
                 'searching': true,
                 'serverMethod': 'post',
                 'ajax': {
-                    'url':'php/filterReports.php',
+                    'url':'php/modules/report/api.php?action=list',
                     'data': {
                         fromDate: fromDateI,
                         toDate: toDateI,
@@ -815,7 +815,7 @@ else{
                     $('#exportPdfForm').find('#file').val('weight');
                     $('#exportPdfModal').modal('hide');
 
-                    $.post('php/exportPdf.php', $('#exportPdfForm').serialize(), function(response){
+                    $.post('php/modules/weight/api.php?action=exportPdf', $('#exportPdfForm').serialize(), function(response){
                         var obj = JSON.parse(response);
 
                         if(obj.status === 'success'){
@@ -885,7 +885,7 @@ else{
                 $('#exportPdfForm').find('#ids').val(selectedIds);
                 $('#exportPdfModal').modal('hide');
 
-                $.post('php/exportPdf.php', $('#exportPdfForm').serialize(), function(response){
+                $.post('php/modules/weight/api.php?action=exportPdf', $('#exportPdfForm').serialize(), function(response){
                     var obj = JSON.parse(response);
 
                     if(obj.status === 'success'){
@@ -911,7 +911,7 @@ else{
                 $('#exportPdfForm').find('#isMulti').val('N');
                 $('#exportPdfModal').modal('hide');
 
-                $.post('php/exportPdf.php', $('#exportPdfForm').serialize(), function(response){
+                $.post('php/modules/weight/api.php?action=exportPdf', $('#exportPdfForm').serialize(), function(response){
                     var obj = JSON.parse(response);
 
                     if(obj.status === 'success'){
@@ -961,12 +961,12 @@ else{
             });
 
             if (selectedIds.length > 0) {
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                window.open("php/modules/weight/api.php?action=exportExcel&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
                 "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
                 "&destination="+destinationI+"&plant="+plantI+"&status="+statusI+"&isMulti=Y&ids="+selectedIds);
             } else {
-                window.open("php/export.php?file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                window.open("php/modules/weight/api.php?action=exportExcel&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+transactionStatusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
                 "&weighingType="+weightTypeI+"&product="+productI+"&rawMat="+rawMatI+
                 "&destination="+destinationI+"&plant="+plantI+"&status="+statusI+"&isMulti=N");
