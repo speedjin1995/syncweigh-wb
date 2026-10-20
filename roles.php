@@ -12,11 +12,12 @@ $id = $_SESSION['id'];
 $name = $_SESSION["username"];
 
 require_once "php/services/PermissionService.php";
+require_once "php/services/RoleService.php";
 $permissionService = new PermissionService($db, $_SESSION['username'] ?? '');
 $excludedModuleKeys = array_map(fn($e) => $e['category'] . '|' . $e['name'], $permissionService->getExcludedModules());
 
-$modules = $db->query("SELECT * FROM modules ORDER BY category ASC, name ASC");
-$categories = $db->query("SELECT DISTINCT category FROM modules ORDER BY category ASC");
+$modules = $db->query("SELECT * FROM modules WHERE NOT " . RoleService::HIDDEN_MODULES_SQL . " ORDER BY category ASC, name ASC");
+$categories = $db->query("SELECT DISTINCT category FROM modules WHERE NOT " . RoleService::HIDDEN_MODULES_SQL . " ORDER BY category ASC");
 $permissionsResult = $db->query("SELECT * FROM permissions ORDER BY id ASC");
 $permissions = array();
 while($p = $permissionsResult->fetch_assoc()){

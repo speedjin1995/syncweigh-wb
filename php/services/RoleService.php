@@ -5,6 +5,9 @@ class RoleService extends BaseService {
 
     protected $table = 'roles';
 
+    // Modules hidden from the roles permission modal; their existing grants are kept when a role is saved
+    const HIDDEN_MODULES_SQL = "((category = 'User Management' AND name IN ('Modules', 'Permission')) OR (category = 'Master Data' AND name = 'Plant'))";
+
     public function getAll($post) {
         $draw = $post['draw'] ?? 1;
         $start = (int)($post['start'] ?? 0);
@@ -120,7 +123,7 @@ class RoleService extends BaseService {
             throw new Exception('Please select at least 1 permission');
         }
 
-        $del = $this->db->prepare("DELETE FROM role_permissions WHERE role_id=?");
+        $del = $this->db->prepare("DELETE FROM role_permissions WHERE role_id=? AND module_id NOT IN (SELECT id FROM modules WHERE " . self::HIDDEN_MODULES_SQL . ")");
         if (!$del) throw new Exception($this->db->error);
         $del->bind_param('s', $roleId);
         if (!$del->execute()) throw new Exception($del->error);
