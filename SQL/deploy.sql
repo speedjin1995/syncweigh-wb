@@ -1925,3 +1925,540 @@ ALTER TABLE `Vehicle_Entry_Limit`
   ADD KEY `idx_vehicle_range` (`vehicle_id`, `start_date`, `end_date`);
 
 ALTER TABLE `Vehicle_Entry_Limit_Log` DROP COLUMN IF EXISTS `limit_date`;
+
+-- 18/10/2026 --
+CREATE TABLE IF NOT EXISTS `Bin_No` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `bin_no_code` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Bin_No_Log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `bin_no_id` int(11) NOT NULL,
+  `bin_no_code` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `action_id` int(11) DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Bin_Type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `bin_type_code` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Bin_Type_Log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `bin_type_id` int(11) NOT NULL,
+  `bin_type_code` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `action_id` int(11) DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_BIN_NO` AFTER INSERT ON `Bin_No` FOR EACH ROW
+INSERT INTO Bin_No_Log (
+    bin_no_id, bin_no_code, name, status, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.bin_no_code, NEW.name, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_BIN_NO` BEFORE UPDATE ON `Bin_No` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    INSERT INTO Bin_No_Log (
+        bin_no_id, bin_no_code, name, status, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.bin_no_code, NEW.name, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+CREATE OR REPLACE TRIGGER `TRG_INS_BIN_TYPE` AFTER INSERT ON `Bin_Type` FOR EACH ROW
+INSERT INTO Bin_Type_Log (
+    bin_type_id, bin_type_code, name, status, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.bin_type_code, NEW.name, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_BIN_TYPE` BEFORE UPDATE ON `Bin_Type` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    INSERT INTO Bin_Type_Log (
+        bin_type_id, bin_type_code, name, status, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.bin_type_code, NEW.name, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Vehicle` ADD COLUMN IF NOT EXISTS `bin_no` varchar(50) NULL AFTER `raw_mat_name`, ADD COLUMN IF NOT EXISTS `bin_type` varchar(50) NULL AFTER `bin_no`;
+ALTER TABLE `Vehicle_Log` ADD COLUMN IF NOT EXISTS `bin_no` varchar(50) NULL AFTER `raw_mat_name`, ADD COLUMN IF NOT EXISTS `bin_type` varchar(50) NULL AFTER `bin_no`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_VEH` AFTER INSERT ON `Vehicle` FOR EACH ROW
+INSERT INTO Vehicle_Log (
+    vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, bin_no, bin_type, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, NEW.contractor_id, NEW.raw_mat_code, NEW.raw_mat_name, NEW.bin_no, NEW.bin_type, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_VEH` BEFORE UPDATE ON `Vehicle` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Insert into Vehicle_Log table
+    INSERT INTO Vehicle_Log (
+        vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, bin_no, bin_type, action_id, action_by, event_date
+    )
+    VALUES (
+        NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, NEW.contractor_id, NEW.raw_mat_code, NEW.raw_mat_name, NEW.bin_no, NEW.bin_type, action_value, NEW.modified_by, NEW.modified_date
+    );
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_no_code', 'Bin No', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'container_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_no_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_no_code_code', 'Bin No Code', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'container_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_no_code_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_no_name_code', 'Bin No Name', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'container_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_no_name_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'add_new_bin_no_code', 'Add New Bin No', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'container_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'add_new_bin_no_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_type_code', 'Bin Type', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'seal_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_type_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_type_code_code', 'Bin Type Code', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'seal_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_type_code_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'bin_type_name_code', 'Bin Type Name', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'seal_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'bin_type_name_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'add_new_bin_type_code', 'Add New Bin Type', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'seal_no2_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'add_new_bin_type_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'duration_code', 'Duration', '时长', 'Tempoh', 'கால அளவு' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'duration_code');
+
+INSERT INTO `Log_Action` (`id`, `description`) SELECT 6, 'Reactivated' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Log_Action` WHERE `id` = 6);
+
+-- UPDATE triggers: skip while @skip_audit = 1; Users_Log now also gets status (NOT NULL)
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_CUSTOMER` BEFORE UPDATE ON `Customer` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Customer_Log (
+            customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_DESTINATION` BEFORE UPDATE ON `Destination` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Destination_Log (
+            destination_id, destination_code, name, description, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.destination_code, NEW.name, NEW.description, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PLANT` BEFORE UPDATE ON `Plant` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Plant_Log (
+            plant_id, plant_code, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, sales, purchase, locals, misc, do_no, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.plant_code, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.sales, NEW.purchase, NEW.locals, NEW.misc, NEW.do_no, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PRODUCT` BEFORE UPDATE ON `Product` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Product_Log (
+            product_id, product_code, name, description, variance, high, low, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.product_code, NEW.name, NEW.description, NEW.variance, NEW.high, NEW.low, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_RAW_MAT` BEFORE UPDATE ON `Raw_Mat` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Raw_Mat_Log (
+            raw_mat_id, raw_mat_code, name, description, variance, high, low, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.raw_mat_code, NEW.name, NEW.description, NEW.variance, NEW.high, NEW.low, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_SUPPLIER` BEFORE UPDATE ON `Supplier` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Supplier_Log (
+            supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_TRANSPORTER` BEFORE UPDATE ON `Transporter` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Transporter_Log (
+            transporter_id, transporter_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.transporter_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_USER` BEFORE UPDATE ON `Users` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Users_Log (
+            user_id, employee_code, username, name, useremail, password, plant_id, languages, status, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.employee_code, NEW.username, NEW.name, NEW.useremail, NEW.password, NEW.plant_id, NEW.languages, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_UPD_VEH` BEFORE UPDATE ON `Vehicle` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Vehicle_Log (
+            vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, bin_no, bin_type, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, NEW.contractor_id, NEW.raw_mat_code, NEW.raw_mat_name, NEW.bin_no, NEW.bin_type, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pending_record_loaded_code', 'Pending record found for this vehicle, loaded for second weighing', '找到该车辆的待处理记录，已载入进行第二次称重', 'Rekod tertunggak ditemui untuk kenderaan ini, dimuatkan untuk timbangan kedua', 'இந்த வாகனத்திற்கான நிலுவை பதிவு கண்டறியப்பட்டது, இரண்டாவது எடைக்காக ஏற்றப்பட்டது' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pending_record_loaded_code');
+
+-- 19/10/2026 --
+INSERT INTO message_resource (message_key_code, en, zh, my, ne) VALUES
+('delivery_order_info_code', 'Delivery Order Info', '交货单信息', 'Maklumat Pesanan Penghantaran', 'डेलिभरी अर्डर जानकारी'),
+('weighing_info_code', 'Weighing Info', '称重信息', 'Maklumat Penimbangan', 'तौल जानकारी'),
+('in_weigh_by_code', 'In Weigh By', '入站称重员', 'Ditimbang Masuk Oleh', 'भित्र तौल गर्ने'),
+('out_weigh_by_code', 'Out Weigh By', '出站称重员', 'Ditimbang Keluar Oleh', 'बाहिर तौल गर्ने'),
+('sub_total_weight_code', 'Sub Total Weight', '小计重量', 'Jumlah Berat Kecil', 'उप कुल तौल'),
+('container_weighing_code', 'Container Weighing', '集装箱称重', 'Penimbangan Kontena', 'कन्टेनर तौल'),
+('primer_mover_code', 'Primer Mover', '牵引车', 'Penggerak Utama', 'प्राइमर मुभर'),
+('primer_mover_container_code', 'Primer Mover + Container', '牵引车 + 集装箱', 'Penggerak Utama + Kontena', 'प्राइमर मुभर + कन्टेनर'),
+('primer_mover_diff_bins_code', 'Primer Mover + Different Bins', '牵引车 + 不同箱', 'Penggerak Utama + Tong Berbeza', 'प्राइमर मुभर + फरक बिनहरू');
+
+INSERT INTO message_resource (message_key_code, en, zh, my, ne) VALUES
+('purchase_info_code', 'Purchase Information', '采购信息', 'Maklumat Pembelian', 'खरिद जानकारी');
+
+UPDATE message_resource SET en = 'Delivery Order Information' WHERE message_key_code = 'delivery_order_info_code';
+
+-- 20/10/2026 --
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'user_management_code', 'User Management', '用户管理', 'Pengurusan Pengguna', 'பயனர் மேலாண்மை' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'user_management_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'roles_code', 'Roles', '角色', 'Peranan', 'பாத்திரங்கள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'roles_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'module_code', 'Module', '模块', 'Modul', 'தொகுதி' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'module_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'permissions_code', 'Permissions', '权限', 'Kebenaran', 'அனுமதிகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'permissions_code');
+
+CREATE TABLE `modules` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `category` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ALTER TABLE `modules` ADD PRIMARY KEY (`id`);
+ALTER TABLE `modules` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `permissions` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `modules` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ALTER TABLE `permissions` ADD PRIMARY KEY (`id`);
+ALTER TABLE `permissions` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `role_permissions` (
+  `role_id` int(11) NOT NULL,
+  `module_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'module_name_code', 'Module Name', '模块名称', 'Nama Modul', 'தொகுதி பெயர்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'module_name_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'category_code', 'Category', '类别', 'Kategori', 'வகை' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'category_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'please_fill_in_the_field_code', 'Please fill in the field.', '请填写此字段。', 'Sila isi ruangan ini.', 'தயவுசெய்து புலத்தை நிரப்பவும்.' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'please_fill_in_the_field_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'module_records_code', 'Module Records', '模块记录', 'Rekod Modul', 'தொகுதி பதிவுகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'module_records_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'insert_defaults_code', 'Insert Defaults', '插入默认值', 'Masukkan Lalai', 'இயல்புநிலைகளை செருகு' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'insert_defaults_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'permissions_code', 'Permissions', '权限', 'Kebenaran', 'அனுமதிகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'permissions_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'permission_records_code', 'Permission Records', '权限记录', 'Rekod Kebenaran', 'அனுமதி பதிவுகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'permission_records_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'insert_default_permissions_code', 'Insert Default Permissions', '插入默认权限', 'Masukkan Kebenaran Lalai', 'இயல்புநிலை அனுமதிகளை செருகு' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'insert_default_permissions_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'permission_name_code', 'Permission Name', '权限名称', 'Nama Kebenaran', 'அனுமதி பெயர்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'permission_name_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'applicable_module_code', 'Applicable Module', '适用模块', 'Modul Berkenaan', 'பொருந்தும் தொகுதி' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'applicable_module_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'all_modules_code', 'All Modules', '所有模块', 'Semua Modul', 'அனைத்து தொகுதிகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'all_modules_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'insert_default_permissions_warning_code', 'This will insert default permissions for all modules. Are you sure you want to continue?', '这将为所有模块插入默认权限。您确定要继续吗？', 'Ini akan memasukkan kebenaran lalai untuk semua modul. Adakah anda pasti mahu meneruskan?', 'இது அனைத்து தொகுதிகளுக்கும் இயல்புநிலை அனுமதிகளை செருகும். தொடர விரும்புகிறீர்களா?' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'insert_default_permissions_warning_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'multi_delete_permissions_message_code', 'Are you sure you want to delete the selected permissions?', '您确定要删除所选权限吗？', 'Adakah anda pasti mahu memadamkan kebenaran yang dipilih?', 'தேர்ந்தெடுக்கப்பட்ட அனுமதிகளை நீக்க விரும்புகிறீர்களா?' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'multi_delete_permissions_message_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'delete_permissions_message_code', 'Are you sure you want to delete this permission?', '您确定要删除此权限吗？', 'Adakah anda pasti mahu memadamkan kebenaran ini?', 'இந்த அனுமதியை நீக்க விரும்புகிறீர்களா?' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'delete_permissions_message_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'edit_code', 'Edit', '编辑', 'Sunting', 'திருத்து' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'edit_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'delete_code', 'Delete', '删除', 'Padam', 'நீக்கு' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'delete_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'role_and_permissions_code', 'Role and Permissions', '角色和权限', 'Peranan dan Kebenaran', 'பங்கு மற்றும் அனுமதிகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'role_and_permissions_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'role_records_code', 'Role Records', '角色记录', 'Rekod Peranan', 'பங்கு பதிவுகள்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'role_records_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'role_code_code', 'Role Code', '角色代码', 'Kod Peranan', 'பங்கு குறியீடு' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'role_code_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'role_name_code', 'Role Name', '角色名称', 'Nama Peranan', 'பங்கு பெயர்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'role_name_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'manage_permissions_code', 'Manage Permissions', '管理权限', 'Urus Kebenaran', 'அனுமதிகளை நிர்வகி' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'manage_permissions_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'no_module_found_code', 'No Module Found', '未找到模块', 'Tiada Modul Ditemui', 'தொகுதி கிடைக்கவில்லை' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'no_module_found_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'select_all_code', 'Select All', '全选', 'Pilih Semua', 'அனைத்தையும் தேர்ந்தெடு' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'select_all_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'multi_roles_delete_confirmation_code', 'Are you sure you want to delete the selected roles?', '您确定要删除所选角色吗？', 'Adakah anda pasti mahu memadamkan peranan yang dipilih?', 'தேர்ந்தெடுக்கப்பட்ட பங்குகளை நீக்க விரும்புகிறீர்களா?' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'multi_roles_delete_confirmation_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'min_one_role_delete_code', 'Please select at least one role to delete', '请至少选择一个要删除的角色', 'Sila pilih sekurang-kurangnya satu peranan untuk dipadamkan', 'நீக்க குறைந்தது ஒரு பங்கையாவது தேர்ந்தெடுக்கவும்' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'min_one_role_delete_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'deselect_all_code', 'Deselect All', '取消全选', 'Nyahpilih Semua', 'அனைத்தையும் தேர்வுநீக்கு' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'deselect_all_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) 
+SELECT 'roles_delete_confirmation_code', 'Are you sure you want to delete this role?', '您确定要删除此角色吗？', 'Adakah anda pasti mahu memadamkan peranan ini?', 'இந்த பங்கை நீக்க விரும்புகிறீர்களா?' 
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'roles_delete_confirmation_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'access_denied_code', 'Access Denied', '访问被拒绝', 'Akses Ditolak', 'அணுகல் மறுக்கப்பட்டது' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'access_denied_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'no_permission_code', 'You do not have permission to access this page.', '您没有权限访问此页面。', 'Anda tidak mempunyai kebenaran untuk mengakses halaman ini.', 'இந்தப் பக்கத்தை அணுக உங்களுக்கு அனுமதி இல்லை.' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'no_permission_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'back_to_weighing_code', 'Back to Weighing', '返回称重', 'Kembali ke Penimbangan', 'நிறுத்தலுக்கு திரும்பு' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'back_to_weighing_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_first_weighing_code', 'Confirm First Weighing', '确认第一次称重', 'Sahkan Timbangan Pertama', 'पहिलो तौल पुष्टि गर्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_first_weighing_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_second_weighing_code', 'Confirm Second Weighing', '确认第二次称重', 'Sahkan Timbangan Kedua', 'दोस्रो तौल पुष्टि गर्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_second_weighing_code');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'reset_password_code', 'Reset Password', '重置密码', 'Tetapkan Semula Kata Laluan', 'पासवर्ड रिसेट गर्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'reset_password_code');

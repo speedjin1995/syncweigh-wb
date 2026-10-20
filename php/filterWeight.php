@@ -29,6 +29,7 @@ if($_POST['toDate'] != null && $_POST['toDate'] != ''){
 }
 
 $searchQuery .= transactionStatusExclusion($db, 'transaction_status');
+$searchQuery .= permissionExclusion('Weighing', 'transaction_status', 'weight_type');
 
 if($_POST['status'] != null && $_POST['status'] != '' && $_POST['status'] != '-'){
 	$searchQuery .= " and transaction_status = '".$_POST['status']."'";
@@ -198,6 +199,13 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     $weightType = $row['weight_type'];
   }
 
+  // Time since IN for vehicles still inside; '-' for completed/cancelled rows
+  $duration = '-';
+  if($row['is_complete'] == 'N' && $row['is_cancel'] == 'N' && !empty($row['gross_weight1_date'])){
+    $elapsed = (new DateTime($row['gross_weight1_date']))->diff(new DateTime());
+    $duration = ($elapsed->days > 0 ? $elapsed->days.'d ' : '') . ($elapsed->h > 0 ? $elapsed->h.'h ' : '') . $elapsed->i.'m';
+  }
+
   $data[] = array( 
     "id"=>$row['id'],
     "location"=>searchLocationNameById($row['location_id'], $db),
@@ -231,6 +239,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     "remarks"=>$row['remarks'],
     "gross_weight1"=>$row['gross_weight1'],
     "gross_weight1_date"=>$row['gross_weight1_date'],
+    "duration"=>$duration,
     "tare_weight1"=>$row['tare_weight1'],
     "tare_weight1_date"=>$row['tare_weight1_date'],
     "nett_weight1"=>$row['nett_weight1'],

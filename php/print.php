@@ -33,6 +33,31 @@ function formatWeight($weight){
     return $formatted;
 }
 
+// Report and weighing screens: the record's transaction status must allow Print on that screen
+if (in_array(($_POST['source'] ?? ''), array('report', 'weighing'))) {
+    require_once 'requires/lookup.php';
+    $printId = filter_input(INPUT_POST, 'userID', FILTER_SANITIZE_STRING);
+    $printTableCheck = (($_POST['isEmptyContainer'] ?? 'N') == 'Y') ? 'Weight_Container' : 'Weight';
+    $printStatus = '';
+    $printStmt = $db->prepare("SELECT transaction_status FROM {$printTableCheck} WHERE id = ?");
+    if (!$printStmt) {
+        echo json_encode(array("status" => "failed", "message" => "Something went wrong"));
+        exit;
+    }
+    $printStmt->bind_param('s', $printId);
+    $printStmt->execute();
+    $printStmt->bind_result($printStatus);
+    $printStmt->fetch();
+    $printStmt->close();
+    $printAllowed = ($_POST['source'] == 'report')
+        ? statusPermitted('Reports', $printStatus, 'print')
+        : statusPermitted('Weighing', $printStatus, 'print');
+    if (!$printAllowed) {
+        echo json_encode(array("status" => "failed", "message" => "You do not have permission to print this record"));
+        exit;
+    }
+}
+
 if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
     $stmt = $db->prepare("SELECT * FROM Company WHERE id=?");
     $stmt->bind_param('s', $compids);

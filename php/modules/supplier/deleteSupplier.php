@@ -1,6 +1,12 @@
 <?php
 session_start();
 require_once '../../db_connect.php';
+require_once '../../requires/permissions.php';
+$requiredPermission = 'cancelled';
+if (!hasModulePermission('Master Data', 'Supplier', [$requiredPermission])) {
+    echo json_encode(array("status" => "failed", "message" => "You do not have permission to do this"));
+    exit;
+}
 
 $username = $_SESSION["username"];
 
@@ -10,7 +16,7 @@ if (isset($_POST['userID'])) {
     $type = isset($_POST['type']) && $_POST['type'] != '' ? $_POST['type'] : '';
 
     if ($type == 'MULTI') {
-        $ids = is_array($_POST['userID']) ? implode(",", $_POST['userID']) : $_POST['userID'];
+        $ids = is_array($_POST['userID']) ? implode(",", array_map('intval', $_POST['userID'])) : intval($_POST['userID']);
 
         if ($stmt = $db->prepare("UPDATE Supplier SET status=? WHERE id IN ($ids)")) {
             $stmt->bind_param('s', $del);

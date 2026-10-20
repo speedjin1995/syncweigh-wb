@@ -2,6 +2,7 @@
 session_start();
 require_once '../../db_connect.php';
 require_once '../../services/BaseService.php';
+require_once '../../requires/permissions.php';
 
 if(!isset($_SESSION['id'])){
 	echo '<script type="text/javascript">location.href = "../login.php";</script>'; 
@@ -11,6 +12,12 @@ if(!isset($_SESSION['id'])){
 $id = $_SESSION['id'];
 
 if (isset($_POST['customerCode'])) {
+
+    $requiredPermission = empty($_POST["id"]) ? 'create' : 'edit';
+    if (!hasModulePermission('Master Data', 'Customer', [$requiredPermission])) {
+        echo json_encode(array("status" => "failed", "message" => "You do not have permission to do this"));
+        exit;
+    }
 
     $customerId = empty($_POST["id"]) ? null : trim($_POST["id"]);
     $customerCode = empty($_POST["customerCode"]) ? null : trim($_POST["customerCode"]);

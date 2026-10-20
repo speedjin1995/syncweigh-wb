@@ -23,7 +23,7 @@ class ContractorService extends BaseService {
         $columnSortOrder = (isset($post['order'][0]['dir']) && $post['order'][0]['dir'] === 'desc') ? 'desc' : 'asc';
 
         // Total records
-        $totalResult = $this->db->query("SELECT COUNT(*) as total FROM {$this->table} WHERE status = '0'");
+        $totalResult = $this->db->query("SELECT COUNT(*) as total FROM {$this->table} WHERE status IN ('0','1')");
         $totalRecords = $totalResult->fetch_assoc()['total'];
 
         // Search (DataTables search box)
@@ -33,18 +33,19 @@ class ContractorService extends BaseService {
         }
 
         // Filtered records
-        $filteredResult = $this->db->query("SELECT COUNT(*) as total FROM {$this->table} WHERE status = '0' {$searchQuery}");
+        $filteredResult = $this->db->query("SELECT COUNT(*) as total FROM {$this->table} WHERE status IN ('0','1') {$searchQuery}");
         $totalFiltered = $filteredResult->fetch_assoc()['total'];
 
         // Data
-        $dataResult = $this->db->query("SELECT * FROM {$this->table} WHERE status = '0' {$searchQuery} ORDER BY {$columnName} {$columnSortOrder} LIMIT {$start}, {$length}");
+        $dataResult = $this->db->query("SELECT * FROM {$this->table} WHERE status IN ('0','1') {$searchQuery} ORDER BY status ASC, {$columnName} {$columnSortOrder} LIMIT {$start}, {$length}");
 
         $data = [];
         while ($row = $dataResult->fetch_assoc()) {
             $data[] = [
                 'id'              => $row['id'],
                 'contractor_code' => $row['contractor_code'],
-                'name'            => $row['name']
+                'name'            => $row['name'],
+                'status'          => $row['status']
             ];
         }
 
@@ -103,6 +104,17 @@ class ContractorService extends BaseService {
      */
     public function delete($id) {
         $stmt = $this->db->prepare("UPDATE {$this->table} SET status=1, modified_by=? WHERE id=?");
+        if (!$stmt) throw new Exception($this->db->error);
+        $stmt->bind_param('ss', $this->username, $id);
+        if (!$stmt->execute()) throw new Exception($stmt->error);
+        $stmt->close();
+    }
+
+    /**
+     * Reactivate (restore soft-deleted) contractor
+     */
+    public function reactivate($id) {
+        $stmt = $this->db->prepare("UPDATE {$this->table} SET status=0, modified_by=? WHERE id=?");
         if (!$stmt) throw new Exception($this->db->error);
         $stmt->bind_param('ss', $this->username, $id);
         if (!$stmt->execute()) throw new Exception($stmt->error);

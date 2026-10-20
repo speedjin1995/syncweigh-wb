@@ -1,5 +1,11 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
+<?php
+if (!hasModulePermission('Master Data', 'Contractor', ['view'])){
+    header('Location: no-permission.php');
+    exit;
+}
+?>
 
 <head>
     <title><?=$languageArray['contractor_code'][$language]?> | Synctronix - Weighing System</title>
@@ -175,24 +181,32 @@
                                                                 <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <?php if(hasModulePermission('Master Data', 'Contractor', ['download_template'])): ?>
                                                                 <a href="template/Contractor_Template.xlsx" download>
                                                                     <button type="button" class="btn btn-info waves-effect waves-light">
                                                                         <i class="mdi mdi-file-import-outline align-middle me-1"></i>
                                                                         <?=$languageArray['download_template_code'][$language]?>
                                                                     </button>
                                                                 </a>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Contractor', ['upload_excel'])): ?>
                                                                 <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['upload_excel_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Contractor', ['cancelled'])): ?>
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Contractor', ['create'])): ?>
                                                                 <button type="button" id="addContractor" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -259,6 +273,12 @@
     <script type="text/javascript">
 
 var table;
+var permissions = <?= json_encode($_SESSION['permissions'] ?? []) ?>;
+var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
+
+function canDo(permission) {
+    return isSADMIN || (permissions['Master Data'] && permissions['Master Data']['Contractor'] && permissions['Master Data']['Contractor'].includes(permission));
+}
 var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
 
 $(function () {
@@ -450,22 +470,27 @@ function renderTable(){
                 data: 'id',
                 responsivePriority: 1,
                 render: function ( data, type, row ) {
+                    if (row.status == '1') {
+                        if (!canDo('reactivate')) { return ''; }
+                        return `<button title="Reactivate" type="button" id="reactivate${data}" onclick="reactivate(${data})" class="btn btn-warning btn-sm">Reactivate</button>`;
+                    }
+
                     var buttons = `
                         <div class="dropdown d-inline-block">
                             <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="ri-more-fill align-middle"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
+                                ${canDo('edit') ? `<li>
                                     <a class="dropdown-item edit-item-btn" id="edit${data}" onclick="edit(${data})">
                                         <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
                                     </a>
-                                </li>
-                                <li>
+                                </li>` : ''}
+                                ${canDo('cancelled') ? `<li>
                                     <a class="dropdown-item remove-item-btn" id="deactivate${data}" onclick="deactivate(${data})">
                                         <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
                                     </a>
-                                </li>
+                                </li>` : ''}
                             </ul>
                         </div>`;
 
@@ -524,6 +549,29 @@ function edit(id){
         }
         $('#spinnerLoading').hide();
     });
+}
+
+function reactivate(id){
+    $('#spinnerLoading').show();
+    if (confirm('Do you want to reactivate this item?')) {
+        $.post('php/modules/contractor/index.php', {action: 'reactivate', id: id}, function(data){
+            var obj = JSON.parse(data);
+
+            $('#spinnerLoading').hide();
+            if(obj.status === 'success'){
+                table.ajax.reload();
+                $("#successBtn").attr('data-toast-text', obj.message);
+                $("#successBtn").click();
+            }
+            else {
+                $("#failBtn").attr('data-toast-text', obj.message );
+                $("#failBtn").click();
+            }
+        });
+    }
+    else {
+        $('#spinnerLoading').hide();
+    }
 }
 
 function deactivate(id){

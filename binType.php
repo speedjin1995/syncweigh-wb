@@ -1,0 +1,615 @@
+<?php include 'layouts/session.php'; ?>
+<?php include 'layouts/head-main.php'; ?>
+<?php
+if (!hasModulePermission('Master Data', 'Bin Type', ['view'])){
+    header('Location: no-permission.php');
+    exit;
+}
+?>
+
+<head>
+    <title><?=$languageArray['bin_type_code'][$language]?> | Synctronix - Weighing System</title>
+    <?php include 'layouts/title-meta.php'; ?>
+
+    <!-- jsvectormap css -->
+    <link href="assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+
+    <!--Swiper slider css-->
+    <link href="assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+    <!--datatable css-->
+    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
+    <!--datatable responsive css-->
+    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
+    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+    <!-- Include jQuery library -->
+    <script src="plugins/jquery/jquery.min.js"></script>
+    <!-- Include jQuery Validate plugin -->
+    <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
+
+    <?php include 'layouts/head-css.php'; ?>
+
+</head>
+
+<?php include 'layouts/body.php'; ?>
+
+<div class="loading" id="spinnerLoading" style="display:none">
+  <div class='mdi mdi-loading' style='transform:scale(0.79);'>
+    <div></div>
+  </div>
+</div>
+
+<!-- Begin page -->
+<div id="layout-wrapper">
+
+    <?php include 'layouts/menu.php'; ?>
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="h-100">
+                            <div class="row mb-3 pb-1">
+                                <div class="col-12">
+                                    <div class="d-flex align-items-lg-center flex-lg-row flex-column">
+                                        <div class="flex-grow-1">
+                                        </div>
+                                    </div><!-- end card header -->
+                                </div>
+                                <!--end col-->
+                            </div>
+                            <!--end row-->
+
+                            <button type="button" hidden id="successBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
+                            <button type="button" hidden id="failBtn" data-toast data-toast-text="Welcome Back ! This is a Toast Notification" data-toast-gravity="top" data-toast-position="center" data-toast-duration="3000" data-toast-close="close" class="btn btn-light w-xs">Top Center</button>
+
+                            <div class="row">
+                                <div class="col-xl-3 col-md-6 add-new-weight">
+
+                                    <!-- /.modal-dialog -->
+                                    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_bin_type_code'][$language]?></h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form role="form" id="binTypeForm" class="needs-validation" novalidate autocomplete="off">
+                                                        <div class=" row col-12">
+                                                            <div class="col-xxl-12 col-lg-12">
+                                                                <div class="card bg-light">
+                                                                    <div class="card-body">
+                                                                        <div class="row">
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="binTypeCode" class="col-sm-4 col-form-label"><?=$languageArray['bin_type_code_code'][$language]?> <span class="text-danger">*</span></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="binTypeCode" name="binTypeCode" placeholder="Bin Type Code" required>
+                                                                                        <div class="invalid-feedback">
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="binTypeName" class="col-sm-4 col-form-label"><?=$languageArray['bin_type_name_code'][$language]?> <span class="text-danger">*</span></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="text" class="form-control" id="binTypeName" name="binTypeName" placeholder="Bin Type Name" required>
+                                                                                        <div class="invalid-feedback">
+                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <input type="hidden" class="form-control" id="id" name="id">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-12">
+                                                            <div class="hstack gap-2 justify-content-end">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                                <button type="button" class="btn btn-success" id="submitBinType"><?=$languageArray['submit_code'][$language]?></button>
+                                                            </div>
+                                                        </div><!--end col-->
+                                                    </form>
+                                                </div>
+                                            </div><!-- /.modal-content -->
+                                        </div><!-- /.modal-dialog -->
+                                    </div><!-- /.modal -->
+                                </div>
+                            </div> <!-- end row-->
+
+                            <div class="modal fade" id="uploadModal">
+                                <div class="modal-dialog modal-xl" style="max-width: 90%;">
+                                    <div class="modal-content">
+                                        <form role="form" id="uploadForm">
+                                            <div class="modal-header bg-gray-dark color-palette">
+                                                <h4 class="modal-title"><?=$languageArray['upload_excel_code'][$language]?></h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="file" id="fileInput">
+                                                <button type="button" id="previewButton"><?=$languageArray['preview_data_code'][$language]?></button>
+                                                <div id="previewTable" style="overflow: auto;"></div>
+                                            </div>
+                                            <div class="modal-footer justify-content-between bg-gray-dark color-palette">
+                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                <button type="button" class="btn btn-success" id="submitBinTypeUpload"><?=$languageArray['submit_code'][$language]?></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="errorModal" style="display:none">
+                                <div class="modal-dialog modal-xl" style="max-width: 50%;">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-gray-dark color-palette">
+                                            <h4 class="modal-title"><?=$languageArray['error_log_code'][$language]?></h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <ol id="errorList" class="text-danger mt-2" style="padding-left: 20px;"></ol>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="h-100">
+                                        <!--datatable-->
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <div class="d-flex justify-content-between">
+                                                            <div>
+                                                                <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
+                                                            </div>
+                                                            <div class="flex-shrink-0">
+                                                                <?php if(hasModulePermission('Master Data', 'Bin Type', ['download_template'])): ?>
+                                                                <a href="template/Bin_Type_Template.xlsx" download>
+                                                                    <button type="button" class="btn btn-info waves-effect waves-light">
+                                                                        <i class="mdi mdi-file-import-outline align-middle me-1"></i>
+                                                                        <?=$languageArray['download_template_code'][$language]?>
+                                                                    </button>
+                                                                </a>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Bin Type', ['upload_excel'])): ?>
+                                                                <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light">
+                                                                    <i class="ri-file-pdf-line align-middle me-1"></i>
+                                                                    <?=$languageArray['upload_excel_code'][$language]?>
+                                                                </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Bin Type', ['cancelled'])): ?>
+                                                                <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
+                                                                    <i class="ri-delete-bin-fill align-middle me-1"></i>
+                                                                    <?=$languageArray['delete_code'][$language]?>
+                                                                </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Bin Type', ['create'])): ?>
+                                                                <button type="button" id="addBinType" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
+                                                                    <i class="ri-add-circle-line align-middle me-1"></i>
+                                                                    <?=$languageArray['add_new_code'][$language]?>
+                                                                </button>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <table id="binTypeTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
+                                                                    <th><?=$languageArray['bin_type_code_code'][$language]?></th>
+                                                                    <th><?=$languageArray['bin_type_name_code'][$language]?></th>
+                                                                    <th><?=$languageArray['action_code'][$language]?></th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!--end row-->
+                                    </div> <!-- end .h-100-->
+                                </div> <!-- end col -->
+                            </div><!-- container-fluid -->
+
+                        </div> <!-- end .h-100-->
+                    </div> <!-- end col -->
+                </div>
+                <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+
+            <?php include 'layouts/footer.php'; ?>
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+    <?php include 'layouts/customizer.php'; ?>
+
+    <?php include 'layouts/vendor-scripts.php'; ?>
+
+    <!--Swiper slider js-->
+    <script src="assets/libs/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Dashboard init -->
+    <script src="assets/js/pages/dashboard-ecommerce.init.js"></script>
+    <script src="assets/js/pages/form-validation.init.js"></script>
+    <script src="plugins/select2/js/select2.full.min.js"></script>
+    <!-- App js -->
+    <script src="assets/js/app.js"></script>
+
+    <!-- prismjs plugin -->
+    <script src="assets/libs/prismjs/prism.js"></script>
+
+    <!-- notifications init -->
+    <script src="assets/js/pages/notifications.init.js"></script>
+    <script src="plugins/datatables/jquery.dataTables.js"></script>
+    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="assets/js/pages/datatables.init.js"></script>
+
+    <script type="text/javascript">
+
+var table;
+var permissions = <?= json_encode($_SESSION['permissions'] ?? []) ?>;
+var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
+
+function canDo(permission) {
+    return isSADMIN || (permissions['Master Data'] && permissions['Master Data']['Bin Type'] && permissions['Master Data']['Bin Type'].includes(permission));
+}
+var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
+
+$(function () {
+    renderTable();
+
+    $('#selectAllCheckbox').on('change', function() {
+        $('#binTypeTable tbody input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+    });
+
+    $('#multiDeactivate').on('click', function () {
+        var selectedIds = [];
+        $("#binTypeTable tbody input[type='checkbox']").each(function () {
+            if (this.checked) {
+                selectedIds.push($(this).val());
+            }
+        });
+
+        if (selectedIds.length > 0) {
+            if (confirm('Are you sure you want to delete these bin types?')) {
+                $('#spinnerLoading').show();
+                $.post('php/modules/binType/index.php', {action: 'deleteMulti', userID: selectedIds}, function(data){
+                    var obj = JSON.parse(data);
+                    $('#spinnerLoading').hide();
+                    if(obj.status === 'success'){
+                        table.ajax.reload();
+                        $("#successBtn").attr('data-toast-text', obj.message);
+                        $("#successBtn").click();
+                    }
+                    else {
+                        $("#failBtn").attr('data-toast-text', obj.message);
+                        $("#failBtn").click();
+                    }
+                });
+            }
+        }
+        else {
+            alert("Please select at least one bin type to delete.");
+        }
+    });
+
+    $('#uploadExcel').on('click', function(){
+        $('#previewTable').html('');
+        $('#fileInput').val('');
+        $('#uploadModal').modal('show');
+    });
+
+    $('#previewButton').on('click', function(){
+        var file = document.getElementById('fileInput').files[0];
+        if (!file) {
+            alert("Please choose an Excel file first.");
+            return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            displayPreview(e.target.result);
+        };
+        reader.readAsBinaryString(file);
+    });
+
+    $('#submitBinTypeUpload').on('click', function(){
+        $('#spinnerLoading').show();
+        var formData = $('#uploadForm').serializeArray();
+        var data = [];
+        var rowIndex = -1;
+        formData.forEach(function(field) {
+            var match = field.name.match(/([a-zA-Z0-9]+)\[(\d+)\]/);
+            if (match) {
+                var fieldName = match[1];
+                var index = parseInt(match[2], 10);
+                if (index !== rowIndex) {
+                    rowIndex = index;
+                    data.push({});
+                }
+                data[index][fieldName] = field.value;
+            }
+        });
+
+        $.ajax({
+            url: 'php/modules/binType/index.php?action=upload',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                var obj = JSON.parse(response);
+                $('#spinnerLoading').hide();
+                if (obj.status === 'success') {
+                    $('#uploadModal').modal('hide');
+                    table.ajax.reload(null, false);
+                    $("#successBtn").attr('data-toast-text', obj.message);
+                    $("#successBtn").click();
+                }
+                else if (obj.status === 'error') {
+                    $('#uploadModal').modal('hide');
+                    table.ajax.reload(null, false);
+                    $('#errorList').empty();
+                    obj.message.forEach(function(msg) {
+                        $('#errorList').append($('<li>').text(msg));
+                    });
+                    $('#errorModal').modal('show');
+                }
+                else {
+                    $("#failBtn").attr('data-toast-text', obj.message);
+                    $("#failBtn").click();
+                }
+            }
+        });
+    });
+
+    $('#submitBinType').on('click', function(){
+        if($('#binTypeForm').valid()){
+            $('#spinnerLoading').show();
+            $.post('php/modules/binType/index.php', $('#binTypeForm').serialize() + '&action=' + ($('#addModal').find('#id').val() ? 'update' : 'create'), function(data){
+                var obj = JSON.parse(data);
+                if(obj.status === 'success'){
+                    table.ajax.reload();
+                    $('#spinnerLoading').hide();
+                    $('#addModal').modal('hide');
+                    $("#successBtn").attr('data-toast-text', obj.message);
+                    $("#successBtn").click();
+                }
+                else if(obj.status === 'failed'){
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', obj.message );
+                    $("#failBtn").click();
+                }
+                else{
+                    $('#spinnerLoading').hide();
+                    $("#failBtn").attr('data-toast-text', 'Something wrong when saving!');
+                    $("#failBtn").click();
+                }
+            });
+        }
+    });
+
+    $('#addBinType').on('click', function(){
+        $('#addModal').find('#id').val("");
+        $('#addModal').find('#binTypeCode').val("");
+        $('#addModal').find('#binTypeName').val("");
+
+        // Remove Validation Error Message
+        $('#addModal .is-invalid').removeClass('is-invalid');
+
+        $('#addModal').modal('show');
+
+        $('#binTypeForm').validate({
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
+});
+
+function renderTable(){
+    // Destroy old DataTables if exist
+    if ($.fn.DataTable.isDataTable('#binTypeTable')) {
+        $("#binTypeTable").DataTable().clear().destroy();
+    }
+
+    table = $("#binTypeTable").DataTable({
+        "responsive": true,
+        "autoWidth": false,
+        'processing': true,
+        'serverSide': true,
+        'serverMethod': 'post',
+        'ajax': {
+            'url':'php/modules/binType/index.php',
+            'data': { action: 'getAll' }
+        },
+        'columns': [
+            {
+                data: 'id',
+                className: 'select-checkbox',
+                orderable: false,
+                render: function (data, type, row) {
+                    return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="' + data + '"/>';
+                }
+            },
+            { data: 'bin_type_code' },
+            { data: 'name' },
+            {
+                data: 'id',
+                responsivePriority: 1,
+                render: function ( data, type, row ) {
+                    if (row.status == '1') {
+                        if (!canDo('reactivate')) { return ''; }
+                        return `<button title="Reactivate" type="button" id="reactivate${data}" onclick="reactivate(${data})" class="btn btn-warning btn-sm">Reactivate</button>`;
+                    }
+
+                    var buttons = `
+                        <div class="dropdown d-inline-block">
+                            <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ri-more-fill align-middle"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                ${canDo('edit') ? `<li>
+                                    <a class="dropdown-item edit-item-btn" id="edit${data}" onclick="edit(${data})">
+                                        <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+                                    </a>
+                                </li>` : ''}
+                                ${canDo('cancelled') ? `<li>
+                                    <a class="dropdown-item remove-item-btn" id="deactivate${data}" onclick="deactivate(${data})">
+                                        <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+                                    </a>
+                                </li>` : ''}
+                            </ul>
+                        </div>`;
+
+                    return buttons;
+                }
+            }
+        ]
+    });
+}
+
+function displayPreview(data) {
+    var workbook = XLSX.read(data, { type: 'binary' });
+    var sheet = workbook.Sheets[workbook.SheetNames[0]];
+    var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    var headers = jsonData[0] || [];
+
+    var htmlTable = '<table style="width:50%;"><thead><tr>';
+    headers.forEach(function(header) {
+        htmlTable += '<th>' + $('<div>').text(header).html() + '</th>';
+    });
+    htmlTable += '</tr></thead><tbody>';
+
+    for (var i = 1; i < jsonData.length; i++) {
+        var rowData = jsonData[i] || [];
+        htmlTable += '<tr>';
+        for (var j = 0; j < headers.length; j++) {
+            var name = String(headers[j]).replace(/[^a-zA-Z0-9]/g, '');
+            var value = rowData[j] == null ? '' : rowData[j];
+            var escaped = $('<div>').text(value).html().replace(/"/g, '&quot;');
+            htmlTable += '<td><input type="text" name="' + name + '[' + (i - 1) + ']" value="' + escaped + '" /></td>';
+        }
+        htmlTable += '</tr>';
+    }
+    htmlTable += '</tbody></table>';
+
+    document.getElementById('previewTable').innerHTML = htmlTable;
+}
+
+function edit(id){
+    $('#spinnerLoading').show();
+    $.post('php/modules/binType/index.php', {action: 'get', id: id}, function(data)
+    {
+        var obj = JSON.parse(data);
+        if(obj.status === 'success'){
+            $('#addModal').find('#id').val(obj.message.id);
+            $('#addModal').find('#binTypeCode').val(obj.message.bin_type_code);
+            $('#addModal').find('#binTypeName').val(obj.message.name);
+
+            // Remove Validation Error Message
+            $('#addModal .is-invalid').removeClass('is-invalid');
+            $('#addModal').modal('show');
+        }
+        else {
+            $("#failBtn").attr('data-toast-text', obj.message );
+            $("#failBtn").click();
+        }
+        $('#spinnerLoading').hide();
+    });
+}
+
+function reactivate(id){
+    $('#spinnerLoading').show();
+    if (confirm('Do you want to reactivate this item?')) {
+        $.post('php/modules/binType/index.php', {action: 'reactivate', id: id}, function(data){
+            var obj = JSON.parse(data);
+
+            $('#spinnerLoading').hide();
+            if(obj.status === 'success'){
+                table.ajax.reload();
+                $("#successBtn").attr('data-toast-text', obj.message);
+                $("#successBtn").click();
+            }
+            else {
+                $("#failBtn").attr('data-toast-text', obj.message );
+                $("#failBtn").click();
+            }
+        });
+    }
+    else {
+        $('#spinnerLoading').hide();
+    }
+}
+
+function deactivate(id){
+    $('#spinnerLoading').show();
+    if (confirm('Are you sure you want to cancel this item?')) {
+        $.post('php/modules/binType/index.php', {action: 'delete', id: id}, function(data){
+            var obj = JSON.parse(data);
+
+            if(obj.status === 'success'){
+                table.ajax.reload();
+                $('#spinnerLoading').hide();
+                $("#successBtn").attr('data-toast-text', obj.message);
+                $("#successBtn").click();
+            }
+            else {
+                $('#spinnerLoading').hide();
+                $("#failBtn").attr('data-toast-text', obj.message );
+                $("#failBtn").click();
+            }
+        });
+    }
+    $('#spinnerLoading').hide();
+}
+
+$('#binTypeForm').validate({
+    errorElement: 'span',
+    errorPlacement: function (error, element) {
+      error.addClass('invalid-feedback');
+      element.closest('.form-group').append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass('is-invalid');
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass('is-invalid');
+    }
+});
+</script>
+</body>
+
+</html>

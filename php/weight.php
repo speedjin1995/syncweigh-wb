@@ -26,6 +26,13 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         echo json_encode(array("status" => "failed", "message" => "Transaction status is not enabled for this company."));
         exit();
     }
+
+    // Weighing permissions: create a new record, or edit / weight out an existing one
+    $savePermissions = empty($_POST["id"]) ? array('create') : array('edit', 'weight_out');
+    if (!statusPermitted('Weighing', $_POST['transactionStatus'], $savePermissions) || !weightTypePermitted($_POST['weightType'])) {
+        echo json_encode(array("status" => "failed", "message" => "You do not have permission to save this weighing record"));
+        exit();
+    }
     
     if (empty($_SESSION['location_id'])) {
         $locationId = null;

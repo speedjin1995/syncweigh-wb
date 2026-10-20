@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "db_connect.php";
+require_once "requires/lookup.php";
 require_once "modules/vehicle/vehicleEntry.php";
 
 if(isset($_POST['userID'])){
@@ -271,42 +272,26 @@ if(isset($_POST['userID'])){
                             $message['fax_no'] = '';
 
                             if ($row['transaction_status'] == 'Purchase' || $row['transaction_status'] == 'Local'){
-                                if ($customer_stmt = $db->prepare("SELECT * FROM Supplier WHERE supplier_code=? AND status = '0'")) {
-                                    $customer_stmt->bind_param('s', $row['supplier_code']);
-                                    $customer_stmt->execute();
-                                    $customer_result = $customer_stmt->get_result();
-                                    
-                                    if ($row2 = $customer_result->fetch_assoc()) {
-                                        $message['name'] = $row2['name'];
-                                        $message['address_line_1'] = $row2['address_line_1'] ?? '';
-                                        $message['address_line_2'] = $row2['address_line_2'] ?? '';
-                                        $message['address_line_3'] = $row2['address_line_3'] ?? '';
-                                        $message['phone_no'] = $row2['phone_no'] ?? '';
-                                        $message['fax_no'] = $row2['fax_no'] ?? '';
-                                    } 
-                                }
-    
-                                $message['product_rawmat_name'] = $row['raw_mat_code'] ?? '';
-    
+                                $supplier = searchSupplierByCode($row['supplier_code'], $db);
+                                $message['name'] = $supplier['name'];
+                                $message['address_line_1'] = $supplier['address_line_1'] ?? '';
+                                $message['address_line_2'] = $supplier['address_line_2'] ?? '';
+                                $message['address_line_3'] = $supplier['address_line_3'] ?? '';
+                                $message['phone_no'] = $supplier['phone_no'] ?? '';
+                                $message['fax_no'] = $supplier['fax_no'] ?? '';
+                                $message['product_rawmat_name'] = $row['raw_mat_code'] . ' - ' . $row['raw_mat_name'] ?? '';
                             }else{
-                                if ($customer_stmt = $db->prepare("SELECT * FROM Customer WHERE customer_code=? AND status = '0'")) {
-                                    $customer_stmt->bind_param('s', $row['customer_code']);
-                                    $customer_stmt->execute();
-                                    $customer_result = $customer_stmt->get_result();
-                                    
-                                    if ($row2 = $customer_result->fetch_assoc()) {
-                                        $message['name'] = $row2['name'];
-                                        $message['address_line_1'] = $row2['address_line_1'] ?? '';
-                                        $message['address_line_2'] = $row2['address_line_2'] ?? '';
-                                        $message['address_line_3'] = $row2['address_line_3'] ?? '';
-                                        $message['phone_no'] = $row2['phone_no'] ?? '';
-                                        $message['fax_no'] = $row2['fax_no'] ?? '';
-                                    }
-                                } 
-    
-                                $message['product_rawmat_name'] = $row['product_code'] ?? '';
-    
+                                $customer = searchCustomerByCode($row['customer_code'], $db);
+                                $message['name'] = $customer['name'];
+                                $message['address_line_1'] = $customer['address_line_1'] ?? '';
+                                $message['address_line_2'] = $customer['address_line_2'] ?? '';
+                                $message['address_line_3'] = $customer['address_line_3'] ?? '';
+                                $message['phone_no'] = $customer['phone_no'] ?? '';
+                                $message['fax_no'] = $customer['fax_no'] ?? '';
+                                $message['product_rawmat_name'] = $row['product_code'] . ' - ' . $row['product_name'] ?? '';
                             }
+
+                            $message['contractorName'] = searchContractorById($row['contractor_id'], $db)['name'] ?? '';
                             $message['transporter'] = $row['transporter'] ?? '';
                             $message['destination'] = $row['destination'] ?? '';
                             $message['plant_name'] = $row['plant_name'] ?? '';
@@ -320,6 +305,7 @@ if(isset($_POST['userID'])){
                             $message['container_no2'] = $row['container_no2'] ?? '';
                             $message['seal_no2'] = $row['seal_no2'] ?? '';
                             $message['purchase_order'] = $row['purchase_order'] ?? '';
+                            $message['transaction_date'] = !empty($row['transaction_date']) ? date("d/m/Y", strtotime($row['transaction_date'])) : '';
                             $message['created_date'] = $row['created_date'] ? date("d/m/Y - h:i:sa", strtotime($row['created_date'])) : '';
                             $message['lorry_plate_no1'] = $row['lorry_plate_no1'] ?? '';
                             $message['gross_weight1'] = $row['gross_weight1'] ?? '';

@@ -69,6 +69,20 @@ class ContractorController extends BaseController {
     }
 
     /**
+     * Reactivate contractor
+     */
+    public function reactivate() {
+        $id = $this->getRequiredPost('id');
+
+        try {
+            $this->contractorService->reactivate($id);
+            $this->success('Reactivated');
+        } catch (Exception $e) {
+            $this->failed($e->getMessage());
+        }
+    }
+
+    /**
      * Delete (soft delete) selected contractors
      */
     public function deleteMulti() {

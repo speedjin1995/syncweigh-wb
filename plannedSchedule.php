@@ -1,11 +1,11 @@
 <?php include 'layouts/session.php'; ?>
+<?php include 'layouts/head-main.php'; ?>
 <?php
-if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
-    echo '<script type="text/javascript">location.href = "index.php";</script>';
-    exit();
+if (!hasModulePermission('Planned Schedule', 'Planned Schedule', ['view'])){
+    header('Location: no-permission.php');
+    exit;
 }
 ?>
-<?php include 'layouts/head-main.php'; ?>
 
 <head>
     <title><?=$languageArray['planned_schedule_code'][$language]?> | Synctronix - Weighing System</title>
@@ -79,6 +79,8 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                             <?php $suppliers = $db->query("SELECT supplier_code, name FROM Supplier WHERE status = '0' ORDER BY name ASC"); ?>
                                             <?php $contractors = $db->query("SELECT id, name FROM Contractor WHERE status = '0' ORDER BY name ASC"); ?>
                                             <?php $wastes = $db->query("SELECT raw_mat_code, name FROM Raw_Mat WHERE status = '0' ORDER BY name ASC"); ?>
+                                            <?php $binNos = $db->query("SELECT name FROM Bin_No WHERE status = '0' ORDER BY name ASC"); ?>
+                                            <?php $binTypes = $db->query("SELECT name FROM Bin_Type WHERE status = '0' ORDER BY name ASC"); ?>
                                             <form action="javascript:void(0);">
                                                 <div class="row">
                                                     <div class="col-3">
@@ -184,6 +186,24 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                                         <label for="scheduleVehicleType" class="form-label"><?=$languageArray['vehicle_type_code'][$language]?></label>
                                                         <input type="text" class="form-control" id="scheduleVehicleType" name="vehicleType">
                                                     </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="scheduleBinNo" class="form-label"><?=$languageArray['bin_no_code'][$language]?></label>
+                                                        <select class="form-select select2" id="scheduleBinNo" name="binNo">
+                                                            <option value="">-</option>
+                                                            <?php while($rowBinNo=mysqli_fetch_assoc($binNos)){ ?>
+                                                                <option value="<?=htmlspecialchars($rowBinNo['name']) ?>"><?=htmlspecialchars($rowBinNo['name']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="scheduleBinType" class="form-label"><?=$languageArray['bin_type_code'][$language]?></label>
+                                                        <select class="form-select select2" id="scheduleBinType" name="binType">
+                                                            <option value="">-</option>
+                                                            <?php while($rowBinType=mysqli_fetch_assoc($binTypes)){ ?>
+                                                                <option value="<?=htmlspecialchars($rowBinType['name']) ?>"><?=htmlspecialchars($rowBinType['name']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-4 mb-3">
@@ -253,24 +273,32 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                                                 <h5 class="card-title mb-0 text-white"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <?php if(hasModulePermission('Planned Schedule', 'Planned Schedule', ['download_template'])): ?>
                                                                 <a href="template/Planned_Schedule_Template.xlsx" download>
                                                                     <button type="button" class="btn btn-info waves-effect waves-light">
                                                                         <i class="mdi mdi-file-import-outline align-middle me-1"></i>
                                                                         <?=$languageArray['download_template_code'][$language]?>
                                                                     </button>
                                                                 </a>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Planned Schedule', 'Planned Schedule', ['upload_excel'])): ?>
                                                                 <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['upload_excel_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Planned Schedule', 'Planned Schedule', ['cancelled'])): ?>
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Planned Schedule', 'Planned Schedule', ['create'])): ?>
                                                                 <button type="button" id="addSchedule" class="btn btn-success waves-effect waves-light">
                                                                     <i class="ri-add-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -285,6 +313,8 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
                                                                     <th><?=$languageArray['contractor_code'][$language]?></th>
                                                                     <th><?=$languageArray['waste_code'][$language]?></th>
                                                                     <th><?=$languageArray['vehicle_type_code'][$language]?></th>
+                                                                    <th><?=$languageArray['bin_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['bin_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['trips_per_day_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -342,6 +372,12 @@ if (!in_array($_SESSION['roles'] ?? '', array('MANAGER', 'ADMIN', 'SADMIN'))) {
     <script type="text/javascript">
 
 var table;
+var permissions = <?= json_encode($_SESSION['permissions'] ?? []) ?>;
+var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
+
+function canDo(permission) {
+    return isSADMIN || (permissions['Planned Schedule'] && permissions['Planned Schedule']['Planned Schedule'] && permissions['Planned Schedule']['Planned Schedule'].includes(permission));
+}
 
 $(function () {
     // Search box, same as index.php
@@ -556,6 +592,8 @@ function openScheduleModal(row){
     $('#scheduleContractor').val(row && row.contractor_id ? row.contractor_id : '').trigger('change');
     $('#scheduleWaste').val(row && row.raw_mat_code ? row.raw_mat_code : '').trigger('change');
     $('#scheduleVehicleType').val(row ? row.vehicle_type : '');
+    $('#scheduleBinNo').val(row && row.bin_no ? row.bin_no : '').trigger('change');
+    $('#scheduleBinType').val(row && row.bin_type ? row.bin_type : '').trigger('change');
     $('#scheduleTrips').val(row ? row.max_entry : '');
     $('#scheduleStartDate')[0]._flatpickr.setDate(row ? row.start_date : null, false, 'd/m/Y');
     $('#scheduleEndDate')[0]._flatpickr.setDate(row ? row.end_date : null, false, 'd/m/Y');
@@ -668,6 +706,8 @@ function renderTable(){
             { data: 'contractor_name' },
             { data: 'raw_mat_name' },
             { data: 'vehicle_type' },
+            { data: 'bin_no' },
+            { data: 'bin_type' },
             { data: 'max_entry' },
             {
                 data: null,
@@ -676,9 +716,9 @@ function renderTable(){
                 render: function (data, type, row) {
                     return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                     '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                    '<li><a class="dropdown-item edit-item-btn" id="edit'+row.id+'" onclick="editSchedule('+row.id+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language]?></a></li>' +
-                    '<li><a class="dropdown-item" id="log'+row.id+'" onclick="showScheduleLog('+row.id+')"><i class="ri-file-list-3-line align-bottom me-2 text-muted"></i> <?=$languageArray['view_log_code'][$language]?></a></li>' +
-                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+row.id+'" onclick="deactivate('+row.id+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language]?> </a></li></ul></div>';
+                    (canDo('edit') ? '<li><a class="dropdown-item edit-item-btn" id="edit'+row.id+'" onclick="editSchedule('+row.id+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language]?></a></li>' : '') +
+                    (canDo('view_log') ? '<li><a class="dropdown-item" id="log'+row.id+'" onclick="showScheduleLog('+row.id+')"><i class="ri-file-list-3-line align-bottom me-2 text-muted"></i> <?=$languageArray['view_log_code'][$language]?></a></li>' : '') +
+                    (canDo('cancelled') ? '<li><a class="dropdown-item remove-item-btn" id="deactivate'+row.id+'" onclick="deactivate('+row.id+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language]?> </a></li>' : '') + '</ul></div>';
                 }
             }
         ]

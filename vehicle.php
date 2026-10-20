@@ -1,11 +1,19 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
+<?php
+if (!hasModulePermission('Master Data', 'Vehicles', ['view'])){
+    header('Location: no-permission.php');
+    exit;
+}
+?>
 
 <?php
     $customer = $db->query("SELECT * FROM Customer WHERE status = '0'");
     $supplier = $db->query("SELECT * FROM Supplier WHERE status = '0'");
     $transporter = $db->query("SELECT * FROM Transporter WHERE status = '0'");
     $contractor = $db->query("SELECT * FROM Contractor WHERE status = '0'");
+    $binNoList = $db->query("SELECT * FROM Bin_No WHERE status = '0' ORDER BY name");
+    $binTypeList = $db->query("SELECT * FROM Bin_Type WHERE status = '0' ORDER BY name");
 ?>
 
 <head>
@@ -134,6 +142,34 @@
                                                                                 </div>
                                                                             </div>
 
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="binNo" class="col-sm-4 col-form-label"><?=$languageArray['bin_no_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="binNo" name="binNo">
+                                                                                            <option value="" selected>-</option>
+                                                                                            <?php while($row=mysqli_fetch_assoc($binNoList)){ ?>
+                                                                                                <option value="<?=$row['name'] ?>"><?=$row['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="binType" class="col-sm-4 col-form-label"><?=$languageArray['bin_type_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select select2" id="binType" name="binType">
+                                                                                            <option value="" selected>-</option>
+                                                                                            <?php while($row=mysqli_fetch_assoc($binTypeList)){ ?>
+                                                                                                <option value="<?=$row['name'] ?>"><?=$row['name'] ?></option>
+                                                                                            <?php } ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
                                                                             <div class="col-xxl-12 col-lg-12 mb-3" style="display:none">
                                                                                 <div class="row">
                                                                                     <label for="transporter" class="col-sm-4 col-form-label"><?=$languageArray['transporter_code'][$language]?></label>
@@ -253,24 +289,32 @@
                                                                 <h5 class="card-title mb-0"><?=$languageArray['previous_records_code'][$language]?></h5>
                                                             </div>
                                                             <div class="flex-shrink-0">
+                                                                <?php if(hasModulePermission('Master Data', 'Vehicles', ['download_template'])): ?>
                                                                 <a href="template/Vehicle_Template.xlsx" download>
                                                                     <button type="button" id="downloadTemplate" class="btn btn-info waves-effect waves-light">
                                                                         <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                         <?=$languageArray['download_template_code'][$language]?>
                                                                     </button>
                                                                 </a>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Vehicles', ['upload_excel'])): ?>
                                                                 <button type="button" id="uploadExcel" class="btn btn-success waves-effect waves-light">
                                                                     <i class="ri-file-pdf-line align-middle me-1"></i>
                                                                     <?=$languageArray['upload_excel_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Vehicles', ['cancelled'])): ?>
                                                                 <button type="button" id="multiDeactivate" class="btn btn-warning waves-effect waves-light">
                                                                     <i class="ri-delete-bin-fill align-middle me-1"></i>
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
+                                                                <?php if(hasModulePermission('Master Data', 'Vehicles', ['create'])): ?>
                                                                 <button type="button" id="addVehicle" class="btn btn-success waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addModal">
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
+                                                                <?php endif; ?>
                                                             </div> 
                                                         </div> 
                                                     </div>
@@ -344,6 +388,12 @@
 <script type="text/javascript">
 
 var table;
+var permissions = <?= json_encode($_SESSION['permissions'] ?? []) ?>;
+var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
+
+function canDo(permission) {
+    return isSADMIN || (permissions['Master Data'] && permissions['Master Data']['Vehicles'] && permissions['Master Data']['Vehicles'].includes(permission));
+}
 
 $(function () {
     $('#selectAllCheckbox').on('change', function() {
@@ -397,7 +447,7 @@ $(function () {
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
-                    if(row.status == 'Inactive'){
+                    if(row.status == 'Inactive'){ if (!canDo('reactivate')) { return ''; }
                         return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                         '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
                         '<li><a class="dropdown-item remove-item-btn" id="reactivate'+data+'" onclick="reactivate('+data+')">Reactivate </a></li></ul></div>';
@@ -405,8 +455,8 @@ $(function () {
                     else{
                         return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                         '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                        '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
+                        (canDo('edit') ? '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' : '') +
+                        (canDo('cancelled') ? '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li>' : '') + '</ul></div>';
                     }
                 }
             }
@@ -442,6 +492,8 @@ $(function () {
         $('#addModal').find('#vehicleWeight').val("");
         $('#addModal').find('#vehicleType').val("");
         $('#addModal').find('#contractor').val("").trigger('change');
+        $('#addModal').find('#binNo').val("").trigger('change');
+        $('#addModal').find('#binType').val("").trigger('change');
         $('#addModal').find('#customer').val("").trigger('change');
         $('#addModal').find('#customerCode').val("");
         $('#addModal').find('#supplier').val("").trigger('change');
@@ -623,6 +675,11 @@ function edit(id){
             $('#addModal').find('#vehicleWeight').val(obj.message.vehicle_weight);
             $('#addModal').find('#vehicleType').val(obj.message.vehicle_type);
             $('#addModal').find('#contractor').val(obj.message.contractor_id || '').trigger('change');
+            // Keep a bin saved before it was added to master data
+            if (obj.message.bin_no && !$('#binNo option[value="' + obj.message.bin_no + '"]').length) { $('#binNo').append(new Option(obj.message.bin_no, obj.message.bin_no)); }
+            if (obj.message.bin_type && !$('#binType option[value="' + obj.message.bin_type + '"]').length) { $('#binType').append(new Option(obj.message.bin_type, obj.message.bin_type)); }
+            $('#addModal').find('#binNo').val(obj.message.bin_no || '').trigger('change');
+            $('#addModal').find('#binType').val(obj.message.bin_type || '').trigger('change');
             $('#addModal').find('#customer').val(obj.message.customer_name).trigger('change');
             $('#addModal').find('#supplier').val(obj.message.supplier_name).trigger('change');
 
