@@ -1648,6 +1648,7 @@ else{
                     $("#prePrintModal").modal("hide");
                     $('#spinnerLoading').hide();
                 } else {
+                    $('#spinnerLoading').hide();
                     toastFail(obj.status === 'failed' ? obj.message : "Something wrong when print");
                 }
             });
