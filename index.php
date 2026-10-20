@@ -16,7 +16,7 @@ $databits = "8";
 $parity = "N";
 $stopbits = '1';
 $indicator = 'X722';
-    
+
 if(($row = $result->fetch_assoc()) !== null){
     //$role = $row['role_code'];
     $port = $row['com_port'];
@@ -34,7 +34,7 @@ if($plantId != null && count($plantId) > 0){
     $stmt2->bind_param('s', $plantId[0]);
     $stmt2->execute();
     $result2 = $stmt2->get_result();
-        
+
     if(($row2 = $result2->fetch_assoc()) !== null){
         $plantName = $row2['name'];
     }
@@ -46,7 +46,7 @@ if ($user != null && $user != ''){
     $stmt3->bind_param('s', $user);
     $stmt3->execute();
     $result3 = $stmt3->get_result();
-        
+
     if(($row3 = $result3->fetch_assoc()) !== null){
         $role = $row3['role'];
     }
@@ -168,7 +168,7 @@ else{
                                         <i class="mdi mdi-chevron-down pull-right"></i>
                                         <?=$languageArray['search_records_code'][$language]?>
                                     </div>
-                                    <div id="collapseSearch" class="collapse" aria-labelledby="collapseSearch">                                    
+                                    <div id="collapseSearch" class="collapse" aria-labelledby="collapseSearch">
                                         <div class="card-body">
                                             <form action="javascript:void(0);">
                                                 <div class="row">
@@ -244,7 +244,7 @@ else{
                                                                 <option value="Y"><?=$languageArray['complete_code'][$language]?></option>
                                                             </select>
                                                         </div>
-                                                    </div><!--end col-->                                                
+                                                    </div><!--end col-->
                                                     <div class="col-3" id="productSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="productSearch" class="form-label"><?=$languageArray['product_code'][$language]?></label>
@@ -281,25 +281,25 @@ else{
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="transactionIdSearch" class="form-label"><?=$languageArray['transaction_id_code'][$language]?></label>
-                                                            <input type="text" class="form-control" id="transactionIdSearch" name="transactionIdSearch" placeholder="<?=$languageArray['transaction_id_code'][$language]?>">                                                                                  
+                                                            <input type="text" class="form-control" id="transactionIdSearch" name="transactionIdSearch" placeholder="<?=$languageArray['transaction_id_code'][$language]?>">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="containerNoSearch" class="form-label"><?=$languageArray['container_no_code'][$language]?></label>
-                                                            <input type="text" class="form-control" id="containerNoSearch" name="containerNoSearch" placeholder="<?=$languageArray['container_no_code'][$language]?>">                                                                                  
+                                                            <input type="text" class="form-control" id="containerNoSearch" name="containerNoSearch" placeholder="<?=$languageArray['container_no_code'][$language]?>">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="sealNoSearch" class="form-label"><?=$languageArray['seal_no_code'][$language]?></label>
-                                                            <input type="text" class="form-control" id="sealNoSearch" name="sealNoSearch" placeholder="<?=$languageArray['seal_no_code'][$language]?>">                                                                                  
+                                                            <input type="text" class="form-control" id="sealNoSearch" name="sealNoSearch" placeholder="<?=$languageArray['seal_no_code'][$language]?>">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3">
                                                         <div class="mb-3">
                                                             <label for="invDelPoSearch" class="form-label"><?=$languageArray['inv_del_po_no_code'][$language]?></label>
-                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="<?=$languageArray['inv_del_po_no_code'][$language]?>">                                                                                  
+                                                            <input type="text" class="form-control" id="invDelPoSearch" name="invDelPoSearch" placeholder="<?=$languageArray['inv_del_po_no_code'][$language]?>">
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-lg-12">
@@ -309,12 +309,12 @@ else{
                                                         </div>
                                                     </div><!--end col-->
                                                 </div><!--end row-->
-                                            </form>                                                                        
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="row">
                                 <!-- <div class="col-xl-3 col-md-6">
                                     <div class="card card-animate" style="background-color: #4CAF50;">
@@ -419,7 +419,7 @@ else{
                                         </div>
                                     </div>
                                 </div> -->
-                                
+
                                 <div class="col-xl-3 col-md-6 add-new-weight">
                                     <!-- <button type="button" class="btn btn-lg btn-soft-success" data-bs-toggle="modal" data-bs-target="#addModal"><i
                                             class="ri-add-circle-line align-middle me-1"></i>
@@ -490,7 +490,7 @@ else{
                                                                 <div class="card bg-light">
                                                                     <div class="card-body">
                                                                         <div class="row">
-                                                                            <div class="col-xxl-4 col-lg-4 mb-3"  <?php 
+                                                                            <div class="col-xxl-4 col-lg-4 mb-3"  <?php
                                                                                 if($_SESSION["roles"] != 'SADMIN' && $_SESSION["roles"] != 'ADMIN'){
                                                                                     echo 'style="display:none;"';
                                                                                 }?>>
@@ -517,7 +517,7 @@ else{
                                                                                 <div class="row">
                                                                                     <label for="transactionId" class="col-sm-4 col-form-label"><?=$languageArray['transaction_id_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" placeholder="<?=$languageArray['transaction_id_code'][$language]?>" readonly>                                                                                  
+                                                                                        <input type="text" class="form-control input-readonly" id="transactionId" name="transactionId" placeholder="<?=$languageArray['transaction_id_code'][$language]?>" readonly>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -528,7 +528,7 @@ else{
                                                                                         <input type="date" class="form-control input-readonly" data-provider="flatpickr" id="transactionDate" name="transactionDate" required>
                                                                                         <div class="invalid-feedback">
                                                                                             Please fill in the field.
-                                                                                        </div>    
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -542,7 +542,7 @@ else{
                                                                                             <?php while($rowPlant=mysqli_fetch_assoc($plant)){ ?>
                                                                                                 <option value="<?=$rowPlant['name'] ?>" data-code="<?=$rowPlant['plant_code'] ?>"><?=$rowPlant['name'] ?></option>
                                                                                             <?php } ?>
-                                                                                        </select>        
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -555,7 +555,7 @@ else{
                                                                                             <option value="Container">Primer Mover</option>
                                                                                             <option value="Empty Container">Primer Mover + Container</option>
                                                                                             <option value="Different Container">Primer Mover + Different Bins</option>
-                                                                                        </select>   
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -568,7 +568,7 @@ else{
                                                                                             <option value="Purchase"><?=$languageArray['receiving_code'][$language]?></option>
                                                                                             <option value="Local"><?=$languageArray['internal_transfer_code'][$language]?></option>
                                                                                             <option value="Misc"><?=$languageArray['miscellaneous_code'][$language]?></option>
-                                                                                        </select>  
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -595,7 +595,7 @@ else{
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div> 
+                                                                            </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifference">
                                                                                 <div class="row">
                                                                                     <label for="weightDifference" class="col-sm-4 col-form-label"><?=$languageArray['weight_difference_code'][$language]?></label>
@@ -606,7 +606,7 @@ else{
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div> 
+                                                                            </div>
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="divWeightDifferencePerc">
                                                                                 <div class="row">
                                                                                     <label for="weightDifferencePerc" class="col-sm-4 col-form-label">% <?=$languageArray['variance_code'][$language]?></label>
@@ -617,7 +617,7 @@ else{
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div> 
+                                                                            </div>
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-xxl-4 col-lg-4 mb-3" id="divCustomerName">
@@ -642,7 +642,7 @@ else{
                                                                                             <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
                                                                                                 <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
                                                                                             <?php } ?>
-                                                                                        </select>                                                                                        
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -669,7 +669,7 @@ else{
                                                                                             <?php /*while($rowContainer=mysqli_fetch_assoc($container)){ ?>
                                                                                                 <option value="<?=$rowContainer['container_no'] ?>"><?=$rowContainer['container_no'] ?></option>
                                                                                             <?php }*/ ?>
-                                                                                        </select>                   
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                                 <input type="text" class="form-control" id="containerNo" name="containerNo" hidden>
@@ -683,17 +683,17 @@ else{
                                                                                         <select class="form-select select2" id="productName" name="productName" required>
                                                                                             <option selected="-">-</option>
                                                                                             <?php while($rowProduct=mysqli_fetch_assoc($product)){ ?>
-                                                                                                <option 
-                                                                                                    value="<?=$rowProduct['name'] ?>" 
-                                                                                                    data-code="<?=$rowProduct['product_code'] ?>" 
-                                                                                                    data-high="<?=$rowProduct['high'] ?>" 
-                                                                                                    data-low="<?=$rowProduct['low'] ?>" 
-                                                                                                    data-variance="<?=$rowProduct['variance'] ?>" 
+                                                                                                <option
+                                                                                                    value="<?=$rowProduct['name'] ?>"
+                                                                                                    data-code="<?=$rowProduct['product_code'] ?>"
+                                                                                                    data-high="<?=$rowProduct['high'] ?>"
+                                                                                                    data-low="<?=$rowProduct['low'] ?>"
+                                                                                                    data-variance="<?=$rowProduct['variance'] ?>"
                                                                                                     data-description="<?=$rowProduct['description'] ?>">
                                                                                                     <?=$rowProduct['product_code'] .' - '. $rowProduct['name']?>
                                                                                                 </option>
                                                                                             <?php } ?>
-                                                                                        </select>                                                                                        
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row" id="rawMaterialDisplay" style="display:none;">
@@ -704,7 +704,7 @@ else{
                                                                                             <?php while($rowRowMat=mysqli_fetch_assoc($rawMaterial)){ ?>
                                                                                                 <option value="<?=$rowRowMat['name'] ?>" data-code="<?=$rowRowMat['raw_mat_code'] ?>"><?=$rowRowMat['raw_mat_code'] .' - '. $rowRowMat['name'] ?></option>
                                                                                             <?php } ?>
-                                                                                        </select>           
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -766,7 +766,7 @@ else{
                                                                                             <?php while($rowDestination=mysqli_fetch_assoc($destination)){ ?>
                                                                                                 <option value="<?=$rowDestination['name'] ?>" data-code="<?=$rowDestination['destination_code'] ?>"><?=$rowDestination['name'] ?></option>
                                                                                             <?php } ?>
-                                                                                        </select>            
+                                                                                        </select>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -872,7 +872,7 @@ else{
                                                                                     <input type="number" class="form-control input-readonly" id="tareOutgoing" name="tareOutgoing" placeholder="0" readonly>
                                                                                     <div class="input-group-text">Kg</div>
                                                                                     <button class="input-group-text btn btn-success fs-5" id="tareCapture" type="button"><i class="mdi mdi-sync"></i></button>
-                                                                                </div>                                                                                       
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="row mb-3">
@@ -880,7 +880,7 @@ else{
                                                                             <div class="col-sm-8">
                                                                                 <input type="text" class="form-control input-readonly" id="tareOutgoingDate" name="tareOutgoingDate">
                                                                             </div>
-                                                                        </div>                                                                        
+                                                                        </div>
                                                                         <div class="row mb-3">
                                                                             <label for="nettWeight" class="col-sm-4 col-form-label"><?=$languageArray['nett_weight_code'][$language]?></label>
                                                                             <div class="col-sm-8">
@@ -890,7 +890,7 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>                        
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-xxl-4 col-lg-4" id="containerCard" style="display:none;">
@@ -969,7 +969,7 @@ else{
                                                                             <div class="col-sm-8">
                                                                                 <input type="text" class="form-control input-readonly" placeholder="" id="tareOutgoingDate2" name="tareOutgoingDate2">
                                                                             </div>
-                                                                        </div>                                                                        
+                                                                        </div>
                                                                         <div class="row mb-3">
                                                                             <label for="nettWeight2" class="col-sm-4 col-form-label"><?=$languageArray['nett_weight_code'][$language]?></label>
                                                                             <div class="col-sm-8">
@@ -978,7 +978,7 @@ else{
                                                                                     <div class="input-group-text">Kg</div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>                                                                    
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1020,19 +1020,19 @@ else{
                                                                                     <div class="input-group-text">RM</div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>                                                                 
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
                                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
                                                                 <button type="button" class="btn btn-success" id="submitWeightPrint"><?=$languageArray['submit_print_code'][$language]?></button>
                                                                 <button type="button" class="btn btn-primary" id="submitWeight"><?=$languageArray['submit_code'][$language]?></button>
                                                             </div>
-                                                        </div><!--end col-->   
+                                                        </div><!--end col-->
 
                                                         <!-- All Hidden Fields -->
                                                         <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
@@ -1042,7 +1042,7 @@ else{
                                                                     <select id="customerType" name="customerType" class="form-select select2">
                                                                         <option>Cash</option>
                                                                         <option selected>Normal</option>
-                                                                    </select>   
+                                                                    </select>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1056,19 +1056,19 @@ else{
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div> 
+                                                        </div>
                                                         <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                             <div class="row">
                                                                 <label for="balance" class="col-sm-4 col-form-label">Balance</label>
                                                                 <div class="col-sm-8">
-                                                                    <input type="text" class="form-control input-readonly text-danger" id="balance" name="balance" placeholder="0" readonly>   
+                                                                    <input type="text" class="form-control input-readonly text-danger" id="balance" name="balance" placeholder="0" readonly>
                                                                 </div>
                                                             </div>
                                                             <div class="row mt-2" id="insufficientBalDisplay" style="display:none;">
                                                                 <span class="col-sm-4"></span>
                                                                 <label class="col-sm-8 text-danger">Insufficient Balance</label>
                                                             </div>
-                                                        </div>   
+                                                        </div>
                                                         <div class="col-xxl-4 col-lg-4 mb-3" style="display:none;">
                                                             <div class="row">
                                                                 <label for="indicatorId" class="col-sm-4 col-form-label">Indicator ID</label>
@@ -1079,7 +1079,7 @@ else{
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <input type="hidden" id="finalWeight" name="finalWeight">
                                                         <input type="hidden" id="customerCode" name="customerCode">
                                                         <input type="hidden" id="destinationCode" name="destinationCode">
@@ -1093,7 +1093,7 @@ else{
                                                         <input type="hidden" id="transporterCode" name="transporterCode">
                                                         <input type="hidden" id="supplierCode" name="supplierCode">
                                                         <input type="hidden" id="rawMaterialCode" name="rawMaterialCode">
-                                                        <input type="hidden" id="id" name="id">  
+                                                        <input type="hidden" id="id" name="id">
                                                         <input type="hidden" id="weighbridge" name="weighbridge" value="Weigh1">
                                                         <input type="hidden" id="previousRecordsTag" name="previousRecordsTag">
                                                         <input type="hidden" id="grossWeightBy1" name="grossWeightBy1">
@@ -1130,7 +1130,7 @@ else{
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                            
+
                                                         <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">
                                                         <input type="hidden" class="form-control" id="id" name="id">
                                                     </div>
@@ -1142,7 +1142,7 @@ else{
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="modal fade" id="cancelModal">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
                                             <div class="modal-content">
@@ -1157,10 +1157,10 @@ else{
                                                                 <label>Cancellation Reason *</label>
                                                                 <textarea class="form-control" id="cancelReason" name="cancelReason" rows="3"></textarea>
                                                             </div>
-                                                            <input type="hidden" class="form-control" id="id" name="id">                                   
-                                                            <input type="hidden" class="form-control" id="containerId" name="containerId">                                   
-                                                            <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">                                   
-                                                            <input type="hidden" class="form-control" id="isMulti" name="isMulti">                                   
+                                                            <input type="hidden" class="form-control" id="id" name="id">
+                                                            <input type="hidden" class="form-control" id="containerId" name="containerId">
+                                                            <input type="hidden" class="form-control" id="isEmptyContainer" name="isEmptyContainer">
+                                                            <input type="hidden" class="form-control" id="isMulti" name="isMulti">
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
@@ -1177,7 +1177,7 @@ else{
                             <div class="row">
                                 <div class="col">
                                     <div class="h-100">
-                                        <!--datatable--> 
+                                        <!--datatable-->
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="card">
@@ -1205,8 +1205,8 @@ else{
                                                                     <i class="ri-add-circle-line align-middle me-1"></i>
                                                                     <?=$languageArray['add_new_code'][$language]?>
                                                                 </button>
-                                                            </div> 
-                                                        </div> 
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="card-body">
                                                         <table id="weightTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
@@ -1247,7 +1247,7 @@ else{
                             <div class="row">
                                 <div class="col">
                                     <div class="h-100">
-                                        <!--datatable--> 
+                                        <!--datatable-->
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="card">
@@ -1263,8 +1263,8 @@ else{
                                                                     <?=$languageArray['delete_code'][$language]?>
                                                                 </button>
                                                                 <?php } ?>
-                                                            </div> 
-                                                        </div> 
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="card-body">
                                                         <table id="emptyContainerTable" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
@@ -1352,39 +1352,6 @@ else{
                     </form>
                 </div>
             </div>
-            <!--div class="modal fade" id="prePrintModal">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                    <form role="form" id="prePrintForm">
-                        <div class="modal-header bg-gray-dark color-palette">
-                            <h4 class="modal-title"></h4>
-                            <button type="button" class="close bg-gray-dark color-palette" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label><?=$languageArray['language_code'][$language]?></label>
-                                        <select name="prePrint" id="prePrint">
-                                            <option value="en">English</option>
-                                            <option value="zh">Chinese</option>
-                                            <option value="my">Bahasa Malaysia</option>
-                                            <option value="ne">नेपाली</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer justify-content-between bg-gray-dark color-palette">
-                            <button type="button" class="btn btn-light" data-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                            <button type="submit" class="btn btn-primary"><?=$languageArray['submit_code'][$language]?></button>
-                        </div>
-                    </form>
-                </div>
-            </div-->
             <?php include 'layouts/footer.php'; ?>
         </div>
         <!-- end main content-->
@@ -1403,7 +1370,7 @@ else{
     <!--Swiper slider js-->
     <script src="assets/libs/swiper/swiper-bundle.min.js"></script>
     <!-- Dashboard init -->
-    <script src="assets/js/pages/dashboard-ecommerce.init.js"></script>   
+    <script src="assets/js/pages/dashboard-ecommerce.init.js"></script>
     <!-- App js -->
     <script src="assets/js/app.js"></script>
     <!-- prismjs plugin -->
@@ -1428,13 +1395,13 @@ else{
     var fromDateSearchPicker;
     var toDateSearchPicker;
     var grossIncomingDatePicker;
-    var tareOutgoingDatePicker; 
+    var tareOutgoingDatePicker;
     var grossIncomingDatePicker2;
-    var tareOutgoingDatePicker2; 
+    var tareOutgoingDatePicker2;
+    var userRole = '<?=$role ?>';
+    var ind = '<?=$indicator ?>';
 
     $(function () {
-        var userRole = '<?=$role ?>';
-        var ind = '<?=$indicator ?>';
         const today = new Date();
         const tomorrow = new Date(today);
         const yesterday = new Date(today);
@@ -1447,6 +1414,13 @@ else{
             placeholder: "Please Select",
         });
 
+        // Initialize all Select2 elements in the modal
+        $('#addModal .select2').select2({
+            allowClear: true,
+            placeholder: "Please Select",
+            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+        });
+
         // Apply custom styling to Select2 elements in search bar
         $('.select2-container .select2-selection--single').css({
             'padding-top': '4px',
@@ -1455,25 +1429,6 @@ else{
         });
 
         $('.select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
-        });
-
-        // Initialize all Select2 elements in the modal
-        $('#addModal .select2').select2({
-            allowClear: true,
-            placeholder: "Please Select",
-            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
-        });
-
-        // Apply custom styling to Select2 elements in addModal
-        $('#addModal .select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('#addModal .select2-container .select2-selection__arrow').css({
             'padding-top': '33px',
             'height': 'auto'
         });
@@ -1589,8 +1544,6 @@ else{
             }
         });
 
-        // $('#statusSearch').val('Sales').trigger('change');
-
         $('#selectAllCheckbox').on('change', function() {
             var checkboxes = $('#weightTable tbody input[type="checkbox"]');
             checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
@@ -1601,250 +1554,10 @@ else{
             checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
         });
 
-        var fromDateI = $('#fromDateSearch').val();
-        var toDateI = $('#toDateSearch').val();
-        var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-        var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-        var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-        var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-        var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-        var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
-        var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
-        var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-        var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-        var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
-        var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
-        var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
-        var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+        renderTable();
 
-        table = $("#weightTable").DataTable({
-            "responsive": true,
-            "autoWidth": false,
-            'processing': true,
-            'serverSide': true,
-            'searching': true,
-            'serverMethod': 'post',
-            'ajax': {
-                'url':'php/modules/weight/api.php',
-                'data': {
-                    action: 'list',
-                    fromDate: fromDateI,
-                    toDate: toDateI,
-                    status: statusI,
-                    customer: customerNoI,
-                    supplier: supplierI,
-                    vehicle: vehicleNoI,
-                    invoice: invoiceNoI,
-                    batch: batchNoI,
-                    product: productSearchI,
-                    rawMaterial: rawMaterialI,
-                    plant: plantNoI,
-                    transactionId: transactionIdI,
-                    containerNo: containerNoI,
-                    sealNo: sealNoI,
-                    invDelPo: invDelPoI
-                } 
-            },
-            'columns': [
-                {
-                    // Add a checkbox with a unique ID for each row
-                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                    className: 'select-checkbox',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        if (row.weight_type == 'Primer Mover + Container'){
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
-                        }else{
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
-                        }
-                    }
-                },
-                { data: 'transaction_id' },                
-                { data: 'weight_type' },
-                { data: 'transaction_status' },
-                { data: 'customer' },
-                { data: 'container_no' },
-                { data: 'seal_no' },
-                { data: 'lorry_plate_no1' },
-                { data: 'gross_weight1' },
-                { data: 'gross_weight1_date' },
-                { data: 'tare_weight1' },
-                { data: 'tare_weight1_date' },
-                { data: 'nett_weight1' },
-                { data: 'lorry_plate_no2' },
-                { data: 'gross_weight2' },
-                { data: 'gross_weight2_date' },
-                { data: 'tare_weight2' },
-                { data: 'tare_weight2_date' },
-                { data: 'nett_weight2' },
-                { 
-                    data: 'id',
-                    class: 'action-button',
-                    render: function (data, type, row) {
-                        let buttons = `<div class="row g-1 d-flex">`;
-
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                            // if (row.is_complete != 'Y' ){
-                            if (row.weight_type == 'Primer Mover + Container'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </div>`;
-                            }else{
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </div>`;
-                            }
-                            // }
-                        }else {
-                            if (row.is_complete != 'Y' ){
-                                if (row.weight_type == 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;    
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;  
-                                }
-
-                            }
-                        }
-
-                        if (row.weight_type != 'Primer Mover + Container'){
-                            buttons += `
-                            <div class="col-auto">
-                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                            </div>`;
-                        }
-
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                            if (row.weight_type == 'Primer Mover + Container'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>`;
-                            }else{
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>`;
-                            }
-                        }
-                            
-                        buttons += `</div>`;
-
-                        return buttons;
-                    }
-                }
-            ],
-            "drawCallback": function(settings) {
-                $('#salesInfo').text(settings.json.salesTotal);
-                $('#purchaseInfo').text(settings.json.purchaseTotal);
-                $('#localInfo').text(settings.json.localTotal);
-                $('#miscInfo').text(settings.json.miscTotal);
-            }   
-        });
-
-        emptyContainerTable = $("#emptyContainerTable").DataTable({
-            "responsive": true,
-            "autoWidth": false,
-            'processing': true,
-            'serverSide': true,
-            'searching': true,
-            'serverMethod': 'post',
-            'ajax': {
-                'url':'php/modules/weight/api.php',
-                'data': {
-                    action: 'listEmptyContainer',
-                    fromDate: fromDateI,
-                    toDate: toDateI
-                } 
-            },
-            'columns': [
-                {
-                    // Add a checkbox with a unique ID for each row
-                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                    className: 'select-checkbox',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                    }
-                },
-                { data: 'container_no' },                
-                { data: 'seal_no' },                
-                { data: 'transaction_status' },
-                { data: 'lorry_plate_no1' },
-                { data: 'gross_weight1' },
-                { data: 'gross_weight1_date' },
-                { data: 'tare_weight1' },
-                { data: 'tare_weight1_date' },
-                { data: 'nett_weight1' },
-                { 
-                    data: 'id',
-                    class: 'action-button',
-                    render: function (data, type, row) {
-                        let buttons = `<div class="row g-1 d-flex">`;
-
-                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                            if (row.is_complete != 'Y' ){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </div>`;
-                            }
-                        }else {
-                            if (row.is_complete != 'Y' ){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                        <i class="fa-solid fa-weight-hanging"></i>
-                                    </button>
-                                </div>`;
-                            }
-                        }
-
-                        buttons += `
-                        <div class="col-auto">
-                            <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                <i class="fas fa-print"></i>
-                            </button>
-                        </div>`;
-
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                            buttons += `
-                            <div class="col-auto">
-                                <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </div>`;
-                        }
-                            
-                        buttons += `</div>`;
-
-                        return buttons;
-                    }
-                }
-            ]
+        $('#filterSearch').on('click', function(){
+            renderTable();
         });
 
         // Add event listener for opening and closing details on row click
@@ -1933,19 +1646,19 @@ else{
                 final = parseFloat(final);
                 low = low != '' ? parseFloat(low) : null;
                 high = high != '' ? parseFloat(high) : null;
-                
+
                 if (variance == 'W') {
                     if (low !== null && (final < trueWeight - low)) {
                         pass = false;
-                    } 
+                    }
                     else if (high !== null && (final > trueWeight + high)) {
                         pass = false;
                     }
-                } 
+                }
                 else if (variance == 'P') {
                     if (low !== null && (final < trueWeight * (1 - low / 100))) {
                         pass = false;
-                    } 
+                    }
                     else if (high !== null && (final > trueWeight * (1 + high / 100))) {
                         pass = false;
                     }
@@ -1981,7 +1694,7 @@ else{
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/modules/weight/api.php', $('#weightForm').serialize() + '&action=save', function(data){
-                    var obj = JSON.parse(data); 
+                    var obj = JSON.parse(data);
                     if(obj.status === 'success'){
                         <?php
                             if(isset($_GET['weight'])){
@@ -2042,19 +1755,19 @@ else{
                 final = parseFloat(final);
                 low = low != '' ? parseFloat(low) : null;
                 high = high != '' ? parseFloat(high) : null;
-                
+
                 if (variance == 'W') {
                     if (low !== null && (final < trueWeight - low)) {
                         pass = false;
-                    } 
+                    }
                     else if (high !== null && (final > trueWeight + high)) {
                         pass = false;
                     }
-                } 
+                }
                 else if (variance == 'P') {
                     if (low !== null && (final < trueWeight * (1 - low / 100))) {
                         pass = false;
-                    } 
+                    }
                     else if (high !== null && (final > trueWeight * (1 + high / 100))) {
                         pass = false;
                     }
@@ -2071,7 +1784,7 @@ else{
             if(pass && $('#weightForm').valid()){
                 $('#spinnerLoading').show();
                 $.post('php/modules/weight/api.php', $('#weightForm').serialize() + '&action=save', function(data){
-                    var obj = JSON.parse(data); 
+                    var obj = JSON.parse(data);
                     if(obj.status === 'success'){
                         $('#spinnerLoading').hide();
                         $('#addModal').modal('hide');
@@ -2150,7 +1863,7 @@ else{
                 var id = $('#cancelModal').find('#id').val();
                 $.post('php/modules/weight/api.php', $('#cancelForm').serialize() + '&action=delete', function(data){
                     var obj = JSON.parse(data);
-                    
+
                     if(obj.status === 'success'){
                         table.ajax.reload();
                         emptyContainerTable.ajax.reload();
@@ -2190,7 +1903,7 @@ else{
             $.post('http://127.0.0.1:5002/handshaking', function(data){
                 if(data != "Error"){
                     console.log("Data Received:" + data);
-                    
+
                     if(ind == 'X2S' || ind == 'X722'){
                         if(data.includes("GS")){
                             var text = data.split(" ");
@@ -2240,260 +1953,6 @@ else{
                 }
             });
         }, 500);
-
-        $('#filterSearch').on('click', function(){
-            var fromDateI = $('#fromDateSearch').val();
-            var toDateI = $('#toDateSearch').val();
-            var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
-            var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
-            var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
-            var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
-            var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
-            var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
-            var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
-            var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
-            var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-            var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
-            var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
-            var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
-            var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
-
-            //Destroy the old Datatable
-            $("#weightTable").DataTable().clear().destroy();
-            $("#emptyContainerTable").DataTable().clear().destroy();
-
-            //Create new Datatable
-            table = $("#weightTable").DataTable({
-                "responsive": true,
-                "autoWidth": false,
-                'processing': true,
-                'serverSide': true,
-                'searching': true,
-                'serverMethod': 'post',
-                'ajax': {
-                    'url':'php/modules/weight/api.php',
-                    'data': {
-                        action: 'list',
-                        fromDate: fromDateI,
-                        toDate: toDateI,
-                        status: statusI,
-                        customer: customerNoI,
-                        supplier: supplierI,
-                        vehicle: vehicleNoI,
-                        invoice: invoiceNoI,
-                        batch: batchNoI,
-                        product: productSearchI,
-                        rawMaterial: rawMaterialI,
-                        plant: plantNoI,
-                        transactionId: transactionIdI,
-                        containerNo: containerNoI,
-                        sealNo: sealNoI,
-                        invDelPo: invDelPoI
-                    } 
-                },
-                'columns': [
-                    {
-                        // Add a checkbox with a unique ID for each row
-                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                        className: 'select-checkbox',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            if (row.weight_type == 'Primer Mover + Container'){
-                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
-                            }else{
-                                return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
-                            }
-                        }
-                    },
-                    { data: 'transaction_id' }, 
-                    { data: 'weight_type' },
-                    { data: 'transaction_status' },
-                    { data: 'customer' },
-                    { data: 'container_no' },
-                    { data: 'seal_no' },
-                    { data: 'lorry_plate_no1' },
-                    { data: 'gross_weight1' },
-                    { data: 'gross_weight1_date' },
-                    { data: 'tare_weight1' },
-                    { data: 'tare_weight1_date' },
-                    { data: 'nett_weight1' },
-                    { data: 'lorry_plate_no2' },
-                    { data: 'gross_weight2' },
-                    { data: 'gross_weight2_date' },
-                    { data: 'tare_weight2' },
-                    { data: 'tare_weight2_date' },
-                    { data: 'nett_weight2' },
-                    { 
-                        data: 'id',
-                        class: 'action-button',
-                        render: function (data, type, row) {
-                            let buttons = `<div class="row g-1 d-flex">`;
-
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                                // if (row.is_complete != 'Y' ){
-                                if (row.weight_type == 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                    </div>`;
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                                // }
-                            }else {
-                                if (row.is_complete != 'Y' ){
-                                    if (row.weight_type == 'Primer Mover + Container'){
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;    
-                                    }else{
-                                        buttons += `
-                                        <div class="col-auto">
-                                            <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-weight-hanging"></i>
-                                            </button>
-                                        </div>`;  
-                                    }
-
-                                }
-                            }
-
-                            if (row.weight_type != 'Primer Mover + Container'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
-                                        <i class="fas fa-print"></i>
-                                    </button>
-                                </div>`;
-                            }
-
-                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                                if (row.weight_type == 'Primer Mover + Container'){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>`;
-                                }else{
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                            }
-                                
-                            buttons += `</div>`;
-
-                            return buttons;
-                        }
-                    }
-                ],
-                "drawCallback": function(settings) {
-                    $('#salesInfo').text(settings.json.salesTotal);
-                    $('#purchaseInfo').text(settings.json.purchaseTotal);
-                    $('#localInfo').text(settings.json.localTotal);
-                    $('#miscInfo').text(settings.json.miscTotal);
-                }   
-            });
-
-            //Create new Datatable for empty container
-            emptyContainerTable = $("#emptyContainerTable").DataTable({
-                "responsive": true,
-                "autoWidth": false,
-                'processing': true,
-                'serverSide': true,
-                'searching': true,
-                'serverMethod': 'post',
-                'ajax': {
-                    'url':'php/modules/weight/api.php',
-                    'data': {
-                        action: 'listEmptyContainer',
-                        fromDate: fromDateI,
-                        toDate: toDateI
-                    } 
-                },
-                'columns': [
-                    {
-                        // Add a checkbox with a unique ID for each row
-                        data: 'id', // Assuming 'serialNo' is a unique identifier for each row
-                        className: 'select-checkbox',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
-                        }
-                    },
-                    { data: 'container_no' },                
-                    { data: 'seal_no' },                
-                    { data: 'transaction_status' },
-                    { data: 'lorry_plate_no1' },
-                    { data: 'gross_weight1' },
-                    { data: 'gross_weight1_date' },
-                    { data: 'tare_weight1' },
-                    { data: 'tare_weight1_date' },
-                    { data: 'nett_weight1' },
-                    { 
-                        data: 'id',
-                        class: 'action-button',
-                        render: function (data, type, row) {
-                            let buttons = `<div class="row g-1 d-flex">`;
-
-                            if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
-                                if (row.is_complete != 'Y' ){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                            }else {
-                                if (row.is_complete != 'Y' ){
-                                    buttons += `
-                                    <div class="col-auto">
-                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-weight-hanging"></i>
-                                        </button>
-                                    </div>`;
-                                }
-                            }
-
-                            buttons += `
-                            <div class="col-auto">
-                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                            </div>`;
-
-                            if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
-                                buttons += `
-                                <div class="col-auto">
-                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>`;
-                            }
-                                
-                            buttons += `</div>`;
-
-                            return buttons;
-                        }
-                    }
-                ]
-            });
-        });
 
         $('#addWeight').on('click', function(){
             // Show Capture Buttons When Add New
@@ -2580,13 +2039,13 @@ else{
             $('#addModal .select2[required]').each(function () {
                 var select2Field = $(this);
                 var select2Container = select2Field.next('.select2-container');
-                
+
                 select2Container.find('.select2-selection').css('border', ''); // Remove red border
                 select2Container.next('.select2-error').remove(); // Remove error message
             });
 
             $('#addModal').modal('show');
-            
+
             $('#weightForm').validate({
                 errorElement: 'span',
                 errorPlacement: function (error, element) {
@@ -2722,7 +2181,7 @@ else{
             var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
             var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
             var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
-            
+
             if (batchNoI == 'N'){
                 batchNoI = 'Pending';
             }else if (batchNoI == 'Y'){
@@ -2849,7 +2308,7 @@ else{
 
                                 $('#addModal').find('#emptyContainerNo').append(
                                     '<option value="'+container_no+'">'+container_no+'</option>'
-                                );  
+                                );
                             }
                         }
                     }
@@ -2913,7 +2372,7 @@ else{
 
                                 $('#addModal').find('#emptyContainerNo').append(
                                     '<option value="'+container_no+'">'+container_no+'</option>'
-                                );  
+                                );
                             }
                         }
                     }
@@ -3236,7 +2695,7 @@ else{
             $('#reduceWeight').trigger('change');
             //$('#finalWeight').trigger('change');
         });
-        
+
         $('#reduceWeight').on('change', function(){
             var weightType = $('#weightType').val();
 
@@ -3267,7 +2726,7 @@ else{
             else{
                 nett2 = parseFloat($('#addModal').find('#orderWeight').val());
             }
-            
+
             var current = nett1 - nett2;
             $('#weightDifference').val(current.toFixed(0));
 
@@ -3304,7 +2763,7 @@ else{
             var nett2 = $(this).val() ? parseFloat($(this).val()) : 0;
             var current = nett1 - nett2;
             $('#weightDifference').val(current.toFixed(0));
-            
+
             var previousRecordsTag = $('#addModal').find('#previousRecordsTag').val();
 
             if (previousRecordsTag == 'false'){
@@ -3442,7 +2901,7 @@ else{
 
                                 $('#addModal').find('#emptyContainerNo').append(
                                     '<option value="'+container_no+'">'+container_no+'</option>'
-                                );  
+                                );
                             }
                         }
                     }
@@ -3470,7 +2929,7 @@ else{
                 $('#rawMaterialDisplay').show();
                 $('#productNameDisplay').hide();
                 $('#addModal').find('#divPoSupplyWeight').show();
-                
+
                 if ($(this).val() == "Purchase"){
                     $('#divPurchaseOrder').find('label[for="purchaseOrder"]').text('Purchase Order');
                 }else{
@@ -3560,11 +3019,11 @@ else{
                 $('#normalCard').hide();
                 $('#grossCapture').show();
                 $('#tareCapture').show();
-            } else if (emptyContainerNo) { 
+            } else if (emptyContainerNo) {
                 $.post('php/modules/weight/api.php', {action: 'emptyContainer', userID: emptyContainerNo}, function (data){
                     var obj = JSON.parse(data);
 
-                    if (obj.status == 'success'){ 
+                    if (obj.status == 'success'){
                         $('#addModal').find('#invoiceNo').val(obj.message.invoice_no);
                         $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
                         $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
@@ -3586,10 +3045,10 @@ else{
                         $('#addModal').find('#transporter').val(obj.message.transporter).trigger('change');
                         $('#addModal').find('#destination').val(obj.message.destination).trigger('change');
 
-                        
+
                         $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
                         $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
-                        grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date)); 
+                        grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
                         // $('#addModal').find('#grossIncomingDate').val(obj.message.gross_weight1_date);
                         $('#addModal').find('#grossWeightBy1').val(obj.message.gross_weight_by1);
                         $('#addModal').find('#tareOutgoing').val(obj.message.tare_weight1);
@@ -3612,9 +3071,9 @@ else{
                             $('.index-vehicle').show();
                             $('#vehicleNoTxt').hide();
                         }
-                        
+
                         $('#tareOutgoing2').trigger('keyup');
-                        
+
                         $('#normalCard').show();
                         $('#grossCapture').hide();
                         $('#tareCapture').hide();
@@ -3651,7 +3110,7 @@ else{
             $('#containerNoInput').val(x);
             $('#containerNo').val(x);
         });
-        
+
         $('#containerNoInput').on('change', function () {
             $('#containerNo').val($(this).val());
         });
@@ -3697,6 +3156,264 @@ else{
             }
         ?>
     });
+
+    function renderTable() {
+        var fromDateI = $('#fromDateSearch').val();
+        var toDateI = $('#toDateSearch').val();
+        var statusI = $('#statusSearch').val() ? $('#statusSearch').val() : '';
+        var customerNoI = $('#customerNoSearch').val() ? $('#customerNoSearch').val() : '';
+        var supplierI = $('#supplierSearch').val() ? $('#supplierSearch').val() : '';
+        var vehicleNoI = $('#vehicleNo').val() ? $('#vehicleNo').val() : '';
+        var invoiceNoI = $('#invoiceNoSearch').val() ? $('#invoiceNoSearch').val() : '';
+        var batchNoI = $('#batchNoSearch').val() ? $('#batchNoSearch').val() : '';
+        var productSearchI = $('#productSearch').val() ? $('#productSearch').val() : '';
+        var rawMaterialI = $('#rawMatSearch').val() ? $('#rawMatSearch').val() : '';
+        var plantNoI = $('#plantSearch').val() ? $('#plantSearch').val() : '';
+        var transactionIdI = $('#transactionIdSearch').val() ? $('#transactionIdSearch').val() : '';
+        var containerNoI = $('#containerNoSearch').val() ? $('#containerNoSearch').val() : '';
+        var sealNoI = $('#sealNoSearch').val() ? $('#sealNoSearch').val() : '';
+        var invDelPoI = $('#invDelPoSearch').val() ? $('#invDelPoSearch').val() : '';
+
+        // Destroy old DataTables if they exist
+        if ($.fn.DataTable.isDataTable('#weightTable')) {
+            $("#weightTable").DataTable().clear().destroy();
+        }
+        if ($.fn.DataTable.isDataTable('#emptyContainerTable')) {
+            $("#emptyContainerTable").DataTable().clear().destroy();
+        }
+
+        //Create new Datatable
+        table = $("#weightTable").DataTable({
+            "responsive": true,
+            "autoWidth": false,
+            'processing': true,
+            'serverSide': true,
+            'searching': true,
+            'serverMethod': 'post',
+            'ajax': {
+                'url':'php/modules/weight/api.php',
+                'data': {
+                    action: 'list',
+                    fromDate: fromDateI,
+                    toDate: toDateI,
+                    status: statusI,
+                    customer: customerNoI,
+                    supplier: supplierI,
+                    vehicle: vehicleNoI,
+                    invoice: invoiceNoI,
+                    batch: batchNoI,
+                    product: productSearchI,
+                    rawMaterial: rawMaterialI,
+                    plant: plantNoI,
+                    transactionId: transactionIdI,
+                    containerNo: containerNoI,
+                    sealNo: sealNoI,
+                    invDelPo: invDelPoI
+                }
+            },
+            'columns': [
+                {
+                    // Add a checkbox with a unique ID for each row
+                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
+                    className: 'select-checkbox',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        if (row.weight_type == 'Primer Mover + Container'){
+                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Empty Container"/>';
+                        }else{
+                            return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'" data-type="Lorry"/>';
+                        }
+                    }
+                },
+                { data: 'transaction_id' },
+                { data: 'weight_type' },
+                { data: 'transaction_status' },
+                { data: 'customer' },
+                { data: 'container_no' },
+                { data: 'seal_no' },
+                { data: 'lorry_plate_no1' },
+                { data: 'gross_weight1' },
+                { data: 'gross_weight1_date' },
+                { data: 'tare_weight1' },
+                { data: 'tare_weight1_date' },
+                { data: 'nett_weight1' },
+                { data: 'lorry_plate_no2' },
+                { data: 'gross_weight2' },
+                { data: 'gross_weight2_date' },
+                { data: 'tare_weight2' },
+                { data: 'tare_weight2_date' },
+                { data: 'nett_weight2' },
+                {
+                    data: 'id',
+                    class: 'action-button',
+                    render: function (data, type, row) {
+                        let buttons = `<div class="row g-1 d-flex">`;
+
+                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                            // if (row.is_complete != 'Y' ){
+                            if (row.weight_type == 'Primer Mover + Container'){
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                </div>`;
+                            }else{
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                </div>`;
+                            }
+                            // }
+                        }else {
+                            if (row.is_complete != 'Y' ){
+                                if (row.weight_type == 'Primer Mover + Container'){
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-weight-hanging"></i>
+                                        </button>
+                                    </div>`;
+                                }else{
+                                    buttons += `
+                                    <div class="col-auto">
+                                        <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data}, 'N')" class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-weight-hanging"></i>
+                                        </button>
+                                    </div>`;
+                                }
+
+                            }
+                        }
+
+                        if (row.weight_type != 'Primer Mover + Container'){
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </div>`;
+                        }
+
+                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                            if (row.weight_type == 'Primer Mover + Container'){
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>`;
+                            }else{
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'N')" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>`;
+                            }
+                        }
+
+                        buttons += `</div>`;
+
+                        return buttons;
+                    }
+                }
+            ],
+            "drawCallback": function(settings) {
+                $('#salesInfo').text(settings.json.salesTotal);
+                $('#purchaseInfo').text(settings.json.purchaseTotal);
+                $('#localInfo').text(settings.json.localTotal);
+                $('#miscInfo').text(settings.json.miscTotal);
+            }
+        });
+
+        //Create new Datatable for empty container
+        emptyContainerTable = $("#emptyContainerTable").DataTable({
+            "responsive": true,
+            "autoWidth": false,
+            'processing': true,
+            'serverSide': true,
+            'searching': true,
+            'serverMethod': 'post',
+            'ajax': {
+                'url':'php/modules/weight/api.php',
+                'data': {
+                    action: 'listEmptyContainer',
+                    fromDate: fromDateI,
+                    toDate: toDateI
+                }
+            },
+            'columns': [
+                {
+                    // Add a checkbox with a unique ID for each row
+                    data: 'id', // Assuming 'serialNo' is a unique identifier for each row
+                    className: 'select-checkbox',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
+                    }
+                },
+                { data: 'container_no' },
+                { data: 'seal_no' },
+                { data: 'transaction_status' },
+                { data: 'lorry_plate_no1' },
+                { data: 'gross_weight1' },
+                { data: 'gross_weight1_date' },
+                { data: 'tare_weight1' },
+                { data: 'tare_weight1_date' },
+                { data: 'nett_weight1' },
+                {
+                    data: 'id',
+                    class: 'action-button',
+                    render: function (data, type, row) {
+                        let buttons = `<div class="row g-1 d-flex">`;
+
+                        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER' ) {
+                            if (row.is_complete != 'Y' ){
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Edit" type="button" id="edit${data}" onclick="edit(${data}, 'Y')" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                </div>`;
+                            }
+                        }else {
+                            if (row.is_complete != 'Y' ){
+                                buttons += `
+                                <div class="col-auto">
+                                    <button title="Weight Out" type="button" id="edit${data}" onclick="edit(${data},'Y')" class="btn btn-warning btn-sm">
+                                        <i class="fa-solid fa-weight-hanging"></i>
+                                    </button>
+                                </div>`;
+                            }
+                        }
+
+                        buttons += `
+                        <div class="col-auto">
+                            <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
+                                <i class="fas fa-print"></i>
+                            </button>
+                        </div>`;
+
+                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                            buttons += `
+                            <div class="col-auto">
+                                <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>`;
+                        }
+
+                        buttons += `</div>`;
+
+                        return buttons;
+                    }
+                }
+            ]
+        });
+    }
 
     function handleWeightType(weightType){
         if (weightType == 'Container'){
@@ -3797,7 +3514,7 @@ else{
                 }else{
                     returnString += `<p><strong>SALES PRODUCT:</strong> ${row.product_rawmat_name}</p>`;
                 }
-        
+
             returnString += `
                 <p><strong>PURCHASE ORDER:</strong> ${row.purchase_order}</p>
                 <p><strong>CONTAINER NO:</strong> ${row.container_no}</p>
@@ -3838,11 +3555,11 @@ else{
                 <p><strong>OUT WEIGHT 2:</strong> ${row.tare_weight2}</p>
                 <p><strong>OUT DATE / TIME 2:</strong> ${row.tare_weight2_date}</p>
                 <p><strong>OUT WEIGH BY 2:</strong> ${row.tare_weight_by2}</p>
-                <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2}</p>            
+                <p><strong>NETT WEIGHT 2:</strong> ${row.nett_weight2}</p>
                 </div>
         </div>
         `;
-        
+
         return returnString;
     }
 
@@ -3982,8 +3699,8 @@ else{
                     $('.index-vehicle2').show();
                     $('#vehicleNoTxt2').hide();
                 }
-                
-                $('#addModal').find('#productCode').val(obj.message.product_code);                
+
+                $('#addModal').find('#productCode').val(obj.message.product_code);
                 $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
                 $('#addModal').find('#invoiceNo').val(obj.message.invoice_no);
                 $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
@@ -4003,7 +3720,7 @@ else{
                 $('#addModal').find('#destination').val(obj.message.destination).trigger('change');
                 $('#addModal').find('#plant').val(obj.message.plant_name).trigger('change');
                 $('#addModal').find('#plantCode').val(obj.message.plant_code);
-                
+
                 $('#addModal').find('#otherRemarks').val(obj.message.remarks);
                 $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
                 grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date));
@@ -4146,13 +3863,13 @@ else{
                 $('#addModal .select2[required]').each(function () {
                     var select2Field = $(this);
                     var select2Container = select2Field.next('.select2-container');
-                    
+
                     select2Container.find('.select2-selection').css('border', ''); // Remove red border
                     select2Container.next('.select2-error').remove(); // Remove error message
                 });
 
                 $('#addModal').modal('show');
-            
+
                 $('#weightForm').validate({
                     errorElement: 'span',
                     errorPlacement: function (error, element) {
