@@ -70,77 +70,40 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language] ?></h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                    </button>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form role="form" id="messageForm" class="needs-validation" novalidate autocomplete="off">
-                                                        <div class=" row col-12">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="keyCode" class="col-sm-4 col-form-label"><?=$languageArray['message_code_code'][$language] ?> *</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="keyCode" name="keyCode" placeholder="<?=$languageArray['message_code_code'][$language] ?>" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language] ?>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="englishDecs" class="col-sm-4 col-form-label">English *</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="englishDecs" name="englishDecs" placeholder="English" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language] ?>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="chineseDecs" class="col-sm-4 col-form-label">中文</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="chineseDecs" name="chineseDecs" placeholder="中文">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="malayDecs" class="col-sm-4 col-form-label">Bahasa Malaysia</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="malayDecs" name="malayDecs" placeholder="Bahasa">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="nepaliDecs" class="col-sm-4 col-form-label">नेपाली</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="nepaliDecs" name="nepaliDecs" placeholder="नेपाली">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>                                                                      
-                                                                            <input type="hidden" class="form-control" id="keyId" name="keyId">                                                                                                                                                         
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
+                                                        <input type="hidden" id="keyId" name="keyId">
+                                                        <div class="row g-3">
+                        <div class="col-12">
+                            <label for="keyCode" class="form-label"><?=$languageArray['message_code_code'][$language]?> <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="keyCode" name="keyCode" placeholder="<?=$languageArray['message_code_code'][$language]?>" required>
+                            <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="englishDecs" class="form-label">English <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="englishDecs" name="englishDecs" placeholder="English" required>
+                            <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="chineseDecs" class="form-label">中文</label>
+                            <input type="text" class="form-control" id="chineseDecs" name="chineseDecs" placeholder="中文">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="malayDecs" class="form-label">Bahasa Malaysia</label>
+                            <input type="text" class="form-control" id="malayDecs" name="malayDecs" placeholder="Bahasa Malaysia">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="nepaliDecs" class="form-label">नेपाली</label>
+                            <input type="text" class="form-control" id="nepaliDecs" name="nepaliDecs" placeholder="नेपाली">
+                        </div>
                                                         </div>
-                                                        
-                                                        <div class="col-lg-12">
-                                                            <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitMessage"><?=$languageArray['submit_code'][$language]?></button>
-                                                            </div>
-                                                        </div><!--end col-->                                                               
                                                     </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                    <button type="button" class="btn btn-success" id="submitMessage"><?=$languageArray['submit_code'][$language]?></button>
                                                 </div>
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
@@ -240,6 +203,20 @@ $(function () {
         checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
     });
 
+    $('#messageForm').validate({
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
     table = $("#messageTable").DataTable({
         "responsive": true,
         "autoWidth": false,
@@ -249,7 +226,8 @@ $(function () {
         'order': [[ 1, 'asc' ]],
         'columnDefs': [ { orderable: false, targets: [0] }],
         'ajax': {
-            'url':'php/modules/message/loadMessages.php'
+            'url':'php/modules/message/api.php',
+            'data': { action: 'list' }
         },
         'columns': [
             { data: 'counter' },
@@ -263,17 +241,25 @@ $(function () {
                 render: function ( data, type, row ) {
                     return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                     '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
+                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" data-id="'+data+'"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
+                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" data-id="'+data+'"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
                 }
             }
         ]       
     });
     
+    $('#messageTable').on('click', '.edit-item-btn', function(){
+        edit($(this).data('id'));
+    });
+
+    $('#messageTable').on('click', '.remove-item-btn', function(){
+        deactivate($(this).data('id'));
+    });
+
     $('#submitMessage').on('click', function(){
         if($('#messageForm').valid()){
             $('#spinnerLoading').show();
-            $.post('php/modules/message/message.php', $('#messageForm').serialize(), function(data){
+            $.post('php/modules/message/api.php', $('#messageForm').serialize() + '&action=save', function(data){
                 var obj = JSON.parse(data);
                 if(obj.status === 'success') {
                     table.ajax.reload();
@@ -288,7 +274,6 @@ $(function () {
                 else {}
             });
         }
-        // }
     });
 
     $('#addMessage').on('click', function(){
@@ -304,25 +289,12 @@ $(function () {
         $('#messageModal .is-invalid').removeClass('is-invalid');
         $('#messageModal').modal('show');
         
-        $('#messageForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
     });
 });
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/modules/message/getMessage.php', {messageId: id}, function(data) {
+    $.post('php/modules/message/api.php', {action: 'get', id: id}, function(data) {
         var decode = JSON.parse(data);
 
         if(decode.status === 'success'){
@@ -353,7 +325,7 @@ function edit(id){
 function deactivate(id){
     $('#spinnerLoading').show();
     if (confirm('Are you sure you want to delete this message resource?')) {
-        $.post('php/modules/message/deleteMessage.php', {messageId: id}, function(data){
+        $.post('php/modules/message/api.php', {action: 'delete', ids: [id]}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

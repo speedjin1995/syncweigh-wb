@@ -51,9 +51,6 @@
                                 <div class="col-12">
                                     <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                                         <div class="flex-grow-1">
-                                            <!--h4 class="fs-16 mb-1">Good Morning, Anna!</h4>
-                                            <p class="text-muted mb-0">Here's what's happening with your store
-                                                today.</p-->
                                         </div>
                                     </div><!-- end card header -->
                                 </div>
@@ -70,93 +67,48 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language]?></h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                    </button>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form role="form" id="plantForm" class="needs-validation" novalidate autocomplete="off">
-                                                        <div class=" row col-12">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="plantCode" class="col-sm-4 col-form-label"><?=$languageArray['plant_code_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="plantCode" name="plantCode" placeholder="Plant Code" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="plantName" class="col-sm-4 col-form-label"><?=$languageArray['plant_name_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="plantName" name="plantName" placeholder="<?=$languageArray['plant_name_code'][$language]?>" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="addressLine1" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 1</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="<?=$languageArray['address_code'][$language]?>1">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="addressLine2" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 2</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="<?=$languageArray['address_code'][$language]?>2">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="addressLine3" class="col-sm-4 col-form-label"><?=$languageArray['address_code'][$language]?> 3</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="<?=$languageArray['address_code'][$language]?>3">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="phoneNo" class="col-sm-4 col-form-label"><?=$languageArray['phone_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?=$languageArray['phone_code'][$language]?>">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="faxNo" class="col-sm-4 col-form-label"><?=$languageArray['fax_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="<?=$languageArray['fax_code'][$language]?>">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>                                                                        
-                                                                            <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
+                                                        <input type="hidden" id="id" name="id">
+                                                        <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="plantCode" class="form-label"><?=$languageArray['plant_code_code'][$language]?> <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="plantCode" name="plantCode" placeholder="<?=$languageArray['plant_code_code'][$language]?>" required>
+                            <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="plantName" class="form-label"><?=$languageArray['plant_name_code'][$language]?> <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="plantName" name="plantName" placeholder="<?=$languageArray['plant_name_code'][$language]?>" required>
+                            <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="addressLine1" class="form-label"><?=$languageArray['address_code'][$language]?> 1</label>
+                            <input type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="<?=$languageArray['address_code'][$language]?> 1">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="addressLine2" class="form-label"><?=$languageArray['address_code'][$language]?> 2</label>
+                            <input type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="<?=$languageArray['address_code'][$language]?> 2">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="addressLine3" class="form-label"><?=$languageArray['address_code'][$language]?> 3</label>
+                            <input type="text" class="form-control" id="addressLine3" name="addressLine3" placeholder="<?=$languageArray['address_code'][$language]?> 3">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phoneNo" class="form-label"><?=$languageArray['phone_code'][$language]?></label>
+                            <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?=$languageArray['phone_code'][$language]?>">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="faxNo" class="form-label"><?=$languageArray['fax_code'][$language]?></label>
+                            <input type="text" class="form-control" id="faxNo" name="faxNo" placeholder="<?=$languageArray['fax_code'][$language]?>">
+                        </div>
                                                         </div>
-                                                        
-                                                        <div class="col-lg-12">
-                                                            <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitPlant"><?=$languageArray['submit_code'][$language]?></button>
-                                                            </div>
-                                                        </div><!--end col-->                                                               
                                                     </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                    <button type="button" class="btn btn-success" id="submitPlant"><?=$languageArray['submit_code'][$language]?></button>
                                                 </div>
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
@@ -311,6 +263,34 @@ $(function () {
         checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
     });
 
+    $('#plantForm').validate({
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    $('#uploadForm').validate({
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
     table = $("#plantTable").DataTable({
         "responsive": true,
         "autoWidth": false,
@@ -318,7 +298,8 @@ $(function () {
         'serverSide': true,
         'serverMethod': 'post',
         'ajax': {
-            'url':'php/modules/plant/loadPlants.php'
+            'url':'php/modules/plant/api.php',
+            'data': { action: 'list' }
         },
         'columns': [
             {
@@ -341,7 +322,7 @@ $(function () {
                 data: 'id',
                 render: function ( data, type, row ) {
                     if (row.status == '1'){
-                        return '<button title="Reactivate" type="button" id="reactivate'+data+'" onclick="reactivate('+data+')" class="btn btn-warning btn-sm">Reactivate</button>';
+                        return '<button title="Reactivate" type="button" id="reactivate'+data+'" data-id="'+data+'" class="btn btn-warning btn-sm reactivate-item-btn">Reactivate</button>';
                     }else{
                         return 'Active';
                     }
@@ -352,19 +333,29 @@ $(function () {
                 render: function ( data, type, row ) {
                     return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                     '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
+                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" data-id="'+data+'"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
+                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" data-id="'+data+'"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
                 }
             }
         ]       
     });
     
-    // $.validator.setDefaults({
-    //     submitHandler: function() {
+    $('#plantTable').on('click', '.edit-item-btn', function(){
+        edit($(this).data('id'));
+    });
+
+    $('#plantTable').on('click', '.remove-item-btn', function(){
+        deactivate($(this).data('id'));
+    });
+
+    $('#plantTable').on('click', '.reactivate-item-btn', function(){
+        reactivate($(this).data('id'));
+    });
+
     $('#submitPlant').on('click', function(){
         if($('#plantForm').valid()){
             $('#spinnerLoading').show();
-            $.post('php/modules/plant/plants.php', $('#plantForm').serialize(), function(data){
+            $.post('php/modules/plant/api.php', $('#plantForm').serialize() + '&action=save', function(data){
                 var obj = JSON.parse(data);
                 if(obj.status === 'success') {
                     table.ajax.reload();
@@ -399,19 +390,6 @@ $(function () {
 
         $('#addModal').modal('show');
         
-        $('#plantForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
     });
 
     $('#uploadPlant').on('click', function(){
@@ -434,7 +412,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/modules/plant/uploadPlant.php',
+            url: 'php/modules/plant/api.php?action=upload',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -474,24 +452,10 @@ $(function () {
         $('#fileInput').val('');
         $('#uploadModal').modal('show');
 
-        $('#uploadForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
     });
 
     $('#uploadModal').find('#previewButton').on('click', function(){
-        var fileInput = document.getElementById('fileInput');
-        var file = fileInput.files[0];
+        var file = $('#fileInput').prop('files')[0];
         var reader = new FileReader();
         
         reader.onload = function(e) {
@@ -508,14 +472,14 @@ $(function () {
         var selectedIds = []; // An array to store the selected 'id' values
 
         $("#plantTable tbody input[type='checkbox']").each(function () {
-            if (this.checked) {
+            if ($(this).is(':checked')) {
                 selectedIds.push($(this).val());
             }
         });
 
         if (selectedIds.length > 0) {
             if (confirm('Are you sure you want to delete these plants?')) {
-                $.post('php/modules/plant/deletePlant.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                $.post('php/modules/plant/api.php', {action: 'delete', ids: selectedIds}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -546,7 +510,7 @@ $(function () {
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/modules/plant/getPlant.php', {userID: id}, function(data)
+    $.post('php/modules/plant/api.php', {action: 'get', id: id}, function(data)
     {
         var obj = JSON.parse(data);
         if(obj.status === 'success'){
@@ -564,19 +528,6 @@ function edit(id){
 
             $('#addModal').modal('show');
 
-            $('#plantForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
@@ -593,7 +544,7 @@ function edit(id){
 function deactivate(id){
     $('#spinnerLoading').show();
     if (confirm('Are you sure you want to delete this plant?')) {
-        $.post('php/modules/plant/deletePlant.php', {userID: id}, function(data){
+        $.post('php/modules/plant/api.php', {action: 'delete', ids: [id]}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){
@@ -652,22 +603,14 @@ function displayPreview(data) {
 
         for (var j = 0; j < 7; j++) {
             var cellData = rowData[j];
-            var formattedData = cellData;
-
-            // Check if cellData is a valid Excel date serial number and format it to DD/MM/YYYY
-            if (typeof cellData === 'number' && cellData > 0) {
-                var excelDate = XLSX.SSF.parse_date_code(cellData);
-            }
-
-            htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (formattedData == null ? '' : formattedData) + '" /></td>';
+            htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (cellData == null ? '' : cellData) + '" /></td>';
         }
         htmlTable += '</tr>';
     }
 
     htmlTable += '</tbody></table>';
 
-    var previewTable = document.getElementById('previewTable');
-    previewTable.innerHTML = htmlTable;
+    $('#previewTable').html(htmlTable);
 }
 
 function reactivate(id) {

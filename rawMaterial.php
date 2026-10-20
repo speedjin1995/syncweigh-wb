@@ -51,9 +51,6 @@
                                 <div class="col-12">
                                     <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                                         <div class="flex-grow-1">
-                                            <!--h4 class="fs-16 mb-1">Good Morning, Anna!</h4>
-                                            <p class="text-muted mb-0">Here's what's happening with your store
-                                                today.</p-->
                                         </div>
                                     </div><!-- end card header -->
                                 </div>
@@ -70,93 +67,52 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalScrollableTitle"><?=$languageArray['add_new_code'][$language]?></h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                    </button>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form role="form" id="rawMatForm" class="needs-validation" novalidate autocomplete="off">
-                                                        <div class=" row col-12">
-                                                            <div class="col-xxl-12 col-lg-12">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="row">
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="rawMatCode" class="col-sm-4 col-form-label"><?=$languageArray['raw_material_code_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="rawMatCode" name="rawMatCode" placeholder="<?=$languageArray['raw_material_code_code'][$language]?>" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="rawMatName" class="col-sm-4 col-form-label"><?=$languageArray['raw_material_name_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="rawMatName" name="rawMatName" placeholder="<?=$languageArray['raw_material_name_code'][$language]?>" required>
-                                                                                        <div class="invalid-feedback">
-                                                                                            <?=$languageArray['please_fill_in_the_field_code'][$language]?>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['description_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="text" class="form-control" id="description" name="description" placeholder="<?=$languageArray['description_code'][$language]?>">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="description" class="col-sm-4 col-form-label"><?=$languageArray['variance_type_code'][$language]?></label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <select class="form-control select2" style="width: 100%;" id="varianceType" name="varianceType">
-                                                                                            <option value="" selected disabled hidden>Please Select</option>
-                                                                                            <option value="W">kg</option>
-                                                                                            <option value="P">%</option>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="high" class="col-sm-4 col-form-label"><?=$languageArray['high_code'][$language]?> (+)</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="number" class="form-control" id="high" name="high" placeholder="<?=$languageArray['high_code'][$language]?>" value="0">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
-                                                                                <div class="row">
-                                                                                    <label for="low" class="col-sm-4 col-form-label"><?=$languageArray['low_code'][$language]?> (-)</label>
-                                                                                    <div class="col-sm-8">
-                                                                                        <input type="number" class="form-control" id="low" name="low" placeholder="<?=$languageArray['low_code'][$language]?>" value="0">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <input type="hidden" class="form-control" id="id" name="id">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                        <input type="hidden" id="id" name="id">
+                                                        <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="rawMatCode" class="form-label"><?=$languageArray['raw_material_code_code'][$language]?> <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="rawMatCode" name="rawMatCode" placeholder="<?=$languageArray['raw_material_code_code'][$language]?>" required>
+                            <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="rawMatName" class="form-label"><?=$languageArray['raw_material_name_code'][$language]?> <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="rawMatName" name="rawMatName" placeholder="<?=$languageArray['raw_material_name_code'][$language]?>" required>
+                            <div class="invalid-feedback"><?=$languageArray['please_fill_in_the_field_code'][$language]?></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="description" class="form-label"><?=$languageArray['description_code'][$language]?></label>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="<?=$languageArray['description_code'][$language]?>">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="varianceType" class="form-label"><?=$languageArray['variance_type_code'][$language]?></label>
+                            <select class="form-control select2" style="width: 100%;" id="varianceType" name="varianceType">
+                                <option value="" selected disabled hidden>Please Select</option>
+                                <option value="W">kg</option>
+                                <option value="P">%</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="high" class="form-label"><?=$languageArray['high_code'][$language]?> (+)</label>
+                            <input type="number" class="form-control" id="high" name="high" placeholder="<?=$languageArray['high_code'][$language]?>" value="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="low" class="form-label"><?=$languageArray['low_code'][$language]?> (-)</label>
+                            <input type="number" class="form-control" id="low" name="low" placeholder="<?=$languageArray['low_code'][$language]?>" value="0">
+                        </div>
                                                         </div>
-                                                        
-                                                        <div class="col-lg-12">
-                                                            <div class="hstack gap-2 justify-content-end">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                                <button type="button" class="btn btn-success" id="submitRawMat"><?=$languageArray['submit_code'][$language]?></button>
-                                                            </div>
-                                                        </div><!--end col-->                                                               
                                                     </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                    <button type="button" class="btn btn-success" id="submitRawMat"><?=$languageArray['submit_code'][$language]?></button>
                                                 </div>
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
                                     </div><!-- /.modal -->
-
                                     <div class="modal fade" id="uploadModal">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
                                             <div class="modal-content">
@@ -320,6 +276,34 @@ $(function () {
         'height': 'auto'
     });
 
+    $('#rawMatForm').validate({
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    $('#uploadForm').validate({
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
     table = $("#rawMatTable").DataTable({
         "responsive": true,
         "autoWidth": false,
@@ -327,7 +311,8 @@ $(function () {
         'serverSide': true,
         'serverMethod': 'post',
         'ajax': {
-            'url':'php/modules/rawMaterial/loadRawMaterials.php'
+            'url':'php/modules/rawMaterial/api.php',
+            'data': { action: 'list' }
         },
         'columns': [
             {
@@ -346,7 +331,7 @@ $(function () {
                 data: 'id',
                 render: function ( data, type, row ) {
                     if (row.status == '1'){
-                        return '<button title="Reactivate" type="button" id="reactivate'+data+'" onclick="reactivate('+data+')" class="btn btn-warning btn-sm">Reactivate</button>';
+                        return '<button title="Reactivate" type="button" id="reactivate'+data+'" data-id="'+data+'" class="btn btn-warning btn-sm reactivate-item-btn">Reactivate</button>';
                     }else{
                         return 'Active';
                     }
@@ -357,15 +342,25 @@ $(function () {
                 render: function ( data, type, row ) {
                     return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                     '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
-                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
-                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
+                    '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" data-id="'+data+'"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' +
+                    '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" data-id="'+data+'"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li></ul></div>';
                 }
             }
         ]       
     });
     
-    // $.validator.setDefaults({
-    //     submitHandler: function() {
+    $('#rawMatTable').on('click', '.edit-item-btn', function(){
+        edit($(this).data('id'));
+    });
+
+    $('#rawMatTable').on('click', '.remove-item-btn', function(){
+        deactivate($(this).data('id'));
+    });
+
+    $('#rawMatTable').on('click', '.reactivate-item-btn', function(){
+        reactivate($(this).data('id'));
+    });
+
     $('#submitRawMat').on('click', function(){
         var isValid = true;
 
@@ -393,7 +388,7 @@ $(function () {
 
         if($('#rawMatForm').valid()){
             $('#spinnerLoading').show();
-            $.post('php/modules/rawMaterial/rawMaterial.php', $('#rawMatForm').serialize(), function(data){
+            $.post('php/modules/rawMaterial/api.php', $('#rawMatForm').serialize() + '&action=save', function(data){
                 var obj = JSON.parse(data); 
                 if(obj.status === 'success')
                 {
@@ -436,7 +431,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/modules/rawMaterial/uploadRawMats.php',
+            url: 'php/modules/rawMaterial/api.php?action=upload',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -493,19 +488,6 @@ $(function () {
 
         $('#addModal').modal('show');
         
-        $('#rawMatForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
     });
 
     $('#uploadExcel').on('click', function(){
@@ -513,24 +495,10 @@ $(function () {
         $('#fileInput').val('');
         $('#uploadModal').modal('show');
 
-        $('#uploadForm').validate({
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
     });
 
     $('#uploadModal').find('#previewButton').on('click', function(){
-        var fileInput = document.getElementById('fileInput');
-        var file = fileInput.files[0];
+        var file = $('#fileInput').prop('files')[0];
         var reader = new FileReader();
         
         reader.onload = function(e) {
@@ -547,14 +515,14 @@ $(function () {
         var selectedIds = []; // An array to store the selected 'id' values
 
         $("#rawMatTable tbody input[type='checkbox']").each(function () {
-            if (this.checked) {
+            if ($(this).is(':checked')) {
                 selectedIds.push($(this).val());
             }
         });
 
         if (selectedIds.length > 0) {
             if (confirm('Are you sure you want to delete these raw materials?')) {
-                $.post('php/modules/rawMaterial/deleteRawMaterial.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                $.post('php/modules/rawMaterial/api.php', {action: 'delete', ids: selectedIds}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -585,17 +553,17 @@ $(function () {
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/modules/rawMaterial/getRawMaterial.php', {userID: id}, function(data)
+    $.post('php/modules/rawMaterial/api.php', {action: 'get', id: id}, function(data)
     {
         var obj = JSON.parse(data);
         if(obj.status === 'success'){
             $('#addModal').find('#id').val(obj.message.id);
-            $('#addModal').find('#rawMatCode').val(obj.message.product_code);
+            $('#addModal').find('#rawMatCode').val(obj.message.raw_mat_code);
             $('#addModal').find('#rawMatName').val(obj.message.name);
             $('#addModal').find('#description').val(obj.message.description);
             $('#addModal').find('#varianceType').val(obj.message.variance).trigger('change');
-            $('#addModal').find('#high').val(obj.message.high);
-            $('#addModal').find('#low').val(obj.message.low);
+            $('#addModal').find('#high').val(obj.message.high || 0);
+            $('#addModal').find('#low').val(obj.message.low || 0);
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -610,19 +578,6 @@ function edit(id){
 
             $('#addModal').modal('show');
 
-            $('#rawMatForm').validate({
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
         }
         else if(obj.status === 'failed'){
             $('#spinnerLoading').hide();
@@ -639,7 +594,7 @@ function edit(id){
 function deactivate(id){
     $('#spinnerLoading').show();
     if (confirm('Are you sure you want to delete this raw material?')) {
-        $.post('php/modules/rawMaterial/deleteRawMaterial.php', {userID: id}, function(data){
+        $.post('php/modules/rawMaterial/api.php', {action: 'delete', ids: [id]}, function(data){
             var obj = JSON.parse(data);
             
             if(obj.status === 'success'){
@@ -698,22 +653,14 @@ function displayPreview(data) {
 
         for (var j = 0; j < 3; j++) {
             var cellData = rowData[j];
-            var formattedData = cellData;
-
-            // Check if cellData is a valid Excel date serial number and format it to DD/MM/YYYY
-            if (typeof cellData === 'number' && cellData > 0) {
-                var excelDate = XLSX.SSF.parse_date_code(cellData);
-            }
-
-            htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (formattedData == null ? '' : formattedData) + '" /></td>';
+            htmlTable += '<td><input type="text" id="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+(i-1)+'" name="'+headers[j].replace(/[^a-zA-Z0-9]/g, '')+'['+(i-1)+']" value="' + (cellData == null ? '' : cellData) + '" /></td>';
         }
         htmlTable += '</tr>';
     }
 
     htmlTable += '</tbody></table>';
 
-    var previewTable = document.getElementById('previewTable');
-    previewTable.innerHTML = htmlTable;
+    $('#previewTable').html(htmlTable);
 }
 
 function reactivate(id) {

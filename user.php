@@ -149,7 +149,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             <input type="hidden" class="form-control" id="id" name="id"> 
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                    <label for="employeeCode" class="col-sm-4 col-form-label"><?=$languageArray['employee_code_code'][$language]?> *</label>
+                                                    <label for="employeeCode" class="col-sm-4 col-form-label"><?=$languageArray['employee_code_code'][$language]?> <span class="text-danger">*</span></label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control" id="employeeCode" name="employeeCode" placeholder="<?=$languageArray['employee_code_code'][$language]?>" required>
                                                         <div class="invalid-feedback">
@@ -160,7 +160,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                <label for="username" class="col-sm-4 col-form-label"><?=$languageArray['username_code'][$language]?> *</label>
+                                                <label for="username" class="col-sm-4 col-form-label"><?=$languageArray['username_code'][$language]?> <span class="text-danger">*</span></label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control" id="username" name="username" placeholder="<?=$languageArray['username_code'][$language]?>" required>
                                                         <div class="invalid-feedback">
@@ -171,7 +171,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                <label for="name" class="col-sm-4 col-form-label"><?=$languageArray['name_code'][$language]?> *</label>
+                                                <label for="name" class="col-sm-4 col-form-label"><?=$languageArray['name_code'][$language]?> <span class="text-danger">*</span></label>
                                                     <div class="col-sm-8">
                                                         <input type="text" class="form-control" id="name" name="name" placeholder="<?=$languageArray['name_code'][$language]?>" required>
                                                         <div class="invalid-feedback">
@@ -190,7 +190,7 @@ mysqli_stmt_bind_result($stmt4, $pcode, $pname);
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="row">
-                                                    <label for="roles" class="col-sm-4 col-form-label"><?=$languageArray['role_code'][$language]?> *</label>
+                                                    <label for="roles" class="col-sm-4 col-form-label"><?=$languageArray['role_code'][$language]?> <span class="text-danger">*</span></label>
                                                     <div class="col-sm-8">
                                                         <select id="roles" name="roles" class="select2" required>
                                                             <option select="selected" value="">Please Select</option>
