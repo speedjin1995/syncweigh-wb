@@ -104,8 +104,9 @@ if(isset($_POST['userID'])){
                                 } 
     
                                 $message['product_rawmat_name'] = $row['product_name'] ?? '';
-    
+
                             }
+                            $message['remarks'] = $row['remarks'] ?? '';
                             $message['transporter'] = $row['transporter'] ?? '';
                             $message['destination'] = $row['destination'] ?? '';
                             $message['plant_name'] = $row['plant_name'] ?? '';
@@ -292,6 +293,7 @@ if(isset($_POST['userID'])){
                             }
 
                             $message['contractorName'] = searchContractorById($row['contractor_id'], $db)['name'] ?? '';
+                            $message['remarks'] = $row['remarks'] ?? '';
                             $message['transporter'] = $row['transporter'] ?? '';
                             $message['destination'] = $row['destination'] ?? '';
                             $message['plant_name'] = $row['plant_name'] ?? '';

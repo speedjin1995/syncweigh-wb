@@ -3734,6 +3734,7 @@ else{
             product: <?=json_encode($languageArray['product_code'][$language])?>,
             containerNo: <?=json_encode($languageArray['container_no_code'][$language])?>,
             contractor: <?=json_encode($languageArray['contractor_code'][$language])?>,
+            remarks: <?=json_encode($languageArray['remarks_code'][$language])?>,
             weighingInfo: <?=json_encode($languageArray['weighing_info_code'][$language])?>,
             inWeight: <?=json_encode($languageArray['gross_incoming_code'][$language])?>,
             inDateTime: <?=json_encode($languageArray['incoming_date_code'][$language])?>,
@@ -3817,6 +3818,7 @@ else{
                 <p class="col-4"><strong>${lang.containerNo}:</strong> ${row.container_no}</p>
                 <p class="col-4"><strong>${lang.weightStatus}:</strong> ${transactionStatus}</p>
                 <p class="col-4"><strong>${lang.contractor}:</strong> ${row.contractorName}</p>
+                <p class="col-12"><strong>${lang.remarks}:</strong> ${$('<div>').text(row.remarks || '').html()}</p>
             </div>
         </div>
         <hr>

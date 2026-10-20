@@ -285,7 +285,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
 
                                 .sign {
                                     width: 100%;
-                                    margin-top: 70px;
+                                    position: fixed;
+                                    bottom: 0;
                                 }
 
                                 .sign td {
@@ -348,6 +349,9 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                     <td>Amount (RM)</td><td>: '.$amount.'</td>
                                     <td></td><td></td>
                                     <td>Nett Weight (MT)</td><td>: '.$nettWeight.'</td>
+                                </tr>
+                                <tr>
+                                    <td>Remarks</td><td colspan="5" style="white-space: normal;">: '.htmlspecialchars($row['remarks'] ?? '').'</td>
                                 </tr>
                             </table>
 
