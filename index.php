@@ -1840,12 +1840,26 @@ else{
         $('#exportExcel').on('click', function () {
             var filters = searchFilters();
             var ids = checkedIds('#weightTable', (type) => type == 'Lorry');
-            var url = "php/modules/weight/api.php?action=exportExcel&fromDate=" + filters.fromDate + "&toDate=" + filters.toDate +
-                "&transactionStatus=" + filters.status + "&customer=" + filters.customer + "&supplier=" + filters.supplier + "&vehicle=" + filters.vehicle +
-                "&weighingType=" + filters.invoice + "&product=" + filters.product + "&rawMat=" + filters.rawMaterial + "&plant=" + filters.plant +
-                "&status=" + WeighCalc.batchLabel(filters.batch);
+            var query = {
+                action: 'exportExcel',
+                fromDate: filters.fromDate,
+                toDate: filters.toDate,
+                transactionStatus: filters.status,
+                customer: filters.customer,
+                supplier: filters.supplier,
+                vehicle: filters.vehicle,
+                weighingType: filters.invoice,
+                product: filters.product,
+                rawMat: filters.rawMaterial,
+                plant: filters.plant,
+                status: WeighCalc.batchLabel(filters.batch),
+                isMulti: ids.length > 0 ? 'Y' : 'N'
+            };
+            if (ids.length > 0) {
+                query.ids = ids.join(',');
+            }
 
-            window.open(url + (ids.length > 0 ? "&isMulti=Y&ids=" + ids : "&isMulti=N"));
+            window.open("php/modules/weight/api.php?" + $.param(query));
         });
 
         $('#multiDeleteLorry').on('click', function () {
