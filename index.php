@@ -2399,7 +2399,8 @@ else{
 
     // ---------- Lookups ----------
 
-    function pullVehicle(plate, onSuccess) {
+    // On a lookup error the manual plate field of that vehicle is cleared
+    function pullVehicle(plate, plateTextField, onSuccess) {
         $.post('php/modules/vehicle/api.php', {action: 'pullCustomer', userID: plate}, function (data) {
             var obj = JSON.parse(data);
 
@@ -2407,7 +2408,7 @@ else{
                 onSuccess(obj.message);
             } else if (obj.status === 'error') {
                 alert(obj.message);
-                $('#vehicleNoTxt').val('');
+                $(plateTextField).val('');
             } else {
                 failResponse(obj);
             }
@@ -2418,7 +2419,7 @@ else{
     function fillPartyFromVehicle(plate) {
         var transactionStatus = $('#transactionStatus').val();
 
-        pullVehicle(plate, function (vehicle) {
+        pullVehicle(plate, '#vehicleNoTxt', function (vehicle) {
             if (transactionStatus == 'Sales' || transactionStatus == 'Misc') {
                 $('#addModal').find('#customerName').val(vehicle.customer_name).trigger('change');
                 $('#addModal').find('#customerCode').val(vehicle.customer_code);
@@ -2430,7 +2431,7 @@ else{
     }
 
     function fillVehicle2Weight(plate) {
-        pullVehicle(plate, function (vehicle) {
+        pullVehicle(plate, '#vehicleNoTxt2', function (vehicle) {
             $('#vehicleWeight2').val(vehicle.vehicle_weight);
         });
     }
