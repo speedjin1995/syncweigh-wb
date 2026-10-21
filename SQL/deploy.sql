@@ -2462,3 +2462,66 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELE
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_second_weighing_code', 'Confirm Second Weighing', '确认第二次称重', 'Sahkan Timbangan Kedua', 'दोस्रो तौल पुष्टि गर्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_second_weighing_code');
 
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'reset_password_code', 'Reset Password', '重置密码', 'Tetapkan Semula Kata Laluan', 'पासवर्ड रिसेट गर्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'reset_password_code');
+
+-- 21/10/2026 --
+CREATE TABLE IF NOT EXISTS `Currency` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `currency_code` varchar(10) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Currency_Log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `currency_id` int(11) NOT NULL,
+  `currency_code` varchar(10) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `action_id` int(11) DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_CURRENCY` AFTER INSERT ON `Currency` FOR EACH ROW
+INSERT INTO Currency_Log (
+    currency_id, currency_code, name, status, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.currency_code, NEW.name, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_CURRENCY` BEFORE UPDATE ON `Currency` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- The reactivate endpoint sets @skip_audit = 1 and writes its own log row
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Currency_Log (
+            currency_id, currency_code, name, status, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.currency_code, NEW.name, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+INSERT INTO `Currency` (`currency_code`, `name`, `created_by`, `modified_by`) SELECT 'MYR', 'Malaysian Ringgit', 'system', 'system' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `Currency` WHERE `currency_code` = 'MYR');
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'currency_code', 'Currency', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'bin_type_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'currency_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'currency_code_code', 'Currency Code', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'bin_type_code_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'currency_code_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'currency_name_code', 'Currency Name', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'bin_type_name_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'currency_name_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'add_new_currency_code', 'Add New Currency', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'add_new_bin_type_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'add_new_currency_code');
+

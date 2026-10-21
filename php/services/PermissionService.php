@@ -150,6 +150,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
                 ['Staff', 'User Management'],
                 ['Role', 'User Management'],
                 ['Modules', 'User Management'],
@@ -178,6 +179,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
                 ['Staff', 'User Management'],
                 ['Role', 'User Management'],
                 ['Modules', 'User Management'],
@@ -206,6 +208,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
                 ['Staff', 'User Management'],
                 ['Role', 'User Management'],
                 ['Modules', 'User Management'],
@@ -234,6 +237,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
             ]],
             ['name' => 'weight_out', 'modules' => [
                 ['Sales', 'Weighing'],
@@ -288,6 +292,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
                 ['Planned Schedule', 'Planned Schedule'],
                 ['Staff', 'User Management']
             ]],
@@ -305,6 +310,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
                 ['Planned Schedule', 'Planned Schedule'],
                 ['Staff', 'User Management']
             ]],

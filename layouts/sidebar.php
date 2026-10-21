@@ -65,6 +65,12 @@
                             </li>
                             <?php endif; ?>
 
+                            <?php if(hasModulePermission('Master Data', 'Currency', ['view', 'create', 'edit'])): ?>
+                            <li class="nav-item">
+                                <a href="currency.php" class="nav-link"><?=$languageArray['currency_code'][$language]?></a>
+                            </li>
+                            <?php endif; ?>
+                            
                             <?php if(hasModulePermission('Master Data', 'Customer', ['view', 'create', 'edit'])): ?>
                             <li class="nav-item">
                                 <a href="customer.php" class="nav-link"><?=$languageArray['customer_code'][$language]?></a>
@@ -136,7 +142,6 @@
                                 <a href="binType.php" class="nav-link"><?=$languageArray['bin_type_code'][$language]?></a>
                             </li>
                             <?php endif; ?>
-
                         </ul>
                     </div>
                 </li>

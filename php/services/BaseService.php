@@ -206,5 +206,85 @@ class BaseService {
             $stmt->close();
         }
     }
+
+    // Reactivate config per master data type: permission module, table, log table, log columns, select columns.
+    private static $reactivateConfig = [
+        'Customer' => ['module' => 'Customer', 'table' => 'Customer', 'logTable' => 'Customer_Log',
+            'logColumns' => 'customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no',
+            'selectColumns' => 'id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no'],
+        'Destination' => ['module' => 'Destination', 'table' => 'Destination', 'logTable' => 'Destination_Log',
+            'logColumns' => 'destination_id, destination_code, name, description',
+            'selectColumns' => 'id, destination_code, name, description'],
+        'Product' => ['module' => 'Products', 'table' => 'Product', 'logTable' => 'Product_Log',
+            'logColumns' => 'product_id, product_code, name, description, variance, high, low, standard_currency_id, standard_price',
+            'selectColumns' => 'id, product_code, name, description, variance, high, low, standard_currency_id, standard_price'],
+        'RawMat' => ['module' => 'Raw Material', 'table' => 'Raw_Mat', 'logTable' => 'Raw_Mat_Log',
+            'logColumns' => 'raw_mat_id, raw_mat_code, name, description, variance, high, low, standard_currency_id, standard_price',
+            'selectColumns' => 'id, raw_mat_code, name, description, variance, high, low, standard_currency_id, standard_price'],
+        'Supplier' => ['module' => 'Supplier', 'table' => 'Supplier', 'logTable' => 'Supplier_Log',
+            'logColumns' => 'supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no',
+            'selectColumns' => 'id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no'],
+        'Vehicle' => ['module' => 'Vehicles', 'table' => 'Vehicle', 'logTable' => 'Vehicle_Log',
+            'logColumns' => 'vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, bin_no, bin_type',
+            'selectColumns' => 'id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, bin_no, bin_type'],
+        'Transporter' => ['module' => 'Transporter', 'table' => 'Transporter', 'logTable' => 'Transporter_Log',
+            'logColumns' => 'transporter_id, transporter_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no',
+            'selectColumns' => 'id, transporter_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no'],
+        // No permission module: the User type has never been permission-checked on reactivate
+        'User' => ['module' => null, 'table' => 'Users', 'logTable' => 'Users_Log',
+            'logColumns' => 'user_id, employee_code, username, name, useremail, password, plant_id, languages, status',
+            'selectColumns' => 'id, employee_code, username, name, useremail, password, plant_id, languages, status'],
+        'Plant' => ['module' => 'Plant', 'table' => 'Plant', 'logTable' => 'Plant_Log',
+            'logColumns' => 'plant_id, plant_code, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, sales, purchase, locals, misc, do_no',
+            'selectColumns' => 'id, plant_code, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, sales, purchase, locals, misc, do_no'],
+        'Currency' => ['module' => 'Currency', 'table' => 'Currency', 'logTable' => 'Currency_Log',
+            'logColumns' => 'currency_id, currency_code, name',
+            'selectColumns' => 'id, currency_code, name'],
+    ];
+
+    /**
+     * Permission module name for a reactivate type, or null when the type is not permission-checked.
+     */
+    public function getReactivateModule($type) {
+        return isset(self::$reactivateConfig[$type]) ? self::$reactivateConfig[$type]['module'] : null;
+    }
+
+    /**
+     * Reactivate a soft-deleted master data record and write its Reactivated (action 6) log row.
+     */
+    public function reactivateMasterData($type, $id) {
+        if (!isset(self::$reactivateConfig[$type])) throw new Exception('Invalid type');
+        $c = self::$reactivateConfig[$type];
+
+        $this->reactivateRecord($c['table'], $c['logTable'], $c['logColumns'], $c['selectColumns'], $id);
+    }
+
+    /**
+     * Sets the row active and writes its Reactivated log row.
+     * The table's UPDATE trigger skips its own log row while @skip_audit = 1.
+     */
+    protected function reactivateRecord($table, $logTable, $logColumns, $selectColumns, $id) {
+        $this->db->query("SET @skip_audit = 1");
+        try {
+            $stmt = $this->db->prepare("UPDATE {$table} SET status='0', modified_by=? WHERE id=?");
+            if (!$stmt) throw new Exception('Somethings wrong');
+            $stmt->bind_param('ss', $this->username, $id);
+            $updated = $stmt->execute();
+            $error = $stmt->error;
+            $stmt->close();
+            if (!$updated) throw new Exception($error);
+        } finally {
+            $this->db->query("SET @skip_audit = 0");
+        }
+
+        $action = '6'; // Log_Action 6 = Reactivated
+        $insert = $this->db->prepare("INSERT INTO {$logTable} ({$logColumns}, action_id, action_by, event_date) SELECT {$selectColumns}, ?, modified_by, modified_date FROM {$table} WHERE id = ?");
+        if (!$insert) throw new Exception('Somethings wrong');
+        $insert->bind_param('ss', $action, $id);
+        $inserted = $insert->execute();
+        $error = $insert->error;
+        $insert->close();
+        if (!$inserted) throw new Exception($error);
+    }
 }
 ?>
