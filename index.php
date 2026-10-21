@@ -1530,6 +1530,7 @@ else{
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
     var userRole = '<?=$role ?>';
+    var isSecondWeighingCapture = false;
 
     $(function () {
         var ind = '<?=$indicator ?>';
@@ -2842,6 +2843,7 @@ else{
             $('#grossIncoming').val(parseFloat(text).toFixed(0));
             $('#grossIncoming').trigger('keyup');
             $('#confirmCaptureMessage').text('<?=$languageArray['confirm_first_weighing_code'][$language]?>: ' + $('#grossIncoming').val() + ' kg');
+            isSecondWeighingCapture = false;
             $('#confirmCaptureModal').modal('show');
         });
 
@@ -2856,7 +2858,7 @@ else{
 
         $('#submitCaptureConfirm').on('click', function(){
             $('#confirmCaptureModal').modal('hide');
-            $('#submitWeight').trigger('click');
+            $(isSecondWeighingCapture ? '#submitWeightPrint' : '#submitWeight').trigger('click');
         });
 
         $('#tareOutgoing').on('keyup', function(){
@@ -2879,6 +2881,7 @@ else{
             $('#tareOutgoing').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing').trigger('keyup');
             $('#confirmCaptureMessage').text('<?=$languageArray['confirm_second_weighing_code'][$language]?>: ' + $('#tareOutgoing').val() + ' kg');
+            isSecondWeighingCapture = true;
             $('#confirmCaptureModal').modal('show');
         });
 
