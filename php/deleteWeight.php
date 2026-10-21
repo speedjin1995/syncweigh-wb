@@ -3,6 +3,7 @@ session_start();
 require_once 'db_connect.php';
 require_once 'modules/vehicle/vehicleEntry.php';
 require_once 'requires/lookup.php';
+require_once 'requires/deposit.php';
 
 $username = $_SESSION["username"];
 
@@ -101,6 +102,7 @@ if(isset($_POST['cancelReason'], $_POST['isEmptyContainer'])){
 					if($stmt->execute()){
 						$stmt->close();
 						reverseVehicleEntry($db, 'Weight', $ids, $username, $cancelReason);
+						depositRefundWeights($db, $ids, $username);
 						$statusArray[] = "success";
 						$message[] = "Deleted";
 					} else{
@@ -215,6 +217,7 @@ if(isset($_POST['cancelReason'], $_POST['isEmptyContainer'])){
 				
 				if($stmt2->execute()){
 					reverseVehicleEntry($db, 'Weight', $id, $username, $cancelReason);
+					depositRefundWeights($db, $id, $username);
 					$stmt2->close();
 					echo json_encode(
 						array(

@@ -3,6 +3,7 @@ session_start();
 require_once 'db_connect.php';
 require_once 'modules/vehicle/vehicleEntry.php';
 require_once 'requires/lookup.php';
+require_once 'requires/deposit.php';
 
 if(!isset($_SESSION['id'])){
 	echo '<script type="text/javascript">location.href = "../login.php";</script>'; 
@@ -142,6 +143,28 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         $transactionStatus = null;
     } else {
         $transactionStatus = trim($_POST["transactionStatus"]);
+    }
+
+    // Sales/Purchase price is calculated here from the pricing setup, not taken from the browser
+    $sstRateValue = 0.0;
+    if (in_array($_POST['transactionStatus'], array('Sales', 'Purchase'), true) && in_array($weightType, array('Normal', 'Container', 'Different Container'), true)) {
+        $sstRateValue = isset($_POST['sstRate']) && $_POST['sstRate'] !== '' ? (float) $_POST['sstRate'] : 0.0;
+        if ($sstRateValue < 0 || $sstRateValue > 100) {
+            echo json_encode(array("status" => "failed", "message" => "SST rate must be between 0 and 100"));
+            exit();
+        }
+
+        $partyCode = trim((string) ($_POST['transactionStatus'] === 'Sales' ? ($_POST['customerCode'] ?? '') : ($_POST['supplierCode'] ?? '')));
+        $itemCode = trim((string) ($_POST['transactionStatus'] === 'Sales' ? ($_POST['productCode'] ?? '') : ($_POST['rawMaterialCode'] ?? '')));
+        $priceParty = depositParty($db, $_POST['transactionStatus'], $partyCode);
+        $unitPriceValue = ($priceParty && $itemCode !== '') ? depositPrice($db, $_POST['transactionStatus'], $priceParty['id'], $itemCode) : 0;
+        $amounts = depositAmounts((float) ($_POST['finalWeight'] ?? 0), $unitPriceValue, $sstRateValue);
+
+        $_POST['unitPrice'] = $unitPriceValue;
+        $_POST['subTotalPrice'] = $amounts['sub_total'];
+        $_POST['sstPrice'] = $amounts['sst'];
+        $_POST['totalPrice'] = $amounts['total_price'];
+        $_POST['sstRate'] = $sstRateValue;
     }
 
     if (empty($_POST["unitPrice"])) {
@@ -601,6 +624,38 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
         }
     }
 
+    // Deposit balance: Sales/Purchase saves run in one transaction with the deposit charge (see depositSettle)
+    $depositCtx = null;
+    if (in_array($transactionStatus, array('Sales', 'Purchase'), true) && in_array($weightType, array('Normal', 'Container', 'Different Container'), true)) {
+        $depositOn = depositControlEnabled($db);
+        $partyCode = trim((string) ($transactionStatus === 'Sales' ? $customerCode : $supplierCode));
+        $depositParty = depositParty($db, $transactionStatus, $partyCode);
+
+        if ($depositOn && !$depositParty) {
+            echo json_encode(array("status" => "failed", "message" => ($transactionStatus === 'Sales' ? 'Customer' : 'Supplier') . ' not found'));
+            exit();
+        }
+
+        $amount = $isComplete == 'Y' ? (float) $totalPrice : 0.0;
+        $oldAmount = empty($weightId) ? 0.0 : depositChargedAmount($db, $weightId);
+        $delta = round($amount - $oldAmount, 2);
+
+        if ($depositOn && ((empty($weightId) && $depositParty['balance'] < 1) || $delta > $depositParty['balance'])) {
+            echo json_encode(array("status" => "failed", "message" => "Insufficient Deposit Please Contact Office Admin"));
+            exit();
+        }
+
+        $db->begin_transaction();
+        $depositCtx = array(
+            'sstRate' => $sstRateValue,
+            'depositAmount' => $depositOn ? $amount : null,
+            'party' => $depositOn ? $depositParty : null,
+            'delta' => $delta,
+            'remark' => 'Weighing ' . $transactionId,
+            'username' => $username
+        );
+    }
+
     if($weightType == 'Empty Container'){
         if((int)$grossIncoming < (int)$tareOutgoing){
             echo json_encode(array("status"=> "failed", "message"=> "Incoming Weight cannot greater than outgoing weight"));
@@ -767,6 +822,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                     );
                 }
                 else{
+                    depositSettle($db, $depositCtx, $weightId);
 
                     // update empty container status
                     if(!empty($containerNo) && $weightType == 'Different Container'){
@@ -1026,6 +1082,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                 else{
                     $misValue++;
                     $id = $insert_stmt->insert_id;
+                    depositSettle($db, $depositCtx, $id);
                     logVehicleEntryIn($db, $vehicleEntryStatus, 'Weight', $id, $transactionId, $vehicleEntryOverride, $username);
     
                     $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";
@@ -1196,6 +1253,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                     );
                 }
                 else{
+                    depositSettle($db, $depositCtx, $weightId);
                     // update empty container status
                     if(!empty($containerNo) && $weightType == 'Container'){
                         if ($update_container = $db->prepare("UPDATE Weight_Container SET is_cancel=? WHERE container_no=? AND status='0'")){
@@ -1262,6 +1320,7 @@ if (isset($_POST['transactionId'], $_POST['transactionStatus'], $_POST['weightTy
                 else{
                     $misValue++;
                     $id = $insert_stmt->insert_id;
+                    depositSettle($db, $depositCtx, $id);
                     logVehicleEntryIn($db, $vehicleEntryStatus, 'Weight', $id, $transactionId, $vehicleEntryOverride, $username);
     
                     $queryPlantU = "UPDATE Plant SET sales=? WHERE plant_code='$plantCode'";

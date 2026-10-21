@@ -1075,8 +1075,14 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+                                                                        <div class="row mb-3" id="sstRateDisplay">
+                                                                            <label for="sstRate" class="col-sm-4 col-form-label"><?=$languageArray['sst_rate_code'][$language]?></label>
+                                                                            <div class="col-sm-8">
+                                                                                <input type="number" class="form-control" id="sstRate" name="sstRate" step="0.01" min="0" max="100" placeholder="0">
+                                                                            </div>
+                                                                        </div>
                                                                         <div class="row mb-3" id="sstDisplay">
-                                                                            <label for="sstPrice" class="col-sm-4 col-form-label"><?=$languageArray['sst_code'][$language]?> (6%)</label>
+                                                                            <label for="sstPrice" class="col-sm-4 col-form-label"><?=$languageArray['sst_code'][$language]?></label>
                                                                             <div class="col-sm-8">
                                                                                 <div class="input-group">
                                                                                     <input type="number" class="form-control input-readonly" id="sstPrice" name="sstPrice" placeholder="0" readonly>
@@ -2243,6 +2249,7 @@ else{
             $('#addModal').find('#productVariance').val("");
             $('#addModal').find('#orderWeight').val("0");
             $('#addModal').find('#unitPrice').val("0.00");
+            $('#addModal').find('#sstRate').val("");
             $('#addModal').find('#subTotalPrice').val("0.00");
             $('#addModal').find('#sstPrice').val("0.00");
             $('#addModal').find('#totalPrice').val("0.00");
@@ -3073,17 +3080,11 @@ else{
         });
 
         $('#currentWeight').on('change', function(){
-            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()).toFixed(2) : 0.00;
-            var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;
-            var subTotalPrice = price * weight;
-            var sstPrice = subTotalPrice * 0.08;
-            var totalPrice = subTotalPrice + sstPrice;
-            $('#subTotalPrice').val(subTotalPrice.toFixed(2));
-            $('#sstPrice').val(sstPrice.toFixed(2));
-            $('#totalPrice').val(totalPrice.toFixed(2));
+            calculatePrice();
         });
 
         $('#transactionStatus').on('change', function(){
+            $('#priceCard').toggle($(this).val() == 'Sales' || $(this).val() == 'Purchase');
             applyManualPermissions();
             var customerType = $('#addModal').find('#customerType').val();
             var weightType = $('#addModal').find('#weightType').val();
@@ -3164,21 +3165,59 @@ else{
             $('#productLow').val($('#productName :selected').data('low'));
             $('#productVariance').val($('#productName :selected').data('variance'));
 
-            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()).toFixed(2) : 0.00;
-            var weight = $('#currentWeight').text() ? parseFloat($('#currentWeight').text()) : 0;
-            var subTotalPrice = price * weight;
-            var sstPrice = subTotalPrice * 0.08;
-            var totalPrice = subTotalPrice + sstPrice;
+            loadDepositPrice();
+        });
 
-            $('#unitPrice').val(price);
+        // Price card: subtotal = final weight (kg) / 1000 x unit price (per tonne), SST = subtotal x SST %
+        function calculatePrice(){
+            var weight = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
+            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()) : 0;
+            var sstRate = $('#sstRate').val() ? parseFloat($('#sstRate').val()) : 0;
+            var subTotalPrice = weight / 1000 * price;
+            var sstPrice = subTotalPrice * sstRate / 100;
+
             $('#subTotalPrice').val(subTotalPrice.toFixed(2));
             $('#sstPrice').val(sstPrice.toFixed(2));
-            $('#totalPrice').val(totalPrice.toFixed(2));
-        });
+            $('#totalPrice').val((subTotalPrice + sstPrice).toFixed(2));
+        }
+
+        // Unit price of the selected item for the selected customer/supplier, then the deposit balance check
+        function loadDepositPrice(){
+            var transactionStatus = $('#transactionStatus').val();
+            if (transactionStatus != 'Sales' && transactionStatus != 'Purchase') {
+                calculatePrice();
+                return;
+            }
+
+            var isSales = transactionStatus == 'Sales';
+            var code = isSales ? $('#customerCode').val() : $('#supplierCode').val();
+            var itemCode = isSales ? $('#productCode').val() : $('#rawMaterialCode').val();
+            if (!code) {
+                $('#unitPrice').val(0);
+                calculatePrice();
+                return;
+            }
+
+            $.post('php/checkDeposit.php', {transactionStatus: transactionStatus, code: code, itemCode: itemCode || ''}, function(data){
+                var obj = JSON.parse(data);
+                if (obj.status !== 'success') return;
+
+                $('#unitPrice').val(obj.price);
+                calculatePrice();
+
+                if (obj.enabled && parseFloat(obj.balance) < 1) {
+                    alert(<?=json_encode($languageArray['insufficient_deposit_code'][$language])?>);
+                    $('#addModal').modal('hide');
+                }
+            });
+        }
+
+        $('#sstRate').on('keyup change', calculatePrice);
 
         //supplierName
         $('#supplierName').on('change', function(){
             $('#supplierCode').val($('#supplierName :selected').data('code'));
+            loadDepositPrice();
         });
 
         //transporter
@@ -3199,11 +3238,13 @@ else{
         //customerName
         $('#customerName').on('change', function(){
             $('#customerCode').val($('#customerName :selected').data('code'));
+            loadDepositPrice();
         });
 
         //rawMaterialName
         $('#rawMaterialName').on('change', function(){
             $('#rawMaterialCode').val($('#rawMaterialName :selected').data('code'));
+            loadDepositPrice();
         });
 
         //Empty Container No
@@ -4223,6 +4264,7 @@ else{
                 $('#addModal').find('#indicatorId2').val(obj.message.indicator_id_2);
                 $('#addModal').find('#productDescription').val(obj.message.product_description);
                 $('#addModal').find('#unitPrice').val(obj.message.unit_price);
+                $('#addModal').find('#sstRate').val(obj.message.sst_rate);
                 $('#addModal').find('#subTotalPrice').val(obj.message.sub_total);
                 $('#addModal').find('#sstPrice').val(obj.message.sst);
                 $('#addModal').find('#totalPrice').val(obj.message.total_price);

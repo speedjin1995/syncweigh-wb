@@ -194,6 +194,7 @@ if(isset($_POST['userID'])){
                             $message['unit_price'] = $row['unit_price'];
                             $message['sub_total'] = $row['sub_total'];
                             $message['sst'] = $row['sst'];
+                            $message['sst_rate'] = $row['sst_rate'];
                             $message['total_price'] = $row['total_price'];
                             $message['final_weight'] = $row['final_weight'];
     
@@ -397,6 +398,7 @@ if(isset($_POST['userID'])){
                             $message['unit_price'] = $row['unit_price'];
                             $message['sub_total'] = $row['sub_total'];
                             $message['sst'] = $row['sst'];
+                            $message['sst_rate'] = $row['sst_rate'];
                             $message['total_price'] = $row['total_price'];
                             $message['final_weight'] = $row['final_weight'];
     
