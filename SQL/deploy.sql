@@ -2524,4 +2524,200 @@ INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELE
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'currency_code_code', 'Currency Code', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'bin_type_code_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'currency_code_code');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'currency_name_code', 'Currency Name', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'bin_type_name_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'currency_name_code');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'add_new_currency_code', 'Add New Currency', `zh`, `my`, `ne` FROM `message_resource` WHERE `message_key_code` = 'add_new_bin_type_code' AND NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'add_new_currency_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'please_select_code', 'Please Select', '请选择', 'សូមជ្រើសរើស', 'कृपया चयन गर्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'please_select_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'remove_code', 'Remove', '移除', 'ဖယ်ရှားရန်', 'हटाउनुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'remove_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_currency_required_code', 'Please select a currency for the standard price.', '请为标准价格选择货币。', 'စံဈေးနှုန်းအတွက် ငွေကြေးတစ်ခု ရွေးချယ်ပါ။', 'मानक मूल्यका लागि मुद्रा चयन गर्नुहोस्।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_currency_required_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_standard_price_invalid_code', 'Standard price must be 0 or more.', '标准价格必须大于或等于 0。', 'စံဈေးနှုန်းသည် 0 သို့မဟုတ် ထို့ထက်များရမည်။', 'मानक मूल्य 0 वा सो भन्दा बढी हुनुपर्छ।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_standard_price_invalid_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_customer_required_code', 'Please select a customer for every row.', '请为每一行选择客户。', 'အတန်းတိုင်းအတွက် customer တစ်ဦး ရွေးချယ်ပါ။', 'प्रत्येक पङ्क्तिका लागि ग्राहक चयन गर्नुहोस्।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_customer_required_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_supplier_required_code', 'Please select a supplier for every row.', '请为每一行选择供应商。', 'အတန်းတိုင်းအတွက် supplier တစ်ဦး ရွေးချယ်ပါ။', 'प्रत्येक पङ्क्तिका लागि आपूर्तिकर्ता चयन गर्नुहोस्।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_supplier_required_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_customer_duplicate_code', 'A customer can only be listed once.', '每位客户只能列出一次。', 'Customer တစ်ဦးကို တစ်ကြိမ်သာ စာရင်းသွင်းနိုင်သည်။', 'एउटा ग्राहक एक पटक मात्र सूचीबद्ध गर्न सकिन्छ।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_customer_duplicate_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_supplier_duplicate_code', 'A supplier can only be listed once.', '每家供应商只能列出一次。', 'Supplier တစ်ဦးကို တစ်ကြိမ်သာ စာရင်းသွင်းနိုင်သည်။', 'एउटा आपूर्तिकर्ता एक पटक मात्र सूचीबद्ध गर्न सकिन्छ।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_supplier_duplicate_code');
 
+ALTER TABLE `Product` ADD COLUMN IF NOT EXISTS `standard_currency_id` int(11) NULL AFTER `low`, ADD COLUMN IF NOT EXISTS `standard_price` decimal(15,2) NOT NULL DEFAULT 0.00 AFTER `standard_currency_id`;
+ALTER TABLE `Product_Log` ADD COLUMN IF NOT EXISTS `standard_currency_id` int(11) NULL AFTER `low`, ADD COLUMN IF NOT EXISTS `standard_price` decimal(15,2) NULL AFTER `standard_currency_id`;
+ALTER TABLE `Raw_Mat` ADD COLUMN IF NOT EXISTS `standard_currency_id` int(11) NULL AFTER `low`, ADD COLUMN IF NOT EXISTS `standard_price` decimal(15,2) NOT NULL DEFAULT 0.00 AFTER `standard_currency_id`;
+ALTER TABLE `Raw_Mat_Log` ADD COLUMN IF NOT EXISTS `standard_currency_id` int(11) NULL AFTER `low`, ADD COLUMN IF NOT EXISTS `standard_price` decimal(15,2) NULL AFTER `standard_currency_id`;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_PRODUCT` AFTER INSERT ON `Product` FOR EACH ROW
+INSERT INTO Product_Log (
+    product_id, product_code, name, description, variance, high, low, standard_currency_id, standard_price, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.product_code, NEW.name, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.standard_currency_id, NEW.standard_price, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PRODUCT` BEFORE UPDATE ON `Product` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Product_Log (
+            product_id, product_code, name, description, variance, high, low, standard_currency_id, standard_price, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.product_code, NEW.name, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.standard_currency_id, NEW.standard_price, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+CREATE OR REPLACE TRIGGER `TRG_INS_RAW_MAT` AFTER INSERT ON `Raw_Mat` FOR EACH ROW
+INSERT INTO Raw_Mat_Log (
+    raw_mat_id, raw_mat_code, name, description, variance, high, low, standard_currency_id, standard_price, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.raw_mat_code, NEW.name, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.standard_currency_id, NEW.standard_price, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_RAW_MAT` BEFORE UPDATE ON `Raw_Mat` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Raw_Mat_Log (
+            raw_mat_id, raw_mat_code, name, description, variance, high, low, standard_currency_id, standard_price, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.raw_mat_code, NEW.name, NEW.description, NEW.variance, NEW.high, NEW.low, NEW.standard_currency_id, NEW.standard_price, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+CREATE TABLE IF NOT EXISTS `Product_Customer_Price` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `product_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `pricing_type` varchar(20) NOT NULL,
+  `currency_id` int(11) NOT NULL,
+  `price` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  KEY `idx_product_customer_price` (`product_id`, `customer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Product_Customer_Price_Log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `price_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `pricing_type` varchar(20) NOT NULL,
+  `currency_id` int(11) NOT NULL,
+  `price` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `action_id` int(11) DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Raw_Mat_Supplier_Price` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `raw_mat_id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
+  `pricing_type` varchar(20) NOT NULL,
+  `currency_id` int(11) NOT NULL,
+  `price` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_date` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  KEY `idx_raw_mat_supplier_price` (`raw_mat_id`, `supplier_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Raw_Mat_Supplier_Price_Log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `price_id` int(11) NOT NULL,
+  `raw_mat_id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
+  `pricing_type` varchar(20) NOT NULL,
+  `currency_id` int(11) NOT NULL,
+  `price` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `status` int(3) NOT NULL DEFAULT 0,
+  `action_id` int(11) DEFAULT NULL,
+  `action_by` varchar(50) DEFAULT NULL,
+  `event_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_PRODUCT_CUSTOMER_PRICE` AFTER INSERT ON `Product_Customer_Price` FOR EACH ROW
+INSERT INTO Product_Customer_Price_Log (
+    price_id, product_id, customer_id, pricing_type, currency_id, price, status, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.product_id, NEW.customer_id, NEW.pricing_type, NEW.currency_id, NEW.price, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_PRODUCT_CUSTOMER_PRICE` BEFORE UPDATE ON `Product_Customer_Price` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Product_Customer_Price_Log (
+            price_id, product_id, customer_id, pricing_type, currency_id, price, status, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.product_id, NEW.customer_id, NEW.pricing_type, NEW.currency_id, NEW.price, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+CREATE OR REPLACE TRIGGER `TRG_INS_RAW_MAT_SUPPLIER_PRICE` AFTER INSERT ON `Raw_Mat_Supplier_Price` FOR EACH ROW
+INSERT INTO Raw_Mat_Supplier_Price_Log (
+    price_id, raw_mat_id, supplier_id, pricing_type, currency_id, price, status, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.raw_mat_id, NEW.supplier_id, NEW.pricing_type, NEW.currency_id, NEW.price, NEW.status, 1, NEW.created_by, NEW.created_date
+)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_RAW_MAT_SUPPLIER_PRICE` BEFORE UPDATE ON `Raw_Mat_Supplier_Price` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Raw_Mat_Supplier_Price_Log (
+            price_id, raw_mat_id, supplier_id, pricing_type, currency_id, price, status, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.raw_mat_id, NEW.supplier_id, NEW.pricing_type, NEW.currency_id, NEW.price, NEW.status, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_code', 'Pricing', '定价', 'စျေးနှုန်းသတ်မှတ်ခြင်း', 'मूल्य निर्धारण' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'standard_price_code', 'Standard Price', '标准价格', 'စံစျေးနှုန်း', 'मानक मूल्य' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'standard_price_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_type_code', 'Pricing Type', '定价类型', 'စျေးနှုန်းအမျိုးအစား', 'मूल्य निर्धारण प्रकार' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_type_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'price_code', 'Price', '价格', 'စျေးနှုန်း', 'मूल्य' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'price_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'add_customer_code', 'Add Customer', '添加客户', 'Customer ထည့်ရန်', 'ग्राहक थप्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'add_customer_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'add_supplier_code', 'Add Supplier', '添加供应商', 'Supplier ထည့်ရန်', 'आपूर्तिकर्ता थप्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'add_supplier_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'customer_prices_code', 'Customer Prices', '客户价格', 'Customer စျေးနှုန်းများ', 'ग्राहक मूल्यहरू' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'customer_prices_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'supplier_prices_code', 'Supplier Prices', '供应商价格', 'Supplier စျေးနှုန်းများ', 'आपूर्तिकर्ता मूल्यहरू' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'supplier_prices_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_standard_code', 'Standard', '标准', 'စံ', 'मानक' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_standard_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_special_code', 'Special', '特殊', 'အထူး', 'विशेष' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_special_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'pricing_float_code', 'Float', 'Float', 'Float', 'Float' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'pricing_float_code');
