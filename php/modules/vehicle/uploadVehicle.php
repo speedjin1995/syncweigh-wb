@@ -30,30 +30,28 @@ if (!empty($data)) {
 
         # Customer check
         if ($CustomerCode != null && $CustomerCode != '') {
-            $check = $db->prepare("SELECT id FROM Customer WHERE customer_code = ? AND status = ?");
-            $check->bind_param('ss', $CustomerCode, $status);
-            $check->execute();
-            $customerRow = $check->get_result()->fetch_assoc();
-            $check->close();
+            $customerRow = searchCustomerByCode($CustomerCode, $db);
 
             if (empty($customerRow)) {
                 $errorSoProductArray[] = "Customer: " . $CustomerCode . " doesn't exist in master data.";
                 continue;
             }
+
+            $customerCode = $customerRow['customer_code'];
+            $customerName = $customerRow['name'];
         }
 
         # Supplier check
         if ($SupplierCode != null && $SupplierCode != '') {
-            $check = $db->prepare("SELECT id FROM Supplier WHERE supplier_code = ? AND status = ?");
-            $check->bind_param('ss', $SupplierCode, $status);
-            $check->execute();
-            $supplierRow = $check->get_result()->fetch_assoc();
-            $check->close();
+            $supplierRow = searchSupplierByCode($SupplierCode, $db);
 
             if (empty($supplierRow)) {
                 $errorSoProductArray[] = "Supplier: " . $SupplierCode . " doesn't exist in master data.";
                 continue;
             }
+
+            $supplierCode = $supplierRow['supplier_code'];
+            $supplierName = $supplierRow['name'];
         }
 
         # Vehicle existence check
@@ -66,13 +64,15 @@ if (!empty($data)) {
 
             if (empty($vehRow)) {
                 if ($insert_stmt = $db->prepare("INSERT INTO Vehicle (veh_number, vehicle_weight, customer_code, customer_name, supplier_code, supplier_name, vehicle_type, status, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                    $insert_stmt->bind_param('ssssssssss', $VehicleNo, $VehicleWeight, $CustomerCode, $CustomerName, $SupplierCode, $SupplierName, $VehicleType, $status, $uid, $uid);
+                    $insert_stmt->bind_param('ssssssssss', $VehicleNo, $VehicleWeight, $customerCode, $customerName, $supplierCode, $supplierName, $VehicleType, $status, $uid, $uid);
                     $insert_stmt->execute();
                     $insert_stmt->close();
                 }
             } else {
-                $errorSoProductArray[] = "Vehicle: " . $VehicleNo . " already exist in master data.";
-                continue;
+                $update_stmt = $db->prepare("UPDATE Vehicle SET vehicle_weight = ?, customer_code = ?, customer_name = ?, supplier_code = ?, supplier_name = ?, vehicle_type = ?, modified_by = ? WHERE id = ?");
+                $update_stmt->bind_param('sssssssi', $VehicleWeight, $customerCode, $customerName, $supplierCode, $supplierName, $VehicleType, $uid, $vehRow['id']);
+                $update_stmt->execute();
+                $update_stmt->close();
             }
         }
     }
