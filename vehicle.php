@@ -325,6 +325,7 @@ if (!hasModulePermission('Master Data', 'Vehicles', ['view'])){
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['vehicle_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['vehicle_weight_code'][$language]?></th>
+                                                                    <th><?=$languageArray['vehicle_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['customer_code'][$language]?></th>
                                                                     <th><?=$languageArray['supplier_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
@@ -441,6 +442,7 @@ $(function () {
             },
             { data: 'veh_number' },
             { data: 'vehicle_weight' },
+            { data: 'vehicle_type' },
             { data: 'customer_name' },
             { data: 'supplier_name' },
             { data: 'status' },
