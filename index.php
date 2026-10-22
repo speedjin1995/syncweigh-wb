@@ -1070,18 +1070,18 @@ else{
                                                                             <label for="unitPrice" class="col-sm-4 col-form-label"><?=$languageArray['unit_price_code'][$language]?></label>
                                                                             <div class="col-sm-8">
                                                                                 <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" placeholder="0" readonly>
+                                                                                    <input type="number" class="form-control input-readonly" id="unitPrice" name="unitPrice" step="0.01" min="0" placeholder="0" readonly>
                                                                                     <div class="input-group-text">RM</div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="row mb-3" id="sstRateDisplay">
+                                                                        <div class="row mb-3" id="sstRateDisplay" style="display:none;">
                                                                             <label for="sstRate" class="col-sm-4 col-form-label"><?=$languageArray['sst_rate_code'][$language]?></label>
                                                                             <div class="col-sm-8">
                                                                                 <input type="number" class="form-control" id="sstRate" name="sstRate" step="0.01" min="0" max="100" placeholder="0">
                                                                             </div>
                                                                         </div>
-                                                                        <div class="row mb-3" id="sstDisplay">
+                                                                        <div class="row mb-3" id="sstDisplay" style="display:none;">
                                                                             <label for="sstPrice" class="col-sm-4 col-form-label"><?=$languageArray['sst_code'][$language]?></label>
                                                                             <div class="col-sm-8">
                                                                                 <div class="input-group">
@@ -1090,7 +1090,7 @@ else{
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="row mb-3" id="subTotalPriceDisplay">
+                                                                        <div class="row mb-3" id="subTotalPriceDisplay" style="display:none;">
                                                                             <label for="subTotalPrice" class="col-sm-4 col-form-label"><?=$languageArray['sub_total_price_code'][$language]?></label>
                                                                             <div class="col-sm-8">
                                                                                 <div class="input-group">
@@ -1186,6 +1186,8 @@ else{
                                                         <input type="hidden" id="previousRecordsTag" name="previousRecordsTag">
                                                         <input type="hidden" id="grossWeightBy1" name="grossWeightBy1">
                                                         <input type="hidden" id="tareWeightBy1" name="tareWeightBy1">
+                                                        <input type="hidden" id="grossLocationId" name="grossLocationId">
+                                                        <input type="hidden" id="tareLocationId" name="tareLocationId">
                                                         <input type="hidden" id="grossWeightBy2" name="grossWeightBy2">
                                                         <input type="hidden" id="tareWeightBy2" name="tareWeightBy2">
                                                     </form>
@@ -1532,6 +1534,8 @@ else{
     var canPrintWeight = <?= json_encode(hasPermission('Weighing', ['print'])) ?>;
     var manualWeighingStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_weighing'); }))) ?>;
     var manualDateStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_date_change'); }))) ?>;
+    var manualPriceStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_price'); }))) ?>;
+    var keepUnitPrice = false; // true while editing, so the async deposit price lookup does not overwrite the saved price
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
@@ -2227,6 +2231,7 @@ else{
             $('#addModal').find('#manualVehicle').prop('checked', false).trigger('change');
             $('#addModal').find('#manualVehicle2').prop('checked', false).trigger('change');
             $('#addModal').find('#grossIncoming').val("");
+            $('#addModal').find('#grossLocationId, #tareLocationId').val('');
             grossIncomingDatePicker.clear();
             $('#addModal').find('#tareOutgoing').val("");
             tareOutgoingDatePicker.clear();
@@ -2250,6 +2255,7 @@ else{
             $('#addModal').find('#productVariance').val("");
             $('#addModal').find('#orderWeight').val("0");
             $('#addModal').find('#unitPrice').val("0.00");
+            keepUnitPrice = false;
             $('#addModal').find('#sstRate').val("");
             $('#addModal').find('#subTotalPrice').val("0.00");
             $('#addModal').find('#sstPrice').val("0.00");
@@ -2838,6 +2844,7 @@ else{
             $('#nettWeight').val(nett.toFixed(0));
             $('#nettWeight').trigger('change');
             $('#grossWeightBy1').val('<?php echo $username; ?>');
+            $('#grossLocationId').val('<?= (int) $locationId ?>'); // gate at gross capture
 
             // Update the Flatpickr instance
             grossIncomingDatePicker.setDate(new Date()); // sets it to current date/time
@@ -2875,6 +2882,7 @@ else{
             $('#nettWeight').val(nett.toFixed(0));
             $('#nettWeight').trigger('change');
             $('#tareWeightBy1').val('<?php echo $username; ?>');
+            $('#tareLocationId').val('<?= (int) $locationId ?>'); // gate at tare capture
 
             // Update the Flatpickr instance
             tareOutgoingDatePicker.setDate(new Date()); // sets it to current date/time
@@ -2887,10 +2895,31 @@ else{
             var text = $('#indicatorWeight').text();
             $('#tareOutgoing').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing').trigger('keyup');
+
+            // Tare capture completes the weighing and charges the deposit, so check the balance against the total price
+            var transactionStatus = $('#transactionStatus').val();
+            var code = transactionStatus == 'Sales' ? $('#customerCode').val() : $('#supplierCode').val();
+            if ((transactionStatus != 'Sales' && transactionStatus != 'Purchase') || !code) {
+                showTareConfirm();
+                return;
+            }
+
+            var total = parseFloat($('#totalPrice').val()) || 0;
+            $.post('php/checkDeposit.php', {transactionStatus: transactionStatus, code: code, itemCode: ''}, function(data){
+                var obj = JSON.parse(data);
+                if (obj.status === 'success' && obj.enabled && total > parseFloat(obj.balance)) {
+                    alert(<?=json_encode($languageArray['insufficient_deposit_code'][$language])?>);
+                    return;
+                }
+                showTareConfirm();
+            });
+        });
+
+        function showTareConfirm(){
             $('#confirmCaptureMessage').text('<?=$languageArray['confirm_second_weighing_code'][$language]?>: ' + $('#tareOutgoing').val() + ' kg');
             isSecondWeighingCapture = true;
             $('#confirmCaptureModal').modal('show');
-        });
+        }
 
         $('#nettWeight').on('change', function(){
             var weightType = $('#weightType').val();
@@ -3196,7 +3225,7 @@ else{
             var code = isSales ? $('#customerCode').val() : $('#supplierCode').val();
             var itemCode = isSales ? $('#productCode').val() : $('#rawMaterialCode').val();
             if (!code) {
-                $('#unitPrice').val(0);
+                if (!keepUnitPrice) $('#unitPrice').val(0);
                 calculatePrice();
                 return;
             }
@@ -3205,7 +3234,7 @@ else{
                 var obj = JSON.parse(data);
                 if (obj.status !== 'success') return;
 
-                $('#unitPrice').val(obj.price);
+                if (!keepUnitPrice) $('#unitPrice').val(obj.price);
                 calculatePrice();
 
                 if (obj.enabled && parseFloat(obj.balance) < 1) {
@@ -3215,7 +3244,8 @@ else{
             });
         }
 
-        $('#sstRate').on('keyup change', calculatePrice);
+        $('#sstRate, #unitPrice').on('keyup change', calculatePrice);
+        $('#customerName, #supplierName, #productName, #rawMaterialName').on('change', function(){ keepUnitPrice = false; });
 
         //supplierName
         $('#supplierName').on('change', function(){
@@ -3306,6 +3336,8 @@ else{
                         tareOutgoingDatePicker.setDate(new Date(obj.message.tare_weight1_date));
                         // $('#addModal').find('#tareOutgoingDate').val(obj.message.tare_weight1_date);
                         $('#addModal').find('#tareWeightBy1').val(obj.message.tare_weight_by1);
+                        $('#addModal').find('#grossLocationId').val(obj.message.location_id || '');
+                        $('#addModal').find('#tareLocationId').val(obj.message.location_id2 || '');
                         $('#addModal').find('#nettWeight').val(obj.message.nett_weight1);
 
                         if(obj.message.vehicleNoTxt != null){
@@ -3420,6 +3452,8 @@ else{
         }
         toggleSubmitButtons();
         // Date pickers stay visible but read-only when the status lacks manual_date_change
+        var priceAllowed = manualPriceStatuses.includes(status);
+        $('#unitPrice').prop('readonly', !priceAllowed).toggleClass('input-readonly', !priceAllowed);
         var dateAllowed = manualDateStatuses.includes(status);
         [grossIncomingDatePicker, tareOutgoingDatePicker, grossIncomingDatePicker2, tareOutgoingDatePicker2].forEach(function (picker) {
             if (!picker) {
@@ -4234,6 +4268,8 @@ else{
                 $('#addModal').find('#tareOutgoing').val(obj.message.tare_weight1);
                 tareOutgoingDatePicker.setDate(obj.message.tare_weight1_date != null ? new Date(obj.message.tare_weight1_date) : null);
                 $('#addModal').find('#tareWeightBy1').val(obj.message.tare_weight_by1);
+                $('#addModal').find('#grossLocationId').val(obj.message.location_id || '');
+                $('#addModal').find('#tareLocationId').val(obj.message.location_id2 || '');
                 $('#addModal').find('#nettWeight').val(obj.message.nett_weight1);
                 $('#addModal').find('#vehicleWeight2').val(obj.message.lorry_no2_weight);
                 $('#addModal').find('#emptyContainerWeight2').val(obj.message.empty_container2_weight);
@@ -4266,6 +4302,7 @@ else{
                 $('#addModal').find('#weighbridge').val(obj.message.weighbridge_id);
                 $('#addModal').find('#indicatorId2').val(obj.message.indicator_id_2);
                 $('#addModal').find('#productDescription').val(obj.message.product_description);
+                keepUnitPrice = true;
                 $('#addModal').find('#unitPrice').val(obj.message.unit_price);
                 $('#addModal').find('#sstRate').val(obj.message.sst_rate);
                 $('#addModal').find('#subTotalPrice').val(obj.message.sub_total);

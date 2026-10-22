@@ -257,6 +257,12 @@ class PermissionService extends BaseService {
                 ['Local', 'Weighing'],
                 ['Miscellaneous', 'Weighing']
             ]],
+            ['name' => 'manual_price', 'modules' => [
+                ['Sales', 'Weighing'],
+                ['Purchase', 'Weighing'],
+                ['Local', 'Weighing'],
+                ['Miscellaneous', 'Weighing'],
+            ]],
             ['name' => 'print', 'modules' => [
                 ['Sales', 'Reports'],
                 ['Purchase', 'Reports'],
