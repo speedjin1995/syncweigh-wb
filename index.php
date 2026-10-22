@@ -2915,12 +2915,6 @@ else{
             });
         });
 
-        function showTareConfirm(){
-            $('#confirmCaptureMessage').text('<?=$languageArray['confirm_second_weighing_code'][$language]?>: ' + $('#tareOutgoing').val() + ' kg');
-            isSecondWeighingCapture = true;
-            $('#confirmCaptureModal').modal('show');
-        }
-
         $('#nettWeight').on('change', function(){
             var weightType = $('#weightType').val();
 
@@ -3200,50 +3194,6 @@ else{
             loadDepositPrice();
         });
 
-        // Price card: subtotal = final weight (kg) / 1000 x unit price (per tonne), SST = subtotal x SST %
-        function calculatePrice(){
-            var weight = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
-            var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()) : 0;
-            var sstRate = $('#sstRate').val() ? parseFloat($('#sstRate').val()) : 0;
-            var subTotalPrice = weight / 1000 * price;
-            var sstPrice = subTotalPrice * sstRate / 100;
-
-            $('#subTotalPrice').val(subTotalPrice.toFixed(2));
-            $('#sstPrice').val(sstPrice.toFixed(2));
-            $('#totalPrice').val((subTotalPrice + sstPrice).toFixed(2));
-        }
-
-        // Unit price of the selected item for the selected customer/supplier, then the deposit balance check
-        function loadDepositPrice(){
-            var transactionStatus = $('#transactionStatus').val();
-            if (transactionStatus != 'Sales' && transactionStatus != 'Purchase') {
-                calculatePrice();
-                return;
-            }
-
-            var isSales = transactionStatus == 'Sales';
-            var code = isSales ? $('#customerCode').val() : $('#supplierCode').val();
-            var itemCode = isSales ? $('#productCode').val() : $('#rawMaterialCode').val();
-            if (!code) {
-                if (!keepUnitPrice) $('#unitPrice').val(0);
-                calculatePrice();
-                return;
-            }
-
-            $.post('php/checkDeposit.php', {transactionStatus: transactionStatus, code: code, itemCode: itemCode || ''}, function(data){
-                var obj = JSON.parse(data);
-                if (obj.status !== 'success') return;
-
-                if (!keepUnitPrice) $('#unitPrice').val(obj.price);
-                calculatePrice();
-
-                if (obj.enabled && parseFloat(obj.balance) < 1) {
-                    alert(<?=json_encode($languageArray['insufficient_deposit_code'][$language])?>);
-                    $('#addModal').modal('hide');
-                }
-            });
-        }
-
         $('#sstRate, #unitPrice').on('keyup change', calculatePrice);
         $('#customerName, #supplierName, #productName, #rawMaterialName').on('change', function(){ keepUnitPrice = false; });
 
@@ -3441,6 +3391,56 @@ else{
             }
         ?>
     });
+
+    function showTareConfirm(){
+        $('#confirmCaptureMessage').text('<?=$languageArray['confirm_second_weighing_code'][$language]?>: ' + $('#tareOutgoing').val() + ' kg');
+        isSecondWeighingCapture = true;
+        $('#confirmCaptureModal').modal('show');
+    }
+
+    // Price card: subtotal = final weight (kg) / 1000 x unit price (per tonne), SST = subtotal x SST %
+    function calculatePrice(){
+        var weight = $('#finalWeight').val() ? parseFloat($('#finalWeight').val()) : 0;
+        var price = $('#unitPrice').val() ? parseFloat($('#unitPrice').val()) : 0;
+        var sstRate = $('#sstRate').val() ? parseFloat($('#sstRate').val()) : 0;
+        var subTotalPrice = weight / 1000 * price;
+        var sstPrice = subTotalPrice * sstRate / 100;
+
+        $('#subTotalPrice').val(subTotalPrice.toFixed(2));
+        $('#sstPrice').val(sstPrice.toFixed(2));
+        $('#totalPrice').val((subTotalPrice + sstPrice).toFixed(2));
+    }
+
+    // Unit price of the selected item for the selected customer/supplier, then the deposit balance check
+    function loadDepositPrice(){
+        var transactionStatus = $('#transactionStatus').val();
+        if (transactionStatus != 'Sales' && transactionStatus != 'Purchase') {
+            calculatePrice();
+            return;
+        }
+
+        var isSales = transactionStatus == 'Sales';
+        var code = isSales ? $('#customerCode').val() : $('#supplierCode').val();
+        var itemCode = isSales ? $('#productCode').val() : $('#rawMaterialCode').val();
+        if (!code) {
+            if (!keepUnitPrice) $('#unitPrice').val(0);
+            calculatePrice();
+            return;
+        }
+
+        $.post('php/checkDeposit.php', {transactionStatus: transactionStatus, code: code, itemCode: itemCode || ''}, function(data){
+            var obj = JSON.parse(data);
+            if (obj.status !== 'success') return;
+
+            if (!keepUnitPrice) $('#unitPrice').val(obj.price);
+            calculatePrice();
+
+            if (obj.enabled && parseFloat(obj.balance) < 1) {
+                alert(<?=json_encode($languageArray['insufficient_deposit_code'][$language])?>);
+                $('#addModal').modal('hide');
+            }
+        });
+    }
 
     // Manual weighing is shown, and dates can be changed, only for statuses with their Weighing permission
     function applyManualPermissions() {
