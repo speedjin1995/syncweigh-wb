@@ -1977,7 +1977,7 @@ else{
 
             // Check the password here so a wrong one keeps the modal open (weight.php checks it again on save)
             var confirmBtn = $(this).prop('disabled', true);
-            $.post('php/checkVehicleEntry.php', {verifyPassword: password}, function(data){
+            $.post('php/modules/vehicle/index.php', {action: 'checkEntry', verifyPassword: password}, function(data){
                 var obj = JSON.parse(data);
                 confirmBtn.prop('disabled', false);
 
@@ -2767,7 +2767,7 @@ else{
             var weightType = $('#weightType').val();
 
             if (weightType == 'Different Container' && x) {
-                $.post('php/modules/vehicle/getVehicle.php', {userID: x, type: 'pullCustomer'}, function (data){
+                $.post('php/modules/vehicle/index.php', {action: 'get', userID: x, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -2796,7 +2796,7 @@ else{
             var vehiclePlateNo2 = $(this).val();
             var weightType = $('#weightType').val();
             if (weightType == 'Different Container' && vehiclePlateNo2){
-                $.post('php/modules/vehicle/getVehicle.php', {userID: vehiclePlateNo2, type: 'pullCustomer'}, function (data){
+                $.post('php/modules/vehicle/index.php', {action: 'get', userID: vehiclePlateNo2, type: 'pullCustomer'}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -4056,7 +4056,7 @@ else{
         }
 
         $('#spinnerLoading').show();
-        $.post('php/checkVehicleEntry.php', {vehicleNo: vehicleNo}, function(data){
+        $.post('php/modules/vehicle/index.php', {action: 'checkEntry', vehicleNo: vehicleNo}, function(data){
             var obj = JSON.parse(data);
             $('#spinnerLoading').hide();
 
@@ -4114,7 +4114,7 @@ else{
     function pullVehicleDetails(vehicleNo){
         var transactionStatus = $('#transactionStatus').val();
 
-        $.post('php/modules/vehicle/getVehicle.php', {userID: vehicleNo, type: 'pullCustomer'}, function (data){
+        $.post('php/modules/vehicle/index.php', {action: 'get', userID: vehicleNo, type: 'pullCustomer'}, function (data){
             var obj = JSON.parse(data);
 
             if (obj.status == 'success' && !obj.message.id && vehicleNo != '-'){

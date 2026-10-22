@@ -428,7 +428,7 @@ $(function () {
         'serverSide': true,
         'serverMethod': 'post',
         'ajax': {
-            'url':'php/modules/vehicle/loadVehicle.php'
+            'url':'php/modules/vehicle/index.php?action=list'
         },
         'columns': [
             {
@@ -470,7 +470,7 @@ $(function () {
     $('#submitVehicle').on('click', function(){
         if($('#vehicleForm').valid()){
             $('#spinnerLoading').show();
-            $.post('php/modules/vehicle/vehicle.php', $('#vehicleForm').serialize(), function(data){
+            $.post('php/modules/vehicle/index.php', $('#vehicleForm').serialize() + '&action=save', function(data){
                 var obj = JSON.parse(data);
                 if(obj.status === 'success') {
                     table.ajax.reload();
@@ -556,7 +556,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/modules/vehicle/uploadVehicle.php',
+            url: 'php/modules/vehicle/index.php?action=upload',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -637,7 +637,7 @@ $(function () {
 
         if (selectedIds.length > 0) {
             if (confirm('Are you sure you want to delete these vehicles?')) {
-                $.post('php/modules/vehicle/deleteVehicle.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                $.post('php/modules/vehicle/index.php', {action: 'delete', userID: selectedIds, type: 'MULTI'}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -668,7 +668,7 @@ $(function () {
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/modules/vehicle/getVehicle.php', {userID: id}, function(data)
+    $.post('php/modules/vehicle/index.php', {action: 'get', userID: id}, function(data)
     {
         var obj = JSON.parse(data);
         if(obj.status === 'success'){
@@ -719,7 +719,7 @@ function edit(id){
 function deactivate(id){
     $('#spinnerLoading').show();
     if (confirm('Are you sure you want to delete this vehicle?')) {
-        $.post('php/modules/vehicle/deleteVehicle.php', {userID: id}, function(data){
+        $.post('php/modules/vehicle/index.php', {action: 'delete', userID: id}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){
