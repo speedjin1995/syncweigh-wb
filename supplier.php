@@ -200,6 +200,14 @@ if (!hasModulePermission('Master Data', 'Supplier', ['view'])){
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3">
+                                                                                <div class="row">
+                                                                                    <label for="depositBalance" class="col-sm-4 col-form-label"><?=$languageArray['deposit_balance_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="number" class="form-control" id="depositBalance" name="depositBalance" step="0.01" min="0" placeholder="0.00">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                             <input type="hidden" class="form-control" id="id" name="id">                                                                                                                                                         
                                                                         </div>
                                                                     </div>
@@ -320,6 +328,7 @@ if (!hasModulePermission('Master Data', 'Supplier', ['view'])){
                                                                     <th><?=$languageArray['pic_code'][$language]?></th>
                                                                     <th><?=$languageArray['ic_code'][$language]?></th>
                                                                     <th><?=$languageArray['tin_code'][$language]?></th>
+                                                                    <th><?=$languageArray['deposit_balance_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -392,7 +401,8 @@ $(function () {
         'serverSide': true,
         'serverMethod': 'post',
         'ajax': {
-            'url':'php/modules/supplier/loadSupplier.php'
+            'url':'php/modules/supplier/index.php',
+            'data': { action: 'getAll' }
         },
         'columns': [
             {
@@ -416,6 +426,7 @@ $(function () {
             { data: 'contact_name' },
             { data: 'ic_no' },
             { data: 'tin_no' },
+            { data: 'deposit_balance' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
@@ -445,7 +456,7 @@ $(function () {
         $('#submitCustomer').on('click', function(){
             if($('#supplierForm').valid()){
                 $('#spinnerLoading').show();
-                $.post('php/modules/supplier/supplier.php', $('#supplierForm').serialize(), function(data){
+                $.post('php/modules/supplier/index.php', $('#supplierForm').serialize() + '&action=' + ($('#supplierForm').find('#id').val() ? 'update' : 'create'), function(data){
                     var obj = JSON.parse(data);
                     if(obj.status === 'success'){
                         table.ajax.reload();
@@ -482,7 +493,7 @@ $(function () {
 
         // Send the JSON array to the server
         $.ajax({
-            url: 'php/modules/supplier/uploadSuppliers.php',
+            url: 'php/modules/supplier/index.php?action=upload',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -531,6 +542,7 @@ $(function () {
         $('#addModal').find('#contactName').val("");
         $('#addModal').find('#icNo').val("");
         $('#addModal').find('#tinNo').val("");
+        $('#addModal').find('#depositBalance').val("");
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -598,7 +610,7 @@ $(function () {
 
         if (selectedIds.length > 0) {
             if (confirm('Are you sure you want to delete these suppliers?')) {
-                $.post('php/modules/supplier/deleteSupplier.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                $.post('php/modules/supplier/index.php', {action: 'deleteMulti', userID: selectedIds}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -699,7 +711,7 @@ function displayPreview(data) {
 
 function edit(id){
     $('#spinnerLoading').show();
-    $.post('php/modules/supplier/getSupplier.php', {userID: id}, function(data){
+    $.post('php/modules/supplier/index.php', {action: 'get', id: id}, function(data){
         var obj = JSON.parse(data);
         
         if(obj.status === 'success'){
@@ -716,6 +728,7 @@ function edit(id){
             $('#addModal').find('#contactName').val(obj.message.contact_name);
             $('#addModal').find('#icNo').val(obj.message.ic_no);
             $('#addModal').find('#tinNo').val(obj.message.tin_no);
+            $('#addModal').find('#depositBalance').val(obj.message.deposit_balance);
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -751,7 +764,7 @@ function edit(id){
 function deactivate(id){
     $('#spinnerLoading').show();
     if (confirm('Are you sure you want to delete this supplier?')) {
-        $.post('php/modules/supplier/deleteSupplier.php', {userID: id}, function(data){
+        $.post('php/modules/supplier/index.php', {action: 'delete', id: id}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

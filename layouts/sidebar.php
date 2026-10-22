@@ -36,10 +36,24 @@
     <div id="scrollbar">
         <div class="container-fluid">
 
+            <?php
+                $sidebarUsername = $_SESSION['username'] ?? '';
+                $sidebarName = $_SESSION['name'] ?? '';
+                $sidebarName = trim($sidebarName) !== '' ? $sidebarName : ($sidebarUsername ?? '');
+            ?>
+            <div class="d-flex align-items-center gap-3 px-3 py-3">
+                <div class="rounded-circle bg-info text-white fw-semibold d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
+                    <?=htmlspecialchars(mb_strtoupper(mb_substr($sidebarName, 0, 1)))?>
+                </div>
+                <div class="overflow-hidden">
+                    <div class="fw-semibold text-truncate text-white"><?=htmlspecialchars($sidebarName)?></div>
+                    <div class="fs-13 text-truncate text-white opacity-75"><?=htmlspecialchars($sidebarUsername ?? '')?></div>
+                </div>
+            </div>
+
             <div id="two-column-menu">
             </div>
             <ul class="navbar-nav" id="navbar-nav">
-                <li class="menu-title"><span><?=$lang['t-menu']?></span></li>
                 <?php if($hasWeighingView): ?>
                 <li class="nav-item">
                     <a href="index.php" class="nav-link"><i class="mdi mdi-weight"></i><span><?=$languageArray['daily_weighing_code'][$language]?></span></a>
@@ -65,6 +79,12 @@
                             </li>
                             <?php endif; ?>
 
+                            <?php if(hasModulePermission('Master Data', 'Currency', ['view', 'create', 'edit'])): ?>
+                            <li class="nav-item">
+                                <a href="currency.php" class="nav-link"><?=$languageArray['currency_code'][$language]?></a>
+                            </li>
+                            <?php endif; ?>
+                            
                             <?php if(hasModulePermission('Master Data', 'Customer', ['view', 'create', 'edit'])): ?>
                             <li class="nav-item">
                                 <a href="customer.php" class="nav-link"><?=$languageArray['customer_code'][$language]?></a>
@@ -136,7 +156,6 @@
                                 <a href="binType.php" class="nav-link"><?=$languageArray['bin_type_code'][$language]?></a>
                             </li>
                             <?php endif; ?>
-
                         </ul>
                     </div>
                 </li>

@@ -162,6 +162,8 @@ if(isset($_POST['userID'])){
                             $message['gross_weight1'] = $row['gross_weight1'];
                             $message['gross_weight1_date'] = $row['gross_weight1_date'];
                             $message['gross_weight_by1'] = $row['gross_weight_by1'];
+                            $message['location_id'] = $row['location_id'] ?? null;
+                            $message['location_id2'] = $row['location_id2'] ?? null;
                             $message['tare_weight1'] = $row['tare_weight1'];
                             $message['tare_weight1_date'] = $row['tare_weight1_date'];
                             $message['tare_weight_by1'] = $row['tare_weight_by1'];
@@ -194,6 +196,7 @@ if(isset($_POST['userID'])){
                             $message['unit_price'] = $row['unit_price'];
                             $message['sub_total'] = $row['sub_total'];
                             $message['sst'] = $row['sst'];
+                            $message['sst_rate'] = $row['sst_rate'];
                             $message['total_price'] = $row['total_price'];
                             $message['final_weight'] = $row['final_weight'];
     
@@ -313,6 +316,8 @@ if(isset($_POST['userID'])){
                             $message['gross_weight1'] = $row['gross_weight1'] ?? '';
                             $message['gross_weight1_date'] = !empty($row['gross_weight1_date']) ? date("d/m/Y - h:i:sa", strtotime($row['gross_weight1_date'])) : '';
                             $message['gross_weight_by1'] = $row['gross_weight_by1'] ?? '';
+                            $message['location_id'] = $row['location_id'] ?? null;
+                            $message['location_id2'] = $row['location_id2'] ?? null;
                             $message['tare_weight1'] = $row['tare_weight1'] ?? '';
                             $message['tare_weight1_date'] = !empty($row['tare_weight1_date']) ? date("d/m/Y - h:i:sa", strtotime($row['tare_weight1_date'])) : '';
                             $message['tare_weight_by1'] = $row['tare_weight_by1'] ?? '';
@@ -365,6 +370,8 @@ if(isset($_POST['userID'])){
                             $message['gross_weight1'] = $row['gross_weight1'];
                             $message['gross_weight1_date'] = $row['gross_weight1_date'];
                             $message['gross_weight_by1'] = $row['gross_weight_by1'];
+                            $message['location_id'] = $row['location_id'] ?? null;
+                            $message['location_id2'] = $row['location_id2'] ?? null;
                             $message['tare_weight1'] = $row['tare_weight1'];
                             $message['tare_weight1_date'] = $row['tare_weight1_date'];
                             $message['tare_weight_by1'] = $row['tare_weight_by1'];
@@ -397,6 +404,7 @@ if(isset($_POST['userID'])){
                             $message['unit_price'] = $row['unit_price'];
                             $message['sub_total'] = $row['sub_total'];
                             $message['sst'] = $row['sst'];
+                            $message['sst_rate'] = $row['sst_rate'];
                             $message['total_price'] = $row['total_price'];
                             $message['final_weight'] = $row['final_weight'];
     

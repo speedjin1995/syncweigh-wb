@@ -150,6 +150,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
                 ['Staff', 'User Management'],
                 ['Role', 'User Management'],
                 ['Modules', 'User Management'],
@@ -178,6 +179,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
                 ['Staff', 'User Management'],
                 ['Role', 'User Management'],
                 ['Modules', 'User Management'],
@@ -206,6 +208,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
                 ['Staff', 'User Management'],
                 ['Role', 'User Management'],
                 ['Modules', 'User Management'],
@@ -234,6 +237,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
             ]],
             ['name' => 'weight_out', 'modules' => [
                 ['Sales', 'Weighing'],
@@ -252,6 +256,12 @@ class PermissionService extends BaseService {
                 ['Purchase', 'Weighing'],
                 ['Local', 'Weighing'],
                 ['Miscellaneous', 'Weighing']
+            ]],
+            ['name' => 'manual_price', 'modules' => [
+                ['Sales', 'Weighing'],
+                ['Purchase', 'Weighing'],
+                ['Local', 'Weighing'],
+                ['Miscellaneous', 'Weighing'],
             ]],
             ['name' => 'print', 'modules' => [
                 ['Sales', 'Reports'],
@@ -288,6 +298,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
                 ['Planned Schedule', 'Planned Schedule'],
                 ['Staff', 'User Management']
             ]],
@@ -305,6 +316,7 @@ class PermissionService extends BaseService {
                 ['Contractor', 'Master Data'],
                 ['Bin No', 'Master Data'],
                 ['Bin Type', 'Master Data'],
+                ['Currency', 'Master Data'],
                 ['Planned Schedule', 'Planned Schedule'],
                 ['Staff', 'User Management']
             ]],
@@ -326,6 +338,10 @@ class PermissionService extends BaseService {
             ]],
             ['name' => 'reset_password', 'modules' => [
                 ['Staff', 'User Management']
+            ]],
+            ['name' => 'manage_pricing', 'modules' => [
+                ['Products', 'Master Data'],
+                ['Raw Material', 'Master Data']
             ]]
         ];
 
