@@ -24,8 +24,7 @@ class WeightController extends BaseController {
         }
 
         try {
-            $locationId = isset($_SESSION['location_id']) && $_SESSION['location_id'] !== '' ? intval($_SESSION['location_id']) : null;
-            $id = $this->weightService->getPendingIdByVehicle($vehicleNo, $transactionStatus, $locationId);
+            $id = $this->weightService->getPendingIdByVehicle($vehicleNo, $transactionStatus);
             $this->success('', ['id' => $id]);
         } catch (Exception $e) {
             $this->failed($e->getMessage());
