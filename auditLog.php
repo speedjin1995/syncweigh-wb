@@ -504,7 +504,7 @@ $(function () {
                 row.child.hide();
                 tr.removeClass('shown');
             } else {
-                $.post('php/getWeight.php', { userID: row.data().id, format: 'EXPANDABLE', type: 'Log' }, function (data) {
+                $.post('php/modules/weight/index.php', { action: 'get', userID: row.data().id, format: 'EXPANDABLE', type: 'Log' }, function (data) {
                     var obj = JSON.parse(data);
                     if (obj.status === 'success') {
                         row.child(format(obj.message)).show();

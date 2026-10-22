@@ -95,7 +95,7 @@ function weightExportLayout($db, $rows) {
         $vehicles[$vehicle['veh_number']] = $vehicle;
     }
 
-    // Deposit movements are logged with remark 'Weighing <transaction_id>' (see depositSettle in requires/deposit.php)
+    // Deposit movements are logged with remark 'Weighing <transaction_id>' (see DepositService::settle)
     $deposits = array();
     $remarks = array();
     foreach ($rows as $row) {

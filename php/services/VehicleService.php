@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/BaseService.php';
 require_once __DIR__ . '/../requires/lookup.php';
-require_once __DIR__ . '/../modules/vehicle/vehicleEntry.php';
+require_once __DIR__ . '/VehicleEntryService.php';
 
 class VehicleService extends BaseService {
 
@@ -239,7 +239,7 @@ class VehicleService extends BaseService {
             $date = $dateTime->format('Y-m-d');
         }
 
-        $entryStatus = getVehicleEntryStatus($this->db, $vehicleNo, $date);
+        $entryStatus = (new VehicleEntryService($this->db, $this->username))->status($vehicleNo, $date);
 
         if (empty($entryStatus)) {
             return ['limited' => false, 'exceeded' => false, 'max' => 0, 'count' => 0];
@@ -257,7 +257,7 @@ class VehicleService extends BaseService {
      * Re-confirm the logged-in user's password (insufficient entry override)
      */
     public function verifyPassword($userId, $password) {
-        return verifyUserPassword($this->db, $userId, $password);
+        return (new VehicleEntryService($this->db, $this->username))->verifyPassword($userId, $password);
     }
 
     private function vehicleRow($row) {

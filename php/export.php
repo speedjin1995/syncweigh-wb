@@ -155,7 +155,7 @@ if(isset($_GET['location']) && $_GET['location'] != null && $_GET['location'] !=
     $searchContainerQuery .= " and Weight_Container.location_id = '".intval($_GET['location'])."'";
 }
 
-// Same text filters as the weighing screen table (php/filterWeight.php)
+// Same text filters as the weighing screen table (php/modules/weight/index.php, action list)
 if(isset($_GET['transactionId']) && $_GET['transactionId'] != '' && $_GET['transactionId'] != '-' && $_GET["file"] == 'weight'){
     $transactionId = $db->real_escape_string(trim($_GET['transactionId']));
     $searchQuery .= " and Weight.transaction_id like '%".$transactionId."%'";
