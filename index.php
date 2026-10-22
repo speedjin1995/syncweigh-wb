@@ -639,7 +639,7 @@ else{
                                                                                         <select class="form-select js-choice select2" id="customerName" name="customerName" required>
                                                                                             <option selected="-">-</option>
                                                                                             <?php while($rowCustomer=mysqli_fetch_assoc($customer)){ ?>
-                                                                                                <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>"><?=$rowCustomer['name'] ?></option>
+                                                                                                <option value="<?=$rowCustomer['name'] ?>" data-code="<?=$rowCustomer['customer_code'] ?>" data-id="<?=$rowCustomer['id'] ?>"><?=$rowCustomer['name'] ?></option>
                                                                                             <?php } ?>
                                                                                         </select>
                                                                                     </div>
@@ -652,7 +652,7 @@ else{
                                                                                         <select class="form-select select2" id="supplierName" name="supplierName" required>
                                                                                             <option selected="-">-</option>
                                                                                             <?php while($rowSupplier=mysqli_fetch_assoc($supplier)){ ?>
-                                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>"><?=$rowSupplier['name'] ?></option>
+                                                                                                <option value="<?=$rowSupplier['name'] ?>" data-code="<?=$rowSupplier['supplier_code'] ?>" data-id="<?=$rowSupplier['id'] ?>"><?=$rowSupplier['name'] ?></option>
                                                                                             <?php } ?>
                                                                                         </select>                                                                                        
                                                                                     </div>
@@ -1740,7 +1740,7 @@ else{
                     row.child.hide();
                     tr.removeClass('shown');
                 } else {
-                    $.post('php/getWeight.php', { userID: row.data().id, format: 'EXPANDABLE' }, function (data) {
+                    $.post('php/modules/weight/index.php', { action: 'get', userID: row.data().id, format: 'EXPANDABLE' }, function (data) {
                         var obj = JSON.parse(data);
                         if (obj.status === 'success') {
                             row.child(format(obj.message)).show();
@@ -1851,7 +1851,7 @@ else{
             if(pass && $('#weightForm').valid()){
                 checkVehicleEntry(function(){
                 $('#spinnerLoading').show();
-                $.post('php/weight.php', $('#weightForm').serialize(), function(data){
+                $.post('php/modules/weight/index.php?action=save', $('#weightForm').serialize(), function(data){
                     var obj = JSON.parse(data); 
                     if(obj.status === 'success'){
                         <?php
@@ -1943,7 +1943,7 @@ else{
             if(pass && $('#weightForm').valid()){
                 checkVehicleEntry(function(){
                 $('#spinnerLoading').show();
-                $.post('php/weight.php', $('#weightForm').serialize(), function(data){
+                $.post('php/modules/weight/index.php?action=save', $('#weightForm').serialize(), function(data){
                     var obj = JSON.parse(data); 
                     if(obj.status === 'success'){
                         $('#spinnerLoading').hide();
@@ -2035,7 +2035,7 @@ else{
             if($('#cancelForm').valid()){
                 $('#spinnerLoading').show();
                 var id = $('#cancelModal').find('#id').val();
-                $.post('php/deleteWeight.php', $('#cancelForm').serialize(), function(data){
+                $.post('php/modules/weight/index.php', $('#cancelForm').serialize() + '&action=delete', function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -2532,7 +2532,7 @@ else{
             var transaType = $('#transactionStatus').val();
 
             if (weightType == 'Container'){
-                $.post('php/getContainers.php', {userID: transaType}, function (data){
+                $.post('php/modules/weight/index.php', {action: 'containers', userID: transaType}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -2596,7 +2596,7 @@ else{
                 $('#addModal').find('#containerNoInput').attr('required', true);
                 $('#addModal').find('#emptyContainerNo').attr('required', false);
             }else if (weightType == 'Different Container') {
-                $.post('php/getContainers.php', {userID: transaType}, function (data){
+                $.post('php/modules/weight/index.php', {action: 'containers', userID: transaType}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -2898,14 +2898,14 @@ else{
 
             // Tare capture completes the weighing and charges the deposit, so check the balance against the total price
             var transactionStatus = $('#transactionStatus').val();
-            var code = transactionStatus == 'Sales' ? $('#customerCode').val() : $('#supplierCode').val();
-            if ((transactionStatus != 'Sales' && transactionStatus != 'Purchase') || !code) {
+            var partyId = transactionStatus == 'Sales' ? $('#customerName :selected').data('id') : $('#supplierName :selected').data('id');
+            if ((transactionStatus != 'Sales' && transactionStatus != 'Purchase') || !partyId) {
                 showTareConfirm();
                 return;
             }
 
             var total = parseFloat($('#totalPrice').val()) || 0;
-            $.post('php/checkDeposit.php', {transactionStatus: transactionStatus, code: code, itemCode: ''}, function(data){
+            $.post('php/modules/deposit/index.php', {action: 'check', partyType: transactionStatus == 'Sales' ? 'CUSTOMER' : 'SUPPLIER', partyId: partyId, itemCode: ''}, function(data){
                 var obj = JSON.parse(data);
                 if (obj.status === 'success' && obj.enabled && total > parseFloat(obj.balance)) {
                     alert(<?=json_encode($languageArray['insufficient_deposit_code'][$language])?>);
@@ -3116,7 +3116,7 @@ else{
             var weightType = $('#addModal').find('#weightType').val();
 
             if(weightType == 'Container'){
-                $.post('php/getContainers.php', {userID: $(this).val()}, function (data){
+                $.post('php/modules/weight/index.php', {action: 'containers', userID: $(this).val()}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){
@@ -3249,7 +3249,7 @@ else{
                 $('#tareCapture').show();
                 toggleSubmitButtons();
             } else if (emptyContainerNo) { 
-                $.post('php/getEmptyContainer.php', {userID: emptyContainerNo}, function (data){
+                $.post('php/modules/weight/index.php', {action: 'emptyContainer', userID: emptyContainerNo}, function (data){
                     var obj = JSON.parse(data);
 
                     if (obj.status == 'success'){ 
@@ -3420,15 +3420,15 @@ else{
         }
 
         var isSales = transactionStatus == 'Sales';
-        var code = isSales ? $('#customerCode').val() : $('#supplierCode').val();
+        var partyId = isSales ? $('#customerName :selected').data('id') : $('#supplierName :selected').data('id');
         var itemCode = isSales ? $('#productCode').val() : $('#rawMaterialCode').val();
-        if (!code) {
+        if (!partyId) {
             if (!keepUnitPrice) $('#unitPrice').val(0);
             calculatePrice();
             return;
         }
 
-        $.post('php/checkDeposit.php', {transactionStatus: transactionStatus, code: code, itemCode: itemCode || ''}, function(data){
+        $.post('php/modules/deposit/index.php', {action: 'check', partyType: isSales ? 'CUSTOMER' : 'SUPPLIER', partyId: partyId, itemCode: itemCode || ''}, function(data){
             var obj = JSON.parse(data);
             if (obj.status !== 'success') return;
 
@@ -3497,7 +3497,7 @@ else{
             'searching': true,
             'serverMethod': 'post',
             'ajax': {
-                'url':'php/filterWeight.php',
+                'url':'php/modules/weight/index.php?action=list',
                 'data': {
                     fromDate: fromDateI,
                     toDate: toDateI,
@@ -3648,7 +3648,7 @@ else{
             'searching': true,
             'serverMethod': 'post',
             'ajax': {
-                'url':'php/filterEmptyContainer.php',
+                'url':'php/modules/weight/index.php?action=listEmptyContainer',
                 'data': {
                     fromDate: fromDateI,
                     toDate: toDateI,
@@ -4166,7 +4166,7 @@ else{
             type = 'Weight'
         }
 
-        $.post('php/getWeight.php', {userID: id, type: type}, function(data)
+        $.post('php/modules/weight/index.php', {action: 'get', userID: id, type: type}, function(data)
         {
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
@@ -4446,7 +4446,7 @@ else{
 
     function loadContainerData(callback) {
         var transactionStatus = $('#transactionStatus').val();
-        $.post('php/getContainers.php', {userID: transactionStatus}, function (data){
+        $.post('php/modules/weight/index.php', {action: 'containers', userID: transactionStatus}, function (data){
             var obj = JSON.parse(data);
 
             if (obj.status == 'success'){
@@ -4502,7 +4502,7 @@ else{
     function print(id, transactionStatus, isEmptyContainer = 'N') {
         $('#spinnerLoading').show();
 
-        $.post('php/print.php', {userID: id, file: 'weight', prePrint: 'en', isEmptyContainer: isEmptyContainer, source: 'weighing'}, function(data){
+        $.post('php/modules/weight/index.php', {action: 'print', userID: id, file: 'weight', prePrint: 'en', isEmptyContainer: isEmptyContainer, source: 'weighing'}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

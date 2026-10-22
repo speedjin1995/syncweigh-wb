@@ -983,7 +983,7 @@ else{
 
     function edit(id){
         $('#spinnerLoading').show();
-        $.post('php/getWeight.php', {userID: id}, function(data)
+        $.post('php/modules/weight/index.php', {action: 'get', userID: id}, function(data)
         {
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
@@ -1081,7 +1081,7 @@ else{
 
     function deactivate(id){
         $('#spinnerLoading').show();
-        $.post('php/deleteWeight.php', {userID: id}, function(data){
+        $.post('php/modules/weight/index.php', {action: 'delete', userID: id}, function(data){
             var obj = JSON.parse(data);
             
             if(obj.status === 'success'){
@@ -1107,7 +1107,7 @@ else{
     var defaultPlantCode = <?= json_encode($defaultPlantCode) ?>;
 
     function print(id) {
-        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N', source: 'report'}, function(data){
+        $.post('php/modules/weight/index.php', {action: 'print', userID: id, file: 'weight', isEmptyContainer: 'N', source: 'report'}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

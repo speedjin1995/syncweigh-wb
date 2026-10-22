@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/BaseService.php';
-require_once __DIR__ . '/../requires/deposit.php';
+require_once __DIR__ . '/DepositService.php';
 
 class CustomerService extends BaseService {
 
@@ -101,7 +101,7 @@ class CustomerService extends BaseService {
         $stmt->close();
 
         if ($deposit > 0) {
-            depositLog($this->db, ['type' => 'CUSTOMER', 'id' => $newId, 'code' => $code], null, 'TOPUP', $deposit, 0, $deposit, 'Opening deposit', $this->username);
+            (new DepositService($this->db, $this->username))->log(['type' => 'CUSTOMER', 'id' => $newId, 'code' => $code], null, 'TOPUP', $deposit, 0, $deposit, 'Opening deposit');
         }
 
         return ['id' => $newId];
@@ -153,7 +153,7 @@ class CustomerService extends BaseService {
         $oldDeposit = (float) $old['deposit_balance'];
         if (round($deposit - $oldDeposit, 2) != 0) {
             $txnType = $deposit > $oldDeposit ? 'TOPUP' : 'ADJUST';
-            depositLog($this->db, ['type' => 'CUSTOMER', 'id' => $id, 'code' => $code], null, $txnType, round($deposit - $oldDeposit, 2), $oldDeposit, $deposit, 'Manual update', $this->username);
+            (new DepositService($this->db, $this->username))->log(['type' => 'CUSTOMER', 'id' => $id, 'code' => $code], null, $txnType, round($deposit - $oldDeposit, 2), $oldDeposit, $deposit, 'Manual update');
         }
 
         if ($old['customer_code'] !== $code) {
