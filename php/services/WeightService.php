@@ -536,6 +536,8 @@ class WeightService extends BaseService {
             $message['nett_weight2'] = $row['nett_weight2'] ?? '';
             $message['reduce_weight'] = $row['reduce_weight'] ?? '';
             $message['final_weight'] = $row['final_weight'] ?? '';
+            $message['unit_price'] = $row['unit_price'] ?? '';
+            $message['total_price'] = $row['total_price'] ?? '';
             $message['vehicle_entry_logs'] = (new VehicleEntryService($this->db, $this->username))->logs('Weight', $id);
             return $message;
         }

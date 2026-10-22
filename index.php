@@ -1942,27 +1942,27 @@ else{
 
             if(pass && $('#weightForm').valid()){
                 checkVehicleEntry(function(){
-                $('#spinnerLoading').show();
-                $.post('php/modules/weight/index.php?action=save', $('#weightForm').serialize(), function(data){
-                    var obj = JSON.parse(data); 
-                    if(obj.status === 'success'){
-                        $('#spinnerLoading').hide();
-                        $('#addModal').modal('hide');
-                        $("#successBtn").attr('data-toast-text', obj.message);
-                        $("#successBtn").click();
-                        print(obj.id, null, isEmptyContainer);
-                    }
-                    else if(obj.status === 'failed'){
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', obj.message );
-                        $("#failBtn").click();
-                    }
-                    else{
-                        $('#spinnerLoading').hide();
-                        $("#failBtn").attr('data-toast-text', 'Failed to save');
-                        $("#failBtn").click();
-                    }
-                });
+                    $('#spinnerLoading').show();
+                    $.post('php/modules/weight/index.php?action=save', $('#weightForm').serialize(), function(data){
+                        var obj = JSON.parse(data); 
+                        if(obj.status === 'success'){
+                            $('#spinnerLoading').hide();
+                            $('#addModal').modal('hide');
+                            $("#successBtn").attr('data-toast-text', obj.message);
+                            $("#successBtn").click();
+                            print(obj.id, null, isEmptyContainer);
+                        }
+                        else if(obj.status === 'failed'){
+                            $('#spinnerLoading').hide();
+                            $("#failBtn").attr('data-toast-text', obj.message );
+                            $("#failBtn").click();
+                        }
+                        else{
+                            $('#spinnerLoading').hide();
+                            $("#failBtn").attr('data-toast-text', 'Failed to save');
+                            $("#failBtn").click();
+                        }
+                    });
                 });
             }
         });
@@ -3822,6 +3822,8 @@ else{
             outWeighBy: <?=json_encode($languageArray['out_weigh_by_code'][$language])?>,
             nettWeight: <?=json_encode($languageArray['nett_weight_code'][$language])?>,
             subTotalWeight: <?=json_encode($languageArray['sub_total_weight_code'][$language])?>,
+            unitPrice: <?=json_encode($languageArray['unit_price_code'][$language])?>,
+            totalPrice: <?=json_encode($languageArray['total_price_code'][$language])?>,
             containerWeighing: <?=json_encode($languageArray['container_weighing_code'][$language])?>,
             dispatch: <?=json_encode($languageArray['dispatch_code'][$language])?>,
             receiving: <?=json_encode($languageArray['receiving_code'][$language])?>,
@@ -3913,6 +3915,8 @@ else{
                 <p class="col-4"><strong>${lang.outDateTime}:</strong> ${row.tare_weight1_date}</p>
                 <p class="col-4"><strong>${lang.outWeighBy}:</strong> ${row.tare_weight_by1}</p>
                 <p class="col-4"><strong>${lang.nettWeight}:</strong> ${row.nett_weight1}</p>
+                <p class="col-4"><strong>${lang.unitPrice}:</strong> ${row.unit_price || ''}</p>
+                <p class="col-4"><strong>${lang.totalPrice}:</strong> ${row.total_price || ''}</p>
             </div>
             <!-- Container -->
             ${containerColumnsEnabled ? `
