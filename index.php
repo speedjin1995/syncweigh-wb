@@ -131,6 +131,10 @@ else{
         .modal-header {
             padding: var(1rem, 1rem) !important;
         }
+        #collapseSearch .select2-selection__choice {
+            color: #000 !important;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -221,10 +225,9 @@ else{
                                                     <div class="col-3" id="customerSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="customerNoSearch" class="form-label"><?=$languageArray['customer_code'][$language]?></label>
-                                                            <select id="customerNoSearch" class="form-select select2" >
-                                                                <option selected>-</option>
+                                                            <select id="customerNoSearch" class="form-select select2" multiple>
                                                                 <?php while($rowPF = mysqli_fetch_assoc($customer2)){ ?>
-                                                                    <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['name'] ?></option>
+                                                                    <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['customer_code'] .' - '. $rowPF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -232,10 +235,9 @@ else{
                                                     <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="supplierSearch" class="form-label"><?=$languageArray['supplier_code'][$language]?></label>
-                                                            <select id="supplierSearch" class="form-select select2" >
-                                                                <option selected>-</option>
+                                                            <select id="supplierSearch" class="form-select select2" multiple>
                                                                 <?php while($rowSF = mysqli_fetch_assoc($supplier2)){ ?>
-                                                                    <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['name'] ?></option>
+                                                                    <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['supplier_code'] .' - '. $rowSF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -278,10 +280,9 @@ else{
                                                     <div class="col-3" id="productSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="productSearch" class="form-label"><?=$languageArray['product_code'][$language]?></label>
-                                                            <select id="productSearch" class="form-select select2" >
-                                                                <option selected>-</option>
+                                                            <select id="productSearch" class="form-select select2" multiple>
                                                                 <?php while($rowProductF=mysqli_fetch_assoc($product2)){ ?>
-                                                                    <option value="<?=$rowProductF['product_code'] ?>"><?=$rowProductF['name'] ?></option>
+                                                                    <option value="<?=$rowProductF['product_code'] ?>"><?=$rowProductF['product_code'] .' - '. $rowProductF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -289,10 +290,9 @@ else{
                                                     <div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="rawMatSearch" class="form-label"><?=$languageArray['raw_material_code'][$language]?></label>
-                                                            <select id="rawMatSearch" class="form-select select2" >
-                                                                <option selected>-</option>
+                                                            <select id="rawMatSearch" class="form-select select2" multiple>
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
-                                                                    <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['name'] ?></option>
+                                                                    <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['raw_mat_code'] .' - '. $rowRawMatF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -1066,6 +1066,16 @@ else{
                                                             <div class="col-xxl-4 col-lg-4" id="priceCard" style="display:none;">
                                                                 <div class="card bg-light">
                                                                     <div class="card-body">
+                                                                        <!-- Display only (no name, not saved): balance of the selected deposit-controlled customer/supplier -->
+                                                                        <div class="row mb-3" id="depositBalanceDisplay" style="display:none">
+                                                                            <label for="depositBalance" class="col-sm-4 col-form-label"><?=$languageArray['deposit_balance_code'][$language]?></label>
+                                                                            <div class="col-sm-8">
+                                                                                <div class="input-group">
+                                                                                    <input type="number" class="form-control input-readonly" id="depositBalance" placeholder="0" readonly>
+                                                                                    <div class="input-group-text">RM</div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                         <div class="row mb-3">
                                                                             <label for="unitPrice" class="col-sm-4 col-form-label"><?=$languageArray['unit_price_code'][$language]?></label>
                                                                             <div class="col-sm-8">
@@ -1107,7 +1117,7 @@ else{
                                                                                     <div class="input-group-text">RM</div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>                                                                 
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1342,19 +1352,21 @@ else{
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th><?=$languageArray['location_code'][$language]?></th>
                                                                     <th><?=$languageArray['transaction_id_code'][$language]?></th>
                                                                     <!-- <th><?=$languageArray['weight_type_code'][$language]?></th> -->
                                                                     <th><?=$languageArray['weight_status_code'][$language]?></th>
+                                                                    <th><?=$languageArray['vehicle_code'][$language]?></th>
                                                                     <th><?=$languageArray['customer_supplier_code'][$language]?></th>
+                                                                    <th><?=$languageArray['product_code'][$language]?> / <?=$languageArray['raw_material_code'][$language]?></th>
+                                                                    <!-- <th><?=$languageArray['seal_no_code'][$language]?></th> -->
                                                                     <th><?=$languageArray['container_no2_code'][$language]?></th>
                                                                     <th><?=$languageArray['seal_no2_code'][$language]?></th>
                                                                     <!-- <th><?=$languageArray['container_no_code'][$language]?></th> -->
-                                                                    <!-- <th><?=$languageArray['seal_no_code'][$language]?></th> -->
-                                                                    <th><?=$languageArray['vehicle_code'][$language]?></th>
+                                                                    <th><?=$languageArray['location_code'][$language]?></th>
                                                                     <th><?=$languageArray['gross_incoming_code'][$language]?></th>
                                                                     <th><?=$languageArray['incoming_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['duration_code'][$language]?></th>
+                                                                    <th><?=$languageArray['location_code'][$language]?> 2</th>
                                                                     <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
                                                                     <th><?=$languageArray['outgoing_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['nett_weight_code'][$language]?></th>
@@ -1525,23 +1537,51 @@ else{
     var emptyContainerTable = null;
     var containerColumnsEnabled = <?= json_encode($containerWeighingEnabled || $differentBinWeighingEnabled) ?>;
     let clickTimer = null;
-
-    var fromDateSearchPicker;
-    var toDateSearchPicker;
-    var grossIncomingDatePicker;
-    var canEditWeight = <?= json_encode(hasPermission('Weighing', ['edit'])) ?>;
-    var canWeightOut = <?= json_encode(hasPermission('Weighing', ['weight_out'])) ?>;
-    var canPrintWeight = <?= json_encode(hasPermission('Weighing', ['print'])) ?>;
-    var manualWeighingStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_weighing'); }))) ?>;
-    var manualDateStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_date_change'); }))) ?>;
-    var manualPriceStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_price'); }))) ?>;
     var keepUnitPrice = false; // true while editing, so the async deposit price lookup does not overwrite the saved price
+    var depositRequestId = 0; // only the latest deposit check response is handled, so stale responses do not alert again
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
     var userRole = '<?=$role ?>';
     var isSecondWeighingCapture = false;
-
+    var fromDateSearchPicker;
+    var toDateSearchPicker;
+    var grossIncomingDatePicker;
+    var transactionDatePicker;
+    // Row actions: [status module permission, weight type module permission]; weight type modules have no weight_out / print, so those check view
+    var weighingActions = <?= json_encode(array_map(
+        function ($action) {
+            return array(
+                'statuses' => array_values(array_filter(
+                    array_keys(transactionStatusModules()),
+                    function ($s) use ($action) { return statusPermitted('Weighing', $s, $action[0]); }
+                )),
+                'weightTypes' => array_values(array_filter(
+                    array_keys(weightTypeModules()),
+                    function ($w) use ($action) { return weightTypePermitted($w, $action[1]); }
+                ))
+            );
+        },
+        array(
+            'edit' => ['edit', 'edit'],
+            'weight_out' => ['weight_out', 'view'],
+            'print' => ['print', 'view'],
+            'cancelled' => ['cancelled', 'cancelled']
+        )
+    )) ?>;
+    var manualWeighingStatuses = <?= json_encode(array_values(array_filter(
+        array_keys(transactionStatusModules()),
+        function ($s) { return statusPermitted('Weighing', $s, 'manual_weighing'); }
+    ))) ?>;
+    var manualDateStatuses = <?= json_encode(array_values(array_filter(
+        array_keys(transactionStatusModules()),
+        function ($s) { return statusPermitted('Weighing', $s, 'manual_date_change'); }
+    ))) ?>;
+    var manualPriceStatuses = <?= json_encode(array_values(array_filter(
+        array_keys(transactionStatusModules()),
+        function ($s) { return statusPermitted('Weighing', $s, 'manual_price'); }
+    ))) ?>;
+    
     $(function () {
         var ind = '<?=$indicator ?>';
         const today = new Date();
@@ -1556,18 +1596,6 @@ else{
             placeholder: "Please Select",
         });
 
-        // Apply custom styling to Select2 elements in search bar
-        $('.select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('.select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
-        });
-
         // Initialize all Select2 elements in the modal
         $('#addModal .select2').select2({
             allowClear: true,
@@ -1575,14 +1603,14 @@ else{
             dropdownParent: $('#addModal') // Ensures dropdown is not cut off
         });
 
-        // Apply custom styling to Select2 elements in addModal
-        $('#addModal .select2-container .select2-selection--single').css({
+        // Apply custom styling to Select2 elements in search bar
+        $('.select2-container .select2-selection--single, .select2-container .select2-selection--multiple').css({
             'padding-top': '4px',
             'padding-bottom': '4px',
             'height': 'auto'
         });
 
-        $('#addModal .select2-container .select2-selection__arrow').css({
+        $('.select2-container .select2-selection__arrow').css({
             'padding-top': '33px',
             'height': 'auto'
         });
@@ -1598,11 +1626,11 @@ else{
             defaultDate: ''
         });
 
-        $('#transactionDate').flatpickr({
+        transactionDatePicker = $('#transactionDate').flatpickr({
             dateFormat: "d-m-Y",
             defaultDate: '',
-            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
-            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            allowInput: false, // applyManualPermissions() unlocks per status (manual_date_change)
+            clickOpens: false,
         });
 
         grossIncomingDatePicker = $('#grossIncomingDate').flatpickr({
@@ -1612,8 +1640,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
-            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            allowInput: false, // applyManualPermissions() unlocks per status (manual_date_change)
+            clickOpens: false,
         });
 
         tareOutgoingDatePicker = $('#tareOutgoingDate').flatpickr({
@@ -1623,8 +1651,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
-            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            allowInput: false, // applyManualPermissions() unlocks per status (manual_date_change)
+            clickOpens: false,
         });
 
         grossIncomingDatePicker2 = $('#grossIncomingDate2').flatpickr({
@@ -1634,8 +1662,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
-            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            allowInput: false, // applyManualPermissions() unlocks per status (manual_date_change)
+            clickOpens: false,
         });
 
         tareOutgoingDatePicker2 = $('#tareOutgoingDate2').flatpickr({
@@ -1645,8 +1673,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
-            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            allowInput: false, // applyManualPermissions() unlocks per status (manual_date_change)
+            clickOpens: false,
         });
 
         // Clear All Filter Function
@@ -1654,13 +1682,13 @@ else{
             fromDateSearchPicker.clear();
             toDateSearchPicker.clear();
             $('#statusSearch').val('-').trigger('change');
-            $('#customerNoSearch').val('-').trigger('change');
-            $('#supplierSearch').val('-').trigger('change');
+            $('#customerNoSearch').val(null).trigger('change');
+            $('#supplierSearch').val(null).trigger('change');
             $('#vehicleNo').val('');
             $('#invoiceNoSearch').val('-').trigger('change');
             $('#batchNoSearch').val('Pending').trigger('change');
-            $('#productSearch').val('-').trigger('change');
-            $('#rawMatSearch').val('-').trigger('change');
+            $('#productSearch').val(null).trigger('change');
+            $('#rawMatSearch').val(null).trigger('change');
             $('#plantSearch').val('-').trigger('change');
             $('#locationSearch').val('-').trigger('change');
             $('#transactionIdSearch').val('');
@@ -1669,7 +1697,7 @@ else{
             $('#invDelPoSearch').val('');
         });
 
-        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+        if (<?= json_encode(hasPermission('Weighing', ['view_all_plants'])) ?>){
             $('#plantSearchDisplay').show();
         }else{
             $('#plantSearchDisplay').hide();
@@ -1681,19 +1709,19 @@ else{
             if (status == 'Purchase' || status == 'Local'){
                 // Hide & reset customer then show supplier
                 $('#customerSearchDisplay').hide();
-                $('#customerSearchDisplay').find('#customerNoSearch').val('-').trigger('change');
+                $('#customerSearchDisplay').find('#customerNoSearch').val(null).trigger('change');
                 $('#supplierSearchDisplay').show();
                 // Hide & reset product then show raw material
-                $('#productSearchDisplay').find('#productSearch').val('-').trigger('change');
+                $('#productSearchDisplay').find('#productSearch').val(null).trigger('change');
                 $('#productSearchDisplay').hide();
                 $('#rawMatSearchDisplay').show();
             }else{
                 // Hide & reset supplier then show customer
-                $('#supplierSearchDisplay').find('#supplierSearch').val('-').trigger('change');
+                $('#supplierSearchDisplay').find('#supplierSearch').val(null).trigger('change');
                 $('#supplierSearchDisplay').hide();
                 $('#customerSearchDisplay').show();
                 // Hide & reset raw material then show product
-                $('#rawMatSearchDisplay').find('#rawMatSearch').val('-').trigger('change');
+                $('#rawMatSearchDisplay').find('#rawMatSearch').val(null).trigger('change');
                 $('#rawMatSearchDisplay').hide();
                 $('#productSearchDisplay').show();
             }
@@ -2896,7 +2924,7 @@ else{
             $('#tareOutgoing').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing').trigger('keyup');
 
-            // Tare capture completes the weighing and charges the deposit, so check the balance against the total price
+            // Tare capture completes the weighing and charges the deposit, so check the balance after the total price against the minimum
             var transactionStatus = $('#transactionStatus').val();
             var partyId = transactionStatus == 'Sales' ? $('#customerName :selected').data('id') : $('#supplierName :selected').data('id');
             if ((transactionStatus != 'Sales' && transactionStatus != 'Purchase') || !partyId) {
@@ -2907,7 +2935,7 @@ else{
             var total = parseFloat($('#totalPrice').val()) || 0;
             $.post('php/modules/deposit/index.php', {action: 'check', partyType: transactionStatus == 'Sales' ? 'CUSTOMER' : 'SUPPLIER', partyId: partyId, itemCode: ''}, function(data){
                 var obj = JSON.parse(data);
-                if (obj.status === 'success' && obj.enabled && total > parseFloat(obj.balance)) {
+                if (obj.status === 'success' && obj.enabled && parseFloat(obj.balance) - total < parseFloat(obj.min)) {
                     alert(<?=json_encode($languageArray['insufficient_deposit_code'][$language])?>);
                     return;
                 }
@@ -3413,6 +3441,8 @@ else{
 
     // Unit price of the selected item for the selected customer/supplier, then the deposit balance check
     function loadDepositPrice(){
+        var requestId = ++depositRequestId;
+        $('#depositBalanceDisplay').hide();
         var transactionStatus = $('#transactionStatus').val();
         if (transactionStatus != 'Sales' && transactionStatus != 'Purchase') {
             calculatePrice();
@@ -3429,13 +3459,19 @@ else{
         }
 
         $.post('php/modules/deposit/index.php', {action: 'check', partyType: isSales ? 'CUSTOMER' : 'SUPPLIER', partyId: partyId, itemCode: itemCode || ''}, function(data){
+            if (requestId !== depositRequestId) return;
             var obj = JSON.parse(data);
             if (obj.status !== 'success') return;
 
             if (!keepUnitPrice) $('#unitPrice').val(obj.price);
             calculatePrice();
 
-            if (obj.enabled && parseFloat(obj.balance) < 1) {
+            if (obj.enabled) {
+                $('#depositBalance').val(parseFloat(obj.balance).toFixed(2));
+                $('#depositBalanceDisplay').show();
+            }
+
+            if (obj.enabled && parseFloat(obj.balance) <= parseFloat(obj.min)) {
                 alert(<?=json_encode($languageArray['insufficient_deposit_code'][$language])?>);
                 $('#addModal').modal('hide');
             }
@@ -3455,7 +3491,7 @@ else{
         var priceAllowed = manualPriceStatuses.includes(status);
         $('#unitPrice').prop('readonly', !priceAllowed).toggleClass('input-readonly', !priceAllowed);
         var dateAllowed = manualDateStatuses.includes(status);
-        [grossIncomingDatePicker, tareOutgoingDatePicker, grossIncomingDatePicker2, tareOutgoingDatePicker2].forEach(function (picker) {
+        [transactionDatePicker, grossIncomingDatePicker, tareOutgoingDatePicker, grossIncomingDatePicker2, tareOutgoingDatePicker2].forEach(function (picker) {
             if (!picker) {
                 return;
             }
@@ -3466,6 +3502,11 @@ else{
         });
     }
     
+    // Row action allowed when both the row's status module and weight type module grant it
+    function canDoRow(action, row) {
+        return weighingActions[action].statuses.includes(row.status_code) && weighingActions[action].weightTypes.includes(row.weight_type_code);
+    }
+
     function renderTable() {
         var fromDateI = $('#fromDateSearch').val();
         var toDateI = $('#toDateSearch').val();
@@ -3531,19 +3572,21 @@ else{
                         }
                     }
                 },
-                { data: 'location' },                
-                { data: 'transaction_id' },                
+                { data: 'transaction_id' },
                 // { data: 'weight_type' },
                 { data: 'transaction_status' },
+                { data: 'lorry_plate_no1' },
                 { data: 'customer' },
+                { data: 'product_name' },
                 // { data: 'seal_no' },
                 { data: 'container_no2' },
                 { data: 'seal_no2' },
                 // { data: 'container_no' },
-                { data: 'lorry_plate_no1' },
+                { data: 'location' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
                 { data: 'duration', orderable: false },
+                { data: 'location2' },
                 { data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
@@ -3559,7 +3602,7 @@ else{
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (canEditWeight) {
+                        if (canDoRow('edit', row)) {
                             // if (row.is_complete != 'Y' ){
                             if (row.weight_type == 'Primer Mover + Container'){
                                 buttons += `
@@ -3577,7 +3620,7 @@ else{
                                 </div>`;
                             }
                             // }
-                        }else if (canWeightOut) {
+                        }else if (canDoRow('weight_out', row)) {
                             if (row.is_complete != 'Y' ){
                                 if (row.weight_type == 'Primer Mover + Container'){
                                     buttons += `
@@ -3600,14 +3643,14 @@ else{
 
                         if (row.weight_type != 'Primer Mover + Container'){
                             buttons += `
-                            ${canPrintWeight ? `<div class="col-auto">
+                            ${canDoRow('print', row) ? `<div class="col-auto">
                                 <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
                                     <i class="fas fa-print"></i>
                                 </button>
                             </div>` : ''}`;
                         }
 
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                        if(canDoRow('cancelled', row)){
                             if (row.weight_type == 'Primer Mover + Container'){
                                 buttons += `
                                 <div class="col-auto">
@@ -3680,7 +3723,7 @@ else{
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (canEditWeight) {
+                        if (canDoRow('edit', row)) {
                             if (row.is_complete != 'Y' ){
                                 buttons += `
                                 <div class="col-auto">
@@ -3689,7 +3732,7 @@ else{
                                     </button>
                                 </div>`;
                             }
-                        }else if (canWeightOut) {
+                        }else if (canDoRow('weight_out', row)) {
                             if (row.is_complete != 'Y' ){
                                 buttons += `
                                 <div class="col-auto">
@@ -3701,13 +3744,13 @@ else{
                         }
 
                         buttons += `
-                        ${canPrintWeight ? `<div class="col-auto">
+                        ${canDoRow('print', row) ? `<div class="col-auto">
                             <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
                                 <i class="fas fa-print"></i>
                             </button>
                         </div>` : ''}`;
 
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                        if(canDoRow('cancelled', row)){
                             buttons += `
                             <div class="col-auto">
                                 <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">

@@ -98,6 +98,10 @@ else{
         .modal-header {
             padding: var(1rem, 1rem) !important;
         }
+        #collapseSearch .select2-selection__choice {
+            color: #000 !important;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -188,10 +192,9 @@ else{
                                                     <div class="col-3" id="customerSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="customerNoSearch" class="form-label"><?=$languageArray['customer_name_code'][$language]?></label>
-                                                            <select id="customerNoSearch" class="form-select select2">
-                                                                <option selected>-</option>
+                                                            <select id="customerNoSearch" class="form-select select2" multiple>
                                                                 <?php while($rowPF = mysqli_fetch_assoc($customer2)){ ?>
-                                                                    <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['name'] ?></option>
+                                                                    <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['customer_code'] .' - '. $rowPF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -199,10 +202,9 @@ else{
                                                     <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="supplierSearch" class="form-label"><?=$languageArray['supplier_name_code'][$language]?></label>
-                                                            <select id="supplierSearch" class="form-select select2">
-                                                                <option selected>-</option>
+                                                            <select id="supplierSearch" class="form-select select2" multiple>
                                                                 <?php while($rowSF=mysqli_fetch_assoc($supplier2)){ ?>
-                                                                    <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['name'] ?></option>
+                                                                    <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['supplier_code'] .' - '. $rowSF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -238,8 +240,7 @@ else{
                                                     <div class="col-3" id="productSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="ForminputState" class="form-label"><?=$languageArray['product_code_code'][$language]?></label>
-                                                            <select id="productSearch" class="form-select select2">
-                                                                <option selected>-</option>
+                                                            <select id="productSearch" class="form-select select2" multiple>
                                                                 <?php while($rowProductF=mysqli_fetch_assoc($product2)){ ?>
                                                                     <option value="<?=$rowProductF['product_code'] ?>"><?=$rowProductF['product_code'] .' - '. $rowProductF['name'] ?></option>
                                                                 <?php } ?>
@@ -249,10 +250,9 @@ else{
                                                     <div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="ForminputState" class="form-label"><?=$languageArray['raw_material_code_code'][$language]?></label>
-                                                            <select id="rawMatSearch" class="form-select select2">
-                                                                <option selected>-</option>
+                                                            <select id="rawMatSearch" class="form-select select2" multiple>
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
-                                                                    <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['name'] ?></option>
+                                                                    <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['raw_mat_code'] .' - '. $rowRawMatF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -458,18 +458,20 @@ else{
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th><?=$languageArray['location_code'][$language]?></th>
                                                                     <th><?=$languageArray['transaction_id_code'][$language]?></th>
                                                                     <!-- <th><?=$languageArray['weight_type_code'][$language]?></th> -->
                                                                     <th><?=$languageArray['weight_status_code'][$language]?></th>
+                                                                    <th><?=$languageArray['vehicle_code'][$language]?></th>
                                                                     <th><?=$languageArray['customer_supplier_code'][$language]?></th>
+                                                                    <th><?=$languageArray['product_code'][$language]?> / <?=$languageArray['raw_material_code'][$language]?></th>
                                                                     <th><?=$languageArray['container_no2_code'][$language]?></th>
                                                                     <th><?=$languageArray['seal_no2_code'][$language]?></th>
                                                                     <!-- <th><?=$languageArray['container_no_code'][$language]?></th> -->
                                                                     <!-- <th><?=$languageArray['seal_no_code'][$language]?></th> -->
-                                                                    <th><?=$languageArray['vehicle_code'][$language]?></th>
+                                                                    <th><?=$languageArray['location_code'][$language]?></th>
                                                                     <th><?=$languageArray['gross_incoming_code'][$language]?></th>
                                                                     <th><?=$languageArray['incoming_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['location_code'][$language]?> 2</th>
                                                                     <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
                                                                     <th><?=$languageArray['outgoing_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['nett_weight_code'][$language]?></th>
@@ -618,7 +620,7 @@ else{
         });
 
         // Apply custom styling to Select2 elements in search bar
-        $('.select2-container .select2-selection--single').css({
+        $('.select2-container .select2-selection--single, .select2-container .select2-selection--multiple').css({
             'padding-top': '4px',
             'padding-bottom': '4px',
             'height': 'auto'
@@ -650,12 +652,12 @@ else{
             fromDateSearchPicker.setDate(yesterday);
             toDateSearchPicker.setDate(today);
             $('#transactionStatusSearch').val('<?=$defaultTransactionStatusSearch ?>').trigger('change');
-            $('#customerNoSearch').val('-').trigger('change');
-            $('#supplierSearch').val('-').trigger('change');
+            $('#customerNoSearch').val(null).trigger('change');
+            $('#supplierSearch').val(null).trigger('change');
             $('#vehicleNo').val('');
             $('#invoiceNoSearch').val('-').trigger('change');
-            $('#productSearch').val('-').trigger('change');
-            $('#rawMatSearch').val('-').trigger('change');
+            $('#productSearch').val(null).trigger('change');
+            $('#rawMatSearch').val(null).trigger('change');
             $('#destinationSearch').val('-').trigger('change');
             $('#plantSearch').val(defaultPlantCode).trigger('change');
             $('#locationSearch').val('-').trigger('change');
@@ -941,18 +943,20 @@ else{
                         return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                     }
                 },
-                { data: 'location' },
                 { data: 'transaction_id' },
                 // { data: 'weight_type' },
                 { data: 'transaction_status' },
+                { data: 'lorry_plate_no1' },
                 { data: 'customer' },
+                { data: 'product_name' },
                 { data: 'container_no2' },
                 { data: 'seal_no2' },
                 // { data: 'container_no' },
                 // { data: 'seal_no' },
-                { data: 'lorry_plate_no1' },
+                { data: 'location' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
+                { data: 'location2' },
                 { data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },

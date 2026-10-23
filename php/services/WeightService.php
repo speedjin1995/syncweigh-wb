@@ -61,8 +61,8 @@ class WeightService extends BaseService {
         $searchQuery .= permissionExclusion('Weighing', 'transaction_status', 'weight_type');
 
         if ($f('status') !== null) $searchQuery .= " and transaction_status = '" . $this->esc($f('status')) . "'";
-        if ($f('customer') !== null) $searchQuery .= " and customer_code = '" . $this->esc($f('customer')) . "'";
-        if ($f('supplier') !== null) $searchQuery .= " and supplier_code = '" . $this->esc($f('supplier')) . "'";
+        $searchQuery .= inFilterQuery($this->db, 'customer_code', $post['customer'] ?? '');
+        $searchQuery .= inFilterQuery($this->db, 'supplier_code', $post['supplier'] ?? '');
         if ($f('vehicle') !== null) $searchQuery .= " and lorry_plate_no1 like '%" . $this->esc($f('vehicle')) . "%'";
         if ($f('invoice') !== null) $searchQuery .= " and weight_type = '" . $this->esc($f('invoice')) . "'";
 
@@ -78,8 +78,8 @@ class WeightService extends BaseService {
             $searchQuery .= " and is_complete = 'N' AND is_cancel = 'N'";
         }
 
-        if ($f('product') !== null) $searchQuery .= " and product_code = '" . $this->esc($f('product')) . "'";
-        if ($f('rawMaterial') !== null) $searchQuery .= " and raw_mat_code = '" . $this->esc($f('rawMaterial')) . "'";
+        $searchQuery .= inFilterQuery($this->db, 'product_code', $post['product'] ?? '');
+        $searchQuery .= inFilterQuery($this->db, 'raw_mat_code', $post['rawMaterial'] ?? '');
         if ($f('plant') !== null) $searchQuery .= " and plant_code = '" . $this->esc($f('plant')) . "'";
         if (isset($post['location']) && $f('location') !== null) $searchQuery .= " and location_id = '" . intval($post['location']) . "'";
         if ($f('transactionId') !== null) $searchQuery .= " and transaction_id like '%" . $this->esc($f('transactionId')) . "%'";
@@ -172,9 +172,12 @@ class WeightService extends BaseService {
             $data[] = [
                 'id' => $row['id'],
                 'location' => searchLocationNameById($row['location_id'], $this->db),
+                'location2' => searchLocationNameById($row['location_id2'] ?? null, $this->db),
                 'transaction_id' => $row['transaction_id'],
                 'transaction_status' => $transactionStatus,
                 'weight_type' => $weightType,
+                'status_code' => $row['transaction_status'],
+                'weight_type_code' => $row['weight_type'],
                 'transaction_date' => $row['transaction_date'],
                 'lorry_plate_no1' => $row['lorry_plate_no1'],
                 'lorry_plate_no2' => $row['lorry_plate_no2'],
@@ -301,6 +304,8 @@ class WeightService extends BaseService {
                 'transaction_id' => $row['transaction_id'],
                 'transaction_status' => $transactionStatus,
                 'weight_type' => $row['weight_type'],
+                'status_code' => $row['transaction_status'],
+                'weight_type_code' => $row['weight_type'],
                 'transaction_date' => $row['transaction_date'],
                 'lorry_plate_no1' => $row['lorry_plate_no1'],
                 'lorry_plate_no2' => $row['lorry_plate_no2'],
@@ -736,11 +741,14 @@ class WeightService extends BaseService {
                 return ['status' => 'failed', 'message' => ($status === 'Sales' ? 'Customer' : 'Supplier') . ' not found'];
             }
 
+            // Only parties with deposit status Y are checked and charged
+            $depositOn = $depositOn && $depositParty && $depositParty['controlled'];
+
             $amount = $isComplete == 'Y' ? (float) $values['total_price'] : 0.0;
             $oldAmount = empty($weightId) ? 0.0 : $deposit->chargedAmount($weightId);
             $delta = round($amount - $oldAmount, 2);
 
-            if ($depositOn && ((empty($weightId) && $depositParty['balance'] < 1) || $delta > $depositParty['balance'])) {
+            if ($depositOn && ((empty($weightId) && $depositParty['balance'] <= $depositParty['min']) || ($delta > 0 && $depositParty['balance'] - $delta < $depositParty['min']))) {
                 return ['status' => 'failed', 'message' => 'Insufficient Deposit Please Contact Office Admin'];
             }
 

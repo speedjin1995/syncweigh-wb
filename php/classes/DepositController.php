@@ -23,14 +23,15 @@ class DepositController extends BaseController {
             $party = $this->depositService->getParty($partyType, $partyId);
 
             if (!$party) {
-                $this->success('', ['enabled' => false, 'balance' => 0, 'price' => 0]);
+                $this->success('', ['enabled' => false, 'balance' => 0, 'min' => 0, 'price' => 0]);
             }
 
             $price = $itemCode !== '' ? $this->depositService->price($partyType, $party['id'], $itemCode) : 0;
 
             $this->success('', [
-                'enabled' => $this->depositService->controlEnabled(),
+                'enabled' => $this->depositService->controlEnabled() && $party['controlled'],
                 'balance' => $party['balance'],
+                'min' => $party['min'],
                 'price' => $price
             ]);
         } catch (mysqli_sql_exception $e) {

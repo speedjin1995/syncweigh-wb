@@ -202,9 +202,28 @@ if (!hasModulePermission('Master Data', 'Customer', ['view'])){
                                                                             </div>
                                                                             <div class="col-xxl-12 col-lg-12 mb-3">
                                                                                 <div class="row">
+                                                                                    <label for="depositStatus" class="col-sm-4 col-form-label"><?=$languageArray['deposit_status_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <select class="form-select" id="depositStatus" name="depositStatus">
+                                                                                            <option value="N" selected>N</option>
+                                                                                            <option value="Y">Y</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3 deposit-field">
+                                                                                <div class="row">
                                                                                     <label for="depositBalance" class="col-sm-4 col-form-label"><?=$languageArray['deposit_balance_code'][$language]?></label>
                                                                                     <div class="col-sm-8">
                                                                                         <input type="number" class="form-control" id="depositBalance" name="depositBalance" step="0.01" min="0" placeholder="0.00">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xxl-12 col-lg-12 mb-3 deposit-field">
+                                                                                <div class="row">
+                                                                                    <label for="minDepositBalance" class="col-sm-4 col-form-label"><?=$languageArray['min_deposit_balance_code'][$language]?></label>
+                                                                                    <div class="col-sm-8">
+                                                                                        <input type="number" class="form-control" id="minDepositBalance" name="minDepositBalance" step="0.01" min="0" placeholder="0.00">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -327,7 +346,9 @@ if (!hasModulePermission('Master Data', 'Customer', ['view'])){
                                                                     <th><?=$languageArray['pic_code'][$language]?></th>
                                                                     <th><?=$languageArray['ic_code'][$language]?></th>
                                                                     <th><?=$languageArray['tin_code'][$language]?></th>
+                                                                    <th><?=$languageArray['deposit_status_code'][$language]?></th>
                                                                     <th><?=$languageArray['deposit_balance_code'][$language]?></th>
+                                                                    <th><?=$languageArray['min_deposit_balance_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -392,6 +413,11 @@ function canDo(permission) {
 }
 
 $(function () {
+    // Deposit balance and minimum are used only when the deposit status is Y
+    $('#depositStatus').on('change', function(){
+        $('#addModal .deposit-field').toggle($(this).val() == 'Y');
+    });
+
     $('#selectAllCheckbox').on('change', function() {
         var checkboxes = $('#customerTable tbody input[type="checkbox"]');
         checkboxes.prop('checked', $(this).prop('checked')).trigger('change');
@@ -448,7 +474,9 @@ $(function () {
             { data: 'contact_name' },
             { data: 'ic_no' },
             { data: 'tin_no' },
+            { data: 'deposit_status' },
             { data: 'deposit_balance' },
+            { data: 'min_deposit_balance' },
             { 
                 data: 'id',
                 render: function ( data, type, row ) {
@@ -579,6 +607,8 @@ $(function () {
         $('#addModal').find('#icNo').val("");
         $('#addModal').find('#tinNo').val("");
         $('#addModal').find('#depositBalance').val("");
+        $('#addModal').find('#minDepositBalance').val("");
+        $('#addModal').find('#depositStatus').val('N').trigger('change');
 
         // Remove Validation Error Message
         $('#addModal .is-invalid').removeClass('is-invalid');
@@ -695,6 +725,8 @@ function edit(id){
             $('#addModal').find('#icNo').val(obj.message.ic_no);
             $('#addModal').find('#tinNo').val(obj.message.tin_no);
             $('#addModal').find('#depositBalance').val(obj.message.deposit_balance);
+            $('#addModal').find('#minDepositBalance').val(obj.message.min_deposit_balance);
+            $('#addModal').find('#depositStatus').val(obj.message.deposit_status || 'N').trigger('change');
 
             // Remove Validation Error Message
             $('#addModal .is-invalid').removeClass('is-invalid');
@@ -766,8 +798,8 @@ function displayPreview(data) {
     var headers = jsonData[0];
 
     // Ensure we handle cases where there may be less than 15 columns
-    while (headers.length < 13) {
-        headers.push(''); // Adding empty headers to reach 13 columns
+    while (headers.length < 15) {
+        headers.push(''); // Adding empty headers to reach 15 columns
     }
 
     // Create HTML table headers
@@ -783,11 +815,11 @@ function displayPreview(data) {
         var rowData = jsonData[i];
 
         // Ensure we handle cases where there may be less than 15 cells in a row
-        while (rowData.length < 13) {
-            rowData.push(''); // Adding empty cells to reach 13 columns
+        while (rowData.length < 15) {
+            rowData.push(''); // Adding empty cells to reach 15 columns
         }
 
-        for (var j = 0; j < 13; j++) {
+        for (var j = 0; j < 15; j++) {
             var cellData = rowData[j];
             var formattedData = cellData;
 
