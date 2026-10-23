@@ -1539,9 +1539,12 @@ else{
     var fromDateSearchPicker;
     var toDateSearchPicker;
     var grossIncomingDatePicker;
-    var canEditWeight = <?= json_encode(hasPermission('Weighing', ['edit'])) ?>;
-    var canWeightOut = <?= json_encode(hasPermission('Weighing', ['weight_out'])) ?>;
-    var canPrintWeight = <?= json_encode(hasPermission('Weighing', ['print'])) ?>;
+    var transactionDatePicker;
+    // Row actions: [status module permission, weight type module permission]; weight type modules have no weight_out / print, so those check view
+    var weighingActions = <?= json_encode(array_map(function ($action) { return array(
+        'statuses' => array_values(array_filter(array_keys(transactionStatusModules()), function ($s) use ($action) { return statusPermitted('Weighing', $s, $action[0]); })),
+        'weightTypes' => array_values(array_filter(array_keys(weightTypeModules()), function ($w) use ($action) { return weightTypePermitted($w, $action[1]); }))
+    ); }, array('edit' => ['edit', 'edit'], 'weight_out' => ['weight_out', 'view'], 'print' => ['print', 'view'], 'cancelled' => ['cancelled', 'cancelled']))) ?>;
     var manualWeighingStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_weighing'); }))) ?>;
     var manualDateStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_date_change'); }))) ?>;
     var manualPriceStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_price'); }))) ?>;
@@ -1609,11 +1612,11 @@ else{
             defaultDate: ''
         });
 
-        $('#transactionDate').flatpickr({
+        transactionDatePicker = $('#transactionDate').flatpickr({
             dateFormat: "d-m-Y",
             defaultDate: '',
-            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
-            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            allowInput: false, // applyManualPermissions() unlocks per status (manual_date_change)
+            clickOpens: false,
         });
 
         grossIncomingDatePicker = $('#grossIncomingDate').flatpickr({
@@ -1623,8 +1626,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
-            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            allowInput: false, // applyManualPermissions() unlocks per status (manual_date_change)
+            clickOpens: false,
         });
 
         tareOutgoingDatePicker = $('#tareOutgoingDate').flatpickr({
@@ -1634,8 +1637,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
-            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            allowInput: false, // applyManualPermissions() unlocks per status (manual_date_change)
+            clickOpens: false,
         });
 
         grossIncomingDatePicker2 = $('#grossIncomingDate2').flatpickr({
@@ -1645,8 +1648,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
-            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            allowInput: false, // applyManualPermissions() unlocks per status (manual_date_change)
+            clickOpens: false,
         });
 
         tareOutgoingDatePicker2 = $('#tareOutgoingDate2').flatpickr({
@@ -1656,8 +1659,8 @@ else{
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
             altFormat: "d/m/Y H:i:S K",
-            allowInput: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
-            clickOpens: (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER') ? true : false,
+            allowInput: false, // applyManualPermissions() unlocks per status (manual_date_change)
+            clickOpens: false,
         });
 
         // Clear All Filter Function
@@ -1680,7 +1683,7 @@ else{
             $('#invDelPoSearch').val('');
         });
 
-        if (userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+        if (<?= json_encode(hasPermission('Weighing', ['view_all_plants'])) ?>){
             $('#plantSearchDisplay').show();
         }else{
             $('#plantSearchDisplay').hide();
@@ -3474,7 +3477,7 @@ else{
         var priceAllowed = manualPriceStatuses.includes(status);
         $('#unitPrice').prop('readonly', !priceAllowed).toggleClass('input-readonly', !priceAllowed);
         var dateAllowed = manualDateStatuses.includes(status);
-        [grossIncomingDatePicker, tareOutgoingDatePicker, grossIncomingDatePicker2, tareOutgoingDatePicker2].forEach(function (picker) {
+        [transactionDatePicker, grossIncomingDatePicker, tareOutgoingDatePicker, grossIncomingDatePicker2, tareOutgoingDatePicker2].forEach(function (picker) {
             if (!picker) {
                 return;
             }
@@ -3485,6 +3488,11 @@ else{
         });
     }
     
+    // Row action allowed when both the row's status module and weight type module grant it
+    function canDoRow(action, row) {
+        return weighingActions[action].statuses.includes(row.status_code) && weighingActions[action].weightTypes.includes(row.weight_type_code);
+    }
+
     function renderTable() {
         var fromDateI = $('#fromDateSearch').val();
         var toDateI = $('#toDateSearch').val();
@@ -3578,7 +3586,7 @@ else{
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (canEditWeight) {
+                        if (canDoRow('edit', row)) {
                             // if (row.is_complete != 'Y' ){
                             if (row.weight_type == 'Primer Mover + Container'){
                                 buttons += `
@@ -3596,7 +3604,7 @@ else{
                                 </div>`;
                             }
                             // }
-                        }else if (canWeightOut) {
+                        }else if (canDoRow('weight_out', row)) {
                             if (row.is_complete != 'Y' ){
                                 if (row.weight_type == 'Primer Mover + Container'){
                                     buttons += `
@@ -3619,14 +3627,14 @@ else{
 
                         if (row.weight_type != 'Primer Mover + Container'){
                             buttons += `
-                            ${canPrintWeight ? `<div class="col-auto">
+                            ${canDoRow('print', row) ? `<div class="col-auto">
                                 <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}')" class="btn btn-info btn-sm">
                                     <i class="fas fa-print"></i>
                                 </button>
                             </div>` : ''}`;
                         }
 
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                        if(canDoRow('cancelled', row)){
                             if (row.weight_type == 'Primer Mover + Container'){
                                 buttons += `
                                 <div class="col-auto">
@@ -3699,7 +3707,7 @@ else{
                     render: function (data, type, row) {
                         let buttons = `<div class="row g-1 d-flex">`;
 
-                        if (canEditWeight) {
+                        if (canDoRow('edit', row)) {
                             if (row.is_complete != 'Y' ){
                                 buttons += `
                                 <div class="col-auto">
@@ -3708,7 +3716,7 @@ else{
                                     </button>
                                 </div>`;
                             }
-                        }else if (canWeightOut) {
+                        }else if (canDoRow('weight_out', row)) {
                             if (row.is_complete != 'Y' ){
                                 buttons += `
                                 <div class="col-auto">
@@ -3720,13 +3728,13 @@ else{
                         }
 
                         buttons += `
-                        ${canPrintWeight ? `<div class="col-auto">
+                        ${canDoRow('print', row) ? `<div class="col-auto">
                             <button title="Print" type="button" id="print${data}" onclick="print('${data}', '${row.transaction_status}', 'Y')" class="btn btn-info btn-sm">
                                 <i class="fas fa-print"></i>
                             </button>
                         </div>` : ''}`;
 
-                        if(userRole == 'SADMIN' || userRole == 'ADMIN' || userRole == 'MANAGER'){
+                        if(canDoRow('cancelled', row)){
                             buttons += `
                             <div class="col-auto">
                                 <button title="Delete" type="button" id="delete${data}" onclick="deactivate(${data}, 'Y')" class="btn btn-danger btn-sm">
