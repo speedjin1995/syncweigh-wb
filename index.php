@@ -1546,6 +1546,7 @@ else{
     var manualDateStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_date_change'); }))) ?>;
     var manualPriceStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_price'); }))) ?>;
     var keepUnitPrice = false; // true while editing, so the async deposit price lookup does not overwrite the saved price
+    var depositRequestId = 0; // only the latest deposit check response is handled, so stale responses do not alert again
     var tareOutgoingDatePicker; 
     var grossIncomingDatePicker2;
     var tareOutgoingDatePicker2; 
@@ -3423,6 +3424,7 @@ else{
 
     // Unit price of the selected item for the selected customer/supplier, then the deposit balance check
     function loadDepositPrice(){
+        var requestId = ++depositRequestId;
         $('#depositBalanceDisplay').hide();
         var transactionStatus = $('#transactionStatus').val();
         if (transactionStatus != 'Sales' && transactionStatus != 'Purchase') {
@@ -3440,6 +3442,7 @@ else{
         }
 
         $.post('php/modules/deposit/index.php', {action: 'check', partyType: isSales ? 'CUSTOMER' : 'SUPPLIER', partyId: partyId, itemCode: itemCode || ''}, function(data){
+            if (requestId !== depositRequestId) return;
             var obj = JSON.parse(data);
             if (obj.status !== 'success') return;
 
