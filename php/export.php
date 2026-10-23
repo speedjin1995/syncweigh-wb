@@ -80,24 +80,15 @@ if($_GET['transactionStatus'] != null && $_GET['transactionStatus'] != '' && $_G
     }	
 }
 
-if($_GET['customer'] != null && $_GET['customer'] != '' && $_GET['customer'] != '-'){
-    if($_GET["file"] == 'weight'){
-        $searchQuery .= " and Weight.customer_code = '".$_GET['customer']."'";
-        $searchContainerQuery .= " and Weight_Container.customer_code = '".$_GET['customer']."'";
-    }
-    else{
-        $searchQuery .= " and count.customer_code = '".$_GET['customer']."'";
-    }
+if($_GET["file"] == 'weight'){
+    $searchQuery .= inFilterQuery($db, 'Weight.customer_code', $_GET['customer'] ?? '');
+    $searchContainerQuery .= inFilterQuery($db, 'Weight_Container.customer_code', $_GET['customer'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'Weight.supplier_code', $_GET['supplier'] ?? '');
+    $searchContainerQuery .= inFilterQuery($db, 'Weight_Container.supplier_code', $_GET['supplier'] ?? '');
 }
-
-if(isset($_GET['supplier']) && $_GET['supplier'] != null && $_GET['supplier'] != '' && $_GET['supplier'] != '-'){
-    if($_GET["file"] == 'weight'){
-        $searchQuery .= " and Weight.supplier_code = '".$_GET['supplier']."'";
-        $searchContainerQuery .= " and Weight_Container.supplier_code = '".$_GET['supplier']."'";
-    }
-    else{
-        $searchQuery .= " and count.supplier_code = '".$_GET['supplier']."'";
-    }
+else{
+    $searchQuery .= inFilterQuery($db, 'count.customer_code', $_GET['customer'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'count.supplier_code', $_GET['supplier'] ?? '');
 }
 
 if($_GET['vehicle'] != null && $_GET['vehicle'] != '' && $_GET['vehicle'] != '-'){
@@ -120,24 +111,15 @@ if($_GET['weighingType'] != null && $_GET['weighingType'] != '' && $_GET['weighi
     }
 }
 
-if($_GET['product'] != null && $_GET['product'] != '' && $_GET['product'] != '-'){
-    if($_GET["file"] == 'weight'){
-        $searchQuery .= " and Weight.product_code = '".$_GET['product']."'";
-        $searchContainerQuery .= " and Weight_Container.product_code = '".$_GET['product']."'";
-    }
-    else{
-        $searchQuery .= " and count.product_code = '".$_GET['product']."'";
-    }
+if($_GET["file"] == 'weight'){
+    $searchQuery .= inFilterQuery($db, 'Weight.product_code', $_GET['product'] ?? '');
+    $searchContainerQuery .= inFilterQuery($db, 'Weight_Container.product_code', $_GET['product'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'Weight.raw_mat_code', $_GET['rawMat'] ?? '');
+    $searchContainerQuery .= inFilterQuery($db, 'Weight_Container.raw_mat_code', $_GET['rawMat'] ?? '');
 }
-
-if(isset($_GET['rawMat']) && $_GET['rawMat'] != null && $_GET['rawMat'] != '' && $_GET['rawMat'] != '-'){
-    if($_GET["file"] == 'weight'){
-        $searchQuery .= " and Weight.raw_mat_code = '".$_GET['rawMat']."'";
-        $searchContainerQuery .= " and Weight_Container.raw_mat_code = '".$_GET['rawMat']."'";
-    }
-    else{
-        $searchQuery .= " and count.raw_mat_code = '".$_GET['rawMat']."'";
-    }
+else{
+    $searchQuery .= inFilterQuery($db, 'count.product_code', $_GET['product'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'count.raw_mat_code', $_GET['rawMat'] ?? '');
 }
 
 if(isset($_GET['plant']) && $_GET['plant'] != null && $_GET['plant'] != '' && $_GET['plant'] != '-'){

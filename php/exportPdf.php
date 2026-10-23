@@ -66,22 +66,13 @@ if(isset($_POST['transactionStatus']) && $_POST['transactionStatus'] != null && 
     }	
 }
 
-if(isset($_POST['customer']) && $_POST['customer'] != null && $_POST['customer'] != '' && $_POST['customer'] != '-'){
-    if($_POST["file"] == 'weight'){
-        $searchQuery .= " and Weight.customer_code = '".$_POST['customer']."'";
-    }
-    else{
-        $searchQuery .= " and count.customer_code = '".$_POST['customer']."'";
-    }
+if($_POST["file"] == 'weight'){
+    $searchQuery .= inFilterQuery($db, 'Weight.customer_code', $_POST['customer'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'Weight.supplier_code', $_POST['supplier'] ?? '');
 }
-
-if(isset($_POST['supplier']) && $_POST['supplier'] != null && $_POST['supplier'] != '' && $_POST['supplier'] != '-'){
-    if($_POST["file"] == 'weight'){
-        $searchQuery .= " and Weight.supplier_code = '".$_POST['supplier']."'";
-    }
-    else{
-        $searchQuery .= " and count.supplier_code = '".$_POST['supplier']."'";
-    }
+else{
+    $searchQuery .= inFilterQuery($db, 'count.customer_code', $_POST['customer'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'count.supplier_code', $_POST['supplier'] ?? '');
 }
 
 if(isset($_POST['vehicle']) && $_POST['vehicle'] != null && $_POST['vehicle'] != '' && $_POST['vehicle'] != '-'){
@@ -111,22 +102,13 @@ if(isset($_POST['customerType']) && $_POST['customerType'] != null && $_POST['cu
     }
 }
 
-if(isset($_POST['product']) && $_POST['product'] != null && $_POST['product'] != '' && $_POST['product'] != '-'){
-    if($_POST["file"] == 'weight'){
-        $searchQuery .= " and Weight.product_code = '".$_POST['product']."'";
-    }
-    else{
-        $searchQuery .= " and count.product_code = '".$_POST['product']."'";
-    }
+if($_POST["file"] == 'weight'){
+    $searchQuery .= inFilterQuery($db, 'Weight.product_code', $_POST['product'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'Weight.raw_mat_code', $_POST['rawMat'] ?? '');
 }
-
-if(isset($_POST['rawMat']) && $_POST['rawMat'] != null && $_POST['rawMat'] != '' && $_POST['rawMat'] != '-'){
-    if($_POST["file"] == 'weight'){
-        $searchQuery .= " and Weight.raw_mat_code = '".$_POST['rawMat']."'";
-    }
-    else{
-        $searchQuery .= " and count.raw_mat_code = '".$_POST['rawMat']."'";
-    }
+else{
+    $searchQuery .= inFilterQuery($db, 'count.product_code', $_POST['product'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'count.raw_mat_code', $_POST['rawMat'] ?? '');
 }
 
 if(isset($_POST['destination']) && $_POST['destination'] != null && $_POST['destination'] != '' && $_POST['destination'] != '-'){

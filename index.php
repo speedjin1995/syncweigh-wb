@@ -131,6 +131,10 @@ else{
         .modal-header {
             padding: var(1rem, 1rem) !important;
         }
+        #collapseSearch .select2-selection__choice {
+            color: #000 !important;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -221,10 +225,9 @@ else{
                                                     <div class="col-3" id="customerSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="customerNoSearch" class="form-label"><?=$languageArray['customer_code'][$language]?></label>
-                                                            <select id="customerNoSearch" class="form-select select2" >
-                                                                <option selected>-</option>
+                                                            <select id="customerNoSearch" class="form-select select2" multiple>
                                                                 <?php while($rowPF = mysqli_fetch_assoc($customer2)){ ?>
-                                                                    <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['name'] ?></option>
+                                                                    <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['customer_code'] .' - '. $rowPF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -232,10 +235,9 @@ else{
                                                     <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="supplierSearch" class="form-label"><?=$languageArray['supplier_code'][$language]?></label>
-                                                            <select id="supplierSearch" class="form-select select2" >
-                                                                <option selected>-</option>
+                                                            <select id="supplierSearch" class="form-select select2" multiple>
                                                                 <?php while($rowSF = mysqli_fetch_assoc($supplier2)){ ?>
-                                                                    <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['name'] ?></option>
+                                                                    <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['supplier_code'] .' - '. $rowSF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -278,10 +280,9 @@ else{
                                                     <div class="col-3" id="productSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="productSearch" class="form-label"><?=$languageArray['product_code'][$language]?></label>
-                                                            <select id="productSearch" class="form-select select2" >
-                                                                <option selected>-</option>
+                                                            <select id="productSearch" class="form-select select2" multiple>
                                                                 <?php while($rowProductF=mysqli_fetch_assoc($product2)){ ?>
-                                                                    <option value="<?=$rowProductF['product_code'] ?>"><?=$rowProductF['name'] ?></option>
+                                                                    <option value="<?=$rowProductF['product_code'] ?>"><?=$rowProductF['product_code'] .' - '. $rowProductF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -289,10 +290,9 @@ else{
                                                     <div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="rawMatSearch" class="form-label"><?=$languageArray['raw_material_code'][$language]?></label>
-                                                            <select id="rawMatSearch" class="form-select select2" >
-                                                                <option selected>-</option>
+                                                            <select id="rawMatSearch" class="form-select select2" multiple>
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
-                                                                    <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['name'] ?></option>
+                                                                    <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['raw_mat_code'] .' - '. $rowRawMatF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -1535,19 +1535,6 @@ else{
     var emptyContainerTable = null;
     var containerColumnsEnabled = <?= json_encode($containerWeighingEnabled || $differentBinWeighingEnabled) ?>;
     let clickTimer = null;
-
-    var fromDateSearchPicker;
-    var toDateSearchPicker;
-    var grossIncomingDatePicker;
-    var transactionDatePicker;
-    // Row actions: [status module permission, weight type module permission]; weight type modules have no weight_out / print, so those check view
-    var weighingActions = <?= json_encode(array_map(function ($action) { return array(
-        'statuses' => array_values(array_filter(array_keys(transactionStatusModules()), function ($s) use ($action) { return statusPermitted('Weighing', $s, $action[0]); })),
-        'weightTypes' => array_values(array_filter(array_keys(weightTypeModules()), function ($w) use ($action) { return weightTypePermitted($w, $action[1]); }))
-    ); }, array('edit' => ['edit', 'edit'], 'weight_out' => ['weight_out', 'view'], 'print' => ['print', 'view'], 'cancelled' => ['cancelled', 'cancelled']))) ?>;
-    var manualWeighingStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_weighing'); }))) ?>;
-    var manualDateStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_date_change'); }))) ?>;
-    var manualPriceStatuses = <?= json_encode(array_values(array_filter(array_keys(transactionStatusModules()), function ($s) { return statusPermitted('Weighing', $s, 'manual_price'); }))) ?>;
     var keepUnitPrice = false; // true while editing, so the async deposit price lookup does not overwrite the saved price
     var depositRequestId = 0; // only the latest deposit check response is handled, so stale responses do not alert again
     var tareOutgoingDatePicker; 
@@ -1555,7 +1542,44 @@ else{
     var tareOutgoingDatePicker2; 
     var userRole = '<?=$role ?>';
     var isSecondWeighingCapture = false;
-
+    var fromDateSearchPicker;
+    var toDateSearchPicker;
+    var grossIncomingDatePicker;
+    var transactionDatePicker;
+    // Row actions: [status module permission, weight type module permission]; weight type modules have no weight_out / print, so those check view
+    var weighingActions = <?= json_encode(array_map(
+        function ($action) {
+            return array(
+                'statuses' => array_values(array_filter(
+                    array_keys(transactionStatusModules()),
+                    function ($s) use ($action) { return statusPermitted('Weighing', $s, $action[0]); }
+                )),
+                'weightTypes' => array_values(array_filter(
+                    array_keys(weightTypeModules()),
+                    function ($w) use ($action) { return weightTypePermitted($w, $action[1]); }
+                ))
+            );
+        },
+        array(
+            'edit' => ['edit', 'edit'],
+            'weight_out' => ['weight_out', 'view'],
+            'print' => ['print', 'view'],
+            'cancelled' => ['cancelled', 'cancelled']
+        )
+    )) ?>;
+    var manualWeighingStatuses = <?= json_encode(array_values(array_filter(
+        array_keys(transactionStatusModules()),
+        function ($s) { return statusPermitted('Weighing', $s, 'manual_weighing'); }
+    ))) ?>;
+    var manualDateStatuses = <?= json_encode(array_values(array_filter(
+        array_keys(transactionStatusModules()),
+        function ($s) { return statusPermitted('Weighing', $s, 'manual_date_change'); }
+    ))) ?>;
+    var manualPriceStatuses = <?= json_encode(array_values(array_filter(
+        array_keys(transactionStatusModules()),
+        function ($s) { return statusPermitted('Weighing', $s, 'manual_price'); }
+    ))) ?>;
+    
     $(function () {
         var ind = '<?=$indicator ?>';
         const today = new Date();
@@ -1570,18 +1594,6 @@ else{
             placeholder: "Please Select",
         });
 
-        // Apply custom styling to Select2 elements in search bar
-        $('.select2-container .select2-selection--single').css({
-            'padding-top': '4px',
-            'padding-bottom': '4px',
-            'height': 'auto'
-        });
-
-        $('.select2-container .select2-selection__arrow').css({
-            'padding-top': '33px',
-            'height': 'auto'
-        });
-
         // Initialize all Select2 elements in the modal
         $('#addModal .select2').select2({
             allowClear: true,
@@ -1589,14 +1601,14 @@ else{
             dropdownParent: $('#addModal') // Ensures dropdown is not cut off
         });
 
-        // Apply custom styling to Select2 elements in addModal
-        $('#addModal .select2-container .select2-selection--single').css({
+        // Apply custom styling to Select2 elements in search bar
+        $('.select2-container .select2-selection--single, .select2-container .select2-selection--multiple').css({
             'padding-top': '4px',
             'padding-bottom': '4px',
             'height': 'auto'
         });
 
-        $('#addModal .select2-container .select2-selection__arrow').css({
+        $('.select2-container .select2-selection__arrow').css({
             'padding-top': '33px',
             'height': 'auto'
         });
@@ -1668,13 +1680,13 @@ else{
             fromDateSearchPicker.clear();
             toDateSearchPicker.clear();
             $('#statusSearch').val('-').trigger('change');
-            $('#customerNoSearch').val('-').trigger('change');
-            $('#supplierSearch').val('-').trigger('change');
+            $('#customerNoSearch').val(null).trigger('change');
+            $('#supplierSearch').val(null).trigger('change');
             $('#vehicleNo').val('');
             $('#invoiceNoSearch').val('-').trigger('change');
             $('#batchNoSearch').val('Pending').trigger('change');
-            $('#productSearch').val('-').trigger('change');
-            $('#rawMatSearch').val('-').trigger('change');
+            $('#productSearch').val(null).trigger('change');
+            $('#rawMatSearch').val(null).trigger('change');
             $('#plantSearch').val('-').trigger('change');
             $('#locationSearch').val('-').trigger('change');
             $('#transactionIdSearch').val('');
@@ -1695,19 +1707,19 @@ else{
             if (status == 'Purchase' || status == 'Local'){
                 // Hide & reset customer then show supplier
                 $('#customerSearchDisplay').hide();
-                $('#customerSearchDisplay').find('#customerNoSearch').val('-').trigger('change');
+                $('#customerSearchDisplay').find('#customerNoSearch').val(null).trigger('change');
                 $('#supplierSearchDisplay').show();
                 // Hide & reset product then show raw material
-                $('#productSearchDisplay').find('#productSearch').val('-').trigger('change');
+                $('#productSearchDisplay').find('#productSearch').val(null).trigger('change');
                 $('#productSearchDisplay').hide();
                 $('#rawMatSearchDisplay').show();
             }else{
                 // Hide & reset supplier then show customer
-                $('#supplierSearchDisplay').find('#supplierSearch').val('-').trigger('change');
+                $('#supplierSearchDisplay').find('#supplierSearch').val(null).trigger('change');
                 $('#supplierSearchDisplay').hide();
                 $('#customerSearchDisplay').show();
                 // Hide & reset raw material then show product
-                $('#rawMatSearchDisplay').find('#rawMatSearch').val('-').trigger('change');
+                $('#rawMatSearchDisplay').find('#rawMatSearch').val(null).trigger('change');
                 $('#rawMatSearchDisplay').hide();
                 $('#productSearchDisplay').show();
             }

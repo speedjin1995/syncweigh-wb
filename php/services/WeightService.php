@@ -61,8 +61,8 @@ class WeightService extends BaseService {
         $searchQuery .= permissionExclusion('Weighing', 'transaction_status', 'weight_type');
 
         if ($f('status') !== null) $searchQuery .= " and transaction_status = '" . $this->esc($f('status')) . "'";
-        if ($f('customer') !== null) $searchQuery .= " and customer_code = '" . $this->esc($f('customer')) . "'";
-        if ($f('supplier') !== null) $searchQuery .= " and supplier_code = '" . $this->esc($f('supplier')) . "'";
+        $searchQuery .= inFilterQuery($this->db, 'customer_code', $post['customer'] ?? '');
+        $searchQuery .= inFilterQuery($this->db, 'supplier_code', $post['supplier'] ?? '');
         if ($f('vehicle') !== null) $searchQuery .= " and lorry_plate_no1 like '%" . $this->esc($f('vehicle')) . "%'";
         if ($f('invoice') !== null) $searchQuery .= " and weight_type = '" . $this->esc($f('invoice')) . "'";
 
@@ -78,8 +78,8 @@ class WeightService extends BaseService {
             $searchQuery .= " and is_complete = 'N' AND is_cancel = 'N'";
         }
 
-        if ($f('product') !== null) $searchQuery .= " and product_code = '" . $this->esc($f('product')) . "'";
-        if ($f('rawMaterial') !== null) $searchQuery .= " and raw_mat_code = '" . $this->esc($f('rawMaterial')) . "'";
+        $searchQuery .= inFilterQuery($this->db, 'product_code', $post['product'] ?? '');
+        $searchQuery .= inFilterQuery($this->db, 'raw_mat_code', $post['rawMaterial'] ?? '');
         if ($f('plant') !== null) $searchQuery .= " and plant_code = '" . $this->esc($f('plant')) . "'";
         if (isset($post['location']) && $f('location') !== null) $searchQuery .= " and location_id = '" . intval($post['location']) . "'";
         if ($f('transactionId') !== null) $searchQuery .= " and transaction_id like '%" . $this->esc($f('transactionId')) . "%'";

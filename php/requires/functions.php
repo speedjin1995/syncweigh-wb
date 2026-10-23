@@ -79,6 +79,15 @@ function transactionStatusExclusion($db, $column) {
     }
     return " and " . $column . " IN (" . implode(', ', $enabled) . ")";
 }
+
+// Multiselect search filter: array from $.post or comma string from export URL. Empty / '-' values are dropped.
+function inFilterQuery($db, $column, $value) {
+    $values = is_array($value) ? $value : explode(',', (string) $value);
+    $values = array_filter(array_map('trim', $values), function ($v) { return $v !== '' && $v !== '-'; });
+    if (!$values) return '';
+    $escaped = array_map(function ($v) use ($db) { return mysqli_real_escape_string($db, $v); }, $values);
+    return " and " . $column . " IN ('" . implode("', '", $escaped) . "')";
+}
 // Weighing export in the Alam Flora layout (weights in tonnes). Used by export.php (Excel) and exportPdf.php (print).
 // $rows are Weight / Weight_Container rows. Returns the headers, one assoc row per weighing (keyed by header),
 // the totals (summed columns only, others blank) and the per-waste summary.
