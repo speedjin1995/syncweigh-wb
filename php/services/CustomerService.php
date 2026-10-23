@@ -208,8 +208,8 @@ class CustomerService extends BaseService {
     }
 
     /**
-     * Save Excel rows (Code, Name, RegNo, NewRegNo, Addr1-3, Tel, Fax, ContactName, ICNo, TinNo).
-     * Rows without a code are skipped, duplicate codes are returned as messages. Deposit is not imported.
+     * Save Excel rows (Code, Name, RegNo, NewRegNo, Addr1-3, Tel, Fax, ContactName, ICNo, TinNo, Deposit).
+     * Rows without a code are skipped. Duplicate codes are updated instead of skipped.
      */
     public function importRows($rows) {
         $errors = [];
@@ -219,14 +219,6 @@ class CustomerService extends BaseService {
             if ($code === null) continue;
 
             $name = $this->nullIfEmpty($row['Name'] ?? null);
-
-            if ($this->isDuplicate('customer_code', $code)) {
-                $errors[] = "Customer: " . ($name ?? '') . " already exist in master data.";
-                continue;
-            }
-
-            $stmt = $this->db->prepare("INSERT INTO {$this->table} (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            if (!$stmt) throw new Exception($this->db->error);
             $regNo = $this->nullIfEmpty($row['RegNo'] ?? null);
             $newRegNo = $this->nullIfEmpty($row['NewRegNo'] ?? null);
             $address1 = $this->nullIfEmpty($row['Addr1'] ?? null);
@@ -237,9 +229,39 @@ class CustomerService extends BaseService {
             $contactName = $this->nullIfEmpty($row['ContactName'] ?? null);
             $icNo = $this->nullIfEmpty($row['ICNo'] ?? null);
             $tinNo = $this->nullIfEmpty($row['TinNo'] ?? null);
-            $stmt->bind_param('ssssssssssssss', $code, $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $this->username, $this->username);
-            if (!$stmt->execute()) throw new Exception($stmt->error);
-            $stmt->close();
+            $deposit = $this->depositValue($row['Deposit'] ?? null);
+
+            if ($this->isDuplicate('customer_code', $code)) {
+                // Fetch existing record to log deposit change
+                $sel = $this->db->prepare("SELECT id, deposit_balance FROM {$this->table} WHERE customer_code=? AND status=0");
+                $sel->bind_param('s', $code);
+                $sel->execute();
+                $existing = $sel->get_result()->fetch_assoc();
+                $sel->close();
+
+                $stmt = $this->db->prepare("UPDATE {$this->table} SET company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, deposit_balance=?, modified_by=? WHERE id=?");
+                if (!$stmt) throw new Exception($this->db->error);
+                $stmt->bind_param('sssssssssssdss', $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $this->username, $existing['id']);
+                if (!$stmt->execute()) throw new Exception($stmt->error);
+                $stmt->close();
+
+                $oldDeposit = (float) $existing['deposit_balance'];
+                if (round($deposit - $oldDeposit, 2) != 0) {
+                    $txnType = $deposit > $oldDeposit ? 'TOPUP' : 'ADJUST';
+                    (new DepositService($this->db, $this->username))->log(['type' => 'CUSTOMER', 'id' => $existing['id'], 'code' => $code], null, $txnType, round($deposit - $oldDeposit, 2), $oldDeposit, $deposit, 'Excel import update');
+                }
+            } else {
+                $stmt = $this->db->prepare("INSERT INTO {$this->table} (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, deposit_balance, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                if (!$stmt) throw new Exception($this->db->error);
+                $stmt->bind_param('ssssssssssssdss', $code, $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $this->username, $this->username);
+                if (!$stmt->execute()) throw new Exception($stmt->error);
+                $newId = $stmt->insert_id;
+                $stmt->close();
+
+                if ($deposit > 0) {
+                    (new DepositService($this->db, $this->username))->log(['type' => 'CUSTOMER', 'id' => $newId, 'code' => $code], null, 'TOPUP', $deposit, 0, $deposit, 'Opening deposit');
+                }
+            }
         }
 
         return $errors;
