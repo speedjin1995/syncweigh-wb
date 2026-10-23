@@ -15,7 +15,7 @@ class CustomerService extends BaseService {
         $length = intval($post['length'] ?? 10);
         $searchValue = isset($post['search']['value']) ? mysqli_real_escape_string($this->db, $post['search']['value']) : '';
 
-        $sortableColumns = ['id', 'customer_code', 'name', 'company_reg_no', 'new_reg_no', 'deposit_balance'];
+        $sortableColumns = ['id', 'customer_code', 'name', 'company_reg_no', 'new_reg_no', 'deposit_balance', 'deposit_status', 'min_deposit_balance'];
         $columnIndex = $post['order'][0]['column'] ?? 0;
         $columnName = $post['columns'][$columnIndex]['data'] ?? 'id';
         if (!in_array($columnName, $sortableColumns)) {
@@ -57,6 +57,8 @@ class CustomerService extends BaseService {
                 'ic_no'            => $row['ic_no'],
                 'tin_no'           => $row['tin_no'],
                 'deposit_balance'  => $row['deposit_balance'],
+                'deposit_status'   => $row['deposit_status'],
+                'min_deposit_balance' => $row['min_deposit_balance'],
                 'status'           => $row['status']
             ];
         }
@@ -86,6 +88,8 @@ class CustomerService extends BaseService {
         $icNo = $this->nullIfEmpty($post['icNo'] ?? null);
         $tinNo = $this->nullIfEmpty($post['tinNo'] ?? null);
         $deposit = $this->depositValue($post['depositBalance'] ?? null);
+        $depositStatus = ($post['depositStatus'] ?? '') === 'Y' ? 'Y' : 'N';
+        $minDeposit = $this->depositValue($post['minDepositBalance'] ?? null, 'Min deposit balance');
 
         if ($code === null) throw new Exception('Customer code is required');
         if ($newRegNo === null) throw new Exception('New registration no is required');
@@ -93,9 +97,13 @@ class CustomerService extends BaseService {
             throw new Exception('Customer code already exists');
         }
 
-        $stmt = $this->db->prepare("INSERT INTO {$this->table} (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, deposit_balance, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        // Deposit balance and minimum apply only when the deposit status is Y
+
+        if ($depositStatus === 'N') { $deposit = 0.0; $minDeposit = 0.0; }
+
+        $stmt = $this->db->prepare("INSERT INTO {$this->table} (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, deposit_balance, deposit_status, min_deposit_balance, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         if (!$stmt) throw new Exception($this->db->error);
-        $stmt->bind_param('ssssssssssssdss', $code, $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $this->username, $this->username);
+        $stmt->bind_param('ssssssssssssdsdss', $code, $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $depositStatus, $minDeposit, $this->username, $this->username);
         if (!$stmt->execute()) throw new Exception($stmt->error);
         $newId = $stmt->insert_id;
         $stmt->close();
@@ -128,6 +136,8 @@ class CustomerService extends BaseService {
         $icNo = $this->nullIfEmpty($post['icNo'] ?? null);
         $tinNo = $this->nullIfEmpty($post['tinNo'] ?? null);
         $deposit = $this->depositValue($post['depositBalance'] ?? null);
+        $depositStatus = ($post['depositStatus'] ?? '') === 'Y' ? 'Y' : 'N';
+        $minDeposit = $this->depositValue($post['minDepositBalance'] ?? null, 'Min deposit balance');
 
         if ($code === null) throw new Exception('Customer code is required');
         if ($newRegNo === null) throw new Exception('New registration no is required');
@@ -136,7 +146,7 @@ class CustomerService extends BaseService {
         }
 
         // Old code, name and balance: to update the weighing records and to log a balance change
-        $select = $this->db->prepare("SELECT customer_code, name, deposit_balance FROM {$this->table} WHERE id=? FOR UPDATE");
+        $select = $this->db->prepare("SELECT customer_code, name, deposit_balance, min_deposit_balance FROM {$this->table} WHERE id=? FOR UPDATE");
         if (!$select) throw new Exception($this->db->error);
         $select->bind_param('s', $id);
         if (!$select->execute()) throw new Exception($select->error);
@@ -144,9 +154,12 @@ class CustomerService extends BaseService {
         $select->close();
         if (!$old) throw new Exception('Record not found');
 
-        $stmt = $this->db->prepare("UPDATE {$this->table} SET customer_code=?, company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, deposit_balance=?, modified_by=? WHERE id=?");
+        // Switching to N keeps the stored balance and minimum (the fields are hidden)
+        if ($depositStatus === 'N') { $deposit = (float) $old['deposit_balance']; $minDeposit = (float) $old['min_deposit_balance']; }
+
+        $stmt = $this->db->prepare("UPDATE {$this->table} SET customer_code=?, company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, deposit_balance=?, deposit_status=?, min_deposit_balance=?, modified_by=? WHERE id=?");
         if (!$stmt) throw new Exception($this->db->error);
-        $stmt->bind_param('ssssssssssssdss', $code, $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $this->username, $id);
+        $stmt->bind_param('ssssssssssssdsdss', $code, $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $depositStatus, $minDeposit, $this->username, $id);
         if (!$stmt->execute()) throw new Exception($stmt->error);
         $stmt->close();
 
@@ -208,7 +221,7 @@ class CustomerService extends BaseService {
     }
 
     /**
-     * Save Excel rows (Code, Name, RegNo, NewRegNo, Addr1-3, Tel, Fax, ContactName, ICNo, TinNo, Deposit).
+     * Save Excel rows (Code, Name, RegNo, NewRegNo, Addr1-3, Tel, Fax, ContactName, ICNo, TinNo, DepositStatus, Deposit, MinDeposit).
      * Rows without a code are skipped. Duplicate codes are updated instead of skipped.
      */
     public function importRows($rows) {
@@ -230,18 +243,23 @@ class CustomerService extends BaseService {
             $icNo = $this->nullIfEmpty($row['ICNo'] ?? null);
             $tinNo = $this->nullIfEmpty($row['TinNo'] ?? null);
             $deposit = $this->depositValue($row['Deposit'] ?? null);
+            $depositStatus = strtoupper(trim($row['DepositStatus'] ?? '')) === 'Y' ? 'Y' : 'N';
+            $minDeposit = $this->depositValue($row['MinDeposit'] ?? null, 'Min deposit balance');
 
             if ($this->isDuplicate('customer_code', $code)) {
                 // Fetch existing record to log deposit change
-                $sel = $this->db->prepare("SELECT id, deposit_balance FROM {$this->table} WHERE customer_code=? AND status=0");
+                $sel = $this->db->prepare("SELECT id, deposit_balance, min_deposit_balance FROM {$this->table} WHERE customer_code=? AND status=0");
                 $sel->bind_param('s', $code);
                 $sel->execute();
                 $existing = $sel->get_result()->fetch_assoc();
                 $sel->close();
 
-                $stmt = $this->db->prepare("UPDATE {$this->table} SET company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, deposit_balance=?, modified_by=? WHERE id=?");
+                // N keeps the stored balance and minimum
+                if ($depositStatus === 'N') { $deposit = (float) $existing['deposit_balance']; $minDeposit = (float) $existing['min_deposit_balance']; }
+
+                $stmt = $this->db->prepare("UPDATE {$this->table} SET company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, deposit_balance=?, deposit_status=?, min_deposit_balance=?, modified_by=? WHERE id=?");
                 if (!$stmt) throw new Exception($this->db->error);
-                $stmt->bind_param('sssssssssssdss', $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $this->username, $existing['id']);
+                $stmt->bind_param('sssssssssssdsdss', $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $depositStatus, $minDeposit, $this->username, $existing['id']);
                 if (!$stmt->execute()) throw new Exception($stmt->error);
                 $stmt->close();
 
@@ -251,9 +269,11 @@ class CustomerService extends BaseService {
                     (new DepositService($this->db, $this->username))->log(['type' => 'CUSTOMER', 'id' => $existing['id'], 'code' => $code], null, $txnType, round($deposit - $oldDeposit, 2), $oldDeposit, $deposit, 'Excel import update');
                 }
             } else {
-                $stmt = $this->db->prepare("INSERT INTO {$this->table} (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, deposit_balance, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                // Deposit balance and minimum apply only when the deposit status is Y
+                if ($depositStatus === 'N') { $deposit = 0.0; $minDeposit = 0.0; }
+                $stmt = $this->db->prepare("INSERT INTO {$this->table} (customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, deposit_balance, deposit_status, min_deposit_balance, created_by, modified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 if (!$stmt) throw new Exception($this->db->error);
-                $stmt->bind_param('ssssssssssssdss', $code, $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $this->username, $this->username);
+                $stmt->bind_param('ssssssssssssdsdss', $code, $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $depositStatus, $minDeposit, $this->username, $this->username);
                 if (!$stmt->execute()) throw new Exception($stmt->error);
                 $newId = $stmt->insert_id;
                 $stmt->close();
@@ -277,10 +297,10 @@ class CustomerService extends BaseService {
     /**
      * Opening / topped-up deposit: 0 or more, two decimals
      */
-    private function depositValue($value) {
+    private function depositValue($value, $label = 'Deposit balance') {
         if ($value === null || $value === '') return 0.0;
         if (!is_numeric($value) || (float) $value < 0) {
-            throw new Exception('Deposit balance must be 0 or more');
+            throw new Exception($label . ' must be 0 or more');
         }
         return round((float) $value, 2);
     }

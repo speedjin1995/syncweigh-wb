@@ -2999,3 +2999,63 @@ END
 $$
 
 DELIMITER ;
+
+-- 23/10/2026 --
+ALTER TABLE `Customer` ADD COLUMN IF NOT EXISTS `deposit_status` varchar(1) NOT NULL DEFAULT 'N' AFTER `deposit_balance`, ADD COLUMN IF NOT EXISTS `min_deposit_balance` decimal(15,2) NOT NULL DEFAULT 0.00 AFTER `deposit_status`;
+ALTER TABLE `Customer_Log` ADD COLUMN IF NOT EXISTS `deposit_status` varchar(1) NULL AFTER `deposit_balance`, ADD COLUMN IF NOT EXISTS `min_deposit_balance` decimal(15,2) NULL AFTER `deposit_status`;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_CUSTOMER` AFTER INSERT ON `Customer` FOR EACH ROW
+INSERT INTO Customer_Log (customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, deposit_balance, deposit_status, min_deposit_balance, action_id, action_by, event_date)
+VALUES (NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.deposit_balance, NEW.deposit_status, NEW.min_deposit_balance, 1, NEW.created_by, NEW.created_date)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_CUSTOMER` BEFORE UPDATE ON `Customer` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Customer_Log (
+            customer_id, customer_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, address_line_4, phone_no, fax_no, contact_name, ic_no, tin_no, deposit_balance, deposit_status, min_deposit_balance, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.customer_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.address_line_4, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.deposit_balance, NEW.deposit_status, NEW.min_deposit_balance, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+ALTER TABLE `Supplier` ADD COLUMN IF NOT EXISTS `deposit_status` varchar(1) NOT NULL DEFAULT 'N' AFTER `deposit_balance`, ADD COLUMN IF NOT EXISTS `min_deposit_balance` decimal(15,2) NOT NULL DEFAULT 0.00 AFTER `deposit_status`;
+ALTER TABLE `Supplier_Log` ADD COLUMN IF NOT EXISTS `deposit_status` varchar(1) NULL AFTER `deposit_balance`, ADD COLUMN IF NOT EXISTS `min_deposit_balance` decimal(15,2) NULL AFTER `deposit_status`;
+DELIMITER $$
+CREATE OR REPLACE TRIGGER `TRG_INS_SUPPLIER` AFTER INSERT ON `Supplier` FOR EACH ROW
+INSERT INTO Supplier_Log (supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, deposit_balance, deposit_status, min_deposit_balance, action_id, action_by, event_date)
+VALUES (NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.deposit_balance, NEW.deposit_status, NEW.min_deposit_balance, 1, NEW.created_by, NEW.created_date)
+$$
+CREATE OR REPLACE TRIGGER `TRG_UPD_SUPPLIER` BEFORE UPDATE ON `Supplier` FOR EACH ROW BEGIN
+    DECLARE action_value INT;
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Supplier_Log (
+            supplier_id, supplier_code, company_reg_no, new_reg_no, name, address_line_1, address_line_2, address_line_3, phone_no, fax_no, contact_name, ic_no, tin_no, deposit_balance, deposit_status, min_deposit_balance, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.supplier_code, NEW.company_reg_no, NEW.new_reg_no, NEW.name, NEW.address_line_1, NEW.address_line_2, NEW.address_line_3, NEW.phone_no, NEW.fax_no, NEW.contact_name, NEW.ic_no, NEW.tin_no, NEW.deposit_balance, NEW.deposit_status, NEW.min_deposit_balance, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'deposit_status_code', 'Deposit Status', '押金状态', 'အပ်ငွေ အခြေအနေ', 'धरौटी स्थिति' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'deposit_status_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'min_deposit_balance_code', 'Min Deposit Balance', '最低押金余额', 'အနည်းဆုံး အပ်ငွေလက်ကျန်', 'न्यूनतम धरौटी बाँकी' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'min_deposit_balance_code');

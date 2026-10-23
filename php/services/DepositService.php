@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/BaseService.php';
 
-// Charge larger than the party's deposit balance (the save rolls back)
+// Charge that would take the party's deposit balance below its minimum (the save rolls back)
 class DepositInsufficient extends Exception {}
 
 /**
@@ -69,7 +69,7 @@ class DepositService extends BaseService {
 
     /**
      * Applies a deposit movement. A positive $delta charges (balance goes down) and a negative one refunds.
-     * Returns false, and writes nothing, when a charge is larger than the balance.
+     * Returns false, and writes nothing, when a charge would take the balance below the party's minimum.
      */
     public function apply($party, $delta, $weightId, $txnType, $remark) {
         $delta = round((float) $delta, 2);
@@ -78,7 +78,7 @@ class DepositService extends BaseService {
         if (!$row) return false;
 
         $before = (float) $row['deposit_balance'];
-        if ($delta > 0 && $before < $delta) return false;
+        if ($delta > 0 && $before - $delta < ($party['min'] ?? 0)) return false;
 
         $after = round($before - $delta, 2);
 
@@ -178,12 +178,14 @@ class DepositService extends BaseService {
         $party = $this->parties[$partyType];
         $where = $key === null ? $party['column'] : $key;
 
-        $row = $this->fetchOne("SELECT id, {$party['column']} AS code, deposit_balance FROM {$party['table']} WHERE {$where} = ? AND status = '0'", 's', [$value]);
+        $row = $this->fetchOne("SELECT id, {$party['column']} AS code, deposit_balance, deposit_status, min_deposit_balance FROM {$party['table']} WHERE {$where} = ? AND status = '0'", 's', [$value]);
         if (!$row) return null;
 
         $party['id'] = $row['id'];
         $party['code'] = $row['code'];
         $party['balance'] = (float) $row['deposit_balance'];
+        $party['controlled'] = $row['deposit_status'] === 'Y';
+        $party['min'] = (float) $row['min_deposit_balance'];
         return $party;
     }
 

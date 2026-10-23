@@ -1066,6 +1066,16 @@ else{
                                                             <div class="col-xxl-4 col-lg-4" id="priceCard" style="display:none;">
                                                                 <div class="card bg-light">
                                                                     <div class="card-body">
+                                                                        <!-- Display only (no name, not saved): balance of the selected deposit-controlled customer/supplier -->
+                                                                        <div class="row mb-3" id="depositBalanceDisplay" style="display:none">
+                                                                            <label for="depositBalance" class="col-sm-4 col-form-label"><?=$languageArray['deposit_balance_code'][$language]?></label>
+                                                                            <div class="col-sm-8">
+                                                                                <div class="input-group">
+                                                                                    <input type="number" class="form-control input-readonly" id="depositBalance" placeholder="0" readonly>
+                                                                                    <div class="input-group-text">RM</div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                         <div class="row mb-3">
                                                                             <label for="unitPrice" class="col-sm-4 col-form-label"><?=$languageArray['unit_price_code'][$language]?></label>
                                                                             <div class="col-sm-8">
@@ -1107,7 +1117,7 @@ else{
                                                                                     <div class="input-group-text">RM</div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>                                                                 
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2896,7 +2906,7 @@ else{
             $('#tareOutgoing').val(parseFloat(text).toFixed(0));
             $('#tareOutgoing').trigger('keyup');
 
-            // Tare capture completes the weighing and charges the deposit, so check the balance against the total price
+            // Tare capture completes the weighing and charges the deposit, so check the balance after the total price against the minimum
             var transactionStatus = $('#transactionStatus').val();
             var partyId = transactionStatus == 'Sales' ? $('#customerName :selected').data('id') : $('#supplierName :selected').data('id');
             if ((transactionStatus != 'Sales' && transactionStatus != 'Purchase') || !partyId) {
@@ -2907,7 +2917,7 @@ else{
             var total = parseFloat($('#totalPrice').val()) || 0;
             $.post('php/modules/deposit/index.php', {action: 'check', partyType: transactionStatus == 'Sales' ? 'CUSTOMER' : 'SUPPLIER', partyId: partyId, itemCode: ''}, function(data){
                 var obj = JSON.parse(data);
-                if (obj.status === 'success' && obj.enabled && total > parseFloat(obj.balance)) {
+                if (obj.status === 'success' && obj.enabled && parseFloat(obj.balance) - total < parseFloat(obj.min)) {
                     alert(<?=json_encode($languageArray['insufficient_deposit_code'][$language])?>);
                     return;
                 }
@@ -3413,6 +3423,7 @@ else{
 
     // Unit price of the selected item for the selected customer/supplier, then the deposit balance check
     function loadDepositPrice(){
+        $('#depositBalanceDisplay').hide();
         var transactionStatus = $('#transactionStatus').val();
         if (transactionStatus != 'Sales' && transactionStatus != 'Purchase') {
             calculatePrice();
@@ -3435,7 +3446,12 @@ else{
             if (!keepUnitPrice) $('#unitPrice').val(obj.price);
             calculatePrice();
 
-            if (obj.enabled && parseFloat(obj.balance) < 1) {
+            if (obj.enabled) {
+                $('#depositBalance').val(parseFloat(obj.balance).toFixed(2));
+                $('#depositBalanceDisplay').show();
+            }
+
+            if (obj.enabled && parseFloat(obj.balance) <= parseFloat(obj.min)) {
                 alert(<?=json_encode($languageArray['insufficient_deposit_code'][$language])?>);
                 $('#addModal').modal('hide');
             }

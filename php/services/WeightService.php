@@ -736,11 +736,14 @@ class WeightService extends BaseService {
                 return ['status' => 'failed', 'message' => ($status === 'Sales' ? 'Customer' : 'Supplier') . ' not found'];
             }
 
+            // Only parties with deposit status Y are checked and charged
+            $depositOn = $depositOn && $depositParty && $depositParty['controlled'];
+
             $amount = $isComplete == 'Y' ? (float) $values['total_price'] : 0.0;
             $oldAmount = empty($weightId) ? 0.0 : $deposit->chargedAmount($weightId);
             $delta = round($amount - $oldAmount, 2);
 
-            if ($depositOn && ((empty($weightId) && $depositParty['balance'] < 1) || $delta > $depositParty['balance'])) {
+            if ($depositOn && ((empty($weightId) && $depositParty['balance'] <= $depositParty['min']) || ($delta > 0 && $depositParty['balance'] - $delta < $depositParty['min']))) {
                 return ['status' => 'failed', 'message' => 'Insufficient Deposit Please Contact Office Admin'];
             }
 
