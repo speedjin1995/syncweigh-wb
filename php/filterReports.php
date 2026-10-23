@@ -152,6 +152,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
   $data[] = array( 
     "id"=>$row['id'],
     "location"=>searchLocationNameById($row['location_id'], $db),
+    "location2"=>searchLocationNameById($row['location_id2'] ?? null, $db),
     "transaction_id"=>$row['transaction_id'],
     "transaction_status"=>$transactionStatus,
     "weight_type"=>$weightType,

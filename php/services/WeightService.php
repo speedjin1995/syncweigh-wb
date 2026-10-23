@@ -172,6 +172,7 @@ class WeightService extends BaseService {
             $data[] = [
                 'id' => $row['id'],
                 'location' => searchLocationNameById($row['location_id'], $this->db),
+                'location2' => searchLocationNameById($row['location_id2'] ?? null, $this->db),
                 'transaction_id' => $row['transaction_id'],
                 'transaction_status' => $transactionStatus,
                 'weight_type' => $weightType,
