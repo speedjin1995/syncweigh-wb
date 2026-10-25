@@ -3059,3 +3059,49 @@ DELIMITER ;
 
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'deposit_status_code', 'Deposit Status', '押金状态', 'အပ်ငွေ အခြေအနေ', 'धरौटी स्थिति' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'deposit_status_code');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'min_deposit_balance_code', 'Min Deposit Balance', '最低押金余额', 'အနည်းဆုံး အပ်ငွေလက်ကျန်', 'न्यूनतम धरौटी बाँकी' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'min_deposit_balance_code');
+
+--25/10/2026--
+ALTER TABLE `Vehicle` ADD `product_code` VARCHAR(50) NULL AFTER `raw_mat_name`, ADD `product_name` VARCHAR(255) NULL AFTER `product_code`;
+ALTER TABLE `Vehicle_Log` ADD `product_code` VARCHAR(50) NULL AFTER `raw_mat_name`, ADD `product_name` VARCHAR(255) NULL AFTER `product_code`;
+
+DELIMITER $$
+
+CREATE OR REPLACE TRIGGER `TRG_INS_VEH` AFTER INSERT ON `Vehicle` FOR EACH ROW
+INSERT INTO Vehicle_Log (
+    vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, product_code, product_name, bin_no, bin_type, action_id, action_by, event_date
+)
+VALUES (
+    NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, NEW.contractor_id, NEW.raw_mat_code, NEW.raw_mat_name, NEW.product_code, NEW.product_name, NEW.bin_no, NEW.bin_type, 1, NEW.created_by, NEW.created_date
+)$$
+
+CREATE OR REPLACE TRIGGER `TRG_UPD_VEH` BEFORE UPDATE ON `Vehicle` FOR EACH ROW
+BEGIN
+    DECLARE action_value INT;
+
+    -- Check if status = 1, set action_id to 3, otherwise set to 2
+    IF NEW.status = 1 THEN
+        SET action_value = 3;
+    ELSE
+        SET action_value = 2;
+    END IF;
+
+    -- Skipped while the app writes its own log row (reactivate sets @skip_audit = 1)
+    IF COALESCE(@skip_audit, 0) = 0 THEN
+        INSERT INTO Vehicle_Log (
+            vehicle_id, veh_number, vehicle_weight, transporter_code, transporter_name, customer_code, customer_name, supplier_code, supplier_name, max_entry_per_day, vehicle_type, contractor_id, raw_mat_code, raw_mat_name, product_code, product_name, bin_no, bin_type, action_id, action_by, event_date
+        )
+        VALUES (
+            NEW.id, NEW.veh_number, NEW.vehicle_weight, NEW.transporter_code, NEW.transporter_name, NEW.customer_code, NEW.customer_name, NEW.supplier_code, NEW.supplier_name, NEW.max_entry_per_day, NEW.vehicle_type, NEW.contractor_id, NEW.raw_mat_code, NEW.raw_mat_name, NEW.product_code, NEW.product_name, NEW.bin_no, NEW.bin_type, action_value, NEW.modified_by, NEW.modified_date
+        );
+    END IF;
+END$$
+
+DELIMITER ;
+
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_upload_code', 'Confirm Upload', '确认上传', 'တင်ခြင်းကို အတည်ပြုပါ', 'अपलोड पुष्टि गर्नुहोस्' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_upload_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_upload_intro_code', 'You are about to upload {rows} rows for {vehicles} vehicles. Please review before continuing:', '您即将为 {vehicles} 辆车辆上传 {rows} 行数据。继续之前请检查：', 'ယာဉ် {vehicles} စီးအတွက် အတန်း {rows} တန်းကို တင်တော့မည်ဖြစ်သည်။ ဆက်မလုပ်မီ စစ်ဆေးပါ -', 'तपाईं {vehicles} सवारीका लागि {rows} पङ्क्ति अपलोड गर्न लाग्नुभएको छ। अगाडि बढ्नुअघि जाँच गर्नुहोस्:' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_upload_intro_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_upload_vehicle_code', 'New vehicles are created. Existing vehicles are updated.', '将新建新车辆，并更新现有车辆。', 'ယာဉ်အသစ်များကို ဖန်တီးမည်။ ရှိပြီးသားယာဉ်များကို အပ်ဒိတ်လုပ်မည်။', 'नयाँ सवारीहरू बनाइन्छन्। भइरहेका सवारीहरू अद्यावधिक गरिन्छन्।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_upload_vehicle_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_upload_blank_code', 'Blank cells keep the value the vehicle already has.', '空白单元格将保留车辆的现有值。', 'အလွတ်ဖြစ်နေသော ဆဲလ်များသည် ယာဉ်တွင် ရှိပြီးသားတန်ဖိုးကို ဆက်ထားမည်။', 'खाली कक्षहरूले सवारीमा पहिले नै भएको मान राख्छन्।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_upload_blank_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_upload_overlap_code', 'Overlapping date ranges for the same vehicle are merged into one. The dates widen to cover both, and the trips per day are added together.', '同一车辆的重叠日期范围将合并为一条。日期范围将扩展以覆盖两者，每日行程次数将相加。', 'တူညီသောယာဉ်အတွက် ထပ်နေသော ရက်စွဲအပိုင်းအခြားများကို တစ်ခုတည်းအဖြစ် ပေါင်းမည်။ ရက်စွဲများကို နှစ်ခုလုံးပါဝင်အောင် ချဲ့မည်ဖြစ်ပြီး တစ်ရက်လျှင် ခေါက်ရေများကို ပေါင်းထည့်မည်။', 'एउटै सवारीका लागि खप्टिएका मिति दायराहरू एउटैमा गाभिन्छन्। मितिहरू दुवैलाई समेट्ने गरी फराकिलो हुन्छन् र प्रतिदिन ट्रिपहरू जोडिन्छन्।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_upload_overlap_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_upload_example_code', 'e.g. 01/10/2026 - 30/10/2026 (15 trips) + 23/10/2026 - 01/01/2027 (5 trips) becomes 01/10/2026 - 01/01/2027 (20 trips).', '例如：01/10/2026 - 30/10/2026（15 次）+ 23/10/2026 - 01/01/2027（5 次）合并为 01/10/2026 - 01/01/2027（20 次）。', 'ဥပမာ - 01/10/2026 - 30/10/2026 (15 ခေါက်) + 23/10/2026 - 01/01/2027 (5 ခေါက်) သည် 01/10/2026 - 01/01/2027 (20 ခေါက်) ဖြစ်လာမည်။', 'उदाहरण: 01/10/2026 - 30/10/2026 (15 ट्रिप) + 23/10/2026 - 01/01/2027 (5 ट्रिप) मिलेर 01/10/2026 - 01/01/2027 (20 ट्रिप) हुन्छ।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_upload_example_code');
+INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'confirm_upload_same_code', 'The exact same date range replaces the trips per day with the new value.', '完全相同的日期范围将以新值替换每日行程次数。', 'ရက်စွဲအပိုင်းအခြား အတိအကျတူပါက တစ်ရက်လျှင် ခေါက်ရေကို တန်ဖိုးအသစ်ဖြင့် အစားထိုးမည်။', 'ठ्याक्कै उही मिति दायराले प्रतिदिन ट्रिपलाई नयाँ मानले बदल्छ।' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'confirm_upload_same_code');
