@@ -155,6 +155,7 @@ while($row = mysqli_fetch_assoc($empRecords)) {
     "location2"=>searchLocationNameById($row['location_id2'] ?? null, $db),
     "transaction_id"=>$row['transaction_id'],
     "transaction_status"=>$transactionStatus,
+    "status_code"=>$row['transaction_status'],
     "weight_type"=>$weightType,
     "transaction_date"=>$row['transaction_date'],
     "lorry_plate_no1"=>$row['lorry_plate_no1'],

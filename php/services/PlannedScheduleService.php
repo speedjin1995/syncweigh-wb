@@ -56,7 +56,7 @@ class PlannedScheduleService extends BaseService {
 
         $filteredRow = $this->fetchOne("SELECT COUNT(*) AS total" . $from, $types, $params);
 
-        $stmt = $this->db->prepare("SELECT l.id, l.start_date, l.end_date, l.max_entry, v.veh_number, c.name AS contractor_name, v.raw_mat_name, v.vehicle_type, v.supplier_code, v.supplier_name, v.customer_code, v.customer_name, v.contractor_id, v.raw_mat_code, v.product_code, v.product_name, v.bin_no, v.bin_type" . $from . " ORDER BY l.start_date, v.veh_number LIMIT ?, ?");
+        $stmt = $this->db->prepare("SELECT l.id, l.start_date, l.end_date, l.max_entry, v.veh_number, c.name AS contractor_name, c.contractor_code, v.raw_mat_name, v.vehicle_type, v.supplier_code, v.supplier_name, v.customer_code, v.customer_name, v.contractor_id, v.raw_mat_code, v.product_code, v.product_name, v.bin_no, v.bin_type" . $from . " ORDER BY l.start_date, v.veh_number LIMIT ?, ?");
         if (!$stmt) throw new Exception($this->db->error);
         $stmt->bind_param($types . 'ii', ...array_merge($params, [$start, $length]));
         if (!$stmt->execute()) throw new Exception($stmt->error);
@@ -70,6 +70,7 @@ class PlannedScheduleService extends BaseService {
                 'end_date'        => date('d/m/Y', strtotime($row['end_date'])),
                 'veh_number'      => $row['veh_number'],
                 'contractor_name' => $row['contractor_name'] ?? '',
+                'contractor_code' => $row['contractor_code'] ?? '',
                 'raw_mat_name'    => $row['raw_mat_name'] ?? '',
                 'vehicle_type'    => $row['vehicle_type'] ?? '',
                 'max_entry'       => $row['max_entry'],
