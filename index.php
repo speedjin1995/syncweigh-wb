@@ -2313,7 +2313,7 @@ else{
             $('#addModal').find('#weightType option.feature-hidden').remove();
             $('#addModal').find('#weightType').val("Normal").trigger('change');
             $('#addModal').find('#customerType').val("Normal").trigger('change');
-            $('#addModal').find('#transactionDate').val(formatDate2(today));
+            transactionDatePicker.setDate(today);
             $('#addModal').find('#vehiclePlateNo1').val("").trigger('change');
             $('#addModal').find('#vehiclePlateNo2').val("").trigger('change');
             $('#addModal').find('#supplierWeight').val("");
@@ -4322,7 +4322,7 @@ else{
                 }
                 $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
-                $('#addModal').find('#transactionDate').val(formatDate2(new Date(obj.message.transaction_date)));
+                transactionDatePicker.setDate(obj.message.transaction_date, false, 'd/m/Y');
 
                 if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
                     $('#divWeightDifference').show();
