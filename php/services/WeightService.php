@@ -1041,7 +1041,7 @@ class WeightService extends BaseService {
             'unit_price' => $field('unitPrice'),
             'sub_total' => $field('subTotalPrice', '0.00'),
             'sst' => $field('sstPrice', '0.00'),
-            'total_price' => $field('totalPrice'),
+            'total_price' => $field('totalPrice', '0.00'),
             'is_approved' => $isApproved,
             'plant_code' => $plantCode,
             'plant_name' => $plant
