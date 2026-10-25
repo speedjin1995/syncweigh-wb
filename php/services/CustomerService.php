@@ -254,10 +254,11 @@ class CustomerService extends BaseService {
                 $existing = $sel->get_result()->fetch_assoc();
                 $sel->close();
 
+                // Blank Excel name keeps the stored name (COALESCE below)
                 // N keeps the stored balance and minimum
                 if ($depositStatus === 'N') { $deposit = (float) $existing['deposit_balance']; $minDeposit = (float) $existing['min_deposit_balance']; }
 
-                $stmt = $this->db->prepare("UPDATE {$this->table} SET company_reg_no=?, new_reg_no=?, name=?, address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, deposit_balance=?, deposit_status=?, min_deposit_balance=?, modified_by=? WHERE id=?");
+                $stmt = $this->db->prepare("UPDATE {$this->table} SET company_reg_no=?, new_reg_no=?, name=COALESCE(?, name), address_line_1=?, address_line_2=?, address_line_3=?, phone_no=?, fax_no=?, contact_name=?, ic_no=?, tin_no=?, deposit_balance=?, deposit_status=?, min_deposit_balance=?, modified_by=? WHERE id=?");
                 if (!$stmt) throw new Exception($this->db->error);
                 $stmt->bind_param('sssssssssssdsdss', $regNo, $newRegNo, $name, $address1, $address2, $address3, $phone, $fax, $contactName, $icNo, $tinNo, $deposit, $depositStatus, $minDeposit, $this->username, $existing['id']);
                 if (!$stmt->execute()) throw new Exception($stmt->error);
