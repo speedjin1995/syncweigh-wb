@@ -191,7 +191,10 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3" id="customerSearchDisplay">
                                                         <div class="mb-3">
-                                                            <label for="customerNoSearch" class="form-label"><?=$languageArray['customer_name_code'][$language]?></label>
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <label for="customerNoSearch" class="form-label"><?=$languageArray['customer_name_code'][$language]?></label>
+                                                                <button type="button" class="btn btn-sm btn-outline-primary py-0 mb-1 code-range-btn" data-target="customerNoSearch"><?=$languageArray['range_btn_code'][$language]?></button>
+                                                            </div>
                                                             <select id="customerNoSearch" class="form-select select2" multiple>
                                                                 <?php while($rowPF = mysqli_fetch_assoc($customer2)){ ?>
                                                                     <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['customer_code'] .' - '. $rowPF['name'] ?></option>
@@ -201,7 +204,10 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                         <div class="mb-3">
-                                                            <label for="supplierSearch" class="form-label"><?=$languageArray['supplier_name_code'][$language]?></label>
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <label for="supplierSearch" class="form-label"><?=$languageArray['supplier_name_code'][$language]?></label>
+                                                                <button type="button" class="btn btn-sm btn-outline-primary py-0 mb-1 code-range-btn" data-target="supplierSearch"><?=$languageArray['range_btn_code'][$language]?></button>
+                                                            </div>
                                                             <select id="supplierSearch" class="form-select select2" multiple>
                                                                 <?php while($rowSF=mysqli_fetch_assoc($supplier2)){ ?>
                                                                     <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['supplier_code'] .' - '. $rowSF['name'] ?></option>
@@ -319,113 +325,6 @@ else{
                             </div>
                             
                             <div class="row">
-                                <!-- <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #4CAF50;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Dispatch
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="salesInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-success rounded fs-3">
-                                                        <i class="bx bx-dollar-circle text-success"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #FFC107;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Receiving
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="purchaseInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-info rounded fs-3">
-                                                        <i class="bx bx-shopping-bag text-info"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #81D4FA;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Internal Transfer
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="localInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
-                                                        <i class="bx bx-user-circle text-warning"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #9C27B0;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-white text-uppercase fw-medium text-truncate mb-0">
-                                                        Miscellaneous
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="miscInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
-                                                        <i class="bx bx-user-circle text-warning"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-                            </div> <!-- end row-->
-
-
-                            <div class="row">
                                 <div class="col">
                                     <div class="h-100">
                                         <!--datatable--> 
@@ -507,6 +406,38 @@ else{
     </div>
     <!-- END layout-wrapper -->
     
+    <div class="modal fade" id="codeRangeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$languageArray['code_range_code'][$language]?></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="codeRangeTarget">
+                    <div class="mb-3">
+                        <label for="codeRangePrefix" class="form-label"><?=$languageArray['code_prefix_code'][$language]?></label>
+                        <input type="text" class="form-control" id="codeRangePrefix" placeholder="e.g. AFH">
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="codeRangeFrom" class="form-label"><?=$languageArray['from_code'][$language]?></label>
+                            <input type="text" class="form-control" id="codeRangeFrom" placeholder="e.g. 0001">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="codeRangeTo" class="form-label"><?=$languageArray['to_code'][$language]?></label>
+                            <input type="text" class="form-control" id="codeRangeTo" placeholder="e.g. 0010">
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?=$languageArray['cancel_code'][$language]?></button>
+                        <button type="button" class="btn btn-primary" id="codeRangeApply"><?=$languageArray['apply_code'][$language]?></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="exportPdfModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable custom-xxl">
             <div class="modal-content">
@@ -605,6 +536,11 @@ else{
     var toDateSearchPicker;
     var table = null;
     var containerColumnsEnabled = <?= json_encode($containerWeighingEnabled || $differentBinWeighingEnabled) ?>;
+    var codeRangeText = <?= json_encode([
+        'invalid' => $languageArray['code_range_invalid_code'][$language],
+        'order' => $languageArray['code_range_order_code'][$language],
+        'noMatch' => $languageArray['code_range_no_match_code'][$language]
+    ]) ?>;
 
     $(function () {
         const today = new Date();
@@ -663,6 +599,47 @@ else{
             $('#locationSearch').val('-').trigger('change');
             $('#statusSearch').val('Complete').trigger('change');
             $('#invDelPoSearch').val('');
+        });
+
+        // Code range picker: selects options whose code = prefix + digits within [from, to]
+        $('.code-range-btn').on('click', function() {
+            $('#codeRangeTarget').val($(this).data('target'));
+            $('#codeRangeModal').modal('show');
+        });
+
+        $('#codeRangeApply').on('click', function() {
+            var targetId = $('#codeRangeTarget').val();
+            var prefix = $.trim($('#codeRangePrefix').val()).toUpperCase();
+            var fromStr = $.trim($('#codeRangeFrom').val());
+            var toStr = $.trim($('#codeRangeTo').val());
+
+            if (!prefix || !/^\d+$/.test(fromStr) || !/^\d+$/.test(toStr)) {
+                toastr["warning"](codeRangeText.invalid);
+                return;
+            }
+            var from = parseInt(fromStr, 10);
+            var to = parseInt(toStr, 10);
+            if (from > to) {
+                toastr["warning"](codeRangeText.order);
+                return;
+            }
+
+            var matches = [];
+            $('#' + targetId + ' option').each(function() {
+                var code = String($(this).val()).toUpperCase();
+                if (code.indexOf(prefix) !== 0) return;
+                var rest = code.substring(prefix.length);
+                if (!/^\d+$/.test(rest)) return;
+                var n = parseInt(rest, 10);
+                if (n >= from && n <= to) matches.push($(this).val());
+            });
+
+            if (matches.length === 0) {
+                toastr["warning"](codeRangeText.noMatch);
+                return;
+            }
+            $('#' + targetId).val(matches).trigger('change');
+            $('#codeRangeModal').modal('hide');
         });
 
         $('#selectAllCheckbox').on('change', function() {
