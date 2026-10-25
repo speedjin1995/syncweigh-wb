@@ -3,6 +3,10 @@ require_once 'php/classes/BaseController.php';
 $baseController = new BaseController($db);
 $containerWeighingEnabled = $baseController->isFeatureEnabled('container_weighing');
 $differentBinWeighingEnabled = $baseController->isFeatureEnabled('different_bin_weighing');
+$dispatchEnabled = $baseController->isFeatureEnabled('transaction_dispatch');
+$receivingEnabled = $baseController->isFeatureEnabled('transaction_receiving');
+$internalTransferEnabled = $baseController->isFeatureEnabled('transaction_internal_transfer');
+$miscellaneousEnabled = $baseController->isFeatureEnabled('transaction_miscellaneous');
 
 ## Fetch records
 // Lorry SQL
@@ -53,28 +57,28 @@ while($row=mysqli_fetch_assoc($normalWeighing)){
         $weightType = $row['weight_type'];
     }
 
-    if($row['transaction_status'] == 'Sales'){
+    if($row['transaction_status'] == 'Sales' && $dispatchEnabled){
         $salesList[] = array(
             "id" => $row['id'],
             "transaction_id" => $row['transaction_id'],
             "weight_type" => $weightType
         );
     }
-    else if($row['transaction_status'] == 'Purchase'){
+    else if($row['transaction_status'] == 'Purchase' && $receivingEnabled){
         $purchaseList[] = array(
             "id" => $row['id'],
             "transaction_id" => $row['transaction_id'],
             "weight_type" => $weightType
         );
     }
-    else if($row['transaction_status'] == 'Local'){
+    else if($row['transaction_status'] == 'Local' && $internalTransferEnabled){
         $localList[] = array(
             "id" => $row['id'],
             "transaction_id" => $row['transaction_id'],
             "weight_type" => $weightType
         );
     }
-    else{
+    else if($row['transaction_status'] == 'Misc' && $miscellaneousEnabled){
         $miscList[] = array(
             "id" => $row['id'],
             "transaction_id" => $row['transaction_id'],
@@ -95,7 +99,7 @@ while($row3=mysqli_fetch_assoc($containerWeighing)){
         $weightType = $row3['weight_type'];
     }
 
-    if($row3['transaction_status'] == 'Sales'){
+    if($row3['transaction_status'] == 'Sales' && $dispatchEnabled){
         $salesContainerList[] = array(
             "id" => $row3['id'],
             "transaction_id" => $row3['transaction_id'],
@@ -103,7 +107,7 @@ while($row3=mysqli_fetch_assoc($containerWeighing)){
             "weight_type" => $weightType
         );
     }
-    else if($row3['transaction_status'] == 'Purchase'){
+    else if($row3['transaction_status'] == 'Purchase' && $receivingEnabled){
         $purchaseContainerList[] = array(
             "id" => $row3['id'],
             "transaction_id" => $row3['transaction_id'],
@@ -111,7 +115,7 @@ while($row3=mysqli_fetch_assoc($containerWeighing)){
             "weight_type" => $weightType
         );
     }
-    else if($row3['transaction_status'] == 'Local'){
+    else if($row3['transaction_status'] == 'Local' && $internalTransferEnabled){
         $localContainerList[] = array(
             "id" => $row3['id'],
             "transaction_id" => $row3['transaction_id'],
@@ -119,7 +123,7 @@ while($row3=mysqli_fetch_assoc($containerWeighing)){
             "weight_type" => $weightType
         );
     }
-    else{
+    else if($row3['transaction_status'] == 'Misc' && $miscellaneousEnabled){
         $miscContainerList[] = array(
             "id" => $row3['id'],
             "transaction_id" => $row3['transaction_id'],
@@ -130,28 +134,28 @@ while($row3=mysqli_fetch_assoc($containerWeighing)){
 }
 
 while($row2=mysqli_fetch_assoc($weighing2)){
-    if($row2['transaction_status'] == 'Sales'){
+    if($row2['transaction_status'] == 'Sales' && $dispatchEnabled){
         $salesList2[] = array(
             "id" => $row2['id'],
             "transaction_id" => $row2['transaction_id'],
             "weight_type" => $row2['weight_type']
         );
     }
-    else if($row2['transaction_status'] == 'Purchase'){
+    else if($row2['transaction_status'] == 'Purchase' && $receivingEnabled){
         $purchaseList2[] = array(
             "id" => $row2['id'],
             "transaction_id" => $row2['transaction_id'],
             "weight_type" => $row2['weight_type']
         );
     }
-    else if($row2['transaction_status'] == 'Local'){
+    else if($row2['transaction_status'] == 'Local' && $internalTransferEnabled){
         $localList2[] = array(
             "id" => $row2['id'],
             "transaction_id" => $row2['transaction_id'],
             "weight_type" => $row2['weight_type']
         );
     }
-    else{
+    else if($row2['transaction_status'] == 'Misc' && $miscellaneousEnabled){
         $miscList2[] = array(
             "id" => $row2['id'],
             "transaction_id" => $row2['transaction_id'],
@@ -240,37 +244,46 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                             <div class="px-2 pt-2">
                                 <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true"
                                     id="notificationItemsTab" role="tablist">
+                                    <?php if($dispatchEnabled): ?>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab" role="tab"
+                                        <a class="nav-link <?php echo ($dispatchEnabled ? 'active' : ''); ?>" data-bs-toggle="tab" href="#all-noti-tab" role="tab"
                                             aria-selected="true">
                                             <?=$languageArray['dispatch_code'][$language] ?> <?php echo (count($salesList) == 0 ? '' : '('.count($salesList).')'); ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
+                                    <?php if($receivingEnabled): ?>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#messages-tab" role="tab"
+                                        <a class="nav-link <?php echo (!$dispatchEnabled && $receivingEnabled ? 'active' : ''); ?>" data-bs-toggle="tab" href="#messages-tab" role="tab"
                                             aria-selected="false">
                                             <?=$languageArray['receiving_code'][$language] ?> <?php echo (count($purchaseList) == 0 ? '' : '('.count($purchaseList).')'); ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
+                                    <?php if($internalTransferEnabled): ?>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#alerts-tab" role="tab"
+                                        <a class="nav-link <?php echo (!$dispatchEnabled && !$receivingEnabled && $internalTransferEnabled ? 'active' : ''); ?>" data-bs-toggle="tab" href="#alerts-tab" role="tab"
                                             aria-selected="false">
                                             <?=$languageArray['internal_transfer_code'][$language] ?> <?php echo (count($localList) == 0 ? '' : '('.count($localList).')'); ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
+                                    <?php if($miscellaneousEnabled): ?>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#misc-tab" role="tab"
+                                        <a class="nav-link <?php echo (!$dispatchEnabled && !$receivingEnabled && !$internalTransferEnabled && $miscellaneousEnabled ? 'active' : ''); ?>" data-bs-toggle="tab" href="#misc-tab" role="tab"
                                             aria-selected="false">
                                             <?=$languageArray['miscellaneous_code'][$language] ?> <?php echo (count($miscList) == 0 ? '' : '('.count($miscList).')'); ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
                                 </ul>
                             </div>
 
                         </div>
 
                         <div class="tab-content position-relative" id="notificationItemsTabContent">
-                            <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel">
+                            <?php if($dispatchEnabled): ?>
+                            <div class="tab-pane fade <?php echo ($dispatchEnabled ? 'show active' : ''); ?> py-2 ps-2" id="all-noti-tab" role="tabpanel">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($salesList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -287,8 +300,10 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <?php } ?>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
-                            <div class="tab-pane fade py-2 ps-2" id="messages-tab" role="tabpanel" aria-labelledby="messages-tab">
+                            <?php if($receivingEnabled): ?>
+                            <div class="tab-pane fade <?php echo (!$dispatchEnabled && $receivingEnabled ? 'show active' : ''); ?> py-2 ps-2" id="messages-tab" role="tabpanel" aria-labelledby="messages-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($purchaseList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -305,8 +320,10 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <?php } ?>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
-                            <div class="tab-pane fade py-2 ps-2" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab">
+                            <?php if($internalTransferEnabled): ?>
+                            <div class="tab-pane fade <?php echo (!$dispatchEnabled && !$receivingEnabled && $internalTransferEnabled ? 'show active' : ''); ?> py-2 ps-2" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($localList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -323,8 +340,10 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <?php } ?>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
-                            <div class="tab-pane fade py-2 ps-2" id="misc-tab" role="tabpanel" aria-labelledby="misc-tab">
+                            <?php if($miscellaneousEnabled): ?>
+                            <div class="tab-pane fade <?php echo (!$dispatchEnabled && !$receivingEnabled && !$internalTransferEnabled && $miscellaneousEnabled ? 'show active' : ''); ?> py-2 ps-2" id="misc-tab" role="tabpanel" aria-labelledby="misc-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($miscList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -341,6 +360,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <?php } ?>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
                             <div class="notification-actions" id="notification-actions">
                                 <div class="d-flex text-muted justify-content-center">
@@ -380,37 +400,46 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                             <div class="px-2 pt-2">
                                 <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true"
                                     id="cwNotificationItemsTab" role="tablist">
+                                    <?php if($dispatchEnabled): ?>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#sales-cw-tab" role="tab"
+                                        <a class="nav-link <?php echo ($dispatchEnabled ? 'active' : ''); ?>" data-bs-toggle="tab" href="#sales-cw-tab" role="tab"
                                             aria-selected="true">
                                             <?=$languageArray['dispatch_code'][$language] ?> <?php echo (count($salesContainerList) == 0 ? '' : '('.count($salesContainerList).')'); ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
+                                    <?php if($receivingEnabled): ?>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#purchase-cw-tab" role="tab"
+                                        <a class="nav-link <?php echo (!$dispatchEnabled && $receivingEnabled ? 'active' : ''); ?>" data-bs-toggle="tab" href="#purchase-cw-tab" role="tab"
                                             aria-selected="false">
                                             <?=$languageArray['receiving_code'][$language] ?> <?php echo (count($purchaseContainerList) == 0 ? '' : '('.count($purchaseContainerList).')'); ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
+                                    <?php if($internalTransferEnabled): ?>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#local-cw-tab" role="tab"
+                                        <a class="nav-link <?php echo (!$dispatchEnabled && !$receivingEnabled && $internalTransferEnabled ? 'active' : ''); ?>" data-bs-toggle="tab" href="#local-cw-tab" role="tab"
                                             aria-selected="false">
                                             <?=$languageArray['internal_transfer_code'][$language] ?> <?php echo (count($localContainerList) == 0 ? '' : '('.count($localContainerList).')'); ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
+                                    <?php if($miscellaneousEnabled): ?>
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#misc-cw-tab" role="tab"
+                                        <a class="nav-link <?php echo (!$dispatchEnabled && !$receivingEnabled && !$internalTransferEnabled && $miscellaneousEnabled ? 'active' : ''); ?>" data-bs-toggle="tab" href="#misc-cw-tab" role="tab"
                                             aria-selected="false">
                                             <?=$languageArray['miscellaneous_code'][$language] ?> <?php echo (count($miscContainerList) == 0 ? '' : '('.count($miscContainerList).')'); ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
                                 </ul>
                             </div>
 
                         </div>
 
                         <div class="tab-content position-relative" id="notificationItemsTabContent">
-                            <div class="tab-pane fade show active py-2 ps-2" id="sales-cw-tab" role="tabpanel">
+                            <?php if($dispatchEnabled): ?>
+                            <div class="tab-pane fade <?php echo ($dispatchEnabled ? 'show active' : ''); ?> py-2 ps-2" id="sales-cw-tab" role="tabpanel">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($salesContainerList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -425,8 +454,10 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <?php } ?>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
-                            <div class="tab-pane fade py-2 ps-2" id="purchase-cw-tab" role="tabpanel" aria-labelledby="messages-tab">
+                            <?php if($receivingEnabled): ?>
+                            <div class="tab-pane fade <?php echo (!$dispatchEnabled && $receivingEnabled ? 'show active' : ''); ?> py-2 ps-2" id="purchase-cw-tab" role="tabpanel" aria-labelledby="messages-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($purchaseContainerList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -441,8 +472,10 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <?php } ?>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
-                            <div class="tab-pane fade py-2 ps-2" id="local-cw-tab" role="tabpanel" aria-labelledby="local-cw-tab">
+                            <?php if($internalTransferEnabled): ?>
+                            <div class="tab-pane fade <?php echo (!$dispatchEnabled && !$receivingEnabled && $internalTransferEnabled ? 'show active' : ''); ?> py-2 ps-2" id="local-cw-tab" role="tabpanel" aria-labelledby="local-cw-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($localContainerList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -457,8 +490,10 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <?php } ?>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
-                            <div class="tab-pane fade py-2 ps-2" id="misc-cw-tab" role="tabpanel" aria-labelledby="misc-cw-tab">
+                            <?php if($miscellaneousEnabled): ?>
+                            <div class="tab-pane fade <?php echo (!$dispatchEnabled && !$receivingEnabled && !$internalTransferEnabled && $miscellaneousEnabled ? 'show active' : ''); ?> py-2 ps-2" id="misc-cw-tab" role="tabpanel" aria-labelledby="misc-cw-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <?php for($i=0; $i<count($miscContainerList); $i++){ ?>
                                         <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -473,6 +508,7 @@ $count2 = count($salesList2) + count($purchaseList2) + count($localList2) + coun
                                     <?php } ?>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
                             <div class="notification-actions" id="notification-actions">
                                 <div class="d-flex text-muted justify-content-center">

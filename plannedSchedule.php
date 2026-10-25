@@ -78,7 +78,9 @@ if (!hasModulePermission('Planned Schedule', 'Planned Schedule', ['view'])){
                                             <?php $vehicles = $db->query("SELECT veh_number FROM Vehicle WHERE status = '0' ORDER BY veh_number ASC"); ?>
                                             <?php $suppliers = $db->query("SELECT supplier_code, name FROM Supplier WHERE status = '0' ORDER BY name ASC"); ?>
                                             <?php $contractors = $db->query("SELECT id, name FROM Contractor WHERE status = '0' ORDER BY name ASC"); ?>
+                                            <?php $customers = $db->query("SELECT customer_code, name FROM Customer WHERE status = '0' ORDER BY name ASC"); ?>
                                             <?php $wastes = $db->query("SELECT raw_mat_code, name FROM Raw_Mat WHERE status = '0' ORDER BY name ASC"); ?>
+                                            <?php $products = $db->query("SELECT product_code, name FROM Product WHERE status = '0' ORDER BY name ASC"); ?>
                                             <?php $binNos = $db->query("SELECT name FROM Bin_No WHERE status = '0' ORDER BY name ASC"); ?>
                                             <?php $binTypes = $db->query("SELECT name FROM Bin_Type WHERE status = '0' ORDER BY name ASC"); ?>
                                             <form action="javascript:void(0);">
@@ -140,6 +142,29 @@ if (!hasModulePermission('Planned Schedule', 'Planned Schedule', ['view'])){
                                     </div>
                                 </div>
                             </div>
+                            <div class="modal fade" id="uploadConfirmModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-gray-dark color-palette">
+                                            <h4 class="modal-title"><?=$languageArray['confirm_upload_code'][$language]?></h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body fs-5">
+                                            <p><?=str_replace(['{rows}', '{vehicles}'], ['<strong id="confirmUploadRows">0</strong>', '<strong id="confirmUploadVehicles">0</strong>'], htmlspecialchars($languageArray['confirm_upload_intro_code'][$language]))?></p>
+                                            <ul class="mb-0">
+                                                <li><?=$languageArray['confirm_upload_vehicle_code'][$language]?></li>
+                                                <li><?=$languageArray['confirm_upload_blank_code'][$language]?></li>
+                                                <li><?=$languageArray['confirm_upload_overlap_code'][$language]?><br><span class="text-muted"><?=$languageArray['confirm_upload_example_code'][$language]?></span></li>
+                                                <li><?=$languageArray['confirm_upload_same_code'][$language]?></li>
+                                            </ul>
+                                        </div>
+                                        <div class="modal-footer justify-content-between bg-gray-dark color-palette">
+                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                            <button type="button" class="btn btn-success" id="confirmScheduleUpload"><?=$languageArray['submit_code'][$language]?></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="modal fade" id="scheduleModal" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
@@ -174,11 +199,29 @@ if (!hasModulePermission('Planned Schedule', 'Planned Schedule', ['view'])){
                                                         </select>
                                                     </div>
                                                     <div class="col-md-6 mb-3">
+                                                        <label for="scheduleCustomer" class="form-label"><?=$languageArray['customer_code'][$language]?></label>
+                                                        <select class="form-select select2" id="scheduleCustomer" name="customerCode">
+                                                            <option value="">-</option>
+                                                            <?php while($rowCustomer=mysqli_fetch_assoc($customers)){ ?>
+                                                                <option value="<?=htmlspecialchars($rowCustomer['customer_code']) ?>"><?=htmlspecialchars($rowCustomer['customer_code'].' - '.$rowCustomer['name']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
                                                         <label for="scheduleWaste" class="form-label"><?=$languageArray['waste_code'][$language]?></label>
                                                         <select class="form-select select2" id="scheduleWaste" name="rawMatCode">
                                                             <option value="">-</option>
                                                             <?php while($rowWaste=mysqli_fetch_assoc($wastes)){ ?>
                                                                 <option value="<?=htmlspecialchars($rowWaste['raw_mat_code']) ?>"><?=htmlspecialchars($rowWaste['name']) ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="scheduleProduct" class="form-label"><?=$languageArray['product_code'][$language]?></label>
+                                                        <select class="form-select select2" id="scheduleProduct" name="productCode">
+                                                            <option value="">-</option>
+                                                            <?php while($rowProduct=mysqli_fetch_assoc($products)){ ?>
+                                                                <option value="<?=htmlspecialchars($rowProduct['product_code']) ?>"><?=htmlspecialchars($rowProduct['product_code'].' - '.$rowProduct['name']) ?></option>
                                                             <?php } ?>
                                                         </select>
                                                     </div>
@@ -207,16 +250,16 @@ if (!hasModulePermission('Planned Schedule', 'Planned Schedule', ['view'])){
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-4 mb-3">
+                                                        <label for="scheduleTrips" class="form-label"><?=$languageArray['trips_per_day_code'][$language]?></label>
+                                                        <input type="number" class="form-control" id="scheduleTrips" name="trips" min="0" step="1" required>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
                                                         <label for="scheduleStartDate" class="form-label"><?=$languageArray['start_date_code'][$language]?></label>
                                                         <input type="text" class="form-control" id="scheduleStartDate" name="startDate" placeholder="dd/mm/yyyy" required>
                                                     </div>
                                                     <div class="col-md-4 mb-3">
                                                         <label for="scheduleEndDate" class="form-label"><?=$languageArray['end_date_code'][$language]?></label>
                                                         <input type="text" class="form-control" id="scheduleEndDate" name="endDate" placeholder="dd/mm/yyyy" required>
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="scheduleTrips" class="form-label"><?=$languageArray['trips_per_day_code'][$language]?></label>
-                                                        <input type="number" class="form-control" id="scheduleTrips" name="trips" min="0" step="1" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -310,8 +353,11 @@ if (!hasModulePermission('Planned Schedule', 'Planned Schedule', ['view'])){
                                                                     <th><?=$languageArray['start_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['end_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['vehicle_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['supplier_code'][$language]?></th>
                                                                     <th><?=$languageArray['contractor_code'][$language]?></th>
+                                                                    <th><?=$languageArray['customer_code'][$language]?></th>
                                                                     <th><?=$languageArray['waste_code'][$language]?></th>
+                                                                    <th><?=$languageArray['product_code'][$language]?></th>
                                                                     <th><?=$languageArray['vehicle_type_code'][$language]?></th>
                                                                     <th><?=$languageArray['bin_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['bin_type_code'][$language]?></th>
@@ -530,8 +576,12 @@ $(function () {
         reader.readAsBinaryString(file);
     });
 
+    var pendingUploadData = [];
+    // Blur the backdrop behind the confirmation only (Bootstrap has no blur class)
+    $('#uploadConfirmModal').on('shown.bs.modal', function(){
+        $('.modal-backdrop').last().css('backdrop-filter', 'blur(4px)');
+    });
     $('#submitScheduleUpload').on('click', function(){
-        $('#spinnerLoading').show();
         var formData = $('#uploadForm').serializeArray();
         var data = [];
         var rowIndex = -1;
@@ -548,6 +598,25 @@ $(function () {
             }
         });
 
+        if (data.length === 0) {
+            $("#failBtn").attr('data-toast-text', 'Please fill in all the fields');
+            $("#failBtn").click();
+            return;
+        }
+        pendingUploadData = data;
+        var plates = {};
+        data.forEach(function(row) {
+            if (row.NOPENDAFTARANKENDERAAN) plates[row.NOPENDAFTARANKENDERAAN] = true;
+        });
+        $('#confirmUploadRows').text(data.length);
+        $('#confirmUploadVehicles').text(Object.keys(plates).length);
+        $('#uploadConfirmModal').modal('show');
+    });
+
+    $('#confirmScheduleUpload').on('click', function(){
+        $('#uploadConfirmModal').modal('hide');
+        $('#spinnerLoading').show();
+        var data = pendingUploadData;
         $.ajax({
             url: 'php/modules/plannedSchedule/index.php?action=upload',
             type: 'POST',
@@ -590,7 +659,9 @@ function openScheduleModal(row){
     $('#scheduleVehNumber').val(row ? row.veh_number : '');
     $('#scheduleSupplier').val(row && row.supplier_code ? row.supplier_code : '').trigger('change');
     $('#scheduleContractor').val(row && row.contractor_id ? row.contractor_id : '').trigger('change');
+    $('#scheduleCustomer').val(row && row.customer_code ? row.customer_code : '').trigger('change');
     $('#scheduleWaste').val(row && row.raw_mat_code ? row.raw_mat_code : '').trigger('change');
+    $('#scheduleProduct').val(row && row.product_code ? row.product_code : '').trigger('change');
     $('#scheduleVehicleType').val(row ? row.vehicle_type : '');
     $('#scheduleBinNo').val(row && row.bin_no ? row.bin_no : '').trigger('change');
     $('#scheduleBinType').val(row && row.bin_type ? row.bin_type : '').trigger('change');
@@ -703,8 +774,11 @@ function renderTable(){
             { data: 'start_date' },
             { data: 'end_date' },
             { data: 'veh_number' },
-            { data: 'contractor_name' },
-            { data: 'raw_mat_name' },
+            { data: 'supplier_name', render: function (data, type, row) { return (row.supplier_code ? row.supplier_code + ' - ' : '') + (data || ''); } },
+            { data: 'contractor_name', render: function (data, type, row) { return (row.contractor_code ? row.contractor_code + ' - ' : '') + (data || ''); } },
+            { data: 'customer_name', render: function (data, type, row) { return (row.customer_code ? row.customer_code + ' - ' : '') + (data || ''); } },
+            { data: 'raw_mat_name', render: function (data, type, row) { return (row.raw_mat_code ? row.raw_mat_code + ' - ' : '') + (data || ''); } },
+            { data: 'product_name', render: function (data, type, row) { return (row.product_code ? row.product_code + ' - ' : '') + (data || ''); } },
             { data: 'vehicle_type' },
             { data: 'bin_no' },
             { data: 'bin_type' },
@@ -755,7 +829,7 @@ function displayPreview(data) {
 
         htmlTable += '<tr>';
         for (var j = 0; j < headers.length; j++) {
-            var name = String(headers[j]).replace(/[^a-zA-Z0-9]/g, '');
+            var name = String(headers[j]).replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
             var value = rowData[j] == null ? '' : rowData[j];
             if ((name === 'STARTDATE' || name === 'ENDDATE') && typeof value === 'number') {
                 value = formatExcelDate(value);

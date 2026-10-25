@@ -98,6 +98,10 @@ else{
         .modal-header {
             padding: var(1rem, 1rem) !important;
         }
+        #collapseSearch .select2-selection__choice {
+            color: #000 !important;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -187,22 +191,26 @@ else{
                                                     </div><!--end col-->
                                                     <div class="col-3" id="customerSearchDisplay">
                                                         <div class="mb-3">
-                                                            <label for="customerNoSearch" class="form-label"><?=$languageArray['customer_name_code'][$language]?></label>
-                                                            <select id="customerNoSearch" class="form-select select2">
-                                                                <option selected>-</option>
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <label for="customerNoSearch" class="form-label"><?=$languageArray['customer_name_code'][$language]?></label>
+                                                                <button type="button" class="btn btn-sm btn-outline-primary py-0 mb-1 code-range-btn" data-target="customerNoSearch"><?=$languageArray['range_btn_code'][$language]?></button>
+                                                            </div>
+                                                            <select id="customerNoSearch" class="form-select select2" multiple>
                                                                 <?php while($rowPF = mysqli_fetch_assoc($customer2)){ ?>
-                                                                    <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['name'] ?></option>
+                                                                    <option value="<?=$rowPF['customer_code'] ?>"><?=$rowPF['customer_code'] .' - '. $rowPF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
                                                     </div><!--end col-->
                                                     <div class="col-3" id="supplierSearchDisplay" style="display:none">
                                                         <div class="mb-3">
-                                                            <label for="supplierSearch" class="form-label"><?=$languageArray['supplier_name_code'][$language]?></label>
-                                                            <select id="supplierSearch" class="form-select select2">
-                                                                <option selected>-</option>
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <label for="supplierSearch" class="form-label"><?=$languageArray['supplier_name_code'][$language]?></label>
+                                                                <button type="button" class="btn btn-sm btn-outline-primary py-0 mb-1 code-range-btn" data-target="supplierSearch"><?=$languageArray['range_btn_code'][$language]?></button>
+                                                            </div>
+                                                            <select id="supplierSearch" class="form-select select2" multiple>
                                                                 <?php while($rowSF=mysqli_fetch_assoc($supplier2)){ ?>
-                                                                    <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['name'] ?></option>
+                                                                    <option value="<?=$rowSF['supplier_code'] ?>"><?=$rowSF['supplier_code'] .' - '. $rowSF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -238,8 +246,7 @@ else{
                                                     <div class="col-3" id="productSearchDisplay">
                                                         <div class="mb-3">
                                                             <label for="ForminputState" class="form-label"><?=$languageArray['product_code_code'][$language]?></label>
-                                                            <select id="productSearch" class="form-select select2">
-                                                                <option selected>-</option>
+                                                            <select id="productSearch" class="form-select select2" multiple>
                                                                 <?php while($rowProductF=mysqli_fetch_assoc($product2)){ ?>
                                                                     <option value="<?=$rowProductF['product_code'] ?>"><?=$rowProductF['product_code'] .' - '. $rowProductF['name'] ?></option>
                                                                 <?php } ?>
@@ -249,10 +256,9 @@ else{
                                                     <div class="col-3" id="rawMatSearchDisplay" style="display:none">
                                                         <div class="mb-3">
                                                             <label for="ForminputState" class="form-label"><?=$languageArray['raw_material_code_code'][$language]?></label>
-                                                            <select id="rawMatSearch" class="form-select select2">
-                                                                <option selected>-</option>
+                                                            <select id="rawMatSearch" class="form-select select2" multiple>
                                                                 <?php while($rowRawMatF=mysqli_fetch_assoc($rawMaterial2)){ ?>
-                                                                    <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['name'] ?></option>
+                                                                    <option value="<?=$rowRawMatF['raw_mat_code'] ?>"><?=$rowRawMatF['raw_mat_code'] .' - '. $rowRawMatF['name'] ?></option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
@@ -319,113 +325,6 @@ else{
                             </div>
                             
                             <div class="row">
-                                <!-- <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #4CAF50;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Dispatch
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="salesInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-success rounded fs-3">
-                                                        <i class="bx bx-dollar-circle text-success"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #FFC107;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Receiving
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="purchaseInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-info rounded fs-3">
-                                                        <i class="bx bx-shopping-bag text-info"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #81D4FA;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-uppercase fw-medium text-white text-truncate mb-0">
-                                                        Internal Transfer
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="localInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
-                                                        <i class="bx bx-user-circle text-warning"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card card-animate" style="background-color: #9C27B0;">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <p class="text-white text-uppercase fw-medium text-truncate mb-0">
-                                                        Miscellaneous
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-end justify-content-between mt-4">
-                                                <div>
-                                                    <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                        <span class="counter-value text-white" id="miscInfo">0</span>
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm flex-shrink-0" style="background-color:white;">
-                                                    <span class="avatar-title bg-soft-warning rounded fs-3">
-                                                        <i class="bx bx-user-circle text-warning"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-                            </div> <!-- end row-->
-
-
-                            <div class="row">
                                 <div class="col">
                                     <div class="h-100">
                                         <!--datatable--> 
@@ -458,18 +357,20 @@ else{
                                                             <thead>
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
-                                                                    <th><?=$languageArray['location_code'][$language]?></th>
                                                                     <th><?=$languageArray['transaction_id_code'][$language]?></th>
                                                                     <!-- <th><?=$languageArray['weight_type_code'][$language]?></th> -->
                                                                     <th><?=$languageArray['weight_status_code'][$language]?></th>
+                                                                    <th><?=$languageArray['vehicle_code'][$language]?></th>
                                                                     <th><?=$languageArray['customer_supplier_code'][$language]?></th>
+                                                                    <th><?=$languageArray['product_code'][$language]?> / <?=$languageArray['raw_material_code'][$language]?></th>
                                                                     <th><?=$languageArray['container_no2_code'][$language]?></th>
                                                                     <th><?=$languageArray['seal_no2_code'][$language]?></th>
                                                                     <!-- <th><?=$languageArray['container_no_code'][$language]?></th> -->
                                                                     <!-- <th><?=$languageArray['seal_no_code'][$language]?></th> -->
-                                                                    <th><?=$languageArray['vehicle_code'][$language]?></th>
+                                                                    <th><?=$languageArray['location_code'][$language]?></th>
                                                                     <th><?=$languageArray['gross_incoming_code'][$language]?></th>
                                                                     <th><?=$languageArray['incoming_date_code'][$language]?></th>
+                                                                    <th><?=$languageArray['location_code'][$language]?> 2</th>
                                                                     <th><?=$languageArray['tare_outgoing_code'][$language]?></th>
                                                                     <th><?=$languageArray['outgoing_date_code'][$language]?></th>
                                                                     <th><?=$languageArray['nett_weight_code'][$language]?></th>
@@ -505,6 +406,38 @@ else{
     </div>
     <!-- END layout-wrapper -->
     
+    <div class="modal fade" id="codeRangeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$languageArray['code_range_code'][$language]?></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="codeRangeTarget">
+                    <div class="mb-3">
+                        <label for="codeRangePrefix" class="form-label"><?=$languageArray['code_prefix_code'][$language]?></label>
+                        <input type="text" class="form-control" id="codeRangePrefix" placeholder="e.g. AFH">
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="codeRangeFrom" class="form-label"><?=$languageArray['from_code'][$language]?></label>
+                            <input type="text" class="form-control" id="codeRangeFrom" placeholder="e.g. 0001">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="codeRangeTo" class="form-label"><?=$languageArray['to_code'][$language]?></label>
+                            <input type="text" class="form-control" id="codeRangeTo" placeholder="e.g. 0010">
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?=$languageArray['cancel_code'][$language]?></button>
+                        <button type="button" class="btn btn-primary" id="codeRangeApply"><?=$languageArray['apply_code'][$language]?></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="exportPdfModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable custom-xxl">
             <div class="modal-content">
@@ -603,6 +536,11 @@ else{
     var toDateSearchPicker;
     var table = null;
     var containerColumnsEnabled = <?= json_encode($containerWeighingEnabled || $differentBinWeighingEnabled) ?>;
+    var codeRangeText = <?= json_encode([
+        'invalid' => $languageArray['code_range_invalid_code'][$language],
+        'order' => $languageArray['code_range_order_code'][$language],
+        'noMatch' => $languageArray['code_range_no_match_code'][$language]
+    ]) ?>;
 
     $(function () {
         const today = new Date();
@@ -618,7 +556,7 @@ else{
         });
 
         // Apply custom styling to Select2 elements in search bar
-        $('.select2-container .select2-selection--single').css({
+        $('.select2-container .select2-selection--single, .select2-container .select2-selection--multiple').css({
             'padding-top': '4px',
             'padding-bottom': '4px',
             'height': 'auto'
@@ -650,17 +588,58 @@ else{
             fromDateSearchPicker.setDate(yesterday);
             toDateSearchPicker.setDate(today);
             $('#transactionStatusSearch').val('<?=$defaultTransactionStatusSearch ?>').trigger('change');
-            $('#customerNoSearch').val('-').trigger('change');
-            $('#supplierSearch').val('-').trigger('change');
+            $('#customerNoSearch').val(null).trigger('change');
+            $('#supplierSearch').val(null).trigger('change');
             $('#vehicleNo').val('');
             $('#invoiceNoSearch').val('-').trigger('change');
-            $('#productSearch').val('-').trigger('change');
-            $('#rawMatSearch').val('-').trigger('change');
+            $('#productSearch').val(null).trigger('change');
+            $('#rawMatSearch').val(null).trigger('change');
             $('#destinationSearch').val('-').trigger('change');
             $('#plantSearch').val(defaultPlantCode).trigger('change');
             $('#locationSearch').val('-').trigger('change');
             $('#statusSearch').val('Complete').trigger('change');
             $('#invDelPoSearch').val('');
+        });
+
+        // Code range picker: selects options whose code = prefix + digits within [from, to]
+        $('.code-range-btn').on('click', function() {
+            $('#codeRangeTarget').val($(this).data('target'));
+            $('#codeRangeModal').modal('show');
+        });
+
+        $('#codeRangeApply').on('click', function() {
+            var targetId = $('#codeRangeTarget').val();
+            var prefix = $.trim($('#codeRangePrefix').val()).toUpperCase();
+            var fromStr = $.trim($('#codeRangeFrom').val());
+            var toStr = $.trim($('#codeRangeTo').val());
+
+            if (!prefix || !/^\d+$/.test(fromStr) || !/^\d+$/.test(toStr)) {
+                toastr["warning"](codeRangeText.invalid);
+                return;
+            }
+            var from = parseInt(fromStr, 10);
+            var to = parseInt(toStr, 10);
+            if (from > to) {
+                toastr["warning"](codeRangeText.order);
+                return;
+            }
+
+            var matches = [];
+            $('#' + targetId + ' option').each(function() {
+                var code = String($(this).val()).toUpperCase();
+                if (code.indexOf(prefix) !== 0) return;
+                var rest = code.substring(prefix.length);
+                if (!/^\d+$/.test(rest)) return;
+                var n = parseInt(rest, 10);
+                if (n >= from && n <= to) matches.push($(this).val());
+            });
+
+            if (matches.length === 0) {
+                toastr["warning"](codeRangeText.noMatch);
+                return;
+            }
+            $('#' + targetId).val(matches).trigger('change');
+            $('#codeRangeModal').modal('hide');
         });
 
         $('#selectAllCheckbox').on('change', function() {
@@ -941,18 +920,20 @@ else{
                         return '<input type="checkbox" class="select-checkbox" id="checkbox_' + data + '" value="'+data+'"/>';
                     }
                 },
-                { data: 'location' },
                 { data: 'transaction_id' },
                 // { data: 'weight_type' },
                 { data: 'transaction_status' },
-                { data: 'customer' },
+                { data: 'lorry_plate_no1' },
+                { data: 'customer', render: function (data, type, row) { var code = ['Purchase', 'Local'].includes(row.status_code) ? row.supplier_code : row.customer_code; return (code ? code + ' - ' : '') + (data || ''); } },
+                { data: 'product_name', render: function (data, type, row) { return (row.product_code ? row.product_code + ' - ' : '') + (data || ''); } },
                 { data: 'container_no2' },
                 { data: 'seal_no2' },
                 // { data: 'container_no' },
                 // { data: 'seal_no' },
-                { data: 'lorry_plate_no1' },
+                { data: 'location' },
                 { data: 'gross_weight1' },
                 { data: 'gross_weight1_date' },
+                { data: 'location2' },
                 { data: 'tare_weight1' },
                 { data: 'tare_weight1_date' },
                 { data: 'nett_weight1' },
@@ -983,7 +964,7 @@ else{
 
     function edit(id){
         $('#spinnerLoading').show();
-        $.post('php/getWeight.php', {userID: id}, function(data)
+        $.post('php/modules/weight/index.php', {action: 'get', userID: id}, function(data)
         {
             var obj = JSON.parse(data);
             if(obj.status === 'success'){
@@ -1081,7 +1062,7 @@ else{
 
     function deactivate(id){
         $('#spinnerLoading').show();
-        $.post('php/deleteWeight.php', {userID: id}, function(data){
+        $.post('php/modules/weight/index.php', {action: 'delete', userID: id}, function(data){
             var obj = JSON.parse(data);
             
             if(obj.status === 'success'){
@@ -1107,7 +1088,7 @@ else{
     var defaultPlantCode = <?= json_encode($defaultPlantCode) ?>;
 
     function print(id) {
-        $.post('php/print.php', {userID: id, file: 'weight', isEmptyContainer: 'N', source: 'report'}, function(data){
+        $.post('php/modules/weight/index.php', {action: 'print', userID: id, file: 'weight', isEmptyContainer: 'N', source: 'report'}, function(data){
             var obj = JSON.parse(data);
 
             if(obj.status === 'success'){

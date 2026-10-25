@@ -144,6 +144,7 @@ class ModuleService extends BaseService {
             ['name' => 'Contractor', 'category' => 'Master Data'],
             ['name' => 'Bin No', 'category' => 'Master Data'],
             ['name' => 'Bin Type', 'category' => 'Master Data'],
+            ['name' => 'Currency', 'category' => 'Master Data'],
             ['name' => 'Modules', 'category' => 'User Management'],
             ['name' => 'Staff', 'category' => 'User Management'],
             ['name' => 'Role', 'category' => 'User Management'],

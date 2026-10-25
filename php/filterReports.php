@@ -35,13 +35,8 @@ if($_POST['transactionStatus'] != null && $_POST['transactionStatus'] != '' && $
 	$searchQuery .= " and transaction_status = '".$_POST['transactionStatus']."'";
 }
 
-if($_POST['customer'] != null && $_POST['customer'] != '' && $_POST['customer'] != '-'){
-	$searchQuery .= " and customer_code = '".$_POST['customer']."'";
-}
-
-if($_POST['supplier'] != null && $_POST['supplier'] != '' && $_POST['supplier'] != '-'){
-	$searchQuery .= " and supplier_code = '".$_POST['supplier']."'";
-}
+$searchQuery .= inFilterQuery($db, 'customer_code', $_POST['customer'] ?? '');
+$searchQuery .= inFilterQuery($db, 'supplier_code', $_POST['supplier'] ?? '');
 
 if($_POST['vehicle'] != null && $_POST['vehicle'] != '' && $_POST['vehicle'] != '-'){
 	$searchQuery .= " and lorry_plate_no1 like '%".$_POST['vehicle']."%'";
@@ -55,13 +50,8 @@ if($_POST['weightType'] != null && $_POST['weightType'] != '' && $_POST['weightT
 	$searchQuery .= " and weight_type = '".$_POST['weightType']."'";
 }
 
-if($_POST['product'] != null && $_POST['product'] != '' && $_POST['product'] != '-'){
-	$searchQuery .= " and product_code = '".$_POST['product']."'";
-}
-
-if($_POST['rawMaterial'] != null && $_POST['rawMaterial'] != '' && $_POST['rawMaterial'] != '-'){
-	$searchQuery .= " and raw_mat_code = '".$_POST['rawMaterial']."'";
-}
+$searchQuery .= inFilterQuery($db, 'product_code', $_POST['product'] ?? '');
+$searchQuery .= inFilterQuery($db, 'raw_mat_code', $_POST['rawMaterial'] ?? '');
 
 if($_POST['destination'] != null && $_POST['destination'] != '' && $_POST['destination'] != '-'){
 	$searchQuery .= " and destination = '".$_POST['destination']."'";
@@ -162,8 +152,10 @@ while($row = mysqli_fetch_assoc($empRecords)) {
   $data[] = array( 
     "id"=>$row['id'],
     "location"=>searchLocationNameById($row['location_id'], $db),
+    "location2"=>searchLocationNameById($row['location_id2'] ?? null, $db),
     "transaction_id"=>$row['transaction_id'],
     "transaction_status"=>$transactionStatus,
+    "status_code"=>$row['transaction_status'],
     "weight_type"=>$weightType,
     "transaction_date"=>$row['transaction_date'],
     "lorry_plate_no1"=>$row['lorry_plate_no1'],

@@ -80,24 +80,15 @@ if($_GET['transactionStatus'] != null && $_GET['transactionStatus'] != '' && $_G
     }	
 }
 
-if($_GET['customer'] != null && $_GET['customer'] != '' && $_GET['customer'] != '-'){
-    if($_GET["file"] == 'weight'){
-        $searchQuery .= " and Weight.customer_code = '".$_GET['customer']."'";
-        $searchContainerQuery .= " and Weight_Container.customer_code = '".$_GET['customer']."'";
-    }
-    else{
-        $searchQuery .= " and count.customer_code = '".$_GET['customer']."'";
-    }
+if($_GET["file"] == 'weight'){
+    $searchQuery .= inFilterQuery($db, 'Weight.customer_code', $_GET['customer'] ?? '');
+    $searchContainerQuery .= inFilterQuery($db, 'Weight_Container.customer_code', $_GET['customer'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'Weight.supplier_code', $_GET['supplier'] ?? '');
+    $searchContainerQuery .= inFilterQuery($db, 'Weight_Container.supplier_code', $_GET['supplier'] ?? '');
 }
-
-if(isset($_GET['supplier']) && $_GET['supplier'] != null && $_GET['supplier'] != '' && $_GET['supplier'] != '-'){
-    if($_GET["file"] == 'weight'){
-        $searchQuery .= " and Weight.supplier_code = '".$_GET['supplier']."'";
-        $searchContainerQuery .= " and Weight_Container.supplier_code = '".$_GET['supplier']."'";
-    }
-    else{
-        $searchQuery .= " and count.supplier_code = '".$_GET['supplier']."'";
-    }
+else{
+    $searchQuery .= inFilterQuery($db, 'count.customer_code', $_GET['customer'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'count.supplier_code', $_GET['supplier'] ?? '');
 }
 
 if($_GET['vehicle'] != null && $_GET['vehicle'] != '' && $_GET['vehicle'] != '-'){
@@ -120,24 +111,15 @@ if($_GET['weighingType'] != null && $_GET['weighingType'] != '' && $_GET['weighi
     }
 }
 
-if($_GET['product'] != null && $_GET['product'] != '' && $_GET['product'] != '-'){
-    if($_GET["file"] == 'weight'){
-        $searchQuery .= " and Weight.product_code = '".$_GET['product']."'";
-        $searchContainerQuery .= " and Weight_Container.product_code = '".$_GET['product']."'";
-    }
-    else{
-        $searchQuery .= " and count.product_code = '".$_GET['product']."'";
-    }
+if($_GET["file"] == 'weight'){
+    $searchQuery .= inFilterQuery($db, 'Weight.product_code', $_GET['product'] ?? '');
+    $searchContainerQuery .= inFilterQuery($db, 'Weight_Container.product_code', $_GET['product'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'Weight.raw_mat_code', $_GET['rawMat'] ?? '');
+    $searchContainerQuery .= inFilterQuery($db, 'Weight_Container.raw_mat_code', $_GET['rawMat'] ?? '');
 }
-
-if(isset($_GET['rawMat']) && $_GET['rawMat'] != null && $_GET['rawMat'] != '' && $_GET['rawMat'] != '-'){
-    if($_GET["file"] == 'weight'){
-        $searchQuery .= " and Weight.raw_mat_code = '".$_GET['rawMat']."'";
-        $searchContainerQuery .= " and Weight_Container.raw_mat_code = '".$_GET['rawMat']."'";
-    }
-    else{
-        $searchQuery .= " and count.raw_mat_code = '".$_GET['rawMat']."'";
-    }
+else{
+    $searchQuery .= inFilterQuery($db, 'count.product_code', $_GET['product'] ?? '');
+    $searchQuery .= inFilterQuery($db, 'count.raw_mat_code', $_GET['rawMat'] ?? '');
 }
 
 if(isset($_GET['plant']) && $_GET['plant'] != null && $_GET['plant'] != '' && $_GET['plant'] != '-'){
@@ -155,7 +137,7 @@ if(isset($_GET['location']) && $_GET['location'] != null && $_GET['location'] !=
     $searchContainerQuery .= " and Weight_Container.location_id = '".intval($_GET['location'])."'";
 }
 
-// Same text filters as the weighing screen table (php/filterWeight.php)
+// Same text filters as the weighing screen table (php/modules/weight/index.php, action list)
 if(isset($_GET['transactionId']) && $_GET['transactionId'] != '' && $_GET['transactionId'] != '-' && $_GET["file"] == 'weight'){
     $transactionId = $db->real_escape_string(trim($_GET['transactionId']));
     $searchQuery .= " and Weight.transaction_id like '%".$transactionId."%'";
@@ -212,6 +194,77 @@ if($_GET['isMulti'] != null && $_GET['isMulti'] != '' && $_GET['isMulti'] != '-'
     }
 }
 
+
+// Weighing export: Alam Flora layout as .xlsx, weights in tonnes
+if ($_GET["file"] == 'weight') {
+    require_once __DIR__ . '/../vendor/autoload.php';
+
+    $query = $db->query("SELECT * FROM Weight WHERE Weight.status = '0'".$searchQuery."
+        UNION ALL
+        SELECT * FROM Weight_Container WHERE Weight_Container.status = '0'".$searchContainerQuery."
+        ORDER BY created_date ASC");
+    $layout = weightExportLayout($db, $query->fetch_all(MYSQLI_ASSOC));
+
+    $fromLabel = empty($_GET['fromDate']) ? '' : DateTime::createFromFormat('d-m-Y', $_GET['fromDate'])->format('d/m/Y');
+    $toLabel = empty($_GET['toDate']) ? '' : DateTime::createFromFormat('d-m-Y', $_GET['toDate'])->format('d/m/Y');
+    $statusLabel = weightExportStatusLabel($_GET['transactionStatus'] ?? '');
+
+    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Weight');
+    $sheet->setCellValue('A1', 'FROM DATE: ' . $fromLabel . '   TO DATE: ' . $toLabel);
+    $sheet->setCellValue('A2', 'TRANSACTION STATUS : ' . $statusLabel);
+    $sheet->getStyle('A1:A2')->getFont()->setBold(true);
+
+    // Header, weighings, totals
+    $headerRow = 4;
+    $lastColumn = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(count($layout['headers']));
+    $sheet->fromArray($layout['headers'], null, 'A' . $headerRow, true);
+    $row = $headerRow + 1;
+    foreach ($layout['rows'] as $line) {
+        $sheet->fromArray(array_values($line), null, 'A' . $row, true);
+        $row++;
+    }
+    $totals = array_values($layout['totals']);
+    $totals[0] = 'TOTAL';
+    $totalRow = $row;
+    $sheet->fromArray($totals, null, 'A' . $totalRow, true);
+
+    // Per-waste summary below the table
+    $summaryRow = $totalRow + 2;
+    $sheet->fromArray(array('SUMMARY DETAILS', 'TRIPS', 'TONNAGE (MT)', 'PRICE (RM)'), null, 'A' . $summaryRow, true);
+    $summaryRow++;
+    foreach ($layout['summary'] as $item) {
+        $sheet->fromArray(array('SUBTOTAL (' . $item['name'] . ')', $item['trips'], $item['tonnage'], $item['price']), null, 'A' . $summaryRow, true);
+        $summaryRow++;
+    }
+    $sheet->fromArray(array('GRAND TOTAL', $layout['summaryTotal']['trips'], $layout['summaryTotal']['tonnage'], $layout['summaryTotal']['price']), null, 'A' . $summaryRow, true);
+    $sheet->getStyle('A' . $summaryRow . ':D' . $summaryRow)->getFont()->setBold(true);
+    $sheet->getStyle('C' . ($totalRow + 2) . ':D' . $summaryRow)->getNumberFormat()->setFormatCode('#,##0.00');
+    $sheet->getStyle('A' . ($totalRow + 2) . ':D' . ($totalRow + 2))->applyFromArray(array(
+        'font' => array('bold' => true, 'color' => array('rgb' => 'FFFFFF')),
+        'fill' => array('fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => array('rgb' => '00B050')),
+    ));
+
+    // Styling: green header, borders, number format for the weight and money columns
+    $sheet->getStyle('A' . $headerRow . ':' . $lastColumn . $headerRow)->applyFromArray(array(
+        'font' => array('bold' => true, 'color' => array('rgb' => 'FFFFFF')),
+        'fill' => array('fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => array('rgb' => '00B050')),
+        'alignment' => array('horizontal' => 'center', 'vertical' => 'center', 'wrapText' => true),
+    ));
+    $sheet->getStyle('A' . $headerRow . ':' . $lastColumn . $totalRow)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+    $sheet->getStyle('M' . ($headerRow + 1) . ':V' . $totalRow)->getNumberFormat()->setFormatCode('#,##0.00');
+    $sheet->getStyle('A' . $totalRow . ':' . $lastColumn . $totalRow)->getFont()->setBold(true);
+    for ($column = 1; $column <= count($layout['headers']); $column++) {
+        $sheet->getColumnDimensionByColumn($column)->setAutoSize(true);
+    }
+
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="Weight-data_' . date('Y-m-d') . '.xlsx"');
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+    $writer->save('php://output');
+    exit;
+}
 
 // Column names 
 $fields = array('TRANSACTION ID', 'TRANSACTION STATUS', 'WEIGHT TYPE', 'TRANSACTION DATE', 'LORRY NO.', 'CUSTOMER CODE', 'CUSTOMER NAME', 

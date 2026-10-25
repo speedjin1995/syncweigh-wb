@@ -6,6 +6,13 @@ if (!hasModulePermission('Master Data', 'Products', ['view'])){
     exit;
 }
 ?>
+<?php
+// Pricing modal options, loaded once for the page
+$defaultCurrency = $db->query("SELECT id FROM Currency WHERE currency_code = 'MYR' AND status = '0' LIMIT 1")->fetch_assoc();
+$defaultCurrencyId = $defaultCurrency ? (int) $defaultCurrency['id'] : '';
+$currencyOptions = $db->query("SELECT id, currency_code, name FROM Currency WHERE status = '0' ORDER BY currency_code");
+$customerOptions = $db->query("SELECT id, customer_code, name FROM Customer WHERE status = '0' ORDER BY name");
+?>
 
 <head>
     <title><?=$languageArray['product_code'][$language]?> | Synctronix - Weighing System</title>
@@ -160,7 +167,54 @@ if (!hasModulePermission('Master Data', 'Products', ['view'])){
                                                 </div>
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
-                                    </div><!-- /.modal -->
+                                    </div><!-- /.modal -->                                    
+
+                                    <div class="modal fade" id="pricingModal" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title"><?=$languageArray['pricing_code'][$language]?> <span id="pricingTitle" class="fs-14 text-muted ms-1"></span></h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form id="pricingForm" autocomplete="off">
+                                                        <div class="card bg-light mb-3">
+                                                            <div class="card-body">
+                                                                <h6 class="mb-3"><?=$languageArray['standard_price_code'][$language]?></h6>
+                                                                <div class="row">
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <label for="standardCurrency" class="form-label"><?=$languageArray['currency_code'][$language]?></label>
+                                                                        <select class="form-control" id="standardCurrency" style="width: 100%;" data-default-id="<?=$defaultCurrencyId?>">
+                                                                            <?php $currencyOptions->data_seek(0); while ($currencyRow = $currencyOptions->fetch_assoc()): ?>
+                                                                            <option value="<?= (int) $currencyRow['id'] ?>"><?= htmlspecialchars($currencyRow['currency_code'] . ' - ' . $currencyRow['name']) ?></option>
+                                                                            <?php endwhile; ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <label for="standardPrice" class="form-label"><?=$languageArray['price_code'][$language]?></label>
+                                                                        <input type="number" step="0.01" min="0" class="form-control" id="standardPrice" value="0.00">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <h6 class="mb-0"><?=$languageArray['customer_prices_code'][$language]?></h6>
+                                                            <button type="button" class="btn btn-success btn-sm" id="addPriceRow">
+                                                                <i class="ri-add-circle-line align-middle me-1"></i>
+                                                                <?=$languageArray['add_customer_code'][$language]?>
+                                                            </button>
+                                                        </div>
+                                                        <div id="priceRows"></div>
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
+                                                    <button type="button" class="btn btn-success" id="submitPricing"><?=$languageArray['submit_code'][$language]?></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div class="modal fade" id="uploadModal">
                                         <div class="modal-dialog modal-xl" style="max-width: 90%;">
@@ -177,7 +231,7 @@ if (!hasModulePermission('Master Data', 'Products', ['view'])){
                                                     </div>
                                                     <div class="modal-footer justify-content-between bg-gray-dark color-palette">
                                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?=$languageArray['close_code'][$language]?></button>
-                                                        <button type="button" class="btn btn-success" id="submitWeights"><?=$languageArray['submit_code'][$language]?></button>
+                                                        <button type="button" class="btn btn-success" id="submitProducts"><?=$languageArray['submit_code'][$language]?></button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -253,6 +307,7 @@ if (!hasModulePermission('Master Data', 'Products', ['view'])){
                                                                     <th><?=$languageArray['product_code_code'][$language]?></th>
                                                                     <th><?=$languageArray['product_name_code'][$language]?></th>
                                                                     <th><?=$languageArray['description_code'][$language]?></th>
+                                                                    <th><?=$languageArray['standard_price_code'][$language]?></th>
                                                                     <th><?=$languageArray['status_code'][$language]?></th>
                                                                     <th><?=$languageArray['action_code'][$language]?></th>
                                                                 </tr>
@@ -306,14 +361,66 @@ if (!hasModulePermission('Master Data', 'Products', ['view'])){
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="assets/js/pages/datatables.init.js"></script>
 
+    <script type="text/html" id="priceRowTemplate">
+        <div class="card bg-light price-row mb-2" data-index="{index}">
+            <div class="card-body py-2">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label" for="partyRow{index}"><?=$languageArray['customer_code'][$language]?></label>
+                        <select class="form-control party-select" id="partyRow{index}" style="width: 100%;">
+                            <option value=""></option>
+                            <?php $customerOptions->data_seek(0); while ($customerRow = $customerOptions->fetch_assoc()): ?>
+                            <option value="<?= (int) $customerRow['id'] ?>"><?= htmlspecialchars($customerRow['customer_code'] . ' - ' . $customerRow['name']) ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" for="pricingTypeRow{index}"><?=$languageArray['pricing_type_code'][$language]?></label>
+                        <select class="form-control pricing-type" id="pricingTypeRow{index}">
+                            <option value="STANDARD"><?=$languageArray['pricing_standard_code'][$language]?></option>
+                            <option value="FLOAT"><?=$languageArray['pricing_float_code'][$language]?></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" for="currencyRow{index}"><?=$languageArray['currency_code'][$language]?></label>
+                        <select class="form-control currency-select" id="currencyRow{index}" style="width: 100%;">
+                            <?php $currencyOptions->data_seek(0); while ($currencyRow = $currencyOptions->fetch_assoc()): ?>
+                            <option value="<?= (int) $currencyRow['id'] ?>"><?= $currencyRow['currency_code'] ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="priceRow{index}"><?=$languageArray['price_code'][$language]?></label>
+                        <input type="number" step="0.01" min="0" class="form-control price-input" id="priceRow{index}">
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <button type="button" class="btn btn-soft-danger btn-sm remove-price-row" data-index="{index}" title="<?=$languageArray['remove_code'][$language]?>"><i class="ri-close-line"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
     <script type="text/javascript">
         var table;
-var permissions = <?= json_encode($_SESSION['permissions'] ?? []) ?>;
-var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
+        var permissions = <?= json_encode($_SESSION['permissions'] ?? []) ?>;
+        var isSADMIN = <?= json_encode($_SESSION['roles'] == 'SADMIN') ?>;
+        var pricingLabels = {
+            party: <?=json_encode($languageArray['customer_code'][$language])?>,
+            pricingType: <?=json_encode($languageArray['pricing_type_code'][$language])?>,
+            standard: <?=json_encode($languageArray['pricing_standard_code'][$language])?>,
+            special: <?=json_encode($languageArray['pricing_special_code'][$language])?>,
+            currency: <?=json_encode($languageArray['currency_code'][$language])?>,
+            price: <?=json_encode($languageArray['price_code'][$language])?>,
+            placeholder: <?=json_encode($languageArray['please_select_code'][$language])?>,
+            remove: <?=json_encode($languageArray['remove_code'][$language])?>,
+            currencyRequired: <?=json_encode($languageArray['pricing_currency_required_code'][$language])?>,
+            standardPriceInvalid: <?=json_encode($languageArray['pricing_standard_price_invalid_code'][$language])?>,
+            partyRequired: <?=json_encode($languageArray['pricing_customer_required_code'][$language])?>,
+            partyDuplicate: <?=json_encode($languageArray['pricing_customer_duplicate_code'][$language])?>
+        };
+        var priceRowCount = 0;
 
-function canDo(permission) {
-    return isSADMIN || (permissions['Master Data'] && permissions['Master Data']['Products'] && permissions['Master Data']['Products'].includes(permission));
-}
         $(function () {
             $('#selectAllCheckbox').on('change', function() {
                 var checkboxes = $('#productTable tbody input[type="checkbox"]');
@@ -327,14 +434,18 @@ function canDo(permission) {
                 dropdownParent: $('#addModal') // Ensures dropdown is not cut off
             });
 
+            $('#standardCurrency').select2({ 
+                dropdownParent: $('#pricingModal') 
+            });
+
             // Apply custom styling to Select2 elements in addModal
-            $('#addModal .select2-container .select2-selection--single').css({
+            $('.select2-container .select2-selection--single').css({
                 'padding-top': '4px',
                 'padding-bottom': '4px',
                 'height': 'auto'
             });
 
-            $('#addModal .select2-container .select2-selection__arrow').css({
+            $('.select2-container .select2-selection__arrow').css({
                 'padding-top': '33px',
                 'height': 'auto'
             });
@@ -346,7 +457,8 @@ function canDo(permission) {
                 'serverSide': true,
                 'serverMethod': 'post',
                 'ajax': {
-                    'url':'php/modules/product/loadProducts.php'
+                    'url':'php/modules/product/index.php',
+                    'data': { action: 'getAll' }
                 },
                 'columns': [
                     {
@@ -361,6 +473,13 @@ function canDo(permission) {
                     { data: 'product_code' },
                     { data: 'name' },
                     { data: 'description' },
+                    { 
+                        data: 'standard_price', 
+                        orderable: false, 
+                        render: function (data, type, row) { 
+                            return (row.standard_currency_code ? row.standard_currency_code + ' ' : '') + parseFloat(row.standard_price || 0).toFixed(2); 
+                        } 
+                    },
                     { 
                         data: 'id',
                         render: function ( data, type, row ) {
@@ -379,14 +498,13 @@ function canDo(permission) {
                             return '<div class="dropdown d-inline-block"><button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
                             '<i class="ri-more-fill align-middle"></i></button><ul class="dropdown-menu dropdown-menu-end">' +
                             (canDo('edit') ? '<li><a class="dropdown-item edit-item-btn" id="edit'+data+'" onclick="edit('+data+')"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> <?=$languageArray['edit_code'][$language] ?></a></li>' : '') +
+                            (canDo('manage_pricing') ? '<li><a class="dropdown-item" id="pricing'+data+'" onclick="pricing('+data+')"><i class="ri-price-tag-3-line align-bottom me-2 text-muted"></i> <?=$languageArray['pricing_code'][$language] ?></a></li>' : '') +
                             (canDo('cancelled') ? '<li><a class="dropdown-item remove-item-btn" id="deactivate'+data+'" onclick="deactivate('+data+')"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> <?=$languageArray['delete_code'][$language] ?> </a></li>' : '') + '</ul></div>';
                         }
                     }
                 ]       
             });
             
-            // $.validator.setDefaults({
-            //     submitHandler: function() {
             $('#submitProduct').on('click', function(){
                 // custom validation for select2
                 $('#addModal .select2[required]').each(function () {
@@ -412,7 +530,7 @@ function canDo(permission) {
 
                 if($('#productForm').valid()){
                     $('#spinnerLoading').show();
-                    $.post('php/modules/product/products.php', $('#productForm').serialize(), function(data){
+                    $.post('php/modules/product/index.php', $('#productForm').serialize() + '&action=' + ($('#addModal').find('#id').val() ? 'update' : 'create'), function(data){
                         var obj = JSON.parse(data); 
                         if(obj.status === 'success')
                         {
@@ -435,7 +553,7 @@ function canDo(permission) {
                 // }
             });
 
-            $('#submitWeights').on('click', function(){
+            $('#submitProducts').on('click', function(){
                 $('#spinnerLoading').show();
                 var formData = $('#uploadForm').serializeArray();
                 var data = [];
@@ -455,7 +573,7 @@ function canDo(permission) {
 
                 // Send the JSON array to the server
                 $.ajax({
-                    url: 'php/modules/product/uploadProducts.php',
+                    url: 'php/modules/product/index.php?action=upload',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
@@ -573,7 +691,7 @@ function canDo(permission) {
 
                 if (selectedIds.length > 0) {
                     if (confirm('Are you sure you want to delete these products?')) {
-                        $.post('php/modules/product/deleteProduct.php', {userID: selectedIds, type: 'MULTI'}, function(data){
+                        $.post('php/modules/product/index.php', {action: 'deleteMulti', userID: selectedIds}, function(data){
                             var obj = JSON.parse(data);
                             
                             if(obj.status === 'success'){
@@ -600,11 +718,89 @@ function canDo(permission) {
                     $('#spinnerLoading').hide();
                 }     
             });
+
+            // Pricing Code
+            $(document).on('change', '.pricing-type', function(){
+                applyPricingType($(this).closest('.price-row').data('index'));
+            });
+            $('#standardPrice, #standardCurrency').on('change input', function(){
+                $('#priceRows .price-row').each(function(){
+                    applyPricingType($(this).data('index'));
+                });
+            });
+
+            $('#addPriceRow').on('click', function(){
+                addPriceRow({});
+            });
+
+            $(document).on('click', '.remove-price-row', function(){
+                $(this).closest('.price-row').remove();
+            });
+
+            $('#submitPricing').on('click', function(){
+                var error = '';
+                var seen = {};
+                var prices = [];
+
+                if (!$('#standardCurrency').val()) {
+                    error = pricingLabels.currencyRequired;
+                }
+                if (!error && ($('#standardPrice').val() === '' || parseFloat($('#standardPrice').val()) < 0)) {
+                    error = pricingLabels.standardPriceInvalid;
+                }
+
+                $('#priceRows .price-row').each(function(){
+                    var partyId = $(this).find('.party-select').val();
+                    if (!partyId) {
+                        error = pricingLabels.partyRequired;
+                        return false;
+                    }
+                    if (seen[partyId]) {
+                        error = pricingLabels.partyDuplicate;
+                        return false;
+                    }
+                    seen[partyId] = true;
+                    prices.push({
+                        customerId: partyId,
+                        pricingType: $(this).find('.pricing-type').val(),
+                        currencyId: $(this).find('.currency-select').val(),
+                        price: $(this).find('.price-input').val()
+                    });
+                });
+
+                if (error) {
+                    toastr["error"](error, "Failed:");
+                    return;
+                }
+
+                $('#spinnerLoading').show();
+                $.post('php/modules/product/index.php', {
+                    action: 'savePricing',
+                    productId: $('#pricingForm').data('recordId'),
+                    standardCurrencyId: $('#standardCurrency').val(),
+                    standardPrice: $('#standardPrice').val(),
+                    prices: JSON.stringify(prices)
+                }, function(data){
+                    var obj = JSON.parse(data);
+                    $('#spinnerLoading').hide();
+                    if (obj.status === 'success') {
+                        table.ajax.reload(null, false);
+                        $('#pricingModal').modal('hide');
+                        toastr["success"](obj.message, "Success:");
+                    } else {
+                        toastr["error"](obj.message, "Failed:");
+                    }
+                });
+            });
         });
+
+        function canDo(permission) {
+            return isSADMIN || (permissions['Master Data'] && permissions['Master Data']['Products'] && permissions['Master Data']['Products'].includes(permission));
+        }
 
         function edit(id){
             $('#spinnerLoading').show();
-            $.post('php/modules/product/getProduct.php', {userID: id}, function(data)
+            $.post('php/modules/product/index.php', {action: 'get', id: id}, function(data)
             {
                 var obj = JSON.parse(data);
                 if(obj.status === 'success'){
@@ -658,7 +854,7 @@ function canDo(permission) {
         function deactivate(id){
             $('#spinnerLoading').show();
             if (confirm('Are you sure you want to delete this product?')) {
-                $.post('php/modules/product/deleteProduct.php', {userID: id}, function(data){
+                $.post('php/modules/product/index.php', {action: 'delete', id: id}, function(data){
                     var obj = JSON.parse(data);
                     
                     if(obj.status === 'success'){
@@ -677,6 +873,81 @@ function canDo(permission) {
                 });
             }
             $('#spinnerLoading').hide();
+        }
+
+        function pricing(id) {
+            $('#spinnerLoading').show();
+            $.post('php/modules/product/index.php', {action: 'getPricing', id: id}, function(data){
+                var obj = JSON.parse(data);
+                var record = obj.message;
+                $('#spinnerLoading').hide();
+                if (obj.status !== 'success') {
+                    toastr["error"](obj.message, "Failed:");
+                    return;
+                }
+
+                $('#pricingForm').data('recordId', id);
+                $('#pricingTitle').text(record.product_code + ' - ' + record.name);
+                $('#standardCurrency').val(record.standard_currency_id || $('#standardCurrency').data('defaultId')).trigger('change');
+                $('#standardPrice').val(parseFloat(record.standard_price || 0).toFixed(2));
+
+                $('#priceRows').empty();
+                $.each(record.rows, function(i, row){
+                    addPriceRow(row);
+                });
+
+                $('#pricingModal').modal('show');
+            });
+        }
+
+        function renderPriceRow(index) {
+            return $('#priceRowTemplate').html().replace(/\{index\}/g, index);
+        }
+
+        function addPriceRow(row) {
+            row = row || {};
+            var index = priceRowCount++;
+            var price = row.price !== undefined ? row.price : $('#standardPrice').val();
+            $('#priceRows').append(renderPriceRow(index));
+
+            $('#partyRow' + index).val(row.customer_id || '');
+            $('#pricingTypeRow' + index).val(row.pricing_type === 'STANDARD' ? 'STANDARD' : 'FLOAT');
+            $('#currencyRow' + index).val(row.currency_id || $('#standardCurrency').val());
+            $('#priceRow' + index).val(parseFloat(price || 0).toFixed(2));
+
+            $('#partyRow' + index).select2({ 
+                allowClear: true, 
+                placeholder: pricingLabels.placeholder, 
+                dropdownParent: $('#pricingModal') 
+            });
+            $('#currencyRow' + index).select2({ 
+                dropdownParent: $('#pricingModal') 
+            });
+
+            // Apply custom styling to Select2 elements in addModal
+            $('.select2-container .select2-selection--single').css({
+                'padding-top': '4px',
+                'padding-bottom': '4px',
+                'height': 'auto'
+            });
+
+            $('.select2-container .select2-selection__arrow').css({
+                'padding-top': '33px',
+                'height': 'auto'
+            });
+
+            applyPricingType(index);
+        }
+
+        // Standard rows take the product's standard price and currency and are read-only; Float rows are editable
+        function applyPricingType(index) {
+            var isStandard = $('#pricingTypeRow' + index).val() === 'STANDARD';
+            if (isStandard) {
+                $('#priceRow' + index).val(parseFloat($('#standardPrice').val() || 0).toFixed(2));
+                $('#currencyRow' + index).val($('#standardCurrency').val());
+            }
+            $('#priceRow' + index).prop('readonly', isStandard);
+            $('#currencyRow' + index).prop('disabled', isStandard).trigger('change.select2');
         }
 
         function displayPreview(data) {
@@ -700,7 +971,7 @@ function canDo(permission) {
 
             // Create HTML table headers
             var htmlTable = '<table style="width:30%;"><thead><tr>';
-            headers.forEach(function(header) {
+            $.each(headers, function(index, header) {
                 htmlTable += '<th>' + header + '</th>';
             });
             htmlTable += '</tr></thead><tbody>';
@@ -731,8 +1002,7 @@ function canDo(permission) {
 
             htmlTable += '</tbody></table>';
 
-            var previewTable = document.getElementById('previewTable');
-            previewTable.innerHTML = htmlTable;
+            $('#previewTable').html(htmlTable);
         }
 
         function reactivate(id) {
