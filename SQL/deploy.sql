@@ -3060,7 +3060,7 @@ DELIMITER ;
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'deposit_status_code', 'Deposit Status', '押金状态', 'အပ်ငွေ အခြေအနေ', 'धरौटी स्थिति' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'deposit_status_code');
 INSERT INTO `message_resource` (`message_key_code`, `en`, `zh`, `my`, `ne`) SELECT 'min_deposit_balance_code', 'Min Deposit Balance', '最低押金余额', 'အနည်းဆုံး အပ်ငွေလက်ကျန်', 'न्यूनतम धरौटी बाँकी' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `message_resource` WHERE `message_key_code` = 'min_deposit_balance_code');
 
---25/10/2026--
+-- 25/10/2026 --
 ALTER TABLE `Vehicle` ADD `product_code` VARCHAR(50) NULL AFTER `raw_mat_name`, ADD `product_name` VARCHAR(255) NULL AFTER `product_code`;
 ALTER TABLE `Vehicle_Log` ADD `product_code` VARCHAR(50) NULL AFTER `raw_mat_name`, ADD `product_name` VARCHAR(255) NULL AFTER `product_code`;
 
