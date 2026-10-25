@@ -1538,9 +1538,7 @@ else{
             <?php include 'layouts/footer.php'; ?>
         </div>
         <!-- end main content-->
-
     </div>
-
     <!-- END layout-wrapper -->
 
     <?php include 'layouts/customizer.php'; ?>
