@@ -93,7 +93,6 @@ class SupplierService extends BaseService {
         $minDeposit = $this->depositValue($post['minDepositBalance'] ?? null, 'Min deposit balance');
 
         if ($code === null) throw new Exception('Supplier code is required');
-        if ($newRegNo === null) throw new Exception('New registration no is required');
         if ($this->isDuplicate('supplier_code', $code)) {
             throw new Exception('Supplier code already exists');
         }
@@ -142,7 +141,6 @@ class SupplierService extends BaseService {
         $minDeposit = $this->depositValue($post['minDepositBalance'] ?? null, 'Min deposit balance');
 
         if ($code === null) throw new Exception('Supplier code is required');
-        if ($newRegNo === null) throw new Exception('New registration no is required');
         if ($this->isDuplicate('supplier_code', $code, $id)) {
             throw new Exception('Supplier code already exists');
         }

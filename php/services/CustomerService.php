@@ -92,7 +92,6 @@ class CustomerService extends BaseService {
         $minDeposit = $this->depositValue($post['minDepositBalance'] ?? null, 'Min deposit balance');
 
         if ($code === null) throw new Exception('Customer code is required');
-        if ($newRegNo === null) throw new Exception('New registration no is required');
         if ($this->isDuplicate('customer_code', $code)) {
             throw new Exception('Customer code already exists');
         }
@@ -140,7 +139,6 @@ class CustomerService extends BaseService {
         $minDeposit = $this->depositValue($post['minDepositBalance'] ?? null, 'Min deposit balance');
 
         if ($code === null) throw new Exception('Customer code is required');
-        if ($newRegNo === null) throw new Exception('New registration no is required');
         if ($this->isDuplicate('customer_code', $code, $id)) {
             throw new Exception('Customer code already exists');
         }
