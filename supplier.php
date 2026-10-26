@@ -338,8 +338,8 @@ if (!hasModulePermission('Master Data', 'Supplier', ['view'])){
                                                                     <th><?=$languageArray['supplier_code_code'][$language]?></th>
                                                                     <th><?=$languageArray['company_reg_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['new_reg_no_code'][$language]?></th>
-                                                                    <!-- <th><?=$languageArray['company_name_code'][$language]?></th>
-                                                                    <th><?=$languageArray['address_line_code'][$language]?> 1</th>
+                                                                    <th><?=$languageArray['company_name_code'][$language]?></th>
+                                                                    <!-- <th><?=$languageArray['address_line_code'][$language]?> 1</th>
                                                                     <th><?=$languageArray['address_line_code'][$language]?> 2</th>
                                                                     <th><?=$languageArray['address_line_code'][$language]?> 3</th>
                                                                     <th><?=$languageArray['phone_code'][$language]?></th>
