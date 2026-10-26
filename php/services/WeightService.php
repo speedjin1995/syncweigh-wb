@@ -676,7 +676,9 @@ class WeightService extends BaseService {
             $priceParty = $deposit->getPartyByCode($deposit->partyTypeForStatus($status), $partyCode);
             $postedPrice = trim((string) ($post['unitPrice'] ?? ''));
 
-            if ($postedPrice !== '' && statusPermitted('Weighing', $status, 'manual_price')) {
+            if (!$priceParty || !$priceParty['controlled']) {
+                $unitPriceValue = 0; // only deposit status Y parties are priced
+            } elseif ($postedPrice !== '' && statusPermitted('Weighing', $status, 'manual_price')) {
                 if (!is_numeric($postedPrice) || (float) $postedPrice < 0) {
                     return ['status' => 'failed', 'message' => 'Unit price must be 0 or more'];
                 }
