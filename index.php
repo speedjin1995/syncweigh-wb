@@ -1105,12 +1105,23 @@ else{
                                                                 <div class="card bg-light">
                                                                     <div class="card-body">
                                                                         <!-- Display only (no name, not saved): balance of the selected deposit-controlled customer/supplier -->
-                                                                        <div class="row mb-3" id="depositBalanceDisplay" style="display:none">
-                                                                            <label for="depositBalance" class="col-sm-4 col-form-label"><?=$languageArray['deposit_balance_code'][$language]?></label>
-                                                                            <div class="col-sm-8">
-                                                                                <div class="input-group">
-                                                                                    <input type="number" class="form-control input-readonly" id="depositBalance" placeholder="0" readonly>
-                                                                                    <div class="input-group-text">RM</div>
+                                                                        <div id="depositBalanceDisplay" style="display:none">
+                                                                            <div class="row mb-3">
+                                                                                <label for="depositBalance" class="col-sm-4 col-form-label"><?=$languageArray['deposit_balance_code'][$language]?></label>
+                                                                                <div class="col-sm-8">
+                                                                                    <div class="input-group">
+                                                                                        <input type="number" class="form-control input-readonly" id="depositBalance" placeholder="0" readonly>
+                                                                                        <div class="input-group-text">RM</div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row mb-3">
+                                                                                <label for="minDepositBalance" class="col-sm-4 col-form-label"><?=$languageArray['min_deposit_balance_code'][$language]?></label>
+                                                                                <div class="col-sm-8">
+                                                                                    <div class="input-group">
+                                                                                        <input type="number" class="form-control input-readonly" id="minDepositBalance" placeholder="0" readonly>
+                                                                                        <div class="input-group-text">RM</div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -3220,7 +3231,7 @@ else{
         });
 
         $('#transactionStatus').on('change', function(){
-            $('#priceCard').toggle($(this).val() == 'Sales' || $(this).val() == 'Purchase');
+            loadDepositPrice(); // also shows or hides the price card
             applyManualPermissions();
             var customerType = $('#addModal').find('#customerType').val();
             var weightType = $('#addModal').find('#weightType').val();
@@ -3525,6 +3536,7 @@ else{
     function loadDepositPrice(){
         var requestId = ++depositRequestId;
         $('#depositBalanceDisplay').hide();
+        $('#priceCard').hide(); // shown only for deposit status Y parties
         var transactionStatus = $('#transactionStatus').val();
         if (transactionStatus != 'Sales' && transactionStatus != 'Purchase') {
             calculatePrice();
@@ -3545,11 +3557,15 @@ else{
             var obj = JSON.parse(data);
             if (obj.status !== 'success') return;
 
-            if (!keepUnitPrice) $('#unitPrice').val(obj.price);
+            // Deposit status N parties are not priced, matching the server save
+            if (!obj.controlled) $('#unitPrice').val(0);
+            else if (!keepUnitPrice) $('#unitPrice').val(obj.price);
             calculatePrice();
+            $('#priceCard').toggle(!!obj.controlled);
 
             if (obj.enabled) {
                 $('#depositBalance').val(parseFloat(obj.balance).toFixed(2));
+                $('#minDepositBalance').val(parseFloat(obj.min).toFixed(2));
                 $('#depositBalanceDisplay').show();
             }
 
