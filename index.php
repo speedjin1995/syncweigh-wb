@@ -4320,7 +4320,7 @@ else{
                 }
                 $('#addModal').find('#weightType').val(obj.message.weight_type).trigger('change');
                 $('#addModal').find('#customerType').val(obj.message.customer_type).trigger('change');
-                transactionDatePicker.setDate(obj.message.transaction_date, false, 'd/m/Y');
+                transactionDatePicker.setDate(obj.message.transaction_date, false, 'Y-m-d H:i:S');
 
                 if(obj.message.transaction_status == "Purchase" || obj.message.transaction_status == "Local"){
                     $('#divWeightDifference').show();
