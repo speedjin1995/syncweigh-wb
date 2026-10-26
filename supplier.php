@@ -338,7 +338,7 @@ if (!hasModulePermission('Master Data', 'Supplier', ['view'])){
                                                                     <th><?=$languageArray['supplier_code_code'][$language]?></th>
                                                                     <th><?=$languageArray['company_reg_no_code'][$language]?></th>
                                                                     <th><?=$languageArray['new_reg_no_code'][$language]?></th>
-                                                                    <th><?=$languageArray['company_name_code'][$language]?></th>
+                                                                    <!-- <th><?=$languageArray['company_name_code'][$language]?></th>
                                                                     <th><?=$languageArray['address_line_code'][$language]?> 1</th>
                                                                     <th><?=$languageArray['address_line_code'][$language]?> 2</th>
                                                                     <th><?=$languageArray['address_line_code'][$language]?> 3</th>
@@ -346,7 +346,7 @@ if (!hasModulePermission('Master Data', 'Supplier', ['view'])){
                                                                     <th><?=$languageArray['fax_code'][$language]?></th>
                                                                     <th><?=$languageArray['pic_code'][$language]?></th>
                                                                     <th><?=$languageArray['ic_code'][$language]?></th>
-                                                                    <th><?=$languageArray['tin_code'][$language]?></th>
+                                                                    <th><?=$languageArray['tin_code'][$language]?></th> -->
                                                                     <th><?=$languageArray['deposit_status_code'][$language]?></th>
                                                                     <th><?=$languageArray['deposit_balance_code'][$language]?></th>
                                                                     <th><?=$languageArray['min_deposit_balance_code'][$language]?></th>
@@ -444,14 +444,14 @@ $(function () {
             { data: 'company_reg_no' },
             { data: 'new_reg_no' },
             { data: 'name' },
-            { data: 'address_line_1' },
-            { data: 'address_line_2' },
-            { data: 'address_line_3' },
-            { data: 'phone_no' },
-            { data: 'fax_no' },
-            { data: 'contact_name' },
-            { data: 'ic_no' },
-            { data: 'tin_no' },
+            // { data: 'address_line_1' },
+            // { data: 'address_line_2' },
+            // { data: 'address_line_3' },
+            // { data: 'phone_no' },
+            // { data: 'fax_no' },
+            // { data: 'contact_name' },
+            // { data: 'ic_no' },
+            // { data: 'tin_no' },
             { data: 'deposit_status' },
             { data: 'deposit_balance' },
             { data: 'min_deposit_balance' },
