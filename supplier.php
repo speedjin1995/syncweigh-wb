@@ -109,7 +109,7 @@ if (!hasModulePermission('Master Data', 'Supplier', ['view'])){
                                                                                                 <div class="row">
                                                                                                     <label for="newRegNo" class="col-sm-4 col-form-label"><?=$languageArray['new_reg_no_code'][$language]?></label>
                                                                                                     <div class="col-sm-8">
-                                                                                                        <input type="text" class="form-control" id="newRegNo" name="newRegNo" required>
+                                                                                                        <input type="text" class="form-control" id="newRegNo" name="newRegNo">
                                                                                                         <div class="invalid-feedback">
                                                                                                             <?=$languageArray['please_fill_in_the_field_code'][$language]?>
                                                                                                         </div>
@@ -336,8 +336,8 @@ if (!hasModulePermission('Master Data', 'Supplier', ['view'])){
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['supplier_code_code'][$language]?></th>
-                                                                    <th><?=$languageArray['company_reg_no_code'][$language]?></th>
-                                                                    <th><?=$languageArray['new_reg_no_code'][$language]?></th>
+                                                                    <!-- <th><?=$languageArray['company_reg_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['new_reg_no_code'][$language]?></th> -->
                                                                     <th><?=$languageArray['company_name_code'][$language]?></th>
                                                                     <!-- <th><?=$languageArray['address_line_code'][$language]?> 1</th>
                                                                     <th><?=$languageArray['address_line_code'][$language]?> 2</th>
@@ -441,8 +441,8 @@ $(function () {
                 }
             },
             { data: 'supplier_code' },
-            { data: 'company_reg_no' },
-            { data: 'new_reg_no' },
+            // { data: 'company_reg_no' },
+            // { data: 'new_reg_no' },
             { data: 'name' },
             // { data: 'address_line_1' },
             // { data: 'address_line_2' },
