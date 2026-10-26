@@ -335,8 +335,8 @@ if (!hasModulePermission('Master Data', 'Customer', ['view'])){
                                                                 <tr>
                                                                     <th><input type="checkbox" id="selectAllCheckbox" class="selectAllCheckbox"></th>
                                                                     <th><?=$languageArray['customer_code_code'][$language]?></th>
-                                                                    <th><?=$languageArray['reg_no_code'][$language]?></th>
-                                                                    <th><?=$languageArray['new_reg_no_code'][$language]?></th>
+                                                                    <!-- <th><?=$languageArray['reg_no_code'][$language]?></th>
+                                                                    <th><?=$languageArray['new_reg_no_code'][$language]?></th> -->
                                                                     <th><?=$languageArray['customer_name_code'][$language]?></th>
                                                                     <!-- <th><?=$languageArray['address_line_code'][$language]?> 1</th>
                                                                     <th><?=$languageArray['address_line_code'][$language]?> 2</th>
@@ -463,8 +463,8 @@ $(function () {
                 }
             },
             { data: 'customer_code' },
-            { data: 'company_reg_no' },
-            { data: 'new_reg_no' },
+            // { data: 'company_reg_no' },
+            // { data: 'new_reg_no' },
             { data: 'name' },
             // { data: 'address_line_1' },
             // { data: 'address_line_2' },
