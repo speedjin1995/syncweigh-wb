@@ -91,11 +91,13 @@
                             </li>
                             <?php endif; ?>
 
-                            <?php if(hasModulePermission('Master Data', 'Destination', ['view', 'create', 'edit'])): ?>
+                            <?php /* Hidden for Alam Flora
+                            if(hasModulePermission('Master Data', 'Destination', ['view', 'create', 'edit'])):
                             <li class="nav-item">
                                 <a href="destination.php" class="nav-link"><?=$languageArray['destination_code'][$language]?></a>
                             </li>
-                            <?php endif; ?>
+                            endif;
+                            */ ?>
 
                             <?php if(hasModulePermission('Master Data', 'Products', ['view', 'create', 'edit'])): ?>
                             <li class="nav-item">
@@ -121,11 +123,13 @@
                             </li>
                             <?php endif; ?>
 
-                            <?php if(hasModulePermission('Master Data', 'Transporter', ['view', 'create', 'edit'])): ?>
+                            <?php /* Hidden for Alam Flora
+                            if(hasModulePermission('Master Data', 'Transporter', ['view', 'create', 'edit'])):
                             <li class="nav-item">
                                 <a href="transporter.php" class="nav-link"><?=$languageArray['transporter_code'][$language]?></a>
                             </li>
-                            <?php endif; ?>
+                            endif;
+                            */ ?>
 
                             <?php if(hasModulePermission('Master Data', 'Plant', ['view', 'create', 'edit'])): ?>
                             <li class="nav-item">
