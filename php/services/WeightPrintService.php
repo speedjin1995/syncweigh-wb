@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/BaseService.php';
 require_once __DIR__ . '/../requires/functions.php';
+require_once __DIR__ . '/../requires/lookup.php';
 
 /**
  * Weighing slip (HTML) for a weighing record or an empty container record.
@@ -253,7 +254,7 @@ class WeightPrintService extends BaseService {
 
                         <table class="sign">
                             <tr>
-                                <td>ADMIN</td>
+                                <td>' . htmlspecialchars(searchNamebyId($row['gross_weight_by1'], $this->db)) . '<br>' . htmlspecialchars(searchNamebyId($row['tare_weight_by1'], $this->db)) . '</td>
                                 <td style="width: 30%; border-top: none;"></td>
                                 <td>DRIVER\'S IC AND SIGNATURE</td>
                             </tr>
