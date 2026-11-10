@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/BaseService.php';
 require_once __DIR__ . '/../requires/functions.php';
+require_once __DIR__ . '/../requires/lookup.php';
 
 /**
  * Weighing slip (HTML) for a weighing record or an empty container record.
@@ -171,6 +172,7 @@ class WeightPrintService extends BaseService {
                                 width: 100%;
                                 border-collapse: collapse;
                                 margin-top: 20px;
+                                font-size: 14px;
                             }
 
                             .slip td {
@@ -204,8 +206,8 @@ class WeightPrintService extends BaseService {
                         <table class="slip">
                             <tr>
                                 <td width="14%">Ticket No.</td><td width="22%">: ' . $row['transaction_id'] . '</td>
-                                <td width="14%">Date</td><td width="18%">: ' . $transactionDate . '</td>
-                                <td width="20%" style="text-align: center;">' . $duplicateLabel . '</td><td width="12%"></td>
+                                <td width="14%">Date</td><td width="13%">: ' . $transactionDate . '</td>
+                                <td width="20%" style="text-align: center;">' . $duplicateLabel . '</td><td width="17%"></td>
                             </tr>
                             <tr>
                                 <td>Vehicle No.</td><td>: ' . $row['lorry_plate_no1'] . '</td>
@@ -253,7 +255,7 @@ class WeightPrintService extends BaseService {
 
                         <table class="sign">
                             <tr>
-                                <td>ADMIN</td>
+                                <td>' . htmlspecialchars(searchNamebyId($row['gross_weight_by1'], $this->db)) . '<br>' . htmlspecialchars(searchNamebyId($row['tare_weight_by1'], $this->db)) . '</td>
                                 <td style="width: 30%; border-top: none;"></td>
                                 <td>DRIVER\'S IC AND SIGNATURE</td>
                             </tr>
