@@ -2447,7 +2447,8 @@ else{
             });
 
             if (selectedIds.length > 0) {
-                $.post('php/exportPdf.php', {
+                $.post('php/modules/weight/index.php', {
+                    action : 'exportPdf',
                     source : 'weighing',
                     fromDate : fromDateI,
                     toDate : fromDateI,
@@ -2487,7 +2488,8 @@ else{
                     alert("An error occurred while generating the PDF.");
                 });
             }else{
-                $.post('php/exportPdf.php', {
+                $.post('php/modules/weight/index.php', {
+                    action : 'exportPdf',
                     source : 'weighing',
                     fromDate : fromDateI,
                     toDate : fromDateI,
@@ -2557,13 +2559,13 @@ else{
             });
 
             if (selectedIds.length > 0) {
-                window.open("php/export.php?source=weighing&file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                window.open("php/modules/weight/index.php?action=exportExcel&source=weighing&file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
                 "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&location="+locationI+"&status="+batchNoI+
                 "&transactionId="+encodeURIComponent(transactionIdI)+"&containerNo="+encodeURIComponent(containerNoI)+
                 "&sealNo="+encodeURIComponent(sealNoI)+"&invDelPo="+encodeURIComponent(invDelPoI)+"&isMulti=Y&ids="+selectedIds);
             }else{
-                window.open("php/export.php?source=weighing&file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
+                window.open("php/modules/weight/index.php?action=exportExcel&source=weighing&file=weight&fromDate="+fromDateI+"&toDate="+toDateI+
                 "&transactionStatus="+statusI+"&customer="+customerNoI+"&supplier="+supplierNoI+"&vehicle="+vehicleNoI+
                 "&weighingType="+invoiceNoI+"&product="+productSearchI+"&rawMat="+rawMaterialI+"&plant="+plantNoI+"&location="+locationI+"&status="+batchNoI+
                 "&transactionId="+encodeURIComponent(transactionIdI)+"&containerNo="+encodeURIComponent(containerNoI)+

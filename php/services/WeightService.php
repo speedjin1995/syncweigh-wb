@@ -49,12 +49,12 @@ class WeightService extends BaseService {
 
         if (!empty($post['fromDate'])) {
             $fromDateTime = DateTime::createFromFormat('d-m-Y', $post['fromDate'])->format('Y-m-d 00:00:00');
-            $searchQuery = " and transaction_date >= '" . $this->esc($fromDateTime) . "'";
+            $searchQuery = " and COALESCE(tare_weight1_date, transaction_date) >= '" . $this->esc($fromDateTime) . "'";
         }
 
         if (!empty($post['toDate'])) {
             $toDateTime = DateTime::createFromFormat('d-m-Y', $post['toDate'])->format('Y-m-d 23:59:59');
-            $searchQuery .= " and transaction_date <= '" . $this->esc($toDateTime) . "'";
+            $searchQuery .= " and COALESCE(tare_weight1_date, transaction_date) <= '" . $this->esc($toDateTime) . "'";
         }
 
         $searchQuery .= transactionStatusExclusion($this->db, 'transaction_status');
@@ -254,12 +254,12 @@ class WeightService extends BaseService {
 
         if (!empty($post['fromDate'])) {
             $fromDateTime = DateTime::createFromFormat('d-m-Y', $post['fromDate'])->format('Y-m-d 00:00:00');
-            $searchQuery .= " and transaction_date >= '" . $this->esc($fromDateTime) . "'";
+            $searchQuery .= " and COALESCE(tare_weight1_date, transaction_date) >= '" . $this->esc($fromDateTime) . "'";
         }
 
         if (!empty($post['toDate'])) {
             $toDateTime = DateTime::createFromFormat('d-m-Y', $post['toDate'])->format('Y-m-d 23:59:59');
-            $searchQuery .= " and transaction_date <= '" . $this->esc($toDateTime) . "'";
+            $searchQuery .= " and COALESCE(tare_weight1_date, transaction_date) <= '" . $this->esc($toDateTime) . "'";
         }
 
         if (isset($post['location']) && $f('location') !== null) {
