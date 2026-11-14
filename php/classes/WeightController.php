@@ -2,17 +2,68 @@
 require_once __DIR__ . '/BaseController.php';
 require_once __DIR__ . '/../services/WeightService.php';
 require_once __DIR__ . '/../services/WeightPrintService.php';
+require_once __DIR__ . '/../services/WeightExportService.php';
 require_once __DIR__ . '/../requires/lookup.php';
 
 class WeightController extends BaseController {
 
     private $weightService;
     private $printService;
+    private $exportService;
 
     public function __construct($db) {
         parent::__construct($db);
         $this->weightService = new WeightService($db, $this->username);
         $this->printService = new WeightPrintService($db, $this->username);
+        $this->exportService = new WeightExportService($db, $this->username);
+    }
+
+    /**
+     * Weighing export as an .xlsx download (GET filters). Weighing screen (source = weighing) or weighing report.
+     */
+    public function exportExcel() {
+        $category = $this->exportCategory($_GET);
+        if (!hasPermission($category, ['export'])) {
+            exit('You do not have permission to export');
+        }
+
+        try {
+            $layout = $this->exportService->layout($this->exportService->rows($_GET, $this->plants(), $category));
+        } catch (Exception $e) {
+            exit($e->getMessage());
+        }
+
+        $this->exportService->streamXlsx($layout,
+            $this->exportService->dateLabel($_GET['fromDate'] ?? ''),
+            $this->exportService->dateLabel($_GET['toDate'] ?? ''),
+            $this->exportService->statusLabel($_GET['transactionStatus'] ?? ''));
+    }
+
+    /**
+     * Weighing export as printable HTML (POST filters), returned as {status, message}
+     */
+    public function exportPdf() {
+        $category = $this->exportCategory($_POST);
+        if (!hasPermission($category, ['export'])) {
+            $this->failed('You do not have permission to export');
+        }
+
+        try {
+            $layout = $this->exportService->layout($this->exportService->rows($_POST, $this->plants(), $category));
+            $this->success($this->exportService->html($layout,
+                $this->exportService->dateLabel($_POST['fromDate'] ?? ''),
+                $this->exportService->dateLabel($_POST['toDate'] ?? ''),
+                $this->exportService->statusLabel($_POST['transactionStatus'] ?? '')));
+        } catch (Exception $e) {
+            $this->failed($e->getMessage());
+        }
+    }
+
+    /**
+     * Weighing screen exports use the Weighing export permission; report exports use the Reports one
+     */
+    private function exportCategory($input) {
+        return (($input['source'] ?? '') == 'weighing') ? 'Weighing' : 'Reports';
     }
 
     /**

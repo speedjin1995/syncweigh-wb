@@ -17,6 +17,8 @@ try {
         case 'get':                 $controller->get(); break;
         case 'delete':              $controller->delete(); break;
         case 'print':               $controller->print(); break;
+        case 'exportExcel':         $controller->exportExcel(); break;
+        case 'exportPdf':           $controller->exportPdf(); break;
         case 'save':                $controller->save(); break;
         case 'list':                $controller->list(); break;
         case 'listEmptyContainer':  $controller->listEmptyContainer(); break;
