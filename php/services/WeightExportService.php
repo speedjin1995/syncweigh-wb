@@ -61,10 +61,11 @@ class WeightExportService extends BaseService {
         $sql = '';
 
         if ($value('fromDate') !== null && ($date = DateTime::createFromFormat('d-m-Y', $value('fromDate')))) {
-            $sql .= " and transaction_date >= '" . $date->format('Y-m-d 00:00:00') . "'";
+            // Tare (out) date; records without a tare yet fall back to the transaction date
+            $sql .= " and COALESCE(tare_weight1_date, transaction_date) >= '" . $date->format('Y-m-d 00:00:00') . "'";
         }
         if ($value('toDate') !== null && ($date = DateTime::createFromFormat('d-m-Y', $value('toDate')))) {
-            $sql .= " and transaction_date <= '" . $date->format('Y-m-d 23:59:59') . "'";
+            $sql .= " and COALESCE(tare_weight1_date, transaction_date) <= '" . $date->format('Y-m-d 23:59:59') . "'";
         }
 
         if ($value('transactionStatus') !== null) $sql .= " and transaction_status = '" . $esc($value('transactionStatus')) . "'";

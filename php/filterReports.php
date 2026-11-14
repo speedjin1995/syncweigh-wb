@@ -19,13 +19,14 @@ $searchQuery = "";
 if($_POST['fromDate'] != null && $_POST['fromDate'] != ''){
   $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['fromDate']);
   $fromDateTime = $dateTime->format('Y-m-d 00:00:00');
-  $searchQuery = " and transaction_date >= '".$fromDateTime."'";
+  // Filter by tare (out) date; records without a tare yet fall back to the transaction date
+  $searchQuery = " and COALESCE(tare_weight1_date, transaction_date) >= '".$fromDateTime."'";
 }
 
 if($_POST['toDate'] != null && $_POST['toDate'] != ''){
   $dateTime = DateTime::createFromFormat('d-m-Y', $_POST['toDate']);
   $toDateTime = $dateTime->format('Y-m-d 23:59:59');
-	$searchQuery .= " and transaction_date <= '".$toDateTime."'";
+	$searchQuery .= " and COALESCE(tare_weight1_date, transaction_date) <= '".$toDateTime."'";
 }
 
 $searchQuery .= transactionStatusExclusion($db, 'transaction_status');
