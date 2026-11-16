@@ -1078,6 +1078,8 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                                 <td>
                                                     <p style="padding-left: 5px;">
                                                         <span>Product</span><span style="margin-left: 11px;">:&nbsp;'.$productRawMats.'</span><br>
+                                                        <span>Container No</span><span style="margin-left: 5px;">:&nbsp;'.(!empty($row['container_no']) ? $row['container_no'] : '-').'</span><br>
+                                                        <span>Seal No</span><span style="margin-left: 5px;">:&nbsp;'.(!empty($row['seal_no']) ? $row['seal_no'] : '-').'</span><br>
                                                         <span>Remarks</span><span style="margin-left: 5px;">:&nbsp;'.$row['remarks'].'</span>
                                                     </p>
                                                 </td>
