@@ -392,8 +392,19 @@ if(isset($_POST['userID'], $_POST["file"], $_POST['isEmptyContainer'])){
                                 <tr style="border-top: 1px solid black;">
                                     <td style="vertical-align: top; width: 60%;">
                                         <p style="margin-top: 5px; font-size: 14px;">
+                                            '.(($row['weight_type'] == 'Container' && $_POST['isEmptyContainer'] == 'N') ? '
+                                            <table style="width:100%; border:0px; font-size: 14px; border-collapse: collapse;">
+                                                <tr>
+                                                    <td style="padding:0;">Transporter &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['transporter'].'</td>
+                                                    <td style="padding:0;">Container No &nbsp;:&nbsp;'.(!empty($row['container_no']) ? $row['container_no'] : '-').'</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:0;">Destination &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['destination_code']. ' - '.$row['destination'].'</td>
+                                                    <td style="padding:0;">Seal No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;'.(!empty($row['seal_no']) ? $row['seal_no'] : '-').'</td>
+                                                </tr>
+                                            </table>' : '
                                             <span>Transporter &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['transporter'].'</span><br>
-                                            <span>Destination &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['destination_code']. ' - '.$row['destination'].'</span><br>
+                                            <span>Destination &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['destination_code']. ' - '.$row['destination'].'</span><br>').'
                                             <span>Vehicle No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-left: 3px">:&nbsp;</span>'.$row['lorry_plate_no1'].'</span><br>
                                         ';
                                 
