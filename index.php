@@ -775,7 +775,7 @@ else{
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-xxl-4 col-lg-4" id="containerCard" style="display:none;">
+                                                        <!-- <div class="col-xxl-4 col-lg-4" id="containerCard" style="display:none;">
                                                             <div class="card bg-light">
                                                                 <div class="card-body">
                                                                     <div class="row mb-3">
@@ -863,7 +863,7 @@ else{
                                                                     </div>                                                                    
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> -->
                                                         
                                                         <div class="col-lg-12">
                                                             <div class="hstack gap-2 justify-content-end">
@@ -4856,9 +4856,6 @@ else{
                         $('#addModal').find('#plant').val(obj.message.plant_name).trigger('change');
                         $('#addModal').find('#transporter').val(obj.message.transporter).trigger('change');
                         $('#addModal').find('#destination').val(obj.message.destination).trigger('change');
-
-            
-                        $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
                         $('#addModal').find('#grossIncoming').val(obj.message.gross_weight1);
                         grossIncomingDatePicker.setDate(new Date(obj.message.gross_weight1_date)); 
                         // $('#addModal').find('#grossIncomingDate').val(obj.message.gross_weight1_date);
@@ -4877,7 +4874,7 @@ else{
                             $('#vehicleNoTxt').show();
                         }
                         else{
-                            $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).trigger('change');
+                            $('#addModal').find('#vehiclePlateNo1').val(obj.message.lorry_plate_no1).select2('destroy').select2();
                             $('#manualVehicle').val(0);
                             $('#manualVehicle').prop("checked", false);
                             $('.index-vehicle').show();
@@ -4889,6 +4886,16 @@ else{
                         $('#normalCard').show();
                         $('#grossCapture').hide();
                         $('#tareCapture').hide();
+
+                        // Initialize all Select2 elements in the modal
+                        $('#addModal .select2').select2({
+                            allowClear: true,
+                            placeholder: "Please Select",
+                            dropdownParent: $('#addModal') // Ensures dropdown is not cut off
+                        });
+                        
+                        // Apply custom styling to Select2 elements in addModal
+                        resetSelect2Css();
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
