@@ -2312,6 +2312,7 @@ else{
     var emptyContainerTable = null;
     let clickTimer = null;
     var companyData = null; // Global variable to store company data
+    var afterCompanyLoad = null; // One-shot fill to run after company data reload (container pull)
 
     var grossIncomingDatePicker;
     var tareOutgoingDatePicker; 
@@ -4829,10 +4830,57 @@ else{
                 $.post('php/getEmptyContainer.php', {userID: emptyContainerNo}, function (data){
                     var obj = JSON.parse(data);
 
-                    if (obj.status == 'success'){ 
+                    if (obj.status == 'success'){
+                        // Company change reloads (and clears) company-based dropdowns async, so fill them after it finishes
+                        afterCompanyLoad = function(){
+                            var projectCodes = JSON.parse(obj.message.project_code);
+                            $('#addModal').find('#projectCode').val(projectCodes).trigger('change');
+
+                            if (obj.message.transaction_status == 'Sales' || obj.message.transaction_status == 'Misc'){
+                                $('#addModal').find('#customerName').val(obj.message.customer_name).trigger('change');
+                                var products = JSON.parse(obj.message.product_name);
+                                $('#addModal').find('#productName').val(products).trigger('change');
+                            }else{
+                                $('#addModal').find('#supplierName').val(obj.message.supplier_name).trigger('change');
+                                var rawMaterials = JSON.parse(obj.message.raw_mat_name);
+                                $('#addModal').find('#rawMaterialName').val(rawMaterials).trigger('change');
+                            }
+
+                            // Dispatch customer rows (Sales only)
+                            if (obj.message.transaction_status == 'Sales' && obj.message.customers && obj.message.customers.length > 0){
+                                $('#customerTable').html('');
+                                customerRowCount = 0;
+
+                                for (var i = 0; i < obj.message.customers.length; i++){
+                                    var item = obj.message.customers[i];
+                                    var n = customerRowCount;
+                                    $("#customerTable").append($("#customerDetail").clone().html());
+
+                                    $("#customerTable").find('.details:last').attr("id", "detail" + n).attr("data-index", n);
+                                    $("#customerTable").find('#remove:last').attr("id", "remove" + n);
+                                    $("#customerTable").find('#customerWeightId:last').attr('name', 'customerWeightId['+n+']').attr("id", "customerWeightId" + n).val('');
+                                    $("#customerTable").find('#customerDeliveryNo:last').attr('name', 'customerDeliveryNo['+n+']').attr("id", "customerDeliveryNo" + n).val(item.delivery_no);
+                                    $("#customerTable").find('#customer:last').attr('name', 'customer['+n+']').attr("id", "customer" + n);
+                                    $("#customerTable").find('#customerProduct:last').attr('name', 'customerProduct['+n+'][]').attr("id", "customerProduct" + n);
+                                    $("#customerTable").find('#customerProjectCode:last').attr('name', 'customerProjectCode['+n+'][]').attr("id", "customerProjectCode" + n);
+                                    $("#customerTable").find('#customerInternalDocNo:last').attr('name', 'customerInternalDocNo['+n+']').attr("id", "customerInternalDocNo" + n).val(item.internal_doc_no);
+                                    $("#customerTable").find('#customerRefNo:last').attr('name', 'customerRefNo['+n+']').attr("id", "customerRefNo" + n).val(item.ref_no);
+
+                                    // Load company options into this row, then select saved values
+                                    populateNewCustomerRow(n, companyData);
+                                    $('#customer' + n).val(item.customer_id).trigger('change');
+                                    $('#customerProduct' + n).val(JSON.parse(item.product_id || '[]')).trigger('change');
+                                    $('#customerProjectCode' + n).val(JSON.parse(item.project_id || '[]')).trigger('change');
+
+                                    customerRowCount++;
+                                }
+
+                                reinitSelect2($('#addModal'));
+                            }
+                        };
+
                         $('#addModal').find('#company').val(obj.message.company).trigger('change');
-                        var projectCodes = JSON.parse(obj.message.project_code);
-                        $('#addModal').find('#projectCode').val(projectCodes).trigger('change');
+                        $('#addModal').find('#transportCap').val(obj.message.transport_cap).trigger('change');
                         $('#addModal').find('#invoiceNo').val(obj.message.invoice_no);
                         $('#addModal').find('#deliveryNo').val(obj.message.delivery_no);
                         $('#addModal').find('#purchaseOrder').val(obj.message.purchase_order);
@@ -4844,15 +4892,6 @@ else{
                             $('#addModal').find('#sealNo2').val(obj.message.seal_no2);
                         }
 
-                        if (obj.message.transaction_status == 'Sales' || obj.message.transaction_status == 'Misc'){
-                            $('#addModal').find('#customerName').val(obj.message.customer_name).trigger('change');
-                            var products = JSON.parse(obj.message.product_name);
-                            $('#addModal').find('#productName').val(products).trigger('change');
-                        }else{
-                            $('#addModal').find('#supplierName').val(obj.message.supplier_name).trigger('change');
-                            var rawMaterials = JSON.parse(obj.message.raw_mat_name);
-                            $('#addModal').find('#rawMaterialName').val(rawMaterials).trigger('change');
-                        }
                         $('#addModal').find('#plant').val(obj.message.plant_name).trigger('change');
                         $('#addModal').find('#transporter').val(obj.message.transporter).trigger('change');
                         $('#addModal').find('#destination').val(obj.message.destination).trigger('change');
@@ -5069,6 +5108,12 @@ else{
                     if(obj.status == 'success'){
                         companyData = obj.message;
                         populateCompanyData(companyData);
+
+                        if (afterCompanyLoad) {
+                            var fill = afterCompanyLoad;
+                            afterCompanyLoad = null;
+                            fill();
+                        }
                     }
                     else if(obj.status === 'failed'){
                         $('#spinnerLoading').hide();
@@ -5080,6 +5125,7 @@ else{
                         $("#failBtn").attr('data-toast-text', obj.message );
                         $("#failBtn").click();
                     }
+                    afterCompanyLoad = null; // never let a stale fill run on a later company change
                     $('#spinnerLoading').hide();
                 });
 

@@ -611,6 +611,45 @@ if (isset($_POST['transactionId'], $_POST['transactionDate'], $_POST['grossIncom
         $isWeightOut = false;
     }
 
+    // Save dispatch customer rows for an empty container (pulled later into the Container weighing)
+    function saveContainerCustomers($db, $containerId){
+        $customerWeightId = isset($_POST['customerWeightId']) ? $_POST['customerWeightId'] : [];
+        $customerDeliveryNo = isset($_POST['customerDeliveryNo']) ? $_POST['customerDeliveryNo'] : [];
+        $customer = isset($_POST['customer']) ? $_POST['customer'] : [];
+        $customerProduct = isset($_POST['customerProduct']) ? $_POST['customerProduct'] : [];
+        $customerProjectCode = isset($_POST['customerProjectCode']) ? $_POST['customerProjectCode'] : [];
+        $customerInternalDocNo = isset($_POST['customerInternalDocNo']) ? $_POST['customerInternalDocNo'] : [];
+        $customerRefNo = isset($_POST['customerRefNo']) ? $_POST['customerRefNo'] : [];
+
+        if ($delete_stmt = $db->prepare("UPDATE Weight_Container_Customer SET status = '1' WHERE container_id=?")){
+            $delete_stmt->bind_param('s', $containerId);
+            $delete_stmt->execute();
+            $delete_stmt->close();
+        }
+
+        foreach ($customerDeliveryNo as $i => $deliveryNo) {
+            $productJson = json_encode($customerProduct[$i] ?? []);
+            $projectJson = json_encode($customerProjectCode[$i] ?? []);
+            $custId = $customer[$i] ?? null;
+            $internalDocNo = $customerInternalDocNo[$i] ?? null;
+            $refNo = $customerRefNo[$i] ?? null;
+
+            if(isset($customerWeightId[$i]) && $customerWeightId[$i] > 0){
+                $customer_stmt = $db->prepare("UPDATE Weight_Container_Customer SET container_id=?, delivery_no=?, customer_id=?, product_id=?, project_id=?, internal_doc_no=?, ref_no=?, status='0' WHERE id=?");
+                if ($customer_stmt) $customer_stmt->bind_param('ssssssss', $containerId, $deliveryNo, $custId, $productJson, $projectJson, $internalDocNo, $refNo, $customerWeightId[$i]);
+            }
+            else{
+                $customer_stmt = $db->prepare("INSERT INTO Weight_Container_Customer (container_id, delivery_no, customer_id, product_id, project_id, internal_doc_no, ref_no) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                if ($customer_stmt) $customer_stmt->bind_param('sssssss', $containerId, $deliveryNo, $custId, $productJson, $projectJson, $internalDocNo, $refNo);
+            }
+
+            if ($customer_stmt){
+                $customer_stmt->execute();
+                $customer_stmt->close();
+            }
+        }
+    }
+
     if($weightType == 'Empty Container'){
         if((int)$grossIncoming < (int)$tareOutgoing){
             echo json_encode(array("status"=> "failed", "message"=> "Incoming Weight cannot greater than outgoing weight"));
@@ -642,6 +681,7 @@ if (isset($_POST['transactionId'], $_POST['transactionDate'], $_POST['grossIncom
                     if (!$update_stmt->execute()) {
                         echo json_encode(array("status"=> "failed", "message"=> $update_stmt->error));
                     } else {
+                        saveContainerCustomers($db, $weightId);
                         echo json_encode(array("status"=> "success", "message"=> "Updated Successfully!!", "id"=>$weightId));
                     }
                 
@@ -667,6 +707,7 @@ if (isset($_POST['transactionId'], $_POST['transactionDate'], $_POST['grossIncom
                         echo json_encode(array("status"=> "failed", "message"=> $insert_stmt->error));
                     } 
                     else {
+                        saveContainerCustomers($db, $weightId);
                         echo json_encode(array("status"=> "success", "message"=> "Inserted Successfully!!", "id"=>$weightId));
                     }
                 
@@ -699,7 +740,8 @@ if (isset($_POST['transactionId'], $_POST['transactionDate'], $_POST['grossIncom
                     else{
                         $misValue++;
                         $id = $insert_stmt->insert_id;
-        
+                        saveContainerCustomers($db, $id);
+
                         $queryPlantU = "UPDATE Company SET sales=? WHERE id='$company'";
         
                         if($transactionStatus == 'Purchase'){

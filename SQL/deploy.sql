@@ -1191,3 +1191,20 @@ CREATE TABLE `Weight_Customer` (
 ALTER TABLE `Weight_Customer` ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `Weight_Customer` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+-- 16/11/2026 --
+CREATE TABLE `Weight_Container_Customer` (
+  `id` int(11) NOT NULL,
+  `container_id` int(11) NOT NULL,
+  `delivery_no` varchar(100) DEFAULT NULL,
+  `customer_id` int(11) DEFAULT NULL,
+  `product_id` text DEFAULT NULL,
+  `project_id` text DEFAULT NULL,
+  `internal_doc_no` varchar(100) DEFAULT NULL,
+  `ref_no` varchar(100) DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `Weight_Container_Customer` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `Weight_Container_Customer` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
