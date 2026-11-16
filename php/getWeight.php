@@ -208,7 +208,7 @@ if(isset($_POST['userID'])){
                             $empRecords = mysqli_query($db, $empQuery);
                             $products = array();
                             $productCount = 1;
-            
+
                             while($row4 = mysqli_fetch_assoc($empRecords)) {
                                 $products[] = array(
                                     "no" => $productCount,
@@ -222,9 +222,32 @@ if(isset($_POST['userID'])){
                                 );
                                 $productCount++;
                             }
-            
+
                             $message['products'] = $products;
-    
+
+                            // retrieve empty container dispatch customers
+                            $customers = array();
+                            if ($cust_stmt = $db->prepare("SELECT * FROM Weight_Container_Customer WHERE container_id=? AND status='0' ORDER BY id ASC")) {
+                                $cust_stmt->bind_param('s', $id);
+                                if ($cust_stmt->execute()) {
+                                    $custResult = $cust_stmt->get_result();
+                                    while ($row5 = $custResult->fetch_assoc()) {
+                                        $customers[] = array(
+                                            "id" => $row5['id'],
+                                            "weight_id" => $row5['container_id'],
+                                            "delivery_no" => $row5['delivery_no'],
+                                            "customer_id" => $row5['customer_id'],
+                                            "product_id" => $row5['product_id'],
+                                            "project_id" => $row5['project_id'],
+                                            "internal_doc_no" => $row5['internal_doc_no'],
+                                            "ref_no" => $row5['ref_no']
+                                        );
+                                    }
+                                }
+                                $cust_stmt->close();
+                            }
+                            $message['customers'] = $customers;
+
                             if ($update_stmt2 = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=?")) {
                                 $update_stmt2->bind_param('s', $row['lorry_plate_no1']);
                                 $update_stmt2->execute();

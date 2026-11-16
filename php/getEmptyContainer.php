@@ -54,6 +54,28 @@ if(isset($_POST['userID'])){
                 $message['company'] = $row['company'];
                 $message['project_code'] = $row['project_code'];
                 $message['remarks'] = $row['remarks'];
+                $message['transport_cap'] = $row['transport_cap'];
+
+                // Dispatch customer rows saved with the empty container
+                $customers = array();
+                if ($cust_stmt = $db->prepare("SELECT * FROM Weight_Container_Customer WHERE container_id=? AND status='0' ORDER BY id ASC")) {
+                    $cust_stmt->bind_param('s', $row['id']);
+                    if ($cust_stmt->execute()) {
+                        $custResult = $cust_stmt->get_result();
+                        while ($custRow = $custResult->fetch_assoc()) {
+                            $customers[] = array(
+                                "delivery_no" => $custRow['delivery_no'],
+                                "customer_id" => $custRow['customer_id'],
+                                "product_id" => $custRow['product_id'],
+                                "project_id" => $custRow['project_id'],
+                                "internal_doc_no" => $custRow['internal_doc_no'],
+                                "ref_no" => $custRow['ref_no']
+                            );
+                        }
+                    }
+                    $cust_stmt->close();
+                }
+                $message['customers'] = $customers;
 
                 if ($update_stmt2 = $db->prepare("SELECT * FROM Vehicle WHERE veh_number=?")) {
                     $update_stmt2->bind_param('s', $row['lorry_plate_no1']);
