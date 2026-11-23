@@ -255,7 +255,7 @@ class WeightPrintService extends BaseService {
 
                         <table class="sign">
                             <tr>
-                                <td>' . htmlspecialchars(searchNamebyId($row['gross_weight_by1'], $this->db)) . '<br>' . htmlspecialchars(searchNamebyId($row['tare_weight_by1'], $this->db)) . '</td>
+                                <td>1st Weight By: ' . htmlspecialchars(searchNamebyId($row['gross_weight_by1'], $this->db)) . '<br>2nd Weight By: ' . htmlspecialchars(searchNamebyId($row['tare_weight_by1'], $this->db)) . '</td>
                                 <td style="width: 30%; border-top: none;"></td>
                                 <td>DRIVER\'S IC AND SIGNATURE</td>
                             </tr>
