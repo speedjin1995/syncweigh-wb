@@ -152,6 +152,7 @@ class WeightExportService extends BaseService {
         }
         $summary = array();
         $breakdown = array();
+        $groups = array();
 
         foreach ($rows as $row) {
             $isSalesOrMisc = $row['transaction_status'] == 'Sales' || $row['transaction_status'] == 'Misc';
@@ -218,6 +219,25 @@ class WeightExportService extends BaseService {
         }
         uksort($breakdown, 'strnatcmp');
 
+        // Range rows: supplier codes with the same letter prefix (AC, CII) and waste code merge into "lowest - highest" code present;
+        // codes without a number (AFSB, DBKL) stay on their own
+        foreach ($breakdown as $item) {
+            $prefix = preg_match('/^([A-Z]+)\d+$/i', $item['supplier'], $m) ? strtoupper($m[1]) : $item['supplier'];
+            $key = $prefix . '|' . $item['waste'];
+            if (!isset($groups[$key])) {
+                $groups[$key] = array('first' => $item['supplier'], 'last' => $item['supplier'], 'waste' => $item['waste'], 'trips' => 0, 'tonnage' => 0.0);
+            }
+            // $breakdown is already in natural code order, so the first seen is lowest and the latest is highest
+            $groups[$key]['last'] = $item['supplier'];
+            $groups[$key]['trips'] += $item['trips'];
+            $groups[$key]['tonnage'] += $item['tonnage'];
+        }
+        uksort($groups, 'strnatcmp');
+        foreach ($groups as &$group) {
+            $group['supplier'] = $group['first'] === $group['last'] ? $group['first'] : $group['first'] . ' - ' . $group['last'];
+        }
+        unset($group);
+
         $summaryTotal = array('trips' => 0, 'tonnage' => 0.0, 'price' => 0.0);
         foreach ($summary as $item) {
             $summaryTotal['trips'] += $item['trips'];
@@ -226,7 +246,7 @@ class WeightExportService extends BaseService {
         }
 
         return array('headers' => $headers, 'rows' => $lines, 'totals' => $totals, 'summary' => array_values($summary),
-            'summaryTotal' => $summaryTotal, 'breakdown' => array_values($breakdown));
+            'summaryTotal' => $summaryTotal, 'breakdown' => array_values($breakdown), 'groups' => array_values($groups));
     }
 
     /**
@@ -294,6 +314,22 @@ class WeightExportService extends BaseService {
         $sheet->getStyle('A' . $summaryRow . ':D' . $summaryRow)->getFont()->setBold(true);
         $sheet->getStyle('C' . $summaryHeaderRow . ':D' . $summaryRow)->getNumberFormat()->setFormatCode('#,##0.00');
         $sheet->getStyle('A' . $summaryHeaderRow . ':D' . $summaryHeaderRow)->applyFromArray($green);
+
+        // Section A2: supplier group / waste code table under the summary (A:D)
+        $groupHeaderRow = $summaryRow + 2;
+        $groupRow = $groupHeaderRow;
+        $sheet->fromArray(array('SUPPLIER/CUSTOMER', 'WASTE/PRODUCT CODE', 'TRIPS', 'TONNAGE (MT)'), null, 'A' . $groupRow, true);
+        $groupRow++;
+        foreach ($layout['groups'] as $item) {
+            $sheet->setCellValueExplicit('A' . $groupRow, (string) $item['supplier'], $text);
+            $sheet->setCellValueExplicit('B' . $groupRow, (string) $item['waste'], $text);
+            $sheet->fromArray(array($item['trips'], $item['tonnage']), null, 'C' . $groupRow, true);
+            $groupRow++;
+        }
+        $sheet->fromArray(array('TOTAL', '', $layout['summaryTotal']['trips'], $layout['summaryTotal']['tonnage']), null, 'A' . $groupRow, true);
+        $sheet->getStyle('A' . $groupRow . ':D' . $groupRow)->getFont()->setBold(true);
+        $sheet->getStyle('D' . $groupHeaderRow . ':D' . $groupRow)->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('A' . $groupHeaderRow . ':D' . $groupHeaderRow)->applyFromArray($green);
 
         // Section B: supplier group / waste code breakdown beside it (F:I)
         $breakdownRow = $summaryHeaderRow;
@@ -401,7 +437,8 @@ class WeightExportService extends BaseService {
                             </tbody>
                         </table>
                         <br>
-                        <table style="width: 40%; display: inline-table; vertical-align: top;">
+                        <div style="width: 40%; display: inline-block; vertical-align: top;">
+                        <table style="width: 100%;">
                             <thead>
                                 <tr><th>SUMMARY DETAILS</th><th>TRIPS</th><th>TONNAGE (MT)</th><th>PRICE (RM)</th></tr>
                             </thead>
@@ -413,6 +450,20 @@ class WeightExportService extends BaseService {
         $message .= '<tr style="font-weight: bold;"><td>GRAND TOTAL</td><td>' . $layout['summaryTotal']['trips'] . '</td>' . $right($layout['summaryTotal']['tonnage']) . $right($layout['summaryTotal']['price']) . '</tr>
                             </tbody>
                         </table>
+                        <br>
+                        <table style="width: 100%;">
+                            <thead>
+                                <tr><th>SUPPLIER/CUSTOMER</th><th>WASTE/PRODUCT CODE</th><th>TRIPS</th><th>TONNAGE (MT)</th></tr>
+                            </thead>
+                            <tbody>';
+
+        foreach ($layout['groups'] as $item) {
+            $message .= '<tr><td>' . htmlspecialchars($item['supplier']) . '</td><td>' . htmlspecialchars($item['waste']) . '</td><td>' . $item['trips'] . '</td>' . $right($item['tonnage']) . '</tr>';
+        }
+        $message .= '<tr style="font-weight: bold;"><td>TOTAL</td><td></td><td>' . $layout['summaryTotal']['trips'] . '</td>' . $right($layout['summaryTotal']['tonnage']) . '</tr>
+                            </tbody>
+                        </table>
+                        </div>
                         <table style="width: 35%; margin-left: 5%; display: inline-table; vertical-align: top;">
                             <thead>
                                 <tr><th>SUPPLIER/CUSTOMER</th><th>WASTE/PRODUCT CODE</th><th>TRIPS</th><th>TONNAGE (MT)</th></tr>
