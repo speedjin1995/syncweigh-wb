@@ -438,6 +438,13 @@ class WeightService extends BaseService {
         foreach ($row as $key => $value) {
             $message[$key] = $value == null ? '' : $value;
         }
+
+        // Weighed-by holds the username: show the user's name as the print slip does, else the raw value
+        foreach (['gross_weight_by1', 'tare_weight_by1', 'gross_weight_by2', 'tare_weight_by2'] as $column) {
+            if ($message[$column] !== '') {
+                $message[$column] = searchNamebyId($message[$column], $this->db) ?? $message[$column];
+            }
+        }
         return $message;
     }
 
